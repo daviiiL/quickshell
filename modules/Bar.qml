@@ -1,5 +1,6 @@
 import Quickshell
 import QtQuick
+import QtQuick.Controls
 import "../components/"
 import "../utils"
 
@@ -8,6 +9,7 @@ Scope {
         model: Quickshell.screens
 
         PanelWindow {
+            id: bar
             property var modelData
             screen: modelData
 
@@ -18,9 +20,33 @@ Scope {
             }
 
             implicitWidth: Config.bar.width
+
             color: Colors.values.background
-            // color: Colors.dark.background
-            ClockWidget {}
+            ClockWidget {
+                id: clock
+                anchors.bottom: power.top
+            }
+            PowerIndicator {
+                id: power
+                anchors.bottom: bottom_spacer.top
+            }
+            VerticalSpacer {
+                id: bottom_spacer
+                anchors.bottom: parent.bottom
+                color: "transparent"
+            }
+
+            PowerPopup {
+                id: popupLoader
+                pWindow: bar
+            }
+
+            Connections {
+                target: power
+                function onCaptured(val) {
+                    val ? popupLoader.show() : popupLoader.hide();
+                }
+            }
         }
     }
 }

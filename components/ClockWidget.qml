@@ -3,20 +3,11 @@ import "../utils/"
 import "../styles/"
 
 Item {
-    anchors {
-        bottom: parent.bottom
-    }
-
     implicitWidth: parent.width
     implicitHeight: 100
 
     Rectangle {
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
+        anchors.fill: parent
         anchors.margins: 2
 
         implicitHeight: parent.height
@@ -25,7 +16,7 @@ Item {
         // radius: Config.rounding.regular
 
         color: Colors.values.background
-                
+
         Text {
             text: DateTime.date
             color: Colors.values.primary

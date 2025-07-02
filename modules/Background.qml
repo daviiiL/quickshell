@@ -1,4 +1,3 @@
-import "root:/widgets"
 import Quickshell
 import Quickshell.Wayland
 import QtQuick
@@ -45,7 +44,7 @@ Scope {
                 }
 
                 color: Colors.values.background
-                 
+
                 Image {
                     id: wallpaperImage
                     anchors.fill: parent
@@ -67,9 +66,7 @@ Scope {
                     source: wallpaperImage
                     maskSource: roundedMask
                 }
-                        
             }
         }
     }
 }
-
