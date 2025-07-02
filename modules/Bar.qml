@@ -1,6 +1,7 @@
 import Quickshell
 import QtQuick
 import "../components/"
+import "../utils"
 
 Scope {
     Variants {
@@ -16,8 +17,9 @@ Scope {
                 bottom: true
             }
 
-            implicitWidth: 50
-
+            implicitWidth: Config.bar.width
+            color: Colors.values.background
+            // color: Colors.dark.background
             ClockWidget {}
         }
     }
