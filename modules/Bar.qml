@@ -43,7 +43,7 @@ Scope {
 
             Connections {
                 target: power
-                function onCaptured(val) {
+                function onMouseCaptured(val) {
                     val ? popupLoader.show() : popupLoader.hide();
                 }
             }

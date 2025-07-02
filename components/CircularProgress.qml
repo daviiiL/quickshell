@@ -10,6 +10,7 @@ Item {
     property int size: 30
     property int lineWidth: 2
     property real value: 0
+
     property color primaryColor: Colors.values.on_secondary_container
     property color secondaryColor: Colors.values.secondary_container
     property real gapAngle: Math.PI / 9

@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import "../utils/"
 
 Item {
     property var pWindow
@@ -21,8 +22,20 @@ Item {
             anchor.rect.x: pWindow.width
             anchor.rect.y: pWindow.height
 
-            implicitWidth: 200
-            implicitHeight: 200
+            implicitHeight: windowRect.height
+            implicitWidth: windowRect.width
+
+            color: "transparent"
+
+            Rectangle {
+                id: windowRect
+                implicitHeight: 200
+                implicitWidth: 200
+
+                topRightRadius: Config.rounding.regular
+                bottomRightRadius: Config.rounding.regular
+                color: Colors.values.background
+            }
         }
     }
 }

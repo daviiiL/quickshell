@@ -3,4 +3,5 @@ import "./modules"
 
 ShellRoot {
     Bar {}
+    Osd {}
 }
