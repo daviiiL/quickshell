@@ -5,6 +5,7 @@ Text {
     property real fill: 0
     property int grad: 0
     required property string icon
+    required property color fontColor
 
     font.family: "Material Symbols Rounded"
     font.hintingPreference: Font.PreferFullHinting
@@ -17,4 +18,6 @@ Text {
     }
     renderType: Text.NativeRendering
     text: root.icon
+    font.pointSize: 20
+    color: fontColor
 }

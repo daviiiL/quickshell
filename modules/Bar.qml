@@ -22,6 +22,7 @@ Scope {
             implicitWidth: Config.bar.width
 
             color: Colors.values.background
+
             ClockWidget {
                 id: clock
                 anchors.bottom: power.top

@@ -10,9 +10,18 @@ Scope {
     property real currentBrightness: 0
     property bool visible: false
 
+    function getBrightnessIcon(val) {
+        const numString = (val * 0.05 >= 1 ? val * 0.05 : 1).toFixed(0);
+        return "brightness_" + numString;
+    }
+
     Connections {
         target: Audio.defaultSinkAudio
         function onVolumeChanged() {
+            root.visible = true;
+            hideTimer.restart();
+        }
+        function onMutedChanged() {
             root.visible = true;
             hideTimer.restart();
         }
@@ -77,7 +86,15 @@ Scope {
 
                             implicitHeight: parent.height * (Audio.volume > 1 ? 1 : Audio.volume)
                             radius: parent.radius
-                            color: Audio.isOverdrive ? Colors.values.on_primary_container : Colors.values.on_error_container
+                            color: Audio.muted ? Colors.values.primary_container : (Audio.isOverdrive ? Colors.values.on_error_container : Colors.values.on_primary_container)
+                            MaterialSymbol {
+                                anchors {
+                                    bottom: parent.bottom
+                                    horizontalCenter: parent.horizontalCenter
+                                }
+                                icon: Audio.volume == 0 || Audio.muted ? "volume_off" : (Audio.volume >= 0.5 ? "volume_up" : "volume_down")
+                                fontColor: Audio.isOverdrive ? Colors.values.error_container : (Audio.volume <= 0.1 || Audio.muted ? Colors.values.on_primary_container : Colors.values.primary_container)
+                            }
                         }
                     }
 
@@ -98,6 +115,15 @@ Scope {
                             implicitHeight: parent.height * (root.currentBrightness / 100)
                             radius: parent.radius
                             color: Colors.values.on_primary_container
+
+                            MaterialSymbol {
+                                anchors {
+                                    bottom: parent.bottom
+                                    horizontalCenter: parent.horizontalCenter
+                                }
+                                icon: getBrightnessIcon(root.currentBrightness)
+                                fontColor: root.currentBrightness <= 5 ? parent.color : Colors.values.primary_container
+                            }
                         }
                     }
                 }
