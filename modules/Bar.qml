@@ -19,10 +19,16 @@ Scope {
                 bottom: true
             }
 
-            implicitWidth: Config.bar.width * 3
+            implicitWidth: Config.bar.width * 4
             color: "transparent"
             WlrLayershell.layer: WlrLayer.Top
             WlrLayershell.exclusiveZone: Config.bar.width
+            mask: Region {
+                item: Rectangle {
+                    width: Config.bar.width
+                    height: bar.height
+                }
+            }
 
             Rectangle {
 
@@ -33,7 +39,7 @@ Scope {
                 }
 
                 color: Colors.values.background
-                implicitWidth: parent.width / 3
+                implicitWidth: parent.width / 4
 
                 StatusIcons {
                     anchors.bottom: clock.top
