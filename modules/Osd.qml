@@ -165,7 +165,6 @@ Scope {
                             }
 
                             Behavior on height {
-
                                 NumberAnimation {
                                     // target: brighnessBar
                                     duration: 300

@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Wayland
 import QtQuick
 import "../components/"
 import "../utils"
@@ -18,35 +19,48 @@ Scope {
                 bottom: true
             }
 
-            implicitWidth: Config.bar.width
+            implicitWidth: Config.bar.width * 3
+            color: "transparent"
+            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.exclusiveZone: Config.bar.width
 
-            color: Colors.values.background
+            Rectangle {
 
-            StatusIcons {
-                anchors.bottom: clock.top
-            }
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    bottom: parent.bottom
+                }
 
-            ClockWidget {
-                id: clock
-                anchors.bottom: power.top
-            }
-            PowerIndicator {
-                id: power
-                anchors.bottom: bottom_spacer.top
-            }
-            VerticalSpacer {
-                id: bottom_spacer
-                anchors.bottom: parent.bottom
-                // color: "transparent"
-            }
+                color: Colors.values.background
+                implicitWidth: parent.width / 3
 
-            PowerPopup {
-                id: popupLoader
-                pWindow: bar
-                Connections {
-                    target: power
-                    function onMouseCaptured(val) {
-                        val ? popupLoader.show() : popupLoader.hide();
+                StatusIcons {
+                    anchors.bottom: clock.top
+                }
+
+                ClockWidget {
+                    id: clock
+                    anchors.bottom: power.top
+                }
+                PowerIndicator {
+                    id: power
+                    anchors.bottom: bottom_spacer.top
+                }
+                VerticalSpacer {
+                    id: bottom_spacer
+                    anchors.bottom: parent.bottom
+                    // color: "transparent"
+                }
+
+                PowerPopup {
+                    id: popupLoader
+                    pWindow: bar
+                    Connections {
+                        target: power
+                        function onMouseCaptured(val) {
+                            val ? popupLoader.show() : popupLoader.hide();
+                        }
                     }
                 }
             }

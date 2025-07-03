@@ -21,11 +21,20 @@ Item {
 
     Rectangle {
         id: rect
-        implicitWidth: parent.width - 12
-        anchors.horizontalCenter: parent.horizontalCenter
+        width: root.parent.width - 12
+        anchors.left: parent.left
+        anchors.leftMargin: 6
         implicitHeight: bluetooth.implicitHeight + network.implicitHeight + (spacer.implicitHeight * 3)
         color: Colors.values.secondary_container
         radius: Config.rounding.regular
+
+        MouseArea {
+            id: capture
+            anchors.fill: parent
+            hoverEnabled: true
+            onEntered: rect.width = 3 * root.implicitWidth - 12
+            onExited: rect.width = root.parent.width - 12
+        }
 
         VerticalSpacer {
             id: topSpacer
@@ -40,7 +49,8 @@ Item {
             fontColor: Colors.values.on_secondary_container
             fontSize: 15
             anchors.top: topSpacer.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: (root.implicitWidth - this.width - 12) / 2
             animated: true
         }
 
@@ -58,13 +68,22 @@ Item {
             fontColor: Colors.values.on_secondary_container
             fontSize: 15
             anchors.top: spacer.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: (root.implicitWidth - this.width - 12) / 2
             animated: true
         }
 
         VerticalSpacer {
             spacerHeight: 10
             anchors.top: network.bottom
+        }
+
+        Behavior on width {
+            NumberAnimation {
+                duration: 300
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Config.anim.curves.standardAccel
+            }
         }
     }
 }
