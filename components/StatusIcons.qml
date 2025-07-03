@@ -42,14 +42,14 @@ Item {
         RowLayout {
             id: bluetooth
             anchors.top: topSpacer.bottom
-            spacing: root.implicitWidth - bluetoothIcon.width - 6
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            spacing: 8
             MaterialSymbol {
                 id: bluetoothIcon
                 icon: Bluetooth.powered ? "bluetooth" : "bluetooth_disabled"
                 fontColor: Colors.values.on_secondary_container
                 fontSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: (root.implicitWidth - this.width - 12) / 2
                 animated: true
             }
             Text {
@@ -72,14 +72,14 @@ Item {
         RowLayout {
             id: network
             anchors.top: spacer.bottom
-            spacing: root.implicitWidth - networkIcon.width - 6
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            spacing: 8
             MaterialSymbol {
                 id: networkIcon
                 icon: Network.active ? root.getNetworkIcon(Network.active.strength ?? 0) : "wifi_off"
                 fontColor: Colors.values.on_secondary_container
                 fontSize: 15
-                anchors.left: parent.left
-                anchors.leftMargin: (root.implicitWidth - this.width - 12) / 2
                 animated: true
             }
             Text {
