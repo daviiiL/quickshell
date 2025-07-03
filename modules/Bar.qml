@@ -1,6 +1,5 @@
 import Quickshell
 import QtQuick
-import QtQuick.Controls
 import "../components/"
 import "../utils"
 
@@ -23,6 +22,10 @@ Scope {
 
             color: Colors.values.background
 
+            StatusIcons {
+                anchors.bottom: clock.top
+            }
+
             ClockWidget {
                 id: clock
                 anchors.bottom: power.top
@@ -34,7 +37,7 @@ Scope {
             VerticalSpacer {
                 id: bottom_spacer
                 anchors.bottom: parent.bottom
-                color: "transparent"
+                // color: "transparent"
             }
 
             PowerPopup {
