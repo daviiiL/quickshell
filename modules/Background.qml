@@ -30,7 +30,7 @@ Scope {
                     bottom: parent.bottom
                 }
 
-                implicitWidth: Config.bar.width
+                implicitWidth: Theme.bar.width
                 color: Colors.values.background
             }
 
@@ -40,7 +40,7 @@ Scope {
                     left: parent.left
                     right: parent.right
                     bottom: parent.bottom
-                    leftMargin: Config.bar.width
+                    leftMargin: Theme.bar.width
                 }
 
                 color: Colors.values.background
@@ -56,7 +56,7 @@ Scope {
                 Rectangle {
                     id: roundedMask
                     anchors.fill: wallpaperImage
-                    radius: Config.rounding.large
+                    radius: Theme.rounding.large
                     color: "white"
                     visible: false
                 }

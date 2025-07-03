@@ -5,7 +5,7 @@ Text {
     id: root
     property real fill: 0
     property int grad: 0
-    property int fontSize
+    property int iconSize
     required property string icon
     required property color fontColor
 
@@ -14,7 +14,7 @@ Text {
     property string animateProp: "scale"
     property real animateFrom: 0
     property real animateTo: 1
-    property int animateDuration: Config.anim.durations.normal
+    property int animateDuration: Theme.anim.durations.normal
 
     font.family: "Material Symbols Rounded"
     font.hintingPreference: Font.PreferFullHinting
@@ -27,16 +27,16 @@ Text {
     }
     renderType: Text.NativeRendering
     text: root.icon
-    font.pointSize: root.fontSize || 20
+    font.pointSize: root.iconSize || 20
     color: fontColor
 
     Behavior on color {
         enabled: root.colorAnimated
 
         ColorAnimation {
-            duration: Config.anim.durations.normal
+            duration: Theme.anim.durations.normal
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Config.anim.curves.standard
+            easing.bezierCurve: Theme.anim.curves.standard
         }
     }
 
@@ -46,12 +46,12 @@ Text {
         SequentialAnimation {
             Anim {
                 to: root.animateFrom
-                easing.bezierCurve: Config.anim.curves.standardAccel
+                easing.bezierCurve: Theme.anim.curves.standardAccel
             }
             PropertyAction {}
             Anim {
                 to: root.animateTo
-                easing.bezierCurve: Config.anim.curves.standardDecel
+                easing.bezierCurve: Theme.anim.curves.standardDecel
             }
         }
     }

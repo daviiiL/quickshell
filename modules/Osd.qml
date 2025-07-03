@@ -75,7 +75,7 @@ Scope {
             Rectangle {
                 id: rect
                 anchors.fill: parent
-                radius: Config.rounding.large
+                radius: Theme.rounding.large
                 color: Colors.values.secondary_container
 
                 opacity: 0.0
@@ -126,10 +126,10 @@ Scope {
                         id: volume
                         implicitHeight: 380
                         implicitWidth: (osd.width - 30) / 2
-                        radius: Config.rounding.regular
+                        radius: Theme.rounding.regular
                         color: Colors.values.primary_container
 
-                        property real barHeight: volume.height * (Audio.volume > 1.0 ? 1.0 : Audio.volume)
+                        property real barHeight: volume.height * (Audio.volume > 1.0 ? 1.0 : Audio.volume) || 1
 
                         Rectangle {
                             anchors {
@@ -149,7 +149,7 @@ Scope {
                                 }
                                 anchors.centerIn: parent
                                 color: Colors.values.error_container
-                                font.family: Config.font.style.inter
+                                font.family: Theme.font.style.inter
                                 font.styleName: "Bold"
                                 font.pointSize: 15
                             }
@@ -169,7 +169,7 @@ Scope {
                                     // target: brighnessBar
                                     duration: 300
                                     easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Config.anim.curves.standardAccel
+                                    easing.bezierCurve: Theme.anim.curves.standardAccel
                                 }
                             }
 
@@ -177,7 +177,7 @@ Scope {
                                 ColorAnimation {
                                     duration: 300
                                     easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Config.anim.curves.standardAccel
+                                    easing.bezierCurve: Theme.anim.curves.standardAccel
                                 }
                             }
                         }
@@ -187,10 +187,10 @@ Scope {
                         id: brightness
                         implicitWidth: (osd.width - 30) / 2
                         implicitHeight: 380
-                        radius: Config.rounding.regular
+                        radius: Theme.rounding.regular
                         color: Colors.values.primary_container
 
-                        property real barHeight: height * (root.currentBrightness / 100)
+                        property real barHeight: height * (root.currentBrightness / 100) || 1
 
                         Rectangle {
                             anchors {
@@ -219,7 +219,7 @@ Scope {
                                     // target: brighnessBar
                                     duration: 300
                                     easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Config.anim.curves.standardAccel
+                                    easing.bezierCurve: Theme.anim.curves.standardAccel
                                 }
                             }
                         }

@@ -2,6 +2,7 @@ import Quickshell
 import Quickshell.Wayland
 import QtQuick
 import "../components/"
+import "../widgets/"
 import "../utils"
 
 Scope {
@@ -20,13 +21,13 @@ Scope {
                 bottom: true
             }
 
-            implicitWidth: Config.bar.width * 4
+            implicitWidth: Theme.bar.width * 4
             color: "transparent"
             WlrLayershell.layer: WlrLayer.Top
-            WlrLayershell.exclusiveZone: Config.bar.width
+            WlrLayershell.exclusiveZone: Theme.bar.width
             mask: Region {
                 item: Rectangle {
-                    width: bar.statusIconsExpanded ? Config.bar.width * 4 : Config.bar.width
+                    width: bar.statusIconsExpanded ? Theme.bar.width * 4 : Theme.bar.width
                     height: bar.height
                     
                     Behavior on width {

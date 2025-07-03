@@ -1,4 +1,5 @@
 import QtQuick
+import "../components/"
 import "../utils"
 
 ExpandingContainer {
@@ -13,7 +14,7 @@ ExpandingContainer {
 
     Rectangle {
         anchors.fill: parent
-        radius: parent.radius || Config.rounding.regular
+        radius: parent.radius || Theme.rounding.regular
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop {
@@ -83,8 +84,8 @@ ExpandingContainer {
         id: timeText
         text: `    ${root.formatTime(Power.timeToGoal)}`
         color: Colors.values.on_secondary_container
-        font.pointSize: Config.font.size.regular
-        font.family: Config.font.style.inter
+        font.pointSize: Theme.font.size.regular
+        font.family: Theme.font.style.inter
         anchors.left: progressIndicator.right
         anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter

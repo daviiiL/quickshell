@@ -17,7 +17,7 @@ ClippingRectangle {
 
     width: collapsedWidth
     color: Colors.values.secondary_container
-    radius: Config.rounding.regular
+    radius: Theme.rounding.regular
 
     MouseArea {
         id: mouseArea
@@ -39,7 +39,7 @@ ClippingRectangle {
         NumberAnimation {
             duration: container.animationDuration
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Config.anim.curves.standardAccel
+            easing.bezierCurve: Theme.anim.curves.standardAccel
         }
     }
 }

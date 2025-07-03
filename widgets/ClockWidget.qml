@@ -23,17 +23,17 @@ Item {
                 leftMargin: -10
                 bottomMargin: -8
             }
-            font.pointSize: Config.font.size.regular
-            font.family: Config.font.style.inter
+            font.pointSize: Theme.font.size.regular
+            font.family: Theme.font.style.inter
         }
 
         Text {
             id: hours
             text: DateTime.hrs
             color: Colors.values.secondary
-            font.family: Config.font.style.inter
+            font.family: Theme.font.style.inter
             font.styleName: "Bold"
-            font.pointSize: Config.font.size.larger
+            font.pointSize: Theme.font.size.larger
             anchors {
                 bottom: minutes.top
                 bottomMargin: -10
@@ -45,8 +45,8 @@ Item {
             id: minutes
             text: DateTime.mins
             color: Colors.values.primary
-            font.family: Config.font.style.inter
-            font.pointSize: Config.font.size.larger
+            font.family: Theme.font.style.inter
+            font.pointSize: Theme.font.size.larger
             anchors {
                 bottom: parent.bottom
                 bottomMargin: 3

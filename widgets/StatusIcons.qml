@@ -2,11 +2,12 @@ import QtQuick
 import QtQuick.Layouts
 
 import Quickshell.Widgets
+import "../components/"
 import "../utils/"
 
 Item {
     id: root
-    
+
     property bool expanded: container.expanded
 
     implicitHeight: container.height
@@ -30,6 +31,8 @@ Item {
         expandedWidth: 4 * root.implicitWidth - 12
         anchors.left: parent.left
         anchors.leftMargin: 6
+
+        animationDuration: 100
         implicitHeight: bluetooth.implicitHeight + network.implicitHeight + (spacer.implicitHeight * 3)
 
         VerticalSpacer {
@@ -49,14 +52,14 @@ Item {
                 id: bluetoothIcon
                 icon: Bluetooth.powered ? "bluetooth" : "bluetooth_disabled"
                 fontColor: Colors.values.on_secondary_container
-                fontSize: 15
+                iconSize: 15
                 animated: true
             }
             Text {
                 text: `${Bluetooth.devices.length} device connected`
                 color: Colors.values.on_secondary_container
-                font.family: Config.font.style.inter
-                font.pointSize: Config.font.size.regular
+                font.family: Theme.font.style.inter
+                font.pointSize: Theme.font.size.regular
                 opacity: container.expanded ? 1.0 : 0.0
             }
         }
@@ -79,14 +82,14 @@ Item {
                 id: networkIcon
                 icon: Network.active ? root.getNetworkIcon(Network.active.strength ?? 0) : "wifi_off"
                 fontColor: Colors.values.on_secondary_container
-                fontSize: 15
+                iconSize: 15
                 animated: true
             }
             Text {
                 text: Network.active ? `󰌘 SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
                 color: Colors.values.on_secondary_container
-                font.family: Config.font.style.inter
-                font.pointSize: Config.font.size.regular
+                font.family: Theme.font.style.inter
+                font.pointSize: Theme.font.size.regular
                 opacity: container.expanded ? 1.0 : 0.0
             }
         }
@@ -95,6 +98,5 @@ Item {
             spacerHeight: 10
             anchors.top: network.bottom
         }
-
     }
 }

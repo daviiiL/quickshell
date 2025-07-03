@@ -32,8 +32,8 @@ Item {
                 implicitHeight: 200
                 implicitWidth: 200
 
-                topRightRadius: Config.rounding.regular
-                bottomRightRadius: Config.rounding.regular
+                topRightRadius: Theme.rounding.regular
+                bottomRightRadius: Theme.rounding.regular
                 color: Colors.values.background
             }
         }
