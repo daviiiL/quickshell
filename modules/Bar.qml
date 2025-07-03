@@ -39,28 +39,11 @@ Scope {
             PowerPopup {
                 id: popupLoader
                 pWindow: bar
-            }
-
-            Button {
-                text: "test brightness"
-                anchors.centerIn: parent
-                onClicked: function () {
-                    const brightness = Brightness.getBrightness();
-                    console.log(brightness);
-                }
-
                 Connections {
-                    target: Brightness
-                    function onBrightnessChanged(val) {
-                        console.log("brightness change", val);
+                    target: power
+                    function onMouseCaptured(val) {
+                        val ? popupLoader.show() : popupLoader.hide();
                     }
-                }
-            }
-
-            Connections {
-                target: power
-                function onMouseCaptured(val) {
-                    val ? popupLoader.show() : popupLoader.hide();
                 }
             }
         }

@@ -21,6 +21,8 @@ Scope {
         target: Brightness
         function onBrightnessChanged(val) {
             root.shouldShowOsd = true;
+            root.currentBrightness = val;
+            // console.log("brightness change signal received in osd", root.currentBrightness);
             hideTimer.restart();
         }
     }
@@ -94,7 +96,7 @@ Scope {
                                 bottom: parent.bottom
                             }
 
-                            implicitHeight: parent.height * 0.5
+                            implicitHeight: parent.height * (root.currentBrightness / 100)
                             radius: parent.radius
                             color: Colors.values.on_primary_container
                         }

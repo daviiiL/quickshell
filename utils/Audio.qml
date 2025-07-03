@@ -3,7 +3,6 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
-import Quickshell.Widgets
 
 Singleton {
     id: root
@@ -13,10 +12,9 @@ Singleton {
     }
 
     function initializeDefaultSink() {
-    
-}
+    }
 
-    readonly property var defaultSinkAudio: Pipewire.defaultAudioSink?.audio
-    readonly property real volume: Pipewire.defaultAudioSink?.audio.volume
+    readonly property var defaultSinkAudio: Pipewire.defaultAudioSink?.audio || null
+    readonly property real volume: Pipewire.defaultAudioSink?.audio.volume || 0
     readonly property bool isOverdrive: volume < 1
 }
