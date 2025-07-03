@@ -13,7 +13,7 @@ ExpandingContainer {
 
     Rectangle {
         anchors.fill: parent
-        radius: parent.radius
+        radius: parent.radius || Config.rounding.regular
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop {
