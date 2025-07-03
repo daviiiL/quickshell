@@ -1,18 +1,19 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Widgets
 import "../utils/"
+import "../components/"
 
 Scope {
     id: root
 
     property real currentBrightness: 0
+    property bool visible: false
 
     Connections {
         target: Audio.defaultSinkAudio
         function onVolumeChanged() {
-            root.shouldShowOsd = true;
+            root.visible = true;
             hideTimer.restart();
         }
     }
@@ -20,23 +21,21 @@ Scope {
     Connections {
         target: Brightness
         function onBrightnessChanged(val) {
-            root.shouldShowOsd = true;
+            root.visible = true;
             root.currentBrightness = val;
             // console.log("brightness change signal received in osd", root.currentBrightness);
             hideTimer.restart();
         }
     }
 
-    property bool shouldShowOsd: false
-
     Timer {
         id: hideTimer
         interval: 1000
-        onTriggered: root.shouldShowOsd = false
+        onTriggered: root.visible = false
     }
 
     LazyLoader {
-        active: root.shouldShowOsd
+        active: root.visible
 
         PanelWindow {
             id: osd
@@ -78,7 +77,7 @@ Scope {
 
                             implicitHeight: parent.height * (Audio.volume > 1 ? 1 : Audio.volume)
                             radius: parent.radius
-                            color: Audio.isOverdrive ? Colors.values.on_primary_container : Colors.values.error_container
+                            color: Audio.isOverdrive ? Colors.values.on_primary_container : Colors.values.on_error_container
                         }
                     }
 

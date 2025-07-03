@@ -1,5 +1,6 @@
 import Quickshell
-import "./modules"
+import QtQuick
+import "./modules/"
 
 ShellRoot {
     Bar {}

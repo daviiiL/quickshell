@@ -31,7 +31,8 @@ Item {
             id: hours
             text: DateTime.hrs
             color: Colors.values.secondary
-            font.family: Config.font.style.inter_bold
+            font.family: Config.font.style.inter
+            font.styleName: "Bold"
             font.pointSize: Config.font.size.larger
             anchors {
                 bottom: minutes.top
@@ -44,7 +45,7 @@ Item {
             id: minutes
             text: DateTime.mins
             color: Colors.values.primary
-            font.family: Config.font.style.inter_bold
+            font.family: Config.font.style.inter
             font.pointSize: Config.font.size.larger
             anchors {
                 bottom: parent.bottom

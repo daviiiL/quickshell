@@ -31,6 +31,8 @@ Singleton {
         readonly property string inter_thin: "Inter Nerd Font Propo Thin"
         readonly property string inter: "Inter Nerd Font Propo"
         readonly property string inter_bold: "Inter Nerd Font Propo:style=Bold"
+        readonly property string material: "Material Symbols Rounded"
+        readonly property string free_mono: "FreeMono"
     }
 
     component Rounding: QtObject {
