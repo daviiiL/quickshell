@@ -3,6 +3,9 @@ import QtQuick
 import "./modules/"
 
 ShellRoot {
-    Bar {}
+    Bar {
+        id: bar
+    }
+    ScreenCorners {}
     Osd {}
 }
