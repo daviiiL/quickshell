@@ -41,6 +41,22 @@ Scope {
                 pWindow: bar
             }
 
+            Button {
+                text: "test brightness"
+                anchors.centerIn: parent
+                onClicked: function () {
+                    const brightness = Brightness.getBrightness();
+                    console.log(brightness);
+                }
+
+                Connections {
+                    target: Brightness
+                    function onBrightnessChanged(val) {
+                        console.log("brightness change", val);
+                    }
+                }
+            }
+
             Connections {
                 target: power
                 function onMouseCaptured(val) {

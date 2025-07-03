@@ -14,11 +14,11 @@ Singleton {
     }
 
     readonly property string hrs: {
-        Qt.formatDateTime(clock.date, "hh")
+        Qt.formatDateTime(clock.date, "hh");
     }
 
     readonly property string mins: {
-        Qt.formatDateTime(clock.date, "mm")
+        Qt.formatDateTime(clock.date, "mm");
     }
 
     SystemClock {

@@ -12,6 +12,10 @@ Singleton {
         objects: [Pipewire.defaultAudioSink]
     }
 
+    function initializeDefaultSink() {
+    
+}
+
     readonly property var defaultSinkAudio: Pipewire.defaultAudioSink?.audio
     readonly property real volume: Pipewire.defaultAudioSink?.audio.volume
     readonly property bool isOverdrive: volume < 1

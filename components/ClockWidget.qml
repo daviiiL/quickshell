@@ -1,6 +1,5 @@
 import QtQuick
 import "../utils/"
-import "../styles/"
 
 Item {
     implicitWidth: parent.width
@@ -12,8 +11,6 @@ Item {
 
         implicitHeight: parent.height
         implicitWidth: parent.width
-
-        // radius: Config.rounding.regular
 
         color: Colors.values.background
 

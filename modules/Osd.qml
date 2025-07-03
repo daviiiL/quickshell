@@ -7,11 +7,20 @@ import "../utils/"
 Scope {
     id: root
 
+    property real currentBrightness: 0
+
     Connections {
         target: Audio.defaultSinkAudio
         function onVolumeChanged() {
             root.shouldShowOsd = true;
-            console.log(Audio.volume);
+            hideTimer.restart();
+        }
+    }
+
+    Connections {
+        target: Brightness
+        function onBrightnessChanged(val) {
+            root.shouldShowOsd = true;
             hideTimer.restart();
         }
     }
@@ -28,10 +37,11 @@ Scope {
         active: root.shouldShowOsd
 
         PanelWindow {
+            id: osd
             anchors.right: true
             margins.right: 10
 
-            implicitWidth: 50
+            implicitWidth: 120
             implicitHeight: 400
             color: "transparent"
 
@@ -44,15 +54,16 @@ Scope {
 
                 RowLayout {
                     anchors {
-                        fill: parent
-                        leftMargin: 10
+                        top: parent.top
+                        right: parent.right
+                        bottom: parent.bottom
                         rightMargin: 10
                     }
 
                     Rectangle {
-                        Layout.fillWidth: true
-
+                        id: volume
                         implicitHeight: 380
+                        implicitWidth: osd.width / 2 - 10
                         radius: Config.rounding.regular
                         color: Colors.values.primary_container
 
@@ -66,6 +77,26 @@ Scope {
                             implicitHeight: parent.height * (Audio.volume > 1 ? 1 : Audio.volume)
                             radius: parent.radius
                             color: Audio.isOverdrive ? Colors.values.on_primary_container : Colors.values.error_container
+                        }
+                    }
+
+                    Rectangle {
+                        id: brightness
+                        implicitWidth: osd.width / 2 - 10
+                        implicitHeight: 380
+                        radius: Config.rounding.regular
+                        color: Colors.values.primary_container
+
+                        Rectangle {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                                bottom: parent.bottom
+                            }
+
+                            implicitHeight: parent.height * 0.5
+                            radius: parent.radius
+                            color: Colors.values.on_primary_container
                         }
                     }
                 }
