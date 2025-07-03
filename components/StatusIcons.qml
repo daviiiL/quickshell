@@ -6,8 +6,10 @@ import "../utils/"
 
 Item {
     id: root
+    
+    property bool expanded: container.expanded
 
-    implicitHeight: rect.height
+    implicitHeight: container.height
     implicitWidth: parent.width
 
     function getNetworkIcon(strength: int): string {
@@ -22,24 +24,13 @@ Item {
         return "signal_wifi_0_bar";
     }
 
-    ClippingRectangle {
-        id: rect
-        width: root.parent.width - 12
+    ExpandingContainer {
+        id: container
+        collapsedWidth: root.parent.width - 12
+        expandedWidth: 4 * root.implicitWidth - 12
         anchors.left: parent.left
         anchors.leftMargin: 6
         implicitHeight: bluetooth.implicitHeight + network.implicitHeight + (spacer.implicitHeight * 3)
-        color: Colors.values.secondary_container
-        radius: Config.rounding.regular
-
-        property bool expanded: rect.width !== root.parent.width - 12
-
-        MouseArea {
-            id: capture
-            anchors.fill: parent
-            hoverEnabled: true
-            onEntered: rect.width = 4 * root.implicitWidth - 12
-            onExited: rect.width = root.parent.width - 12
-        }
 
         VerticalSpacer {
             id: topSpacer
@@ -66,7 +57,7 @@ Item {
                 color: Colors.values.on_secondary_container
                 font.family: Config.font.style.inter
                 font.pointSize: Config.font.size.regular
-                opacity: rect.expanded ? 1.0 : 0.0
+                opacity: container.expanded ? 1.0 : 0.0
             }
         }
 
@@ -92,11 +83,11 @@ Item {
                 animated: true
             }
             Text {
-                text: `󰌘 SSID: ${Network.active.ssid.slice(0, 8)}...`
+                text: Network.active ? `󰌘 SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
                 color: Colors.values.on_secondary_container
                 font.family: Config.font.style.inter
                 font.pointSize: Config.font.size.regular
-                opacity: rect.expanded ? 1.0 : 0.0
+                opacity: container.expanded ? 1.0 : 0.0
             }
         }
 
@@ -105,12 +96,5 @@ Item {
             anchors.top: network.bottom
         }
 
-        Behavior on width {
-            NumberAnimation {
-                duration: 300
-                easing.type: Easing.BezierSpline
-                easing.bezierCurve: Config.anim.curves.standardAccel
-            }
-        }
     }
 }

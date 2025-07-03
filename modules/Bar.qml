@@ -11,6 +11,7 @@ Scope {
         PanelWindow {
             id: bar
             property var modelData
+            property bool statusIconsExpanded: false
             screen: modelData
 
             anchors {
@@ -25,8 +26,15 @@ Scope {
             WlrLayershell.exclusiveZone: Config.bar.width
             mask: Region {
                 item: Rectangle {
-                    width: Config.bar.width
+                    width: bar.statusIconsExpanded ? Config.bar.width * 4 : Config.bar.width
                     height: bar.height
+                    
+                    Behavior on width {
+                        NumberAnimation {
+                            duration: 300
+                            easing.type: Easing.BezierSpline
+                        }
+                    }
                 }
             }
 
@@ -42,7 +50,15 @@ Scope {
                 implicitWidth: parent.width / 4
 
                 StatusIcons {
+                    id: statusIcons
                     anchors.bottom: clock.top
+                    
+                    Connections {
+                        target: statusIcons
+                        function onExpandedChanged() {
+                            bar.statusIconsExpanded = statusIcons.expanded
+                        }
+                    }
                 }
 
                 ClockWidget {
