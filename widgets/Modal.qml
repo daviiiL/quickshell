@@ -1,0 +1,101 @@
+pragma ComponentBehavior: Bound
+
+import QtQuick
+import Quickshell
+import "../utils/"
+
+Item {
+    id: root
+    //NOTE: for now, detached mode results in modal in the center
+
+    required property var isDetached
+    //NOTE: either the left top or bottom corner of the rendered window
+    // depending on how close the window is to the screen edges
+    // required property var startX
+    // required property var startY
+    required property var screen
+    property alias modalAnchors: modalWindow.anchors
+    property alias color: modal.color
+    property alias radius: modal.radius
+    property alias topLeftRadius: modal.topLeftRadius
+    property alias topRightRadius: modal.topRightRadius
+    property alias bottomLeftRadius: modal.bottomLeftRadius
+    property alias bottomRightRadius: modal.bottomRightRadius
+
+    property string size: "small"
+
+    property real hWRatio: 3 / 4
+    property real modalWidth
+    property real modalHeight
+
+    function setAnchorsIfDetached() {
+        if (root.isDetached)
+            root.modalAnchors = {
+                left: true,
+                right: true,
+                top: true,
+                bottom: true
+            };
+    }
+
+    function calculateWindowDimensions() {
+        var widthRatio;
+        switch (size) {
+        case "small":
+            widthRatio = 0.1;
+            break;
+        case "medium":
+            widthRatio = 0.2;
+            break;
+        case "large":
+            widthRatio = 0.45;
+            break;
+        }
+
+        const w = screen.width * widthRatio;
+        const h = w * root.hWRatio;
+        root.modalWidth = w;
+        root.modalHeight = h;
+
+    // root.calculatePosition(h, w);
+    }
+
+    // function calculatePosition(h, w) {
+    //     if ((root.startX + h) > screen.height)
+    //         root.startX -= h;
+    //     if ((root.startY + w) > screen.width)
+    //         root.startY -= w;
+    // }
+
+    function show() {
+        modalLoader.item.visible = true;
+    }
+
+    function hide() {
+        modalLoader.item.visible = false;
+    }
+
+    Component.onCompleted: {
+        //initialize
+        root.calculateWindowDimensions();
+        root.setAnchorsIfDetached();
+    }
+
+    LazyLoader {
+        id: modalLoader
+        loading: true
+        PanelWindow {
+            id: modalWindow
+
+            implicitHeight: root.height
+            implicitWidth: root.width
+
+            color: "transparent"
+
+            Rectangle {
+                id: modal
+                anchors.fill: parent
+            }
+        }
+    }
+}

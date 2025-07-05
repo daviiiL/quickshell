@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.Wayland
 import QtQuick
+import QtQuick.Controls
 import "../components/"
 import "../widgets/"
 import "../utils"
@@ -29,7 +30,7 @@ Scope {
                 item: Rectangle {
                     width: bar.statusIconsExpanded ? Theme.bar.width * 4 : Theme.bar.width
                     height: bar.height
-                    
+
                     Behavior on width {
                         NumberAnimation {
                             duration: 300
@@ -50,14 +51,31 @@ Scope {
                 color: Colors.values.background
                 implicitWidth: parent.width / 4
 
+                MouseArea {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.topMargin: 20
+                    implicitHeight: 20
+                    implicitWidth: parent.width
+                    hoverEnabled: true
+                    onEntered: cheatsheet.show()
+                    onExited: cheatsheet.hide()
+                }
+
+                Cheatsheet {
+                    id: cheatsheet
+                    screen: bar.modelData
+                }
+
                 StatusIcons {
                     id: statusIcons
                     anchors.bottom: clock.top
-                    
+
                     Connections {
                         target: statusIcons
                         function onExpandedChanged() {
-                            bar.statusIconsExpanded = statusIcons.expanded
+                            bar.statusIconsExpanded = statusIcons.expanded;
                         }
                     }
                 }
@@ -74,17 +92,6 @@ Scope {
                     id: bottom_spacer
                     anchors.bottom: parent.bottom
                     // color: "transparent"
-                }
-
-                PowerPopup {
-                    id: popupLoader
-                    pWindow: bar
-                    Connections {
-                        target: power
-                        function onMouseCaptured(val) {
-                            val ? popupLoader.show() : popupLoader.hide();
-                        }
-                    }
                 }
             }
         }
