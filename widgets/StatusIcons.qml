@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-
-import Quickshell.Widgets
 import "../components/"
 import "../utils/"
 
@@ -34,6 +32,8 @@ Item {
 
         animationDuration: 100
         implicitHeight: bluetooth.implicitHeight + network.implicitHeight + (spacer.implicitHeight * 3)
+
+        antialiasing: true
 
         VerticalSpacer {
             id: topSpacer

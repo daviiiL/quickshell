@@ -1,20 +1,25 @@
 import QtQuick
 import "../components/"
-import "../utils"
+import "../utils/"
+import Quickshell.Services.UPower
 
 ExpandingContainer {
     id: root
 
     implicitHeight: 52
     collapsedWidth: 38
-    expandedWidth: 140
+    expandedWidth: 200
     color: "transparent"
+
+    verticalExpansion: true
+    expandedHeight: root.expandedWidth * 1.2
+    collapsedHeight: root.implicitHeight
 
     signal mouseCaptured(bool isCaptured)
 
     Rectangle {
         anchors.fill: parent
-        radius: parent.radius || Theme.rounding.regular
+        radius: Theme.rounding.regular
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop {
@@ -82,11 +87,32 @@ ExpandingContainer {
 
     Text {
         id: timeText
-        text: `    ${root.formatTime(Power.timeToGoal)}`
+        text: `   ${root.formatTime(Power.timeToGoal)}`
         color: Colors.values.on_secondary_container
         font.pointSize: Theme.font.size.regular
         font.family: Theme.font.style.inter
         anchors.left: progressIndicator.right
+        anchors.leftMargin: 8
+        anchors.verticalCenter: parent.verticalCenter
+        opacity: root.expanded ? 1 : 0
+        visible: opacity > 0
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: root.animationDuration
+                easing.type: Easing.OutCubic
+            }
+        }
+    }
+
+    Text {
+        id: curProfileText
+        text: `${Power.currentProfile}`
+        color: Colors.values.on_secondary_container
+        font.pointSize: Theme.font.size.regular
+        font.family: Theme.font.style.inter
+        anchors.left: progressIndicator.right
+        anchors.top: timeText.bottom
         anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter
         opacity: root.expanded ? 1 : 0

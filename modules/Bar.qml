@@ -14,6 +14,7 @@ Scope {
             id: bar
             property var modelData
             property bool statusIconsExpanded: false
+            property bool powerIndicatorExpanded: false
             screen: modelData
 
             anchors {
@@ -28,7 +29,7 @@ Scope {
             WlrLayershell.exclusiveZone: Theme.bar.width
             mask: Region {
                 item: Rectangle {
-                    width: bar.statusIconsExpanded ? Theme.bar.width * 4 : Theme.bar.width
+                    width: bar.statusIconsExpanded || bar.powerIndicatorExpanded ? Theme.bar.width * 4 : Theme.bar.width
                     height: bar.height
 
                     Behavior on width {
@@ -87,6 +88,13 @@ Scope {
                 PowerIndicator {
                     id: power
                     anchors.bottom: bottom_spacer.top
+
+                    Connections {
+                        target: power
+                        function onExpandedChanged() {
+                            bar.powerIndicatorExpanded = power.expanded;
+                        }
+                    }
                 }
                 VerticalSpacer {
                     id: bottom_spacer

@@ -9,4 +9,6 @@ Singleton {
     readonly property real percentage: UPower.displayDevice.percentage
 
     readonly property real timeToGoal: UPower.displayDevice.timeToEmpty || UPower.displayDevice.timeToFull
+
+    readonly property string currentProfile: PowerProfile.toString(PowerProfiles.profile)
 }
