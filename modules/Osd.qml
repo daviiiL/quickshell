@@ -9,7 +9,7 @@ Scope {
 
     property real currentBrightness: 0
     property bool visible: false
-    property int animationDuration: 150
+    property int animationDuration: 50
 
     function getBrightnessIcon(val) {
         const numString = (val * 0.05 >= 1 ? val * 0.05 : 1).toFixed(0);
@@ -167,9 +167,9 @@ Scope {
                             Behavior on height {
                                 NumberAnimation {
                                     // target: brighnessBar
-                                    duration: 300
+                                    duration: 150
                                     easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Theme.anim.curves.standardAccel
+                                    easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }
                             }
 
@@ -217,9 +217,9 @@ Scope {
 
                                 NumberAnimation {
                                     // target: brighnessBar
-                                    duration: 300
+                                    duration: 150
                                     easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Theme.anim.curves.standardAccel
+                                    easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }
                             }
                         }

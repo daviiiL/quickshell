@@ -8,7 +8,7 @@ ExpandingContainer {
 
     implicitHeight: 52
     collapsedWidth: 38
-    expandedWidth: 120
+    expandedWidth: 140
     color: "transparent"
 
     verticalExpansion: false
