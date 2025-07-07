@@ -8,10 +8,10 @@ ExpandingContainer {
 
     implicitHeight: 52
     collapsedWidth: 38
-    expandedWidth: 200
+    expandedWidth: 120
     color: "transparent"
 
-    verticalExpansion: true
+    verticalExpansion: false
     expandedHeight: root.expandedWidth * 1.2
     collapsedHeight: root.implicitHeight
 
@@ -105,26 +105,26 @@ ExpandingContainer {
         }
     }
 
-    Text {
-        id: curProfileText
-        text: `${Power.currentProfile}`
-        color: Colors.values.on_secondary_container
-        font.pointSize: Theme.font.size.regular
-        font.family: Theme.font.style.inter
-        anchors.left: progressIndicator.right
-        anchors.top: timeText.bottom
-        anchors.leftMargin: 8
-        anchors.verticalCenter: parent.verticalCenter
-        opacity: root.expanded ? 1 : 0
-        visible: opacity > 0
+    // Text {
+    //     id: curProfileText
+    //     text: `${Power.currentProfile}`
+    //     color: Colors.values.on_secondary_container
+    //     font.pointSize: Theme.font.size.regular
+    //     font.family: Theme.font.style.inter
+    //     anchors.left: progressIndicator.right
+    //     anchors.top: timeText.bottom
+    //     anchors.leftMargin: 8
+    //     anchors.verticalCenter: parent.verticalCenter
+    //     opacity: root.expanded ? 1 : 0
+    //     visible: opacity > 0
 
-        Behavior on opacity {
-            NumberAnimation {
-                duration: root.animationDuration
-                easing.type: Easing.OutCubic
-            }
-        }
-    }
+    //     Behavior on opacity {
+    //         NumberAnimation {
+    //             duration: root.animationDuration
+    //             easing.type: Easing.OutCubic
+    //         }
+    //     }
+    // }
 
     function formatTime(seconds) {
         if (seconds <= 0)
