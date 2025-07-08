@@ -32,7 +32,7 @@ Scope {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
 
-            readonly property color cornerColor: Colors.values.background
+            readonly property color cornerColor: Colors.current.background
 
             ScreenCorner {
                 id: topLeftCorner

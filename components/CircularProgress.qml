@@ -11,8 +11,8 @@ Item {
     property int lineWidth: 2
     property real value: 0
 
-    property color primaryColor: Colors.values.on_secondary_container
-    property color secondaryColor: Colors.values.secondary_container
+    property color primaryColor: Colors.current.on_secondary_container
+    property color secondaryColor: Colors.current.secondary_container
     property real gapAngle: Math.PI / 9
     property bool fill: false
     property int fillOverflow: 2

@@ -46,7 +46,7 @@ Item {
             Rectangle {
                 id: modal
                 anchors.fill: parent
-                color: Colors.values.secondary_container
+                color: Colors.current.secondary_container
                 radius: Theme.rounding.large
 
                 readonly property int columnCnt: 2
@@ -69,7 +69,7 @@ Item {
                     anchors.top: parent.top
                     anchors.topMargin: parent.width / 25
                     anchors.horizontalCenter: parent.horizontalCenter
-                    color: Colors.values.on_secondary_container
+                    color: Colors.current.on_secondary_container
                     font.family: Theme.font.style.inter
                     font.pointSize: Theme.font.size.large
                 }
@@ -105,13 +105,13 @@ Item {
                                 Layout.alignment: Qt.AlignVCenter
                                 implicitWidth: icon.implicitWidth
                                 implicitHeight: icon.implicitHeight
-                                color: Colors.values.on_secondary_container
+                                color: Colors.current.on_secondary_container
                                 radius: Theme.rounding.small
                                 MaterialSymbol {
                                     id: icon
 
                                     icon: "keyboard_command_key"
-                                    fontColor: Colors.values.secondary_container
+                                    fontColor: Colors.current.secondary_container
                                 }
                             }
 
@@ -139,13 +139,13 @@ Item {
                                 Layout.alignment: Qt.AlignVCenter
                                 implicitWidth: ctrlIcon.implicitWidth
                                 implicitHeight: ctrlIcon.implicitHeight
-                                color: Colors.values.on_secondary_container
+                                color: Colors.current.on_secondary_container
                                 radius: Theme.rounding.small
                                 MaterialSymbol {
                                     id: ctrlIcon
 
                                     icon: "keyboard_control_key"
-                                    fontColor: Colors.values.secondary_container
+                                    fontColor: Colors.current.secondary_container
                                 }
                             }
 
@@ -173,13 +173,13 @@ Item {
                                 Layout.alignment: Qt.AlignVCenter
                                 implicitWidth: altIcon.implicitWidth
                                 implicitHeight: altIcon.implicitHeight
-                                color: Colors.values.on_secondary_container
+                                color: Colors.current.on_secondary_container
                                 radius: Theme.rounding.small
                                 MaterialSymbol {
                                     id: altIcon
 
                                     icon: "keyboard_alt"
-                                    fontColor: Colors.values.secondary_container
+                                    fontColor: Colors.current.secondary_container
                                 }
                             }
 

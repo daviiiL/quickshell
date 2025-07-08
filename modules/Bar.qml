@@ -52,7 +52,7 @@ Scope {
                     bottom: parent.bottom
                 }
 
-                color: Colors.values.background
+                color: Colors.current.background
                 implicitWidth: parent.width / 4
 
                 MouseArea {

@@ -21,7 +21,7 @@ ClippingRectangle {
     signal exited
 
     width: collapsedWidth
-    color: Colors.values.secondary_container
+    color: Colors.current.secondary_container
     radius: Theme.rounding.regular
 
     MouseArea {

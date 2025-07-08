@@ -9,7 +9,7 @@ Scope {
 
     property real currentBrightness: 0
     property bool visible: false
-    property int animationDuration: 50
+    property int animationDuration: 100
 
     function getBrightnessIcon(val) {
         const numString = (val * 0.05 >= 1 ? val * 0.05 : 1).toFixed(0);
@@ -76,7 +76,7 @@ Scope {
                 id: rect
                 anchors.fill: parent
                 radius: Theme.rounding.large
-                color: Colors.values.secondary_container
+                color: Colors.current.secondary_container
 
                 opacity: 0.0
 
@@ -127,9 +127,9 @@ Scope {
                         implicitHeight: 380
                         implicitWidth: (osd.width - 30) / 2
                         radius: Theme.rounding.regular
-                        color: Colors.values.primary_container
+                        color: Colors.current.primary_container
 
-                        property real barHeight: volume.height * (Audio.volume > 1.0 ? 1.0 : Audio.volume) || 1
+                        property real barHeight: volume.height * (Audio.volume > 1.0 ? 1.0 : Audio.volume) || 0.1
 
                         Rectangle {
                             anchors {
@@ -140,7 +140,7 @@ Scope {
 
                             height: volume.barHeight
                             radius: parent.radius
-                            color: Audio.muted ? Colors.values.primary_container : (Audio.isOverdrive ? Colors.values.on_error_container : Colors.values.on_primary_container)
+                            color: Audio.muted ? Colors.current.primary_container : (Audio.isOverdrive ? Colors.current.on_error_container : Colors.current.on_primary_container)
 
                             Text {
                                 visible: Audio.isOverdrive
@@ -148,7 +148,7 @@ Scope {
                                     (Audio.volume * 100).toFixed(0) + "%";
                                 }
                                 anchors.centerIn: parent
-                                color: Colors.values.error_container
+                                color: Colors.current.error_container
                                 font.family: Theme.font.style.inter
                                 font.styleName: "Bold"
                                 font.pointSize: 15
@@ -161,13 +161,13 @@ Scope {
                                 }
                                 colorAnimated: true
                                 icon: Audio.volume == 0 || Audio.muted ? "volume_off" : (Audio.volume >= 0.5 ? "volume_up" : "volume_down")
-                                fontColor: Audio.isOverdrive ? Colors.values.error_container : (Audio.volume <= 0.1 || Audio.muted ? Colors.values.on_primary_container : Colors.values.primary_container)
+                                fontColor: Audio.isOverdrive ? Colors.current.error_container : (Audio.volume <= 0.1 || Audio.muted ? Colors.current.on_primary_container : Colors.current.primary_container)
                             }
 
                             Behavior on height {
                                 NumberAnimation {
                                     // target: brighnessBar
-                                    duration: 150
+                                    duration: root.animationDuration
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }
@@ -175,9 +175,9 @@ Scope {
 
                             Behavior on color {
                                 ColorAnimation {
-                                    duration: 300
+                                    duration: root.animationDuration
                                     easing.type: Easing.BezierSpline
-                                    easing.bezierCurve: Theme.anim.curves.standardAccel
+                                    easing.bezierCurve: Theme.anim.curves.standard
                                 }
                             }
                         }
@@ -188,9 +188,9 @@ Scope {
                         implicitWidth: (osd.width - 30) / 2
                         implicitHeight: 380
                         radius: Theme.rounding.regular
-                        color: Colors.values.primary_container
+                        color: Colors.current.primary_container
 
-                        property real barHeight: height * (root.currentBrightness / 100) || 1
+                        property real barHeight: height * (root.currentBrightness / 100) || 0.1
 
                         Rectangle {
                             anchors {
@@ -201,7 +201,7 @@ Scope {
 
                             height: brightness.barHeight
                             radius: parent.radius
-                            color: Colors.values.on_primary_container
+                            color: Colors.current.on_primary_container
 
                             MaterialSymbol {
                                 anchors {
@@ -210,14 +210,14 @@ Scope {
                                 }
                                 colorAnimated: true
                                 icon: getBrightnessIcon(root.currentBrightness)
-                                fontColor: root.currentBrightness <= 5 ? parent.color : Colors.values.primary_container
+                                fontColor: root.currentBrightness <= 5 ? parent.color : Colors.current.primary_container
                             }
 
                             Behavior on height {
 
                                 NumberAnimation {
                                     // target: brighnessBar
-                                    duration: 150
+                                    duration: root.animationDuration
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }

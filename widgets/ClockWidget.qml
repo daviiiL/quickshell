@@ -12,11 +12,11 @@ Item {
         implicitHeight: parent.height
         implicitWidth: parent.width
 
-        color: Colors.values.background
+        color: Colors.current.background
 
         Text {
             text: DateTime.date
-            color: Colors.values.primary
+            color: Colors.current.primary
             anchors {
                 bottom: hours.top
                 horizontalCenter: parent.horizontalCenter
@@ -30,7 +30,7 @@ Item {
         Text {
             id: hours
             text: DateTime.hrs
-            color: Colors.values.secondary
+            color: Colors.current.secondary
             font.family: Theme.font.style.inter
             font.styleName: "Bold"
             font.pointSize: Theme.font.size.larger
@@ -44,7 +44,7 @@ Item {
         Text {
             id: minutes
             text: DateTime.mins
-            color: Colors.values.primary
+            color: Colors.current.primary
             font.family: Theme.font.style.inter
             font.pointSize: Theme.font.size.larger
             anchors {

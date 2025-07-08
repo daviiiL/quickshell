@@ -7,14 +7,14 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    property Colorscheme values: Colorscheme {}
+    property Colorscheme current: Colorscheme {}
 
     function load(data: string): void {
         const obj = JSON.parse(data);
 
         for (const [key, value] of Object.entries(obj)) {
-            if (values.hasOwnProperty(key)) {
-                values[key] = value;
+            if (current.hasOwnProperty(key)) {
+                current[key] = value;
             }
         }
     }

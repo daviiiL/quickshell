@@ -1,7 +1,6 @@
 import QtQuick
 import "../components/"
 import "../utils/"
-import Quickshell.Services.UPower
 
 ExpandingContainer {
     id: root
@@ -9,7 +8,7 @@ ExpandingContainer {
     implicitHeight: 52
     collapsedWidth: Theme.bar.width
     expandedWidth: Theme.bar.width * 4
-    color: Colors.values.background
+    color: Colors.current.background
 
     verticalExpansion: true
     expandedHeight: root.expandedWidth * 0.6
@@ -69,17 +68,18 @@ ExpandingContainer {
             bottom: parent.bottom
             right: parent.right
         }
+
         color: root.color
         radius: Theme.rounding.regular
         gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop {
                 position: 0.0
-                color: Colors.values.background
+                color: Colors.current.background
             }
             GradientStop {
                 position: 1.0
-                color: root.expanded ? Qt.lighter(Colors.values.background, 3.0) : Colors.values.background
+                color: root.expanded ? Qt.lighter(Colors.current.background, 3.0) : Colors.current.background
 
                 Behavior on color {
                     ColorAnimation {
@@ -93,7 +93,7 @@ ExpandingContainer {
         Text {
             id: timeText
             text: `   ${root.formatTime(Power.timeToGoal)}`
-            color: Colors.values.on_secondary_container
+            color: Colors.current.on_secondary_container
             font.pointSize: Theme.font.size.regular
             font.family: Theme.font.style.inter
             anchors {

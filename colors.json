@@ -7,7 +7,7 @@
 	
 	"error_container": "#93000a",
 	
-	"inverse_on_surface": "#2e3036",
+	"inverse_on_surface": "#2f3036",
 	
 	"inverse_primary": "#435e91",
 	
@@ -19,19 +19,19 @@
 	
 	"on_error_container": "#ffdad6",
 	
-	"on_primary": "#0e2f60",
+	"on_primary": "#0f2f60",
 	
-	"on_primary_container": "#d7e2ff",
+	"on_primary_container": "#d8e2ff",
 	
-	"on_primary_fixed": "#001a40",
+	"on_primary_fixed": "#001a41",
 	
 	"on_primary_fixed_variant": "#2a4678",
 	
 	"on_secondary": "#283041",
 	
-	"on_secondary_container": "#dae2f9",
+	"on_secondary_container": "#dbe2f9",
 	
-	"on_secondary_fixed": "#131c2c",
+	"on_secondary_fixed": "#131b2c",
 	
 	"on_secondary_fixed_variant": "#3f4759",
 	
@@ -39,45 +39,45 @@
 	
 	"on_surface_variant": "#c4c6d0",
 	
-	"on_tertiary": "#3f2844",
+	"on_tertiary": "#402843",
 	
 	"on_tertiary_container": "#fbd7fc",
 	
-	"on_tertiary_fixed": "#29132e",
+	"on_tertiary_fixed": "#29132d",
 	
-	"on_tertiary_fixed_variant": "#573e5b",
+	"on_tertiary_fixed_variant": "#583e5b",
 	
 	"outline": "#8e9099",
 	
-	"outline_variant": "#44474e",
+	"outline_variant": "#44474f",
 	
-	"primary": "#acc7ff",
+	"primary": "#adc6ff",
 	
 	"primary_container": "#2a4678",
 	
-	"primary_fixed": "#d7e2ff",
+	"primary_fixed": "#d8e2ff",
 	
-	"primary_fixed_dim": "#acc7ff",
+	"primary_fixed_dim": "#adc6ff",
 	
 	"scrim": "#000000",
 	
-	"secondary": "#bec6dc",
+	"secondary": "#bfc6dc",
 	
 	"secondary_container": "#3f4759",
 	
-	"secondary_fixed": "#dae2f9",
+	"secondary_fixed": "#dbe2f9",
 	
-	"secondary_fixed_dim": "#bec6dc",
+	"secondary_fixed_dim": "#bfc6dc",
 	
 	"shadow": "#000000",
 	
-	"source_color": "#92a6d1",
+	"source_color": "#8d96ad",
 	
 	"surface": "#111318",
 	
 	"surface_bright": "#37393e",
 	
-	"surface_container": "#1e2025",
+	"surface_container": "#1e1f25",
 	
 	"surface_container_high": "#282a2f",
 	
@@ -89,13 +89,13 @@
 	
 	"surface_dim": "#111318",
 	
-	"surface_tint": "#acc7ff",
+	"surface_tint": "#adc6ff",
 	
-	"surface_variant": "#44474e",
+	"surface_variant": "#44474f",
 	
 	"tertiary": "#debcdf",
 	
-	"tertiary_container": "#573e5b",
+	"tertiary_container": "#583e5b",
 	
 	"tertiary_fixed": "#fbd7fc",
 	

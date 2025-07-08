@@ -31,7 +31,7 @@ Scope {
                 }
 
                 implicitWidth: Theme.bar.width
-                color: Colors.values.background
+                color: Colors.current.background
             }
 
             Rectangle {
@@ -43,7 +43,7 @@ Scope {
                     leftMargin: Theme.bar.width
                 }
 
-                color: Colors.values.background
+                color: Colors.current.background
 
                 Image {
                     id: wallpaperImage
