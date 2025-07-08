@@ -1,18 +1,22 @@
 import QtQuick
+import QtQuick.Layouts
 import "../components/"
 import "../utils/"
 
 ExpandingContainer {
     id: root
 
+    // Dimensions
     implicitHeight: 52
     collapsedWidth: Theme.bar.width
     expandedWidth: Theme.bar.width * 4
-    color: Colors.current.background
-
-    verticalExpansion: true
-    expandedHeight: root.expandedWidth * 0.6
     collapsedHeight: root.implicitHeight
+    expandedHeight: root.expandedWidth
+
+    // Appearance
+    color: Colors.current.background
+    verticalExpansion: true
+    animationDuration: 250
 
     signal mouseCaptured(bool isCaptured)
 
@@ -27,36 +31,14 @@ ExpandingContainer {
             id: rotation
             origin.x: progressIndicator.width / 2
             origin.y: progressIndicator.height / 2
-            angle: 0
-        }
-        Connections {
-            target: root
-            function onEntered() {
-                expandRotationAnimation.start();
-            }
-            function onExited() {
-                retractRotationAnimation.start();
-            }
-        }
+            angle: root.expanded ? -360 : 0
 
-        NumberAnimation {
-            id: expandRotationAnimation
-            target: rotation
-            property: "angle"
-            from: 0
-            to: -360
-            duration: root.animationDuration * 1.5
-            easing.type: Easing.OutCubic
-        }
-
-        NumberAnimation {
-            id: retractRotationAnimation
-            target: rotation
-            property: "angle"
-            from: -360
-            to: 0
-            duration: root.animationDuration * 1.5
-            easing.type: Easing.OutCubic
+            Behavior on angle {
+                NumberAnimation {
+                    duration: root.animationDuration * 1.5
+                    easing.type: Easing.OutCubic
+                }
+            }
         }
     }
 
@@ -90,25 +72,106 @@ ExpandingContainer {
             }
         }
 
-        Text {
-            id: timeText
-            text: `   ${root.formatTime(Power.timeToGoal)}`
-            color: Colors.current.on_secondary_container
-            font.pointSize: Theme.font.size.regular
-            font.family: Theme.font.style.inter
-            anchors {
-                top: contentContainer.top
-                horizontalCenter: contentContainer.horizontalCenter
-            }
-            opacity: root.expanded ? 1 : 0
-            visible: opacity > 0
+        opacity: root.expanded ? 1 : 0
+        // visible: root.mouseArea.containsMouse
 
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: root.animationDuration
-                    easing.type: Easing.OutCubic
+        Behavior on opacity {
+            NumberAnimation {
+                duration: root.animationDuration
+                easing.type: Easing.OutCubic
+            }
+        }
+
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.leftMargin: 10
+            anchors.topMargin: 20
+
+            Text {
+                id: timeText
+                text: {
+                    if (Power.percentage > 0.999)
+                        return "Fully charged  󰁹";
+                    return `  ${root.formatTime(Power.timeToGoal)} ${Power.onBattery ? "remaining" : "to full"}`;
+                }
+                color: Colors.current.primary
+                font.pointSize: Theme.font.size.regular
+                font.family: Theme.font.style.inter
+            }
+
+            ColumnLayout {
+                id: powerProfiles
+                spacing: 10
+
+                PowerProfileButton {
+                    profile: "PowerSaver"
+                    icon: "energy_savings_leaf"
+                    isActive: Power.currentProfile === "PowerSaver"
+                    onClicked: Power.setPowerProfile("PowerSaver")
+                }
+
+                PowerProfileButton {
+                    profile: "Balanced"
+                    icon: "balance"
+                    isActive: Power.currentProfile === "Balanced"
+                    onClicked: Power.setPowerProfile("Balanced")
+                }
+
+                PowerProfileButton {
+                    profile: "Performance"
+                    icon: "rocket_launch"
+                    isActive: Power.currentProfile === "Performance"
+                    onClicked: Power.setPowerProfile("Performance")
                 }
             }
+        }
+    }
+
+    component PowerProfileButton: Rectangle {
+        id: profile
+
+        property string profile
+        property string icon
+        property bool isActive
+        signal clicked
+
+        implicitHeight: profileButton.implicitHeight
+        implicitWidth: profileButton.implicitWidth
+
+        color: "transparent"
+
+        Rectangle {
+            id: profileButton
+
+            implicitHeight: profileIcon.implicitHeight
+            implicitWidth: profileIcon.implicitWidth + 6
+            color: profile.isActive ? Colors.current.primary_container : Colors.current.secondary_container
+            radius: Theme.rounding.small
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onPressed: profile.clicked()
+            }
+
+            MaterialSymbol {
+                id: profileIcon
+                anchors.fill: parent
+                anchors.leftMargin: 3
+                anchors.rightMargin: 3
+                icon: profile.icon
+                fontColor: profile.isActive ? Colors.current.on_primary_container : Colors.current.secondary
+            }
+        }
+
+        Text {
+            text: profile.profile
+            anchors.left: profileButton.right
+            anchors.leftMargin: 8
+            anchors.verticalCenter: profileButton.verticalCenter
+            color: profile.isActive ? Colors.current.primary : Colors.current.secondary
+            font.pointSize: Theme.font.size.regular
+            font.family: Theme.font.style.inter
         }
     }
 

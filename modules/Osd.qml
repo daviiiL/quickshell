@@ -156,6 +156,7 @@ Scope {
 
                             MaterialSymbol {
                                 anchors {
+                                    bottomMargin: 2
                                     bottom: parent.bottom
                                     horizontalCenter: parent.horizontalCenter
                                 }
@@ -205,6 +206,7 @@ Scope {
 
                             MaterialSymbol {
                                 anchors {
+                                    bottomMargin: 2
                                     bottom: parent.bottom
                                     horizontalCenter: parent.horizontalCenter
                                 }
