@@ -8,10 +8,7 @@ Singleton {
     id: root
 
     PwObjectTracker {
-        objects: [Pipewire.defaultAudioSink]
-    }
-
-    function initializeDefaultSink() {
+        objects: [Pipewire.defaultAudioSink, Pipewire.defaultAudioSource]
     }
 
     readonly property var defaultSinkAudio: Pipewire.defaultAudioSink?.audio || null

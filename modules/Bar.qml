@@ -12,9 +12,11 @@ Scope {
 
         PanelWindow {
             id: bar
+
             property var modelData
             property bool statusIconsExpanded: false
             property bool powerIndicatorExpanded: false
+
             screen: modelData
 
             anchors {
@@ -23,10 +25,11 @@ Scope {
                 bottom: true
             }
 
-            implicitWidth: Theme.bar.width * 4
             color: "transparent"
+            implicitWidth: Theme.bar.maxWidth
             WlrLayershell.layer: WlrLayer.Top
             WlrLayershell.exclusiveZone: Theme.bar.width
+
             mask: Region {
                 item: Rectangle {
                     width: bar.statusIconsExpanded || bar.powerIndicatorExpanded ? Theme.bar.width * 4 : Theme.bar.width
@@ -99,7 +102,6 @@ Scope {
                 VerticalSpacer {
                     id: bottom_spacer
                     anchors.bottom: parent.bottom
-                    // color: "transparent"
                 }
             }
         }
