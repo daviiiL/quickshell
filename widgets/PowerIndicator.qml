@@ -8,7 +8,7 @@ ExpandingContainer {
     id: root
 
     // Dimensions
-    implicitHeight: 52
+    implicitHeight: 30
     collapsedWidth: Theme.bar.width
     expandedWidth: Theme.bar.width * 4
     collapsedHeight: root.implicitHeight

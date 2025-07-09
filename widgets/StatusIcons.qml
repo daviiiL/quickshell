@@ -91,7 +91,7 @@ Item {
                 implicitHeight: Math.max(networkIcon.implicitHeight, networkText.implicitHeight)
                 Layout.fillWidth: true
                 Layout.minimumWidth: container.expandedWidth
-                color: networkMouseArea.containsMouse ? "red" : "transparent"
+                color: "transparent"
                 RowLayout {
                     spacing: 10
                     MaterialSymbol {
@@ -110,6 +110,8 @@ Item {
                             id: networkMouseArea
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
+                            // hoverEnabled: true
+                            // propagateComposedEvents: true
                             onPressed: {
                                 launchSomething.running = true;
                             }
