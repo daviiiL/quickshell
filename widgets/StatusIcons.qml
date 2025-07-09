@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Io
 import "../components/"
 import "../utils/"
 
@@ -25,78 +26,105 @@ Item {
 
     ExpandingContainer {
         id: container
-        collapsedWidth: root.parent.width - 12
-        expandedWidth: 4 * root.implicitWidth - 12
-        anchors.left: parent.left
         anchors.leftMargin: 6
-
+        collapsedWidth: Theme.bar.width - 12
+        expandedWidth: Theme.bar.width * 4 - 12
+        anchors.left: parent.left
         animationDuration: 100
-        implicitHeight: bluetooth.implicitHeight + network.implicitHeight + (spacer.implicitHeight * 3)
-
         antialiasing: true
 
-        VerticalSpacer {
-            id: topSpacer
-            spacerHeight: 10
-            anchors.bottom: bluetooth.top
-            anchors.top: parent.top
-        }
+        implicitHeight: 80
 
-        RowLayout {
-            id: bluetooth
-            anchors.top: topSpacer.bottom
-            anchors.left: parent.left
-            anchors.leftMargin: 8
-            spacing: 8
-            MaterialSymbol {
-                id: bluetoothIcon
-                icon: Bluetooth.powered ? "bluetooth" : "bluetooth_disabled"
-                fontColor: Colors.current.on_secondary_container
-                iconSize: 15
-                animated: true
-            }
-            Text {
-                text: `${Bluetooth.devices.length} device connected`
-                color: Colors.current.on_secondary_container
-                font.family: Theme.font.style.inter
-                font.pointSize: Theme.font.size.regular
-                opacity: container.expanded ? 1.0 : 0.0
-            }
-        }
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: (container.collapsedWidth - Math.max(networkIcon.implicitWidth, bluetoothIcon.implicitWidth)) / 2
 
-        VerticalSpacer {
-            id: spacer
-            spacerHeight: 10
-            anchors {
-                top: bluetooth.bottom
-            }
-        }
+            Rectangle {
+                id: bluetooth
+                implicitHeight: Math.max(bluetoothIcon.implicitHeight, bluetoothText.implicitHeight)
+                Layout.fillWidth: true
+                Layout.minimumWidth: container.expandedWidth
+                color: bluetoothMouseArea.containsMouse ? "red" : "transparent"
+                RowLayout {
+                    spacing: 10
+                    MaterialSymbol {
+                        id: bluetoothIcon
+                        icon: Bluetooth.powered ? "bluetooth" : "bluetooth_disabled"
+                        fontColor: bluetoothMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_secondary_container
+                        iconSize: 15
+                        animated: true
+                        Process {
+                            id: launchBlueberry
+                            command: ["sh", "-c", "blueberry"]
+                            running: false
+                            onExited: {
+                                console.log(`launchBlueberry terminated`);
+                            }
+                        }
 
-        RowLayout {
-            id: network
-            anchors.top: spacer.bottom
-            anchors.left: parent.left
-            anchors.leftMargin: 8
-            spacing: 8
-            MaterialSymbol {
-                id: networkIcon
-                icon: Network.active ? root.getNetworkIcon(Network.active.strength ?? 0) : "signal_wifi_off"
-                fontColor: Colors.current.on_secondary_container
-                iconSize: 15
-                animated: true
+                        MouseArea {
+                            id: bluetoothMouseArea
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onPressed: {
+                                launchBlueberry.running = true;
+                            }
+                        }
+                    }
+                    Text {
+                        id: bluetoothText
+                        text: {
+                            if (!Bluetooth.powered)
+                                return "Bluetooth off";
+                            return Bluetooth.discovering ? "Discovering on" : "Discovering off";
+                        }
+                        color: Colors.current.on_secondary_container
+                        font.family: Theme.font.style.inter
+                        font.pointSize: Theme.font.size.regular
+                        opacity: container.expanded ? 1.0 : 0.0
+                    }
+                }
             }
-            Text {
-                text: Network.active ? `󰌘 SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
-                color: Colors.current.on_secondary_container
-                font.family: Theme.font.style.inter
-                font.pointSize: Theme.font.size.regular
-                opacity: container.expanded ? 1.0 : 0.0
-            }
-        }
 
-        VerticalSpacer {
-            spacerHeight: 10
-            anchors.top: network.bottom
+            Rectangle {
+                id: network
+                implicitHeight: Math.max(networkIcon.implicitHeight, networkText.implicitHeight)
+                Layout.fillWidth: true
+                Layout.minimumWidth: container.expandedWidth
+                color: networkMouseArea.containsMouse ? "red" : "transparent"
+                RowLayout {
+                    spacing: 10
+                    MaterialSymbol {
+                        id: networkIcon
+                        icon: Network.active ? root.getNetworkIcon(Network.active.strength ?? 0) : "signal_wifi_off"
+                        fontColor: networkMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_secondary_container
+                        iconSize: 15
+                        animated: true
+                        Process {
+                            id: launchSomething
+                            command: ["sh", "-c", "blueberry"]
+                            running: false
+                        }
+
+                        MouseArea {
+                            id: networkMouseArea
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onPressed: {
+                                launchSomething.running = true;
+                            }
+                        }
+                    }
+                    Text {
+                        id: networkText
+                        text: Network.active ? `󰌘 SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
+                        color: Colors.current.on_secondary_container
+                        font.family: Theme.font.style.inter
+                        font.pointSize: Theme.font.size.regular
+                        opacity: container.expanded ? 1.0 : 0.0
+                    }
+                }
+            }
         }
     }
 }

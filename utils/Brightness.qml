@@ -29,10 +29,6 @@ Singleton {
                 root.brightnessChanged(this.text);
             }
         }
-
-        // onExited: {
-        //     console.log("process readBrightness exited");
-        // }
     }
 
     FileView {
