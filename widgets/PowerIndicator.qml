@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import "../components/"
 import "../utils/"
 
@@ -17,8 +18,6 @@ ExpandingContainer {
     color: Colors.current.background
     verticalExpansion: true
     animationDuration: 250
-
-    signal mouseCaptured(bool isCaptured)
 
     CircularProgress {
         id: progressIndicator
@@ -73,7 +72,6 @@ ExpandingContainer {
         }
 
         opacity: root.expanded ? 1 : 0
-        // visible: root.mouseArea.containsMouse
 
         Behavior on opacity {
             NumberAnimation {
@@ -92,7 +90,7 @@ ExpandingContainer {
                 text: {
                     if (Power.percentage > 0.999)
                         return "Fully charged  󰁹";
-                    return `  ${root.formatTime(Power.timeToGoal)} ${Power.onBattery ? "remaining" : "to full"}`;
+                    return `  ${root.formatTime(Power.timeToGoal)} ${Power.onBattery ? "remaining" : "to full"}`;
                 }
                 color: Colors.current.primary
                 font.pointSize: Theme.font.size.regular

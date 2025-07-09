@@ -86,17 +86,15 @@ Scope {
 
                 ClockWidget {
                     id: clock
-                    anchors.bottom: power.top
+                    anchors.bottom: powerIndicator.top
                 }
+
                 PowerIndicator {
-                    id: power
+                    id: powerIndicator
                     anchors.bottom: bottom_spacer.top
 
-                    Connections {
-                        target: power
-                        function onExpandedChanged() {
-                            bar.powerIndicatorExpanded = power.expanded;
-                        }
+                    onExpandedChanged: {
+                        bar.powerIndicatorExpanded = expanded;
                     }
                 }
                 VerticalSpacer {

@@ -80,7 +80,7 @@ Item {
             spacing: 8
             MaterialSymbol {
                 id: networkIcon
-                icon: Network.active ? root.getNetworkIcon(Network.active.strength ?? 0) : "wifi_off"
+                icon: Network.active ? root.getNetworkIcon(Network.active.strength ?? 0) : "signal_wifi_off"
                 fontColor: Colors.current.on_secondary_container
                 iconSize: 15
                 animated: true
