@@ -14,6 +14,7 @@ Singleton {
     component Bar: QtObject {
         readonly property int width: 50
         readonly property int maxWidth: this.width * 4
+        readonly property int trayItemHW: this.width / 2
     }
 
     component Font: QtObject {

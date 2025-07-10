@@ -1,7 +1,7 @@
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Services.SystemTray
 import QtQuick
-import QtQuick.Controls
 import "../components/"
 import "../widgets/"
 import "../utils"
@@ -55,21 +55,8 @@ Scope {
                 color: Colors.current.background
                 implicitWidth: parent.width / 4
 
-                MouseArea {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.topMargin: 20
-                    implicitHeight: 20
-                    implicitWidth: parent.width
-                    hoverEnabled: true
-                    onEntered: cheatsheet.show()
-                    onExited: cheatsheet.hide()
-                }
-
-                Cheatsheet {
-                    id: cheatsheet
-                    screen: bar.modelData
+                Tray {
+                    anchors.bottom: statusIcons.top
                 }
 
                 StatusIcons {

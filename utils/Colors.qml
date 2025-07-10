@@ -32,6 +32,26 @@ Singleton {
         onLoaded: root.load(this.text())
     }
 
+    function hexToQtRgba(hex, alpha = 1.0) {
+        // Remove "#" if present
+        hex = hex.toString().replace(/^#/, '');
+
+        // Expand short form (e.g., "f00") to full form ("ff0000")
+        if (hex.length === 3) {
+            hex = hex.split('').map(c => c + c).join('');
+        }
+
+        if (hex.length !== 6) {
+            throw new Error("Invalid hex color format");
+        }
+
+        const r = parseInt(hex.slice(0, 2), 16) / 256;
+        const g = parseInt(hex.slice(2, 4), 16) / 256;
+        const b = parseInt(hex.slice(4, 6), 16) / 256;
+
+        return Qt.rgba(r, g, b, 1);
+    }
+
     component Colorscheme: QtObject {
         property color background
         property color error
