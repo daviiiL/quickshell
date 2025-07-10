@@ -1,5 +1,9 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
+import Qt5Compat.GraphicalEffects
 import Quickshell.Io
 import "../components/"
 import "../utils/"
@@ -24,6 +28,26 @@ Item {
         return "signal_wifi_0_bar";
     }
 
+    // ShaderEffectSource {
+    //     id: backgroundSource
+    //     sourceItem: parent
+    //     anchors.fill: container
+    //     sourceRect: Qt.rect(container.x, container.y, container.width, container.height)
+    //     visible: false
+    //     live: true
+    //     recursive: false
+    // }
+
+    // MultiEffect {
+    //     source: backgroundSource
+    //     anchors.fill: container
+    //     blurEnabled: true
+    //     blur: 1.0
+    //     blurMax: 64
+    //     autoPaddingEnabled: false
+    //     paddingRect: Qt.rect(0, 0, 0, 0)
+    // }
+
     ExpandingContainer {
         id: container
         anchors.leftMargin: 6
@@ -32,6 +56,19 @@ Item {
         anchors.left: parent.left
         animationDuration: 100
         antialiasing: true
+
+        // function addAlphaToHex(hexColor, alpha) {
+        //     // Remove leading '#' if present
+        //     var nhexColor = hexColor.toString().replace("#", "");
+        //     var r = nhexColor.substring(0, 2);
+        //     var g = nhexColor.substring(2, 4);
+        //     var b = nhexColor.substring(4, 6);
+        //     var a = Math.round(alpha * 255).toString(16).padStart(2, "0").toUpperCase();
+        //     console.log(a + r + g + b);
+        //     return "#" + a + r + g + b;
+        // }
+
+        // color: addAlphaToHex(Colors.current.secondary_container, 0.5)
 
         implicitHeight: 80
 
@@ -44,31 +81,48 @@ Item {
                 implicitHeight: Math.max(bluetoothIcon.implicitHeight, bluetoothText.implicitHeight)
                 Layout.fillWidth: true
                 Layout.minimumWidth: container.expandedWidth
-                color: bluetoothMouseArea.containsMouse ? "red" : "transparent"
+                // color: btHoverHandler.hovered ? "white" : "transparent"
+
+                // HoverHandler {
+                //     id: btHoverHandler
+                //     blocking: false
+                // }
+                color: "transparent"
+
                 RowLayout {
                     spacing: 10
                     MaterialSymbol {
                         id: bluetoothIcon
                         icon: Bluetooth.powered ? "bluetooth" : "bluetooth_disabled"
-                        fontColor: bluetoothMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_secondary_container
+                        fontColor: Colors.current.on_secondary_container
                         iconSize: 15
                         animated: true
+
                         Process {
                             id: launchBlueberry
                             command: ["sh", "-c", "blueberry"]
                             running: false
-                            onExited: {
-                                console.log(`launchBlueberry terminated`);
+                            // onExited: {
+                            //     console.log(`launchBlueberry terminated`);
+                            // }
+                        }
+
+                        TapHandler {
+                            onTapped: {
+                                launchBlueberry.running = true;
                             }
                         }
 
                         MouseArea {
-                            id: bluetoothMouseArea
                             anchors.fill: parent
+                            // hoverEnabled: true
+                            // propagateComposedEvents: true
+
                             cursorShape: Qt.PointingHandCursor
-                            onPressed: {
-                                launchBlueberry.running = true;
-                            }
+                            // onEntered: {
+                            //     console.log("entered child");
+                            //     container.mouseArea.entered();
+                            // }
                         }
                     }
                     Text {

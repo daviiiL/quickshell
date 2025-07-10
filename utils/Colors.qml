@@ -14,7 +14,10 @@ Singleton {
 
         for (const [key, value] of Object.entries(obj)) {
             if (current.hasOwnProperty(key)) {
-                current[key] = value;
+                if (key === "background") {
+                    current[key] = "#000000";
+                } else
+                    current[key] = value;
             }
         }
     }

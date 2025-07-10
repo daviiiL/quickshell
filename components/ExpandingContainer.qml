@@ -1,5 +1,7 @@
 import QtQuick
 import Quickshell.Widgets
+import Qt5Compat.GraphicalEffects
+
 import "../utils/"
 
 ClippingRectangle {
@@ -30,6 +32,7 @@ ClippingRectangle {
         hoverEnabled: true
 
         onEntered: {
+            // console.log("entered parent");
             container.width = container.expandedWidth;
             if (container.verticalExpansion)
                 container.height = container.expandedHeight;
@@ -37,6 +40,7 @@ ClippingRectangle {
         }
 
         onExited: {
+            // console.log("exited parent");
             container.width = container.collapsedWidth;
             if (container.verticalExpansion)
                 container.height = container.collapsedHeight;

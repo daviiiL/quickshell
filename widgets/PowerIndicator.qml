@@ -60,7 +60,7 @@ ExpandingContainer {
             }
             GradientStop {
                 position: 1.0
-                color: root.expanded ? Qt.lighter(Colors.current.background, 3.0) : Colors.current.background
+                color: root.expanded ? Qt.darker(Colors.current.primary, 4.0) : Colors.current.background
 
                 Behavior on color {
                     ColorAnimation {
