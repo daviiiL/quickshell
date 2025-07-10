@@ -1,7 +1,5 @@
 import QtQuick
 import QtQuick.Effects
-import Quickshell
-import QtQuick.Controls
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
 import "../utils/"
@@ -9,17 +7,23 @@ import "../utils/"
 Rectangle {
     id: root
 
+    required property int index
     required property SystemTrayItem modelData
     property alias itemHeight: root.implicitHeight
-    implicitHeight: Theme.bar.width / 2
-    implicitWidth: root.implicitHeight
+    required property list<real> parentPositions
+
+    implicitHeight: 20
+    implicitWidth: 20
 
     color: "transparent"
+
+    signal trayItemClicked(nums: list<real>)
 
     TapHandler {
         id: trayItemTapHandler
         onTapped: {
-            console.log(`system tray item ${root.modelData.id.toString()} was clicked`);
+            // console.log(`menu position should be ${root.parentPositions[0] + root.x}, ${root.parentPositions[1] + root.y}`);
+            root.trayItemClicked([root.parentPositions[0] + root.x, root.parentPositions[1] + root.y]);
         }
     }
 
@@ -34,7 +38,6 @@ Rectangle {
                 const [name, path] = icon.split("?path=");
                 icon = `file://${path}/${name.slice(name.lastIndexOf("/") + 1)}`;
             }
-            console.log(icon);
             return icon;
         }
     }

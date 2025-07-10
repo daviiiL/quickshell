@@ -1,7 +1,9 @@
+pragma ComponentBehavior: Bound
+
 import "../components/"
 import "../utils/"
 import QtQuick
-import QtQuick.Layouts
+import QtQuick.Window
 import Quickshell.Services.SystemTray
 
 Rectangle {
@@ -10,8 +12,9 @@ Rectangle {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottomMargin: 20
     implicitWidth: Theme.bar.width
-    implicitHeight: layout.implicitHeight
+    implicitHeight: layout.height
     color: "transparent"
+
     Column {
         id: layout
         spacing: 10
@@ -20,7 +23,6 @@ Rectangle {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-            horizontalCenter: parent.horizontalCenter
         }
 
         add: Transition {
@@ -54,8 +56,12 @@ Rectangle {
             id: trayItems
             model: SystemTray.items
 
+            onItemAdded: (index, item) => {
+                console.log(index);
+            }
+
             TrayItem {
-                id: trayItem
+                parentPositions: [root.x, root.y]
                 anchors.horizontalCenter: parent.horizontalCenter
             }
         }

@@ -27,6 +27,7 @@ Scope {
 
             color: "transparent"
             implicitWidth: Theme.bar.maxWidth
+            implicitHeight: modelData.height
             WlrLayershell.layer: WlrLayer.Top
             WlrLayershell.exclusiveZone: Theme.bar.width
 
