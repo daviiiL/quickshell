@@ -15,6 +15,11 @@ Rectangle {
     implicitHeight: layout.height
     color: "transparent"
 
+    Component {
+        id: popupComponent
+        Popups {}
+    }
+
     Column {
         id: layout
         spacing: 10
@@ -57,8 +62,16 @@ Rectangle {
             model: SystemTray.items
 
             onItemAdded: (index, item) => {
-                item.onTrayItemClicked.connect(function (value) {
-                    console.log("signal received", value);
+                item.onTrayItemClicked.connect(function (coors) {
+                    if (!item.popup) {
+                        item.popup = popupComponent.createObject(root, {
+                            parent: root,
+                            spawnCoordinates: coors
+                        });
+                    } else {
+                        item.popup.destroy();
+                        item.popup = null;
+                    }
                 });
             }
 

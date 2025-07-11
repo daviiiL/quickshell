@@ -7,6 +7,7 @@ import "../utils/"
 Rectangle {
     id: root
 
+    property var popup
     required property int index
     required property SystemTrayItem modelData
     property alias itemHeight: root.implicitHeight
