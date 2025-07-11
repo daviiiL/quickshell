@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
+import Quickshell
 import "../utils/"
 
 Rectangle {
@@ -12,6 +13,7 @@ Rectangle {
     required property SystemTrayItem modelData
     property alias itemHeight: root.implicitHeight
     required property list<real> parentPositions
+    property alias menu: menu
 
     implicitHeight: 20
     implicitWidth: 20
@@ -26,6 +28,11 @@ Rectangle {
             // console.log(`menu position should be ${root.parentPositions[0] + root.x}, ${root.parentPositions[1] + root.y}`);
             root.trayItemClicked([root.parentPositions[0] + root.x, root.parentPositions[1] + root.y]);
         }
+    }
+    QsMenuAnchor {
+        id: menu
+        menu: root.modelData.menu
+        anchor.window: this.QsWindow.window
     }
 
     IconImage {

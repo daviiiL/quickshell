@@ -4,6 +4,7 @@ import "../components/"
 import "../utils/"
 import QtQuick
 import QtQuick.Window
+import Quickshell
 import Quickshell.Services.SystemTray
 
 Rectangle {
@@ -15,10 +16,10 @@ Rectangle {
     implicitHeight: layout.height
     color: "transparent"
 
-    Component {
-        id: popupComponent
-        Popups {}
-    }
+    // Component {
+    //     id: popupComponent
+    //     Popups {}
+    // }
 
     Column {
         id: layout
@@ -61,23 +62,16 @@ Rectangle {
             id: trayItems
             model: SystemTray.items
 
-            onItemAdded: (index, item) => {
-                item.onTrayItemClicked.connect(function (coors) {
-                    if (!item.popup) {
-                        item.popup = popupComponent.createObject(root, {
-                            parent: root,
-                            spawnCoordinates: coors
-                        });
-                    } else {
-                        item.popup.destroy();
-                        item.popup = null;
-                    }
-                });
-            }
-
             TrayItem {
+                id: trayItem
                 parentPositions: [root.x, root.y]
                 anchors.horizontalCenter: parent.horizontalCenter
+                onTrayItemClicked: coors => {
+                    console.log(coors);
+                    this.menu.anchor.margins.left = coors[0];
+                    this.menu.anchor.margins.top = coors[1];
+                    this.menu.open();
+                }
             }
         }
     }

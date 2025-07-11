@@ -1,3 +1,4 @@
+//@ pragma UseQApplication
 //@ pragma IconTheme breeze-dark
 
 import Quickshell

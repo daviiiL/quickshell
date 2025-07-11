@@ -22,6 +22,7 @@ LazyLoader {
         relativeY: root.spawnCoordinates[1]
 
         // some heavy component here
+        color: "red"
 
         width: 200
         height: 200
