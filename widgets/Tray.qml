@@ -57,7 +57,9 @@ Rectangle {
             model: SystemTray.items
 
             onItemAdded: (index, item) => {
-                console.log(index);
+                item.onTrayItemClicked.connect(function (value) {
+                    console.log("signal received", value);
+                });
             }
 
             TrayItem {
