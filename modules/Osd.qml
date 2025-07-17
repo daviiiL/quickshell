@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 import "../utils/"
 import "../components/"
 
@@ -69,7 +70,8 @@ Scope {
             implicitWidth: 140
             implicitHeight: 400
             color: "transparent"
-
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.exclusiveZone: 0
             mask: Region {}
 
             Rectangle {

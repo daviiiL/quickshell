@@ -173,7 +173,7 @@ Item {
                     }
                     Text {
                         id: networkText
-                        text: Network.active ? `󰌘 SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
+                        text: Network.active ? `SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
                         color: Colors.current.on_secondary_container
                         font.family: Theme.font.style.inter
                         font.pointSize: Theme.font.size.regular
