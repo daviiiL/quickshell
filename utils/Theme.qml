@@ -10,6 +10,20 @@ Singleton {
     readonly property Rounding rounding: Rounding {}
     readonly property Anim anim: Anim {}
     readonly property Bar bar: Bar {}
+    readonly property UI ui: UI {}
+
+    component UI: QtObject {
+      readonly property Rounding rounding: rounding
+      readonly property Padding padding: Padding {}
+    }
+
+    component Padding: QtObject {
+      readonly property real small: 2
+      readonly property real normal: 5
+      readonly property real large: 10
+    }
+
+
 
     component Bar: QtObject {
         readonly property int width: 50
@@ -30,9 +44,9 @@ Singleton {
     }
 
     component FontStyle: QtObject {
-        readonly property string inter_thin: "Inter Nerd Font Propo Thin"
-        readonly property string inter: "Inter Nerd Font Propo"
-        readonly property string inter_bold: "Inter Nerd Font Propo:style=Bold"
+        readonly property string inter_thin: "Inter Nerd Font Thin"
+        readonly property string inter: "Inter Nerd Font"
+        readonly property string inter_bold: "Inter Nerd Font:style=Bold"
         readonly property string material: "Material Symbols Rounded"
         readonly property string free_mono: "FreeMono"
     }

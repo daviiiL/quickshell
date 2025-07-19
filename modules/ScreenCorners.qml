@@ -21,7 +21,13 @@ Scope {
                 bottom: true
             }
 
-            margins.left: Theme.bar.width
+            margins {
+              left: Theme.bar.width
+              top: Theme.ui.padding.normal
+
+              right: Theme.ui.padding.normal
+              bottom: Theme.ui.padding.normal
+            }
 
             mask: Region {
                 item: null
