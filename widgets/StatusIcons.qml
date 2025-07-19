@@ -81,12 +81,6 @@ Item {
                 implicitHeight: Math.max(bluetoothIcon.implicitHeight, bluetoothText.implicitHeight)
                 Layout.fillWidth: true
                 Layout.minimumWidth: container.expandedWidth
-                // color: btHoverHandler.hovered ? "white" : "transparent"
-
-                // HoverHandler {
-                //     id: btHoverHandler
-                //     blocking: false
-                // }
                 color: "transparent"
 
                 RowLayout {
@@ -94,7 +88,7 @@ Item {
                     MaterialSymbol {
                         id: bluetoothIcon
                         icon: Bluetooth.powered ? "bluetooth" : "bluetooth_disabled"
-                        fontColor: Colors.current.on_secondary_container
+                        fontColor: bluetoothMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_secondary_container
                         iconSize: 15
                         animated: true
 
@@ -102,27 +96,15 @@ Item {
                             id: launchBlueberry
                             command: ["sh", "-c", "blueberry"]
                             running: false
-                            // onExited: {
-                            //     console.log(`launchBlueberry terminated`);
-                            // }
-                        }
-
-                        TapHandler {
-                            onTapped: {
-                                launchBlueberry.running = true;
-                            }
                         }
 
                         MouseArea {
+                            id: bluetoothMouseArea
                             anchors.fill: parent
-                            // hoverEnabled: true
-                            // propagateComposedEvents: true
-
                             cursorShape: Qt.PointingHandCursor
-                            // onEntered: {
-                            //     console.log("entered child");
-                            //     container.mouseArea.entered();
-                            // }
+                            onPressed: {
+                                launchBlueberry.running = true;
+                            }
                         }
                     }
                     Text {
@@ -155,8 +137,8 @@ Item {
                         iconSize: 15
                         animated: true
                         Process {
-                            id: launchSomething
-                            command: ["sh", "-c", "blueberry"]
+                            id: launchGnomeControlCenter
+                            command: ["sh", "-c", "XDG_CURRENT_DESKTOP=gnome gnome-control-center network"]
                             running: false
                         }
 
@@ -164,10 +146,8 @@ Item {
                             id: networkMouseArea
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
-                            // hoverEnabled: true
-                            // propagateComposedEvents: true
                             onPressed: {
-                                launchSomething.running = true;
+                                launchGnomeControlCenter.running = true;
                             }
                         }
                     }
