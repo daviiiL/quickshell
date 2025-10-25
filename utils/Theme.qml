@@ -13,7 +13,7 @@ Singleton {
     readonly property UI ui: UI {}
 
     component UI: QtObject {
-      readonly property Rounding rounding: rounding
+      readonly property Rounding rounding: root.rounding
       readonly property Padding padding: Padding {}
     }
 
@@ -44,9 +44,9 @@ Singleton {
     }
 
     component FontStyle: QtObject {
-        readonly property string inter_thin: "Inter Nerd Font Thin"
-        readonly property string inter: "Inter Nerd Font"
-        readonly property string inter_bold: "Inter Nerd Font:style=Bold"
+        readonly property string inter_thin: "DepartureMono Nerd Font"
+        readonly property string inter: "DepartureMono Nerd Font"
+        readonly property string inter_bold: "DepartureMono Nerd Font:style=Regular"
         readonly property string material: "Material Symbols Rounded"
         readonly property string free_mono: "FreeMono"
     }

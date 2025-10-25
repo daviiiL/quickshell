@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 import QtQuick
 import "../components/"
@@ -56,7 +57,23 @@ Scope {
                 color: Colors.current.background
                 implicitWidth: parent.width / 4
 
+                VerticalSpacer {
+                    id: top_spacer
+                    spacerHeight: 10
+                    anchors.top: parent.top
+                }
+
+                Workspaces {
+                    id: workspaces
+                    anchors {
+                        top: top_spacer.bottom
+                        left: parent.left
+                        right: parent.right
+                    }
+                }
+
                 Tray {
+                    id: tray
                     anchors.bottom: statusIcons.top
                 }
 

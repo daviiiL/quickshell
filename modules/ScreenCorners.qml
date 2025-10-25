@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import "../utils/"
 import "../components/"
 
@@ -8,80 +9,97 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        PanelWindow {
-            id: root
+        Scope {
+            id: monitorScope
+            required property var modelData
+            property HyprlandMonitor monitor: Hyprland.monitorFor(modelData)
 
-            property var modelData
-            screen: modelData
+            // Hide when fullscreen - detect if any window is fullscreen on active workspace
+            property list<HyprlandWorkspace> workspacesForMonitor: Hyprland.workspaces.values.filter(
+                workspace => workspace.monitor && workspace.monitor.name == monitor.name
+            )
+            property var activeWorkspaceWithFullscreen: workspacesForMonitor.filter(
+                workspace => ((workspace.toplevels.values.filter(window => window.wayland?.fullscreen)[0] != undefined) && workspace.active)
+            )[0]
+            property bool fullscreen: activeWorkspaceWithFullscreen != undefined
 
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
-            }
+            PanelWindow {
+                id: root
 
-            margins {
-              left: Theme.bar.width
-              top: Theme.ui.padding.normal
+                screen: monitorScope.modelData
+                visible: !monitorScope.fullscreen
 
-              right: Theme.ui.padding.normal
-              bottom: Theme.ui.padding.normal
-            }
-
-            mask: Region {
-                item: null
-            }
-
-            color: "transparent"
-
-            WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-            WlrLayershell.exclusionMode: ExclusionMode.Ignore
-
-            readonly property color cornerColor: Colors.current.background
-
-            ScreenCorner {
-                id: topLeftCorner
                 anchors {
-                    top: parent.top
-                    left: parent.left
+                    top: true
+                    left: true
+                    right: true
+                    bottom: true
                 }
-                color: root.cornerColor
-                size: Theme.rounding.large
-                corner: ScreenCorner.CornerEnum.TopLeft
-            }
 
-            ScreenCorner {
-                id: topRightCorner
-                anchors {
-                    top: parent.top
-                    right: parent.right
-                }
-                color: root.cornerColor
-                size: Theme.rounding.large
-                corner: ScreenCorner.CornerEnum.TopRight
-            }
+                margins {
+                  left: Theme.bar.width
+                  top: Theme.ui.padding.normal
 
-            ScreenCorner {
-                id: bottomLeftCorner
-                anchors {
-                    bottom: parent.bottom
-                    left: parent.left
+                  right: Theme.ui.padding.normal
+                  bottom: Theme.ui.padding.normal
                 }
-                color: root.cornerColor
-                size: Theme.rounding.large
-                corner: ScreenCorner.CornerEnum.BottomLeft
-            }
 
-            ScreenCorner {
-                id: bottomRightCorner
-                anchors {
-                    bottom: parent.bottom
-                    right: parent.right
+                mask: Region {
+                    item: null
                 }
-                color: root.cornerColor
-                size: Theme.rounding.large
-                corner: ScreenCorner.CornerEnum.BottomRight
+
+                color: "transparent"
+
+                WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+                WlrLayershell.exclusionMode: ExclusionMode.Ignore
+                WlrLayershell.namespace: "quickshell:screenCorners"
+                WlrLayershell.layer: WlrLayer.Overlay
+
+                readonly property color cornerColor: Colors.current.background
+
+                ScreenCorner {
+                    id: topLeftCorner
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                    }
+                    color: root.cornerColor
+                    size: Theme.rounding.large
+                    corner: ScreenCorner.CornerEnum.TopLeft
+                }
+
+                ScreenCorner {
+                    id: topRightCorner
+                    anchors {
+                        top: parent.top
+                        right: parent.right
+                    }
+                    color: root.cornerColor
+                    size: Theme.rounding.large
+                    corner: ScreenCorner.CornerEnum.TopRight
+                }
+
+                ScreenCorner {
+                    id: bottomLeftCorner
+                    anchors {
+                        bottom: parent.bottom
+                        left: parent.left
+                    }
+                    color: root.cornerColor
+                    size: Theme.rounding.large
+                    corner: ScreenCorner.CornerEnum.BottomLeft
+                }
+
+                ScreenCorner {
+                    id: bottomRightCorner
+                    anchors {
+                        bottom: parent.bottom
+                        right: parent.right
+                    }
+                    color: root.cornerColor
+                    size: Theme.rounding.large
+                    corner: ScreenCorner.CornerEnum.BottomRight
+                }
             }
         }
     }

@@ -1,6 +1,8 @@
 // THIS FILE IS ADAPTED FRON END-4's dotfile: https://github.com/end-4/dots-hyprland
+// Rewritten to use QtQuick.Shapes API for better rendering quality
 
-import QtQuick 2.9
+import QtQuick
+import QtQuick.Shapes
 
 Item {
     id: root
@@ -11,53 +13,76 @@ Item {
         BottomLeft,
         BottomRight
     }
-    property var corner: ScreenCorner.CornerEnum.TopLeft // Default to TopLeft
+    property var corner: ScreenCorner.CornerEnum.TopLeft
 
     property int size: 25
     property color color: "#000000"
 
-    onColorChanged: {
-        canvas.requestPaint();
-    }
-    onCornerChanged: {
-        canvas.requestPaint();
-    }
-
     implicitWidth: size
     implicitHeight: size
 
-    Canvas {
-        id: canvas
+    // Helper properties for easier conditional logic
+    readonly property bool isTopLeft: corner === ScreenCorner.CornerEnum.TopLeft
+    readonly property bool isBottomLeft: corner === ScreenCorner.CornerEnum.BottomLeft
+    readonly property bool isTopRight: corner === ScreenCorner.CornerEnum.TopRight
+    readonly property bool isBottomRight: corner === ScreenCorner.CornerEnum.BottomRight
+    readonly property bool isTop: isTopLeft || isTopRight
+    readonly property bool isBottom: isBottomLeft || isBottomRight
+    readonly property bool isLeft: isTopLeft || isBottomLeft
+    readonly property bool isRight: isTopRight || isBottomRight
 
-        anchors.fill: parent
-        antialiasing: true
+    Shape {
+        id: shape
+        width: root.size
+        height: root.size
+        anchors {
+            top: root.isTop ? parent.top : undefined
+            bottom: root.isBottom ? parent.bottom : undefined
+            left: root.isLeft ? parent.left : undefined
+            right: root.isRight ? parent.right : undefined
+        }
+        layer.enabled: true
+        layer.smooth: true
+        preferredRendererType: Shape.CurveRenderer
 
-        onPaint: {
-            var ctx = getContext("2d");
-            var r = root.size;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
-            switch (root.corner) {
-            case ScreenCorner.CornerEnum.TopLeft:
-                ctx.arc(r, r, r, Math.PI, 3 * Math.PI / 2);
-                ctx.lineTo(0, 0);
-                break;
-            case ScreenCorner.CornerEnum.TopRight:
-                ctx.arc(0, r, r, 3 * Math.PI / 2, 2 * Math.PI);
-                ctx.lineTo(r, 0);
-                break;
-            case ScreenCorner.CornerEnum.BottomLeft:
-                ctx.arc(r, 0, r, Math.PI / 2, Math.PI);
-                ctx.lineTo(0, r);
-                break;
-            case ScreenCorner.CornerEnum.BottomRight:
-                ctx.arc(0, 0, r, 0, Math.PI / 2);
-                ctx.lineTo(r, r);
-                break;
+        ShapePath {
+            id: shapePath
+            strokeWidth: 0
+            fillColor: root.color
+            pathHints: ShapePath.PathSolid & ShapePath.PathNonIntersecting
+
+            startX: switch (root.corner) {
+                case ScreenCorner.CornerEnum.TopLeft:
+                case ScreenCorner.CornerEnum.BottomLeft: return 0;
+                case ScreenCorner.CornerEnum.TopRight:
+                case ScreenCorner.CornerEnum.BottomRight: return root.size;
             }
-            ctx.closePath();
-            ctx.fillStyle = root.color;
-            ctx.fill();
+            startY: switch (root.corner) {
+                case ScreenCorner.CornerEnum.TopLeft:
+                case ScreenCorner.CornerEnum.TopRight: return 0;
+                case ScreenCorner.CornerEnum.BottomLeft:
+                case ScreenCorner.CornerEnum.BottomRight: return root.size;
+            }
+
+            PathAngleArc {
+                moveToStart: false
+                centerX: root.size - shapePath.startX
+                centerY: root.size - shapePath.startY
+                radiusX: root.size
+                radiusY: root.size
+                startAngle: switch (root.corner) {
+                    case ScreenCorner.CornerEnum.TopLeft: return 180;
+                    case ScreenCorner.CornerEnum.TopRight: return -90;
+                    case ScreenCorner.CornerEnum.BottomLeft: return 90;
+                    case ScreenCorner.CornerEnum.BottomRight: return 0;
+                }
+                sweepAngle: 90
+            }
+
+            PathLine {
+                x: shapePath.startX
+                y: shapePath.startY
+            }
         }
     }
 }
