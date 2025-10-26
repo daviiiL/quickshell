@@ -7,7 +7,5 @@ import "./modules/"
 
 ShellRoot {
   Bar {}
-  // ScreenPaddings {}
-  // ScreenCorners {}
   Osd {}
 }

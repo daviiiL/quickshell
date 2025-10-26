@@ -23,8 +23,6 @@ Singleton {
       readonly property real large: 10
     }
 
-
-
     component Bar: QtObject {
         readonly property int width: 50
         readonly property int maxWidth: this.width * 4

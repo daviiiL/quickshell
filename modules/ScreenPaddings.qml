@@ -3,7 +3,6 @@ import Quickshell
 import Quickshell.Wayland
 import "../utils/"
 
-
 Scope {
     Variants {
         model: Quickshell.screens
@@ -40,7 +39,6 @@ Scope {
 
             WlrLayershell.exclusiveZone: Theme.ui.padding.normal
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-
 
             anchors {
               bottom: true

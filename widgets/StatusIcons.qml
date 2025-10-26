@@ -28,26 +28,6 @@ Item {
         return "signal_wifi_0_bar";
     }
 
-    // ShaderEffectSource {
-    //     id: backgroundSource
-    //     sourceItem: parent
-    //     anchors.fill: container
-    //     sourceRect: Qt.rect(container.x, container.y, container.width, container.height)
-    //     visible: false
-    //     live: true
-    //     recursive: false
-    // }
-
-    // MultiEffect {
-    //     source: backgroundSource
-    //     anchors.fill: container
-    //     blurEnabled: true
-    //     blur: 1.0
-    //     blurMax: 64
-    //     autoPaddingEnabled: false
-    //     paddingRect: Qt.rect(0, 0, 0, 0)
-    // }
-
     ExpandingContainer {
         id: container
         anchors.leftMargin: 6
@@ -56,20 +36,7 @@ Item {
         anchors.left: parent.left
         animationDuration: 100
         antialiasing: true
-
-        // function addAlphaToHex(hexColor, alpha) {
-        //     // Remove leading '#' if present
-        //     var nhexColor = hexColor.toString().replace("#", "");
-        //     var r = nhexColor.substring(0, 2);
-        //     var g = nhexColor.substring(2, 4);
-        //     var b = nhexColor.substring(4, 6);
-        //     var a = Math.round(alpha * 255).toString(16).padStart(2, "0").toUpperCase();
-        //     console.log(a + r + g + b);
-        //     return "#" + a + r + g + b;
-        // }
-
-        // color: addAlphaToHex(Colors.current.secondary_container, 0.5)
-
+        radius: Theme.rounding.small
         implicitHeight: 80
 
         ColumnLayout {

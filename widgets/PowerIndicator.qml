@@ -52,7 +52,7 @@ ExpandingContainer {
 
         color: root.color
         radius: Theme.rounding.regular
-        gradient: Gradient {
+       /*  gradient: Gradient {
             orientation: Gradient.Horizontal
             GradientStop {
                 position: 0.0
@@ -69,7 +69,7 @@ ExpandingContainer {
                     }
                 }
             }
-        }
+        } */
 
         opacity: root.expanded ? 1 : 0
 
@@ -89,7 +89,7 @@ ExpandingContainer {
                 id: timeText
                 text: {
                     if (Power.percentage > 0.999)
-                        return "Fully charged  󰁹";
+                        return "Fully charged";
                     return `  ${root.formatTime(Power.timeToGoal)} ${Power.onBattery ? "remaining" : "to full"}`;
                 }
                 color: Colors.current.primary
