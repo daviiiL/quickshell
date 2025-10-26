@@ -11,6 +11,7 @@ Singleton {
     readonly property Rounding rounding: Rounding {}
     readonly property Anim anim: Anim {}
     readonly property Bar bar: Bar {}
+    readonly property StatusBar statusbar: StatusBar {}
     readonly property Sidebar sidebar: Sidebar {}
     readonly property UI ui: UI {}
 
@@ -31,6 +32,10 @@ Singleton {
         readonly property int trayItemHW: this.width / 2
     }
 
+    component StatusBar: QtObject {
+        readonly property int height: 30
+    }
+
     component Sidebar: QtObject {
         readonly property int width: root.bar.width * 6
     }
@@ -49,9 +54,9 @@ Singleton {
     }
 
     component FontStyle: QtObject {
-        readonly property string inter_thin: "DepartureMono Nerd Font"
-        readonly property string inter: "DepartureMono Nerd Font"
-        readonly property string inter_bold: "DepartureMono Nerd Font:style=Regular"
+        readonly property string departureMono_thin: "DepartureMono Nerd Font"
+        readonly property string departureMono: "DepartureMono Nerd Font"
+        readonly property string departureMono_bold: "DepartureMono Nerd Font:style=Regular"
         readonly property string material: "Material Symbols Rounded"
         readonly property string free_mono: "FreeMono"
     }

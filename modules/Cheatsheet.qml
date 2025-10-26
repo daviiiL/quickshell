@@ -71,7 +71,7 @@ Item {
                     anchors.topMargin: parent.width / 25
                     anchors.horizontalCenter: parent.horizontalCenter
                     color: Colors.current.on_secondary_container
-                    font.family: Theme.font.style.inter
+                    font.family: Theme.font.style.departureMono
                     font.pointSize: Theme.font.size.large
                 }
 

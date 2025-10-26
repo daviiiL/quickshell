@@ -83,7 +83,7 @@ Item {
                             return Bluetooth.discovering ? "Discovering on" : "Discovering off";
                         }
                         color: Colors.current.on_secondary_container
-                        font.family: Theme.font.style.inter
+                        font.family: Theme.font.style.departureMono
                         font.pointSize: Theme.font.size.regular
                         opacity: container.expanded ? 1.0 : 0.0
                     }
@@ -123,7 +123,7 @@ Item {
                         id: networkText
                         text: Network.active ? `SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
                         color: Colors.current.on_secondary_container
-                        font.family: Theme.font.style.inter
+                        font.family: Theme.font.style.departureMono
                         font.pointSize: Theme.font.size.regular
                         opacity: container.expanded ? 1.0 : 0.0
                     }

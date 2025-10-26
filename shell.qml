@@ -7,6 +7,7 @@ import "./modules/"
 
 ShellRoot {
     Bar {}
+    StatusBar {}
     Osd {}
     Sidebar {}
 }

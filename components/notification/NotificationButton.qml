@@ -73,7 +73,7 @@ Item {
                 text: Notifications.unread > 99 ? "99+" : Notifications.unread
                 color: Colors.current.on_error
                 font.pixelSize: 9
-                font.family: Theme.font.style.inter_bold
+                font.family: Theme.font.style.departureMono_bold
             }
         }
 

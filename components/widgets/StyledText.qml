@@ -8,7 +8,7 @@ Text {
     verticalAlignment: Text.AlignVCenter
     font {
         hintingPreference: Font.PreferDefaultHinting
-        family: Theme.font.style.inter
+        family: Theme.font.style.departureMono
         pixelSize: Theme.font.size.regular
     }
     color: Colors.current.on_surface

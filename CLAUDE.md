@@ -104,16 +104,72 @@ Singletons that provide system integration:
 - `screenZoom` property with Hyprland cursor zoom integration
 - Workspace number display toggle via global shortcuts
 
-### Simple Shell Components
+### Simple Shell Architecture
 
-- **`modules/`** - Top-level UI modules (Bar, Osd, ScreenCorners, ScreenPaddings, Background, Cheatsheet)
-- **`components/`** - Reusable UI components (ClockWidget, PowerIndicator, StatusIcons, Tray, Modal, CircularProgress, MaterialSymbol, TrayItem, etc.)
-- **`services/`** - System integration services (Audio, Bluetooth, Brightness, Network, Power)
-- **`common/`** - Shared utilities and singletons (Colors, DateTime, Theme, GlobalStates, NiriKeybinds)
+The simple shell (`shell.qml`) is a minimalist configuration organized into four main categories:
 
-**`common/Theme.qml`** - Simple shell theme singleton defining fonts, spacing, rounding, animations
+#### Modules (`modules/`)
+Top-level UI components instantiated in `shell.qml`:
+- **`Bar.qml`** - Left-side vertical bar with workspaces, system tray, notifications, status icons, clock, and power indicator
+- **`StatusBar.qml`** - Bottom horizontal bar showing active window information via `WindowIndicator`
+- **`Sidebar.qml`** - Right-side drawer with notifications and quick settings
+- **`Osd.qml`** - On-screen display for volume and brightness feedback
+- **`ScreenCorners.qml`** - Interactive screen corners (optional)
+- **`ScreenPaddings.qml`** - Screen edge padding/margins (optional)
+- **`Background.qml`** - Wallpaper management (optional)
+- **`Cheatsheet.qml`** - Keyboard shortcuts reference overlay
 
-**`common/Colors.qml`** - Loads color scheme from `colors.json` (Material Design 3 colors)
+**Module Pattern:** Each module uses `Scope` + `Variants` with `Quickshell.screens` to create instances per monitor:
+```qml
+Scope {
+    Variants {
+        model: Quickshell.screens
+        PanelWindow {
+            property var modelData
+            screen: modelData
+            // ...
+        }
+    }
+}
+```
+
+#### Components (`components/`)
+Reusable UI widgets organized by function:
+- **Root components:** `ClockWidget`, `PowerIndicator`, `StatusIcons`, `Workspaces`, `SidebarComponent`
+- **`components/notification/`** - Notification UI (NotificationButton, NotificationItem, NotificationGroup, NotificationListView)
+- **`components/tray/`** - System tray (Tray, TrayItem, TrayMenu)
+- **`components/widgets/`** - Generic widgets (MaterialSymbol, CircularProgress, ExpandingContainer, StyledText, ButtonGroup)
+- **`components/statusbar/`** - Status bar widgets (WindowIndicator)
+
+**Expanding Components Pattern:** Many components like `StatusIcons` and `PowerIndicator` use `ExpandingContainer` to animate between collapsed and expanded states, triggering parent bar width changes.
+
+#### Services (`services/`)
+Singleton services providing system integration via `pragma Singleton`:
+- **`Audio.qml`** - Pipewire audio control (volume, mute state)
+- **`Bluetooth.qml`** - Bluetooth device management
+- **`Brightness.qml`** - Screen brightness via sysfs (`/sys/class/backlight/`)
+- **`Network.qml`** - WiFi/network status
+- **`Power.qml`** - Battery and power management
+- **`Notifications.qml`** - Desktop notification handling
+
+**Service Pattern:** Services expose readonly properties and use Quickshell's built-in integrations (`Quickshell.Services.Pipewire`, sysfs `FileView`, etc.) to react to system changes.
+
+#### Common Utilities (`common/`)
+Shared singletons and configuration:
+- **`Theme.qml`** - Design system (fonts, spacing, rounding, animation curves/durations, bar dimensions)
+- **`Colors.qml`** - Material Design 3 color scheme loader (from `colors.json`)
+- **`GlobalStates.qml`** - UI state management (sidebar open/closed, OSD states, screen lock)
+- **`DateTime.qml`** - Date/time utilities (if present)
+
+**Theme Access:** Components import and use Theme properties:
+```qml
+import "../common/"
+Rectangle {
+    width: Theme.bar.width
+    color: Colors.current.background
+    radius: Theme.rounding.small
+}
+```
 
 ## Color Theming
 
@@ -148,13 +204,82 @@ import qs.modules.bar
 import qs.services
 ```
 
+## Creating New Services (Simple Shell)
+
+Services are singletons that provide system integration. To create a new service:
+
+1. **Create service file** in `services/YourService.qml`:
+```qml
+pragma Singleton
+
+import QtQuick
+import Quickshell
+import Quickshell.Io
+
+Singleton {
+    id: root
+
+    // Expose readonly properties
+    property real value: 0
+    property bool initialized: false
+
+    // Use Process for command output
+    Process {
+        id: reader
+        command: ["your-command"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                // Parse output
+                root.value = parseFloat(this.text)
+            }
+        }
+    }
+
+    // Or use FileView for file-based data
+    FileView {
+        path: "/sys/class/your/device/value"
+        watchChanges: true
+        onFileChanged: this.reload()
+        onLoaded: root.value = parseFloat(this.text())
+    }
+
+    Component.onCompleted: {
+        // Initialize
+        reader.running = true
+    }
+}
+```
+
+2. **Import in qmldir** (if using module paths) or import directly in components:
+```qml
+import "../services/"
+// Now YourService is available globally
+```
+
+3. **Use in components:**
+```qml
+Text {
+    text: YourService.value
+}
+```
+
+**Key Patterns:**
+- Use `pragma Singleton` at the top
+- Wrap in `Singleton { }` component
+- Expose `readonly property` for reactive data
+- Use `Process` with `StdioCollector` for command output parsing
+- Use `FileView` with `watchChanges: true` for file monitoring
+- Initialize in `Component.onCompleted`
+
 ## Development Workflow
 
 1. **Edit QML files** - Changes are usually hot-reloaded by Quickshell
-2. **Force reload** - If changes don't apply: restart `quickshell` process
-3. **Config changes** - Modify `~/.config/quickshell/ii/options.json` or use in-shell settings
+2. **Force reload** - If changes don't apply: restart `quickshell` process or kill the process and restart
+3. **Config changes** (ii shell) - Modify `~/.config/quickshell/ii/options.json` or use in-shell settings
 4. **Theme changes** - Run `matugen` to regenerate `colors.json` from wallpaper
-5. **Test modules** - Toggle enable flags in `ii/shell.qml` to load only needed modules
+5. **Test modules** (ii shell) - Toggle enable flags in `ii/shell.qml` to load only needed modules
+6. **Add to modules** (simple shell) - Edit `shell.qml` to instantiate new modules
+7. **Debug services** - Use `console.log()` for debugging; output appears in terminal running quickshell
 
 ## Hyprland Integration
 

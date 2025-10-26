@@ -39,7 +39,7 @@ Item {
                 anchors.centerIn: parent
                 text: "Notifications"
                 font.pixelSize: Theme.font.size.large
-                font.family: Theme.font.style.inter
+                font.family: Theme.font.style.departureMono
                 color: Colors.current.secondary
             }
         }

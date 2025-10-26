@@ -74,7 +74,7 @@ ExpandingContainer {
                 }
                 color: Colors.current.primary
                 font.pointSize: Theme.font.size.regular
-                font.family: Theme.font.style.inter
+                font.family: Theme.font.style.departureMono
             }
 
             ColumnLayout {
@@ -149,7 +149,7 @@ ExpandingContainer {
             anchors.verticalCenter: profileButton.verticalCenter
             color: profile.isActive ? Colors.current.primary : Colors.current.secondary
             font.pointSize: Theme.font.size.regular
-            font.family: Theme.font.style.inter
+            font.family: Theme.font.style.departureMono
         }
     }
 

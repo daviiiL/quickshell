@@ -153,7 +153,7 @@ Scope {
                                 }
                                 anchors.centerIn: parent
                                 color: Colors.current.error_container
-                                font.family: Theme.font.style.inter
+                                font.family: Theme.font.style.departureMono
                                 font.styleName: "Bold"
                                 font.pointSize: 15
                             }
