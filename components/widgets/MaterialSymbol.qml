@@ -1,5 +1,5 @@
 import QtQuick
-import "../utils/"
+import "../../common/"
 
 Text {
     id: root

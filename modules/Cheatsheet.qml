@@ -3,8 +3,9 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import "../utils/"
-import "../components/"
+import "../common/"
+import "../components"
+import "../components/widgets"
 
 Item {
     id: root

@@ -2,7 +2,7 @@ import Quickshell
 import Quickshell.Wayland
 import QtQuick
 import Qt5Compat.GraphicalEffects
-import "../utils/"
+import "../common/"
 
 Scope {
     Variants {

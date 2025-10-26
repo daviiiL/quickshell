@@ -1,20 +1,19 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import "../components/"
-import "../utils/"
+import "../common/"
+import "../services/"
+import "./widgets"
 
 ExpandingContainer {
     id: root
 
-    // Dimensions
     implicitHeight: 30
     collapsedWidth: Theme.bar.width
     expandedWidth: Theme.bar.width * 4
     collapsedHeight: root.implicitHeight
     expandedHeight: root.expandedWidth
 
-    // Appearance
     color: Colors.current.background
     verticalExpansion: true
     animationDuration: 250
@@ -52,25 +51,6 @@ ExpandingContainer {
 
         color: root.color
         radius: Theme.rounding.regular
-       /*  gradient: Gradient {
-            orientation: Gradient.Horizontal
-            GradientStop {
-                position: 0.0
-                color: Colors.current.background
-            }
-            GradientStop {
-                position: 1.0
-                color: root.expanded ? Qt.darker(Colors.current.primary, 4.0) : Colors.current.background
-
-                Behavior on color {
-                    ColorAnimation {
-                        duration: root.animationDuration
-                        easing.type: Easing.InOutQuad
-                    }
-                }
-            }
-        } */
-
         opacity: root.expanded ? 1 : 0
 
         Behavior on opacity {

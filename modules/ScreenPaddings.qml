@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import "../utils/"
+import "../common/"
 
 Scope {
     Variants {

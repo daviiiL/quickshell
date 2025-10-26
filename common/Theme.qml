@@ -1,4 +1,5 @@
 pragma Singleton
+pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
@@ -10,17 +11,18 @@ Singleton {
     readonly property Rounding rounding: Rounding {}
     readonly property Anim anim: Anim {}
     readonly property Bar bar: Bar {}
+    readonly property Sidebar sidebar: Sidebar {}
     readonly property UI ui: UI {}
 
     component UI: QtObject {
-      readonly property Rounding rounding: root.rounding
-      readonly property Padding padding: Padding {}
+        readonly property Rounding rounding: root.rounding
+        readonly property Padding padding: Padding {}
     }
 
     component Padding: QtObject {
-      readonly property real small: 2
-      readonly property real normal: 5
-      readonly property real large: 10
+        readonly property real small: 2
+        readonly property real normal: 5
+        readonly property real large: 10
     }
 
     component Bar: QtObject {
@@ -29,12 +31,17 @@ Singleton {
         readonly property int trayItemHW: this.width / 2
     }
 
+    component Sidebar: QtObject {
+        readonly property int width: root.bar.width * 6
+    }
+
     component Font: QtObject {
         readonly property FontSize size: FontSize {}
         readonly property FontStyle style: FontStyle {}
     }
 
     component FontSize: QtObject {
+        readonly property int xs: 5
         readonly property int small: 9
         readonly property int regular: 11
         readonly property int large: 18

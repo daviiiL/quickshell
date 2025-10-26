@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
-import "../utils/"
+import "../common/"
 import "../components/"
 
 Scope {

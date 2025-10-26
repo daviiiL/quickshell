@@ -3,7 +3,7 @@ import QtQuick.Effects
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
 import Quickshell
-import "../utils/"
+import "../../common/"
 
 Rectangle {
     id: root

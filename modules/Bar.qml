@@ -3,9 +3,11 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 import QtQuick
-import "../components/"
-import "../widgets/"
-import "../utils"
+import "../components"
+import "../components/notification"
+import "../components/widgets"
+import "../components/tray"
+import "../common"
 
 Scope {
     Variants {
@@ -71,11 +73,21 @@ Scope {
                         right: parent.right
                     }
                 }
-
+                
                 Tray {
                     id: tray
                     anchors.bottom: statusIcons.top
                 }
+
+                NotificationButton {
+                    id: notificationButton
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        bottom: statusIcons.top
+                    }
+                }
+
 
                 StatusIcons {
                     id: statusIcons

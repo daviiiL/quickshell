@@ -1,5 +1,5 @@
 import QtQuick
-import "../utils/"
+import "../common/"
 
 Item {
     implicitWidth: parent.width

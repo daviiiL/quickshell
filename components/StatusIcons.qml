@@ -5,8 +5,9 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import Qt5Compat.GraphicalEffects
 import Quickshell.Io
-import "../components/"
-import "../utils/"
+import "../common/"
+import "../services/"
+import "./widgets"
 
 Item {
     id: root

@@ -6,6 +6,7 @@ import QtQuick
 import "./modules/"
 
 ShellRoot {
-  Bar {}
-  Osd {}
+    Bar {}
+    Osd {}
+    Sidebar {}
 }

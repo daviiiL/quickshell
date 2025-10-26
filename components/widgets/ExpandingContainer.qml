@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell.Widgets
 import Qt5Compat.GraphicalEffects
 
-import "../utils/"
+import "../../common/"
 
 ClippingRectangle {
     id: container

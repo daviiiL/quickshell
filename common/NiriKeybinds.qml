@@ -16,17 +16,8 @@ Singleton {
                 isBinds = true;
             } else if (isBinds && !line.trim().startsWith("//") && line) {
                 if (line.startsWith("}"))
-                    return;
+                return;
                 console.log(line);
-                // const splitIndex = line.trim().indexOf(" ");
-                // console.log(splitIndex);
-                // if (splitIndex) {
-                //     const [key, action] = [line.slice(0, splitIndex).trim(), line.slice(splitIndex + 1).trim()];
-                //     console.log(JSON.stringify({
-                //         key,
-                //         action
-                //     }));
-                // }
             }
         }
     }

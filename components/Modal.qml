@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
-import "../utils/"
+import "../common/"
 
 Item {
     id: root
