@@ -20,7 +20,7 @@ Item {
     property real summaryElideRatio: 0.85
 
     property real dragConfirmThreshold: 70
-    property real dismissOvershoot: notificationIcon.implicitWidth + 20
+    property real dismissOvershoot: 50
     property var qmlParent: root?.parent?.parent
     property var parentDragIndex: qmlParent?.dragIndex ?? -1
     property var parentDragDistance: qmlParent?.dragDistance ?? 0
@@ -83,7 +83,7 @@ Item {
     DragManager {
         id: dragManager
         anchors.fill: root
-        anchors.leftMargin: root.expanded ? -notificationIcon.implicitWidth : 0
+        anchors.leftMargin: 0
         interactive: expanded
         automaticallyReset: false
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton

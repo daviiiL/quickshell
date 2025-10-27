@@ -73,10 +73,10 @@ Scope {
                         right: parent.right
                     }
                 }
-                
+
                 Tray {
                     id: tray
-                    anchors.bottom: statusIcons.top
+                    anchors.bottom: notificationButton.top
                 }
 
                 NotificationButton {
@@ -87,7 +87,6 @@ Scope {
                         bottom: statusIcons.top
                     }
                 }
-
 
                 StatusIcons {
                     id: statusIcons

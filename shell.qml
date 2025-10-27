@@ -10,4 +10,5 @@ ShellRoot {
     StatusBar {}
     Osd {}
     Sidebar {}
+    Cheatsheet {}
 }

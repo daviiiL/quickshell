@@ -17,4 +17,10 @@ Singleton {
 
     // Other states
     property bool screenLocked: false
+    property bool cheatsheetOpen: false
+
+    // Signals
+    signal showCheatsheet()
+    signal hideCheatsheet()
+    signal toggleCheatsheet()
 }

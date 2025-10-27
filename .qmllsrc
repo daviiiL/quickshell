@@ -1,0 +1,7 @@
+{
+  "warnings": {
+    "missing-property": "disable",
+    "unknown-property": "disable",
+    "unqualified-access": "info"
+  }
+}

@@ -37,11 +37,11 @@ Item {
 
         // App ID (smaller, subdued)
         Text {
-            Layout.fillWidth: true
+            width: 50
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
             font.family: Theme.font.style.departureMono
-            font.pixelSize: 14
+            font.pixelSize: Theme.font.size.large
             color: Colors.current.primary
             // elide: Text.ElideRight
 
@@ -55,7 +55,7 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
 
-            font.family: Theme.font.style.departureMono
+            font.family: Theme.font.style.inter
             font.pixelSize: 14
             color: Colors.current.secondary
             elide: Text.ElideRight

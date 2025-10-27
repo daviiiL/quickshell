@@ -79,7 +79,7 @@ Scope {
             Rectangle {
                 id: rect
                 anchors.fill: parent
-                radius: Theme.rounding.large
+                radius: Theme.rounding.small
                 color: Colors.current.secondary_container
 
                 opacity: 0.0
@@ -130,7 +130,7 @@ Scope {
                         id: volume
                         implicitHeight: 380
                         implicitWidth: (osd.width - 30) / 2
-                        radius: Theme.rounding.regular
+                        radius: rect.radius
                         color: Colors.current.primary_container
 
                         property real barHeight: volume.height * (Audio.volume > 1.0 ? 1.0 : Audio.volume) || 0.1
@@ -192,7 +192,7 @@ Scope {
                         id: brightness
                         implicitWidth: (osd.width - 30) / 2
                         implicitHeight: 380
-                        radius: Theme.rounding.regular
+                        radius: rect.radius
                         color: Colors.current.primary_container
 
                         property real barHeight: height * (root.currentBrightness / 100) || 0.1

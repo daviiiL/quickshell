@@ -37,7 +37,7 @@ Singleton {
     }
 
     component Sidebar: QtObject {
-        readonly property int width: root.bar.width * 6
+        readonly property int width: root.bar.width * 10
     }
 
     component Font: QtObject {
@@ -51,6 +51,8 @@ Singleton {
         readonly property int regular: 11
         readonly property int large: 18
         readonly property int larger: 24
+        readonly property int xl: 28
+        readonly property int xxl: 32
     }
 
     component FontStyle: QtObject {
@@ -59,6 +61,7 @@ Singleton {
         readonly property string departureMono_bold: "DepartureMono Nerd Font:style=Regular"
         readonly property string material: "Material Symbols Rounded"
         readonly property string free_mono: "FreeMono"
+        readonly property string inter: "Inter Nerd Font Propo"
     }
 
     component Rounding: QtObject {

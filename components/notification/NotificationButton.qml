@@ -24,9 +24,8 @@ Item {
             cursorShape: Qt.PointingHandCursor
             onClicked: {
                 GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
-                // if (GlobalStates.sidebarLeftOpen)
-                //     Notifications.markAllRead();
-
+                if (GlobalStates.sidebarLeftOpen)
+                    Notifications.markAllRead();
             }
         }
 
