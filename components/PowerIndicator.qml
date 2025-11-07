@@ -25,6 +25,9 @@ ExpandingContainer {
         anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter
 
+        // Glow effect when charging using brighter theme color
+        primaryColor: Power.onBattery ? Colors.current.on_secondary_container : Colors.current.primary_fixed
+
         transform: Rotation {
             id: rotation
             origin.x: progressIndicator.width / 2
@@ -36,6 +39,25 @@ ExpandingContainer {
                     duration: root.animationDuration * 1.5
                     easing.type: Easing.OutCubic
                 }
+            }
+        }
+
+        // Pulsing animation when charging
+        SequentialAnimation on opacity {
+            running: !Power.onBattery
+            loops: Animation.Infinite
+
+            NumberAnimation {
+                from: 1.0
+                to: 0.4
+                duration: 1000
+                easing.type: Easing.InOutSine
+            }
+            NumberAnimation {
+                from: 0.4
+                to: 1.0
+                duration: 1000
+                easing.type: Easing.InOutSine
             }
         }
     }
