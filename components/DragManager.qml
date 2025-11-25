@@ -26,31 +26,30 @@ MouseArea {
 
     hoverEnabled: true
     acceptedButtons: Qt.LeftButton
-    onPressed: (mouse) => {
+    onPressed: mouse => {
         if (!root.interactive) {
             if (mouse.button === Qt.LeftButton)
                 mouse.accepted = false;
 
-            return ;
+            return;
         }
         if (mouse.button === Qt.LeftButton) {
             startX = mouse.x;
             startY = mouse.y;
         }
     }
-    onReleased: (mouse) => {
+    onReleased: mouse => {
         if (!root.interactive)
-            return ;
+            return;
 
         dragging = false;
         root.dragReleased(_dragDiffX, _dragDiffY);
         if (root.automaticallyReset)
             root.resetDrag();
-
     }
-    onPositionChanged: (mouse) => {
+    onPositionChanged: mouse => {
         if (!root.interactive)
-            return ;
+            return;
 
         if (mouse.buttons & Qt.LeftButton) {
             root._dragDiffX = mouse.x - startX;
@@ -60,9 +59,9 @@ MouseArea {
             root.dragging = true;
         }
     }
-    onCanceled: (mouse) => {
+    onCanceled: mouse => {
         if (!root.interactive)
-            return ;
+            return;
 
         released(mouse);
     }

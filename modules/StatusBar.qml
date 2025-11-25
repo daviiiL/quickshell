@@ -1,13 +1,7 @@
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
-import Quickshell.Services.SystemTray
 import QtQuick
 import QtQuick.Layouts
-import "../components"
-import "../components/notification"
-import "../components/widgets"
-import "../components/tray"
 import "../components/statusbar"
 import "../common"
 
