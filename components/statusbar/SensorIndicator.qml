@@ -14,14 +14,6 @@ Item {
     implicitWidth: contentRow.implicitWidth + Theme.ui.padding.normal * 2
     implicitHeight: parent.height
 
-    function getTempColor(temp) {
-        if (temp > 70)
-            return "#ef5350";  // Red
-        if (temp >= 50)
-            return "#ffeb3b";  // Yellow
-        return "#66bb6a";  // Green
-    }
-
     RowLayout {
         id: contentRow
 
@@ -33,8 +25,6 @@ Item {
         RowLayout {
             spacing: 4
             visible: Sensors.cpuTemp > 0
-
-            property color tempColor: Sensors.cpuTemp > 70 ? "#ef5350" : Sensors.cpuTemp >= 50 ? "#ffeb3b" : "#66bb6a"
 
             StyledText {
                 text: "CPU"
@@ -51,8 +41,6 @@ Item {
             spacing: 4
             visible: Sensors.gpuTemp > 0
 
-            property color tempColor: Sensors.gpuTemp > 70 ? "#ef5350" : Sensors.gpuTemp >= 50 ? "#ffeb3b" : "#66bb6a"
-
             StyledText {
                 text: "GPU"
                 color: Colors.current.primary
@@ -67,8 +55,6 @@ Item {
         RowLayout {
             spacing: 4
             visible: Sensors.nvmeTemp > 0
-
-            property color tempColor: Sensors.nvmeTemp > 70 ? "#ef5350" : Sensors.nvmeTemp >= 50 ? "#ffeb3b" : "#66bb6a"
 
             StyledText {
                 text: "STORAGE"
