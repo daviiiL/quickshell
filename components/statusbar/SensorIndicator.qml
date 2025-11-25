@@ -18,8 +18,13 @@ Item {
         id: contentRow
 
         anchors.fill: parent
-        anchors.margins: Theme.ui.padding.normal
+        anchors.margins: Theme.ui.padding.small
         spacing: 12
+
+        StyledText {
+            text: "TEMPS"
+            color: Colors.current.secondary
+        }
 
         // CPU Temperature
         RowLayout {
