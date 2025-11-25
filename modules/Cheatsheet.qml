@@ -21,8 +21,9 @@ Scope {
             id: cheatsheetWindow
             property var modelData
             screen: modelData
+            property HyprlandMonitor monitor: Hyprland.monitorFor(modelData)
 
-            visible: root.cheatsheetVisible
+            visible: root.cheatsheetVisible && Hyprland.focusedWorkspace?.monitor === monitor
             color: "transparent"
 
             anchors {
@@ -128,40 +129,48 @@ Scope {
                     }
 
                     // Tab bar
-                    Row {
-                        Layout.alignment: Qt.AlignLeft
-                        spacing: 8
+                    ScrollView {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 45
+                        clip: true
 
-                        Repeater {
-                            model: cheatsheetWindow.categoryData
+                        ScrollBar.vertical.policy: ScrollBar.AlwaysOff
+                        ScrollBar.horizontal.policy: ScrollBar.AsNeeded
 
-                            delegate: Rectangle {
-                                required property var modelData
-                                required property int index
+                        Row {
+                            spacing: 8
 
-                                width: tabText.implicitWidth + 30
-                                height: 35
-                                color: cheatsheetWindow.currentTabIndex === index ? Colors.current.primary_container : Colors.current.secondary_container
+                            Repeater {
+                                model: cheatsheetWindow.categoryData
 
-                                StyledText {
-                                    id: tabText
-                                    anchors.centerIn: parent
-                                    text: modelData.category
-                                    font.pixelSize: Theme.font.size.xl
-                                    color: cheatsheetWindow.currentTabIndex === index ? Colors.current.on_primary_container : Colors.current.on_secondary_container
-                                }
+                                delegate: Rectangle {
+                                    required property var modelData
+                                    required property int index
 
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onPressed: mouse => {
-                                        mouse.accepted = true;
-                                        cheatsheetWindow.currentTabIndex = index;
+                                    width: tabText.implicitWidth + 30
+                                    height: 35
+                                    color: cheatsheetWindow.currentTabIndex === index ? Colors.current.primary_container : Colors.current.secondary_container
+                                    radius: Theme.rounding.small
+
+                                    StyledText {
+                                        id: tabText
+                                        anchors.centerIn: parent
+                                        text: modelData.category
+                                        font.pixelSize: Theme.font.size.xl
+                                        color: cheatsheetWindow.currentTabIndex === index ? Colors.current.on_primary_container : Colors.current.on_secondary_container
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        onPressed: mouse => {
+                                            mouse.accepted = true;
+                                            cheatsheetWindow.currentTabIndex = index;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-
                     // Content area
                     ScrollView {
                         id: scrollView

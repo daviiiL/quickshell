@@ -15,14 +15,14 @@ Singleton {
     property bool initialized: false
     property string lastError: ""
 
-    // Only run in performance mode
-    readonly property bool isPerformanceMode: PowerProfiles.profile === PowerProfile.Performance
+    // Run when not in powersave mode (Performance or Balanced)
+    readonly property bool shouldRunSensors: PowerProfiles.profile !== PowerProfile.PowerSaver
 
     // Timer to periodically refresh sensor data
     Timer {
         id: refreshTimer
         interval: 5000 // Update every 5 seconds
-        running: root.isPerformanceMode
+        running: root.shouldRunSensors
         repeat: true
         onTriggered: readSensors.running = true
     }
@@ -39,8 +39,18 @@ Singleton {
         stderr: StdioCollector {
             onStreamFinished: {
                 if (this.text.length > 0) {
-                    root.lastError = this.text
-                    console.warn("Sensors error:", this.text)
+                    // Filter out harmless sensor subfeature warnings
+                    const filteredErrors = this.text
+                        .split('\n')
+                        .filter(line => !line.includes("Can't get value of subfeature") &&
+                                       !line.includes("Can't read") &&
+                                       line.trim().length > 0)
+                        .join('\n')
+
+                    if (filteredErrors.length > 0) {
+                        root.lastError = filteredErrors
+                        console.warn("Sensors error:", filteredErrors)
+                    }
                 }
             }
         }
@@ -52,16 +62,32 @@ Singleton {
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim()
 
-            // Parse CPU temperature (k10temp Tctl)
+            // Parse CPU temperature
+            // AMD (k10temp): Tctl:
             if (line.startsWith('Tctl:')) {
                 const match = line.match(/\+?(-?\d+\.?\d*)°C/)
                 if (match) {
                     root.cpuTemp = parseFloat(match[1])
                 }
             }
+            // Intel (coretemp): Package id 0:
+            if (line.startsWith('Package id 0:')) {
+                const match = line.match(/\+?(-?\d+\.?\d*)°C/)
+                if (match) {
+                    root.cpuTemp = parseFloat(match[1])
+                }
+            }
 
-            // Parse GPU temperature (amdgpu edge)
+            // Parse GPU temperature
+            // AMD (amdgpu): edge:
             if (line.startsWith('edge:')) {
+                const match = line.match(/\+?(-?\d+\.?\d*)°C/)
+                if (match) {
+                    root.gpuTemp = parseFloat(match[1])
+                }
+            }
+            // Dell/Generic: Video:
+            if (line.startsWith('Video:')) {
                 const match = line.match(/\+?(-?\d+\.?\d*)°C/)
                 if (match) {
                     root.gpuTemp = parseFloat(match[1])
@@ -92,19 +118,19 @@ Singleton {
     }
 
     Component.onCompleted: {
-        // Initial read only if in performance mode
-        if (root.isPerformanceMode) {
+        // Initial read if not in powersave mode
+        if (root.shouldRunSensors) {
             readSensors.running = true
         }
     }
 
     // Watch for power profile changes
-    onIsPerformanceModeChanged: {
-        if (root.isPerformanceMode) {
-            // Entering performance mode, start reading
+    onShouldRunSensorsChanged: {
+        if (root.shouldRunSensors) {
+            // Entering active mode (Performance or Balanced), start reading
             readSensors.running = true
         } else {
-            // Leaving performance mode, reset temps
+            // Entering powersave mode, reset temps
             root.cpuTemp = 0
             root.gpuTemp = 0
             root.nvmeTemp = 0

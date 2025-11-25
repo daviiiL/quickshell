@@ -3,13 +3,13 @@ import QtQuick.Layouts
 import Quickshell.Services.UPower
 import "../../common/"
 import "../../services/"
-import "../widgets"
+import "../widgets/"
 
 Item {
     id: root
 
     // Only show sensors in performance mode
-    visible: PowerProfiles.profile === PowerProfile.Performance
+    visible: PowerProfiles.profile != PowerProfile.PowerSaver
 
     implicitWidth: contentRow.implicitWidth + Theme.ui.padding.normal * 2
     implicitHeight: parent.height
@@ -36,18 +36,13 @@ Item {
 
             property color tempColor: Sensors.cpuTemp > 70 ? "#ef5350" : Sensors.cpuTemp >= 50 ? "#ffeb3b" : "#66bb6a"
 
-            MaterialSymbol {
-                icon: "memory"
-                iconSize: 14
-                fontColor: Colors.current.on_primary_container
-                animated: true
+            StyledText {
+                text: "CPU"
+                color: Colors.current.primary
             }
 
-            Text {
-                font.family: Theme.font.style.departureMono
-                font.pixelSize: 12
-                color: parent.tempColor
-                text: Sensors.formatTemp(Sensors.cpuTemp)
+            ReactiveSensorIndicator {
+                value: Sensors.cpuTemp
             }
         }
 
@@ -58,18 +53,13 @@ Item {
 
             property color tempColor: Sensors.gpuTemp > 70 ? "#ef5350" : Sensors.gpuTemp >= 50 ? "#ffeb3b" : "#66bb6a"
 
-            MaterialSymbol {
-                icon: "videogame_asset"
-                iconSize: 14
-                fontColor: Colors.current.on_primary_container
-                animated: true
+            StyledText {
+                text: "GPU"
+                color: Colors.current.primary
             }
 
-            Text {
-                font.family: Theme.font.style.departureMono
-                font.pixelSize: 12
-                color: parent.tempColor
-                text: Sensors.formatTemp(Sensors.gpuTemp)
+            ReactiveSensorIndicator {
+                value: Sensors.gpuTemp
             }
         }
 
@@ -80,18 +70,13 @@ Item {
 
             property color tempColor: Sensors.nvmeTemp > 70 ? "#ef5350" : Sensors.nvmeTemp >= 50 ? "#ffeb3b" : "#66bb6a"
 
-            MaterialSymbol {
-                icon: "storage"
-                iconSize: 14
-                fontColor: Colors.current.on_primary_container
-                animated: true
+            StyledText {
+                text: "STORAGE"
+                color: Colors.current.primary
             }
 
-            Text {
-                font.family: Theme.font.style.departureMono
-                font.pixelSize: 12
-                color: parent.tempColor
-                text: Sensors.formatTemp(Sensors.nvmeTemp)
+            ReactiveSensorIndicator {
+                value: Sensors.nvmeTemp
             }
         }
     }
