@@ -198,21 +198,33 @@ Scope {
 
                                         Repeater {
                                             model: modelData.mods
-                                            delegate: KeyboardKey {
+                                            delegate: StyledText {
                                                 required property var modelData
-                                                key: getKeyLabel(modelData)
+                                                text: getKeyLabel(modelData)
+                                                font.family: Theme.font.style.departureMono
+                                                font.pixelSize: Theme.font.size.large
+                                                color: Colors.current.primary
+                                                anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                                             }
                                         }
 
                                         StyledText {
                                             visible: modelData.mods.length > 0 && modelData.key
                                             text: "+"
+                                            font.family: Theme.font.style.departureMono
+                                            font.pixelSize: Theme.font.size.large
+                                            color: Colors.current.on_secondary_container
+                                            opacity: 0.5
                                             anchors.verticalCenter: parent.verticalCenter
                                         }
 
-                                        KeyboardKey {
+                                        StyledText {
                                             visible: modelData.key
-                                            key: getKeyLabel(modelData.key)
+                                            text: getKeyLabel(modelData.key)
+                                            font.family: Theme.font.style.departureMono
+                                            font.pixelSize: Theme.font.size.large
+                                            color: Colors.current.primary
+                                            anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                                         }
                                     }
 
