@@ -12,7 +12,7 @@ Rectangle {
     implicitWidth: layout.implicitWidth + 20
     implicitHeight: layout.implicitHeight + 20
     color: Colors.current.surface_container
-    radius: Theme.rounding.regular
+    radius: Theme.rounding.xs
     scale: 0.9
     opacity: 0
     Component.onCompleted: {

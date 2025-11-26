@@ -65,6 +65,7 @@ Singleton {
     }
 
     component Rounding: QtObject {
+        readonly property int xs: 1
         readonly property int small: 3
         readonly property int regular: 8
         readonly property int large: 15

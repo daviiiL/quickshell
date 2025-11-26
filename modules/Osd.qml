@@ -1,11 +1,11 @@
-import QtQuick
-import QtQuick.Layouts
-import Quickshell
-import Quickshell.Wayland
 import "../common/"
 import "../components"
 import "../components/widgets"
 import "../services/"
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Wayland
 
 Scope {
     id: root
@@ -21,34 +21,39 @@ Scope {
     }
 
     Connections {
-        target: Audio.defaultSinkAudio
         function onVolumeChanged() {
             root.visible = true;
             hideTimer.restart();
             fadeTimer.restart();
         }
+
         function onMutedChanged() {
             root.visible = true;
             hideTimer.restart();
             fadeTimer.restart();
         }
+
+        target: Audio.defaultSinkAudio
     }
 
     Connections {
-        target: Brightness
         function onBrightnessChanged(val) {
             root.visible = true;
             root.currentBrightness = val;
             hideTimer.restart();
             fadeTimer.restart();
         }
+
         function onBrightnessCtlOff(disabled) {
             root.brightnessDisabled = disabled;
         }
+
+        target: Brightness
     }
 
     Timer {
         id: hideTimer
+
         interval: 1500
         onTriggered: {
             root.visible = false;
@@ -57,8 +62,10 @@ Scope {
 
     Timer {
         id: fadeTimer
-        interval: hideTimer.interval - root.animationDuration
+
         property bool shouldFade: false
+
+        interval: hideTimer.interval - root.animationDuration
         onTriggered: {
             shouldFade = true;
         }
@@ -69,64 +76,52 @@ Scope {
 
         PanelWindow {
             id: osd
+
             anchors.right: true
             margins.right: 10
-
             implicitWidth: root.brightnessDisabled ? 80 : 140
             implicitHeight: 400
             color: "transparent"
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.exclusiveZone: 0
-            mask: Region {}
-
-            Behavior on implicitWidth {
-                NumberAnimation {
-                    duration: root.animationDuration
-                    easing.type: Easing.BezierSpline
-                    easing.bezierCurve: Theme.anim.curves.standard
-                }
-            }
 
             Rectangle {
                 id: rect
+
                 anchors.fill: parent
-                radius: Theme.rounding.small
+                radius: Theme.rounding.xs
                 color: Colors.current.secondary_container
-
-                opacity: 0.0
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: root.animationDuration
-                    }
-                }
-
-                Component.onCompleted: function () {
+                opacity: 0
+                Component.onCompleted: function() {
                     Qt.callLater(() => {
-                        this.opacity = 1.0;
+                        this.opacity = 1;
                     });
                 }
 
                 Connections {
-                    target: root
                     function onVisibleChanged() {
                         if (root.visible) {
-                            rect.opacity = 1.0;
+                            rect.opacity = 1;
                             fadeTimer.shouldFade = false;
                         }
                     }
+
+                    target: root
                 }
 
                 Connections {
-                    target: fadeTimer
                     function onShouldFadeChanged() {
-                        if (fadeTimer.shouldFade) {
+                        if (fadeTimer.shouldFade)
                             rect.opacity = 0;
-                        }
+
                     }
+
+                    target: fadeTimer
                 }
 
                 RowLayout {
+                    spacing: 10
+
                     anchors {
                         top: parent.top
                         left: parent.left
@@ -135,27 +130,27 @@ Scope {
                         leftMargin: 10
                         rightMargin: 10
                     }
-                    spacing: 10
 
                     Rectangle {
                         id: volume
+
+                        property real barHeight: volume.height * (Audio.volume > 1 ? 1 : Audio.volume) || 0.1
+
                         implicitHeight: 380
                         implicitWidth: root.brightnessDisabled ? (osd.width - 20) : (osd.width - 30) / 2
-                        radius: rect.radius
+                        radius: Theme.rounding.xs
                         color: Colors.current.primary_container
 
-                        property real barHeight: volume.height * (Audio.volume > 1.0 ? 1.0 : Audio.volume) || 0.1
-
                         Rectangle {
+                            height: volume.barHeight
+                            radius: Theme.rounding.xs
+                            color: Audio.muted ? Colors.current.primary_container : (Audio.isOverdrive ? Colors.current.on_error_container : Colors.current.on_primary_container)
+
                             anchors {
                                 left: parent.left
                                 right: parent.right
                                 bottom: parent.bottom
                             }
-
-                            height: volume.barHeight
-                            radius: parent.radius
-                            color: Audio.muted ? Colors.current.primary_container : (Audio.isOverdrive ? Colors.current.on_error_container : Colors.current.on_primary_container)
 
                             Text {
                                 visible: Audio.isOverdrive
@@ -170,14 +165,16 @@ Scope {
                             }
 
                             MaterialSymbol {
+                                colorAnimated: true
+                                icon: Audio.volume == 0 || Audio.muted ? "volume_off" : (Audio.volume >= 0.5 ? "volume_up" : "volume_down")
+                                fontColor: Audio.isOverdrive ? Colors.current.error_container : (Audio.volume <= 0.1 || Audio.muted ? Colors.current.on_primary_container : Colors.current.primary_container)
+
                                 anchors {
                                     bottomMargin: 2
                                     bottom: parent.bottom
                                     horizontalCenter: parent.horizontalCenter
                                 }
-                                colorAnimated: true
-                                icon: Audio.volume == 0 || Audio.muted ? "volume_off" : (Audio.volume >= 0.5 ? "volume_up" : "volume_down")
-                                fontColor: Audio.isOverdrive ? Colors.current.error_container : (Audio.volume <= 0.1 || Audio.muted ? Colors.current.on_primary_container : Colors.current.primary_container)
+
                             }
 
                             Behavior on height {
@@ -186,6 +183,7 @@ Scope {
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }
+
                             }
 
                             Behavior on color {
@@ -194,54 +192,86 @@ Scope {
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.standard
                                 }
+
                             }
+
                         }
+
                     }
 
                     Rectangle {
                         id: brightness
-                        visible: !root.brightnessDisabled
-                        implicitWidth: (osd.width - 30) / 2
-                        implicitHeight: 380
-                        radius: rect.radius
-                        color: Colors.current.primary_container
 
                         property real barHeight: height * (root.currentBrightness / 100) || 0.1
 
+                        visible: !root.brightnessDisabled
+                        implicitWidth: (osd.width - 30) / 2
+                        implicitHeight: 380
+                        radius: Theme.rounding.xs
+                        color: Colors.current.primary_container
+
                         Rectangle {
+                            height: brightness.barHeight
+                            radius: Theme.rounding.xs
+                            color: Colors.current.on_primary_container
+
                             anchors {
                                 left: parent.left
                                 right: parent.right
                                 bottom: parent.bottom
                             }
 
-                            height: brightness.barHeight
-                            radius: parent.radius
-                            color: Colors.current.on_primary_container
-
                             MaterialSymbol {
+                                colorAnimated: true
+                                icon: getBrightnessIcon(root.currentBrightness)
+                                fontColor: root.currentBrightness <= 5 ? parent.color : Colors.current.primary_container
+
                                 anchors {
                                     bottomMargin: 2
                                     bottom: parent.bottom
                                     horizontalCenter: parent.horizontalCenter
                                 }
-                                colorAnimated: true
-                                icon: getBrightnessIcon(root.currentBrightness)
-                                fontColor: root.currentBrightness <= 5 ? parent.color : Colors.current.primary_container
+
                             }
 
                             Behavior on height {
-
                                 NumberAnimation {
                                     duration: root.animationDuration
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }
+
                             }
+
                         }
+
                     }
+
                 }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: root.animationDuration
+                    }
+
+                }
+
             }
+
+            mask: Region {
+            }
+
+            Behavior on implicitWidth {
+                NumberAnimation {
+                    duration: root.animationDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Theme.anim.curves.standard
+                }
+
+            }
+
         }
+
     }
+
 }

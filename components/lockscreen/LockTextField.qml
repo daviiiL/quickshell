@@ -6,6 +6,7 @@ import Quickshell
 
 Rectangle {
     id: root
+    radius: Theme.rounding.xs
 
     property alias text: textInput.text
     property alias placeholderText: placeholder.text
@@ -15,11 +16,15 @@ Rectangle {
     implicitWidth: 300
     implicitHeight: 40
     color: Colors.current.surface_container
-    radius: Theme.rounding.regular
 
     SequentialAnimation {
         id: shakeAnimation
+
         running: root.shake
+        onFinished: {
+            root.shake = false;
+        }
+
         NumberAnimation {
             target: root
             property: "x"
@@ -27,6 +32,7 @@ Rectangle {
             to: root.x + 10
             duration: 50
         }
+
         NumberAnimation {
             target: root
             property: "x"
@@ -34,6 +40,7 @@ Rectangle {
             to: root.x - 10
             duration: 100
         }
+
         NumberAnimation {
             target: root
             property: "x"
@@ -41,6 +48,7 @@ Rectangle {
             to: root.x + 10
             duration: 100
         }
+
         NumberAnimation {
             target: root
             property: "x"
@@ -48,13 +56,12 @@ Rectangle {
             to: root.x
             duration: 50
         }
-        onFinished: {
-            root.shake = false;
-        }
+
     }
 
     TextInput {
         id: textInput
+
         anchors.fill: parent
         anchors.margins: 10
         echoMode: TextInput.Password
@@ -64,34 +71,34 @@ Rectangle {
         verticalAlignment: TextInput.AlignVCenter
         focus: true
         selectByMouse: true
-
         onTextChanged: {
             Authentication.currentPassword = text;
         }
-
-        Connections {
-            target: Authentication
-            function onCurrentPasswordChanged() {
-                if (Authentication.currentPassword === "") {
-                    textInput.text = "";
-                }
-            }
-        }
-
         Keys.onReturnPressed: {
-            if (text.length > 0) {
+            if (text.length > 0)
                 Authentication.tryUnlock();
-            }
-        }
 
+        }
         Keys.onEscapePressed: {
             textInput.text = "";
             Authentication.clearPassword();
         }
+
+        Connections {
+            function onCurrentPasswordChanged() {
+                if (Authentication.currentPassword === "")
+                    textInput.text = "";
+
+            }
+
+            target: Authentication
+        }
+
     }
 
     Text {
         id: placeholder
+
         anchors.fill: textInput
         text: "Password"
         color: Colors.current.on_surface_variant
@@ -102,9 +109,11 @@ Rectangle {
     }
 
     Connections {
-        target: Authentication
         function onFailed() {
             root.shake = true;
         }
+
+        target: Authentication
     }
+
 }

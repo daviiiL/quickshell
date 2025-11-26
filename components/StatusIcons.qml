@@ -37,7 +37,7 @@ Item {
         anchors.left: parent.left
         animationDuration: 100
         antialiasing: true
-        radius: Theme.rounding.small
+        radius: Theme.rounding.xs
         implicitHeight: 80
 
         ColumnLayout {
@@ -56,7 +56,7 @@ Item {
                     MaterialSymbol {
                         id: bluetoothIcon
                         icon: Bluetooth.powered ? "bluetooth" : "bluetooth_disabled"
-                        fontColor: bluetoothMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_secondary_container
+                        fontColor: bluetoothMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_primary_container
                         iconSize: 15
                         animated: true
 
@@ -82,7 +82,7 @@ Item {
                                 return "Bluetooth off";
                             return Bluetooth.discovering ? "Discovering on" : "Discovering off";
                         }
-                        color: Colors.current.on_secondary_container
+                        color: Colors.current.on_primary_container
                         font.family: Theme.font.style.departureMono
                         font.pointSize: Theme.font.size.regular
                         opacity: container.expanded ? 1.0 : 0.0
@@ -101,7 +101,7 @@ Item {
                     MaterialSymbol {
                         id: networkIcon
                         icon: Network.active ? root.getNetworkIcon(Network.active.strength ?? 0) : "signal_wifi_off"
-                        fontColor: networkMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_secondary_container
+                        fontColor: networkMouseArea.containsMouse ? Colors.current.primary : Colors.current.on_primary_container
                         iconSize: 15
                         animated: true
                         Process {
@@ -122,7 +122,7 @@ Item {
                     Text {
                         id: networkText
                         text: Network.active ? `SSID: ${Network.active?.ssid?.slice(0, 8) || ""}...` : "Disconnected"
-                        color: Colors.current.on_secondary_container
+                        color: Colors.current.on_primary_container
                         font.family: Theme.font.style.departureMono
                         font.pointSize: Theme.font.size.regular
                         opacity: container.expanded ? 1.0 : 0.0
