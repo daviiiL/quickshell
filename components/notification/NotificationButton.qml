@@ -10,11 +10,12 @@ Item {
     height: Theme.bar.width
 
     Rectangle {
+        // scale: mouseArea.containsMouse ? 1.08 : 1
+
         anchors.fill: parent
         anchors.margins: 6
         radius: Theme.rounding.small
         color: mouseArea.containsMouse ? Colors.current.primary_container : "transparent"
-        scale: mouseArea.containsMouse ? 1.08 : 1
 
         MouseArea {
             id: mouseArea
@@ -26,6 +27,7 @@ Item {
                 GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
                 if (GlobalStates.sidebarLeftOpen)
                     Notifications.markAllRead();
+
             }
         }
 
@@ -43,6 +45,7 @@ Item {
                     easing.type: Easing.BezierSpline
                     easing.bezierCurve: Theme.anim.curves.emphasized
                 }
+
             }
 
             Behavior on fontColor {
@@ -51,7 +54,9 @@ Item {
                     easing.type: Easing.BezierSpline
                     easing.bezierCurve: Theme.anim.curves.standard
                 }
+
             }
+
         }
 
         // Unread badge
@@ -74,6 +79,7 @@ Item {
                 font.pixelSize: 9
                 font.family: Theme.font.style.departureMono_bold
             }
+
         }
 
         Behavior on color {
@@ -82,6 +88,7 @@ Item {
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Theme.anim.curves.standard
             }
+
         }
 
         Behavior on scale {
@@ -90,6 +97,9 @@ Item {
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Theme.anim.curves.emphasized
             }
+
         }
+
     }
+
 }

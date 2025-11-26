@@ -161,42 +161,24 @@ ExpandingContainer {
 
         signal clicked()
 
-        implicitHeight: profileButton.implicitHeight
-        implicitWidth: profileButton.implicitWidth
-        color: "transparent"
+        implicitHeight: profileText.implicitHeight + 12
+        implicitWidth: 140
+        color: profile.isActive ? Colors.current.primary_container : Colors.current.secondary_container
+        radius: Theme.rounding.small
 
-        Rectangle {
-            id: profileButton
-
-            implicitHeight: profileIcon.implicitHeight
-            implicitWidth: profileIcon.implicitWidth + 6
-            color: profile.isActive ? Colors.current.primary_container : Colors.current.secondary_container
-            radius: Theme.rounding.small
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onPressed: profile.clicked()
-            }
-
-            MaterialSymbol {
-                id: profileIcon
-
-                anchors.fill: parent
-                anchors.leftMargin: 3
-                anchors.rightMargin: 3
-                icon: profile.icon
-                fontColor: profile.isActive ? Colors.current.on_primary_container : Colors.current.secondary
-            }
-
+        MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+            onPressed: profile.clicked()
         }
 
         Text {
+            id: profileText
+
             text: profile.profile
-            anchors.left: profileButton.right
-            anchors.leftMargin: 8
-            anchors.verticalCenter: profileButton.verticalCenter
-            color: profile.isActive ? Colors.current.primary : Colors.current.secondary
+            anchors.centerIn: parent
+            horizontalAlignment: Text.AlignHCenter
+            color: profile.isActive ? Colors.current.on_primary_container : Colors.current.on_secondary_container
             font.pointSize: Theme.font.size.regular
             font.family: Theme.font.style.departureMono
         }
