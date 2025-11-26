@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import ".."
 import "../common"
 import "../services"
 import "./widgets"

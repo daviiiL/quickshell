@@ -1,3 +1,4 @@
+import ".."
 pragma Singleton
 import QtQuick
 import Quickshell

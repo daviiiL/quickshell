@@ -18,6 +18,10 @@ Singleton {
     // Other states
     property bool screenLocked: false
     property bool cheatsheetOpen: false
+    
+    // System states
+    property bool isLaptop: true
+
 
     // Signals
     signal showCheatsheet()

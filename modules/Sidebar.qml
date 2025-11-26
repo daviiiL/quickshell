@@ -4,6 +4,7 @@ import Quickshell.Io
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import ".."
 import "../common"
 import "../components"
 

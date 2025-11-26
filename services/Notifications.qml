@@ -6,7 +6,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
 import Qt.labs.platform
-import "../common"
+import ".."
 
 /**
  * Provides extra features not in Quickshell.Services.Notifications:

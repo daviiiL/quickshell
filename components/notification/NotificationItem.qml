@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Notifications
 import "../../services"
+import "../.."
 import "../../common"
 import "../widgets"
 import ".."

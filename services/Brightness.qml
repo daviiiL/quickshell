@@ -1,3 +1,4 @@
+import ".."
 import QtQuick
 import Quickshell
 import Quickshell.Io
@@ -28,9 +29,9 @@ Singleton {
     }
 
     function initialize() {
-        if (!root.isDesktop) {
+        if (!root.isDesktop)
             getBacklightDir.running = true;
-        }
+
     }
 
     function checkInitDone() {
@@ -55,7 +56,6 @@ Singleton {
         checkBattery.running = true;
     }
 
-    // Check if system has a battery (laptop) or not (desktop)
     Process {
         id: checkBattery
 
@@ -66,23 +66,23 @@ Singleton {
                 const hasBattery = this.text.trim().length > 0;
                 root.isDesktop = !hasBattery;
                 root.brightnessCtlOff(root.isDesktop);
-
                 if (!root.isDesktop) {
-                    // Only initialize brightness monitoring on laptops
                     root.initialize();
+                } else {
+                    GlobalStates.isLaptop = false;
                 }
             }
         }
 
         stderr: StdioCollector {
             onStreamFinished: {
-                // If upower fails or returns empty, assume desktop
                 if (this.text.length > 0 || checkBattery.stdout.text.trim().length === 0) {
                     root.isDesktop = true;
                     root.brightnessCtlOff(true);
                 }
             }
         }
+
     }
 
     Process {
@@ -117,6 +117,8 @@ Singleton {
     }
 
     FileView {
+        // console.log("brightness change detected");
+
         id: curBrightness
 
         path: Qt.resolvedUrl(root.curBrightnessPath)
@@ -126,17 +128,15 @@ Singleton {
         onLoaded: {
             if (!root.isDesktop) {
                 root.initialized = false;
-                // console.log("FileView curBrightness read cur", this.text());
                 root.current = this.text();
                 root._curLoaded = true;
                 root.checkInitDone();
             }
         }
         onFileChanged: {
-            if (!root.isDesktop) {
-                // console.log("brightness change detected");
+            if (!root.isDesktop)
                 this.reload();
-            }
+
         }
     }
 

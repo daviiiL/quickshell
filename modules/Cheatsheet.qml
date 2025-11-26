@@ -5,7 +5,8 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Hyprland
-import "../common/"
+import ".."
+import "../common"
 import "../components"
 import "../components/widgets"
 import "../services"

@@ -11,7 +11,6 @@ Item {
     readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - 1) / root.workspacesShown)
     property list<bool> workspaceOccupied: []
 
-    // Fixed button size for compact layout
     property real workspaceButtonSize: 20
     property real activeWorkspaceMargin: 2
     property real indicatorPadding: 4
@@ -53,7 +52,6 @@ Item {
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
     }
 
-    // Workspaces - background highlight for occupied workspaces
     Column {
         z: 1
         anchors.centerIn:root
@@ -110,7 +108,6 @@ Item {
         }
     }
 
-    // Active workspace indicator
     Rectangle {
         z: 2
         radius: Theme.rounding.small
@@ -140,7 +137,6 @@ Item {
         }
     }
 
-    // Workspaces - clickable buttons with indicators
     Column {
         id: workspaceButtons
         z: 3
@@ -159,10 +155,8 @@ Item {
                 onClicked: Hyprland.dispatch(`workspace ${workspaceValue}`)
 
                 Rectangle {
-                    // This creates the horizontal dots for each workspace
                     anchors.centerIn: parent
                     
-                    // width: Theme.bar.width - root.indicatorPadding * 11
                     height: 5
                     width: 5
                     radius: Theme.rounding.small
@@ -185,5 +179,5 @@ Item {
                 }
             }
         }
-    }
+      }
 }
