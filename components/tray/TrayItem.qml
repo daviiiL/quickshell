@@ -25,7 +25,6 @@ Rectangle {
     TapHandler {
         id: trayItemTapHandler
         onTapped: {
-            // console.log(`menu position should be ${root.parentPositions[0] + root.x}, ${root.parentPositions[1] + root.y}`);
             root.trayItemClicked([root.parentPositions[0] + root.x, root.parentPositions[1] + root.y]);
         }
     }

@@ -33,10 +33,8 @@ Singleton {
     }
 
     function hexToQtRgba(hex, alpha = 1.0) {
-        // Remove "#" if present
         hex = hex.toString().replace(/^#/, '');
 
-        // Expand short form (e.g., "f00") to full form ("ff0000")
         if (hex.length === 3) {
             hex = hex.split('').map(c => c + c).join('');
         }

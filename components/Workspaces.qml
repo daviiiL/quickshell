@@ -41,7 +41,6 @@ Item {
         updateWorkspaceOccupied();
     }
 
-    // Scroll to switch workspaces
     WheelHandler {
         onWheel: (event) => {
             if (event.angleDelta.y < 0)

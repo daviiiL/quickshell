@@ -1,8 +1,8 @@
+import "../common/"
+import Qt5Compat.GraphicalEffects
+import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import QtQuick
-import Qt5Compat.GraphicalEffects
-import "../common/"
 
 Scope {
     Variants {
@@ -10,8 +10,8 @@ Scope {
 
         PanelWindow {
             property var modelData
-            screen: modelData
 
+            screen: modelData
             color: "transparent"
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
             WlrLayershell.layer: WlrLayer.Background
@@ -24,17 +24,20 @@ Scope {
             }
 
             Rectangle {
+                implicitWidth: Theme.bar.width
+                color: Colors.current.background
+
                 anchors {
                     top: parent.top
                     left: parent.left
                     bottom: parent.bottom
                 }
 
-                implicitWidth: Theme.bar.width
-                color: Colors.current.background
             }
 
             Rectangle {
+                color: Colors.current.background
+
                 anchors {
                     top: parent.top
                     left: parent.left
@@ -43,18 +46,33 @@ Scope {
                     leftMargin: Theme.bar.width
                 }
 
-                color: Colors.current.background
-
                 Image {
                     id: wallpaperImage
+
                     anchors.fill: parent
                     source: Qt.resolvedUrl("../../../Pictures/wallpapers/Hyprland/SolarizedAngel.png")
                     fillMode: Image.PreserveAspectCrop
                     visible: false
+                    layer.enabled: GlobalStates.screenLocked
+
+                    layer.effect: FastBlur {
+                        radius: GlobalStates.screenLocked ? 64 : 0
+
+                        Behavior on radius {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.normal
+                                easing.type: Easing.OutCubic
+                            }
+
+                        }
+
+                    }
+
                 }
 
                 Rectangle {
                     id: roundedMask
+
                     anchors.fill: wallpaperImage
                     radius: Theme.rounding.large
                     color: "white"
@@ -66,7 +84,11 @@ Scope {
                     source: wallpaperImage
                     maskSource: roundedMask
                 }
+
             }
+
         }
+
     }
+
 }

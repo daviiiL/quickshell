@@ -29,7 +29,6 @@ Item {
         anchors.margins: sidebarPadding
         spacing: sidebarPadding
 
-        // Header
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
@@ -45,7 +44,6 @@ Item {
             }
         }
 
-        // Notification list
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -65,7 +63,6 @@ Item {
                 popup: false
             }
 
-            // Placeholder when list is empty
             Item {
                 anchors.fill: listview
                 visible: opacity > 0
@@ -100,7 +97,6 @@ Item {
                 }
             }
 
-            // Status buttons row
             ButtonGroup {
                 id: statusRow
                 anchors {

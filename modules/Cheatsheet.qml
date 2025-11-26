@@ -129,7 +129,6 @@ Scope {
                         opacity: 0.3
                     }
 
-                    // Tab bar
                     ScrollView {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 45
@@ -172,7 +171,7 @@ Scope {
                             }
                         }
                     }
-                    // Content area
+
                     ScrollView {
                         id: scrollView
                         Layout.fillWidth: true
@@ -386,7 +385,6 @@ Scope {
         }
     }
 
-    // Global signal handlers for triggering the cheatsheet
     Connections {
         target: GlobalStates
 
@@ -406,7 +404,6 @@ Scope {
         }
     }
 
-    // Global shortcuts
     GlobalShortcut {
         name: "cheatsheetToggle"
         description: "Toggle keybinds cheatsheet"

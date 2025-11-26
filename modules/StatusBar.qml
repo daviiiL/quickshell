@@ -28,7 +28,6 @@ Scope {
             implicitWidth: screen.width
             implicitHeight: Theme.statusbar.height
             WlrLayershell.layer: WlrLayer.Top
-            // WlrLayershell.exclusiveZone: Theme.bar.width
 
             Rectangle {
 
@@ -44,7 +43,6 @@ Scope {
                         Layout.fillHeight: true
                     }
 
-                    // Spacer to push sensors to the right
                     Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true

@@ -2,19 +2,6 @@ import Quickshell
 import QtQuick
 import "../../common"
 
-// Rectangle {
-//  color: Colors.current.primaryContainer
-//     anchors {
-//         top: parent.top
-//         bottom: parent.bottom
-//         topMargin: 10
-//         bottomMargin: 10
-//     }
-// }
-// Text {
-//     text: "test"
-//     color: Colors.current.onPrimaryContainer
-// }
 Item {
     id: root
     implicitWidth: 50

@@ -54,7 +54,7 @@ Item {
             var startAngle = (Math.PI / 180) * 270;
             var fullAngle = (Math.PI / 180) * (270 + 360);
             var progressAngle = (Math.PI / 180) * (270 + degree);
-            var epsilon = 0.01; // Small angle in radians
+            var epsilon = 0.01;
 
             ctx.reset();
             if (root.fill) {
@@ -66,13 +66,11 @@ Item {
             ctx.lineCap = 'round';
             ctx.lineWidth = root.lineWidth;
 
-            // Secondary
             ctx.beginPath();
             ctx.arc(x, y, radius, progressAngle + gapAngle, fullAngle - gapAngle);
             ctx.strokeStyle = root.secondaryColor;
             ctx.stroke();
 
-            // Primary (value indication)
             var endAngle = progressAngle + (value > 0 ? 0 : epsilon);
             ctx.beginPath();
             ctx.arc(x, y, radius, startAngle, endAngle);

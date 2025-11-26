@@ -8,12 +8,6 @@ import Quickshell.Services.Notifications
 import Qt.labs.platform
 import ".."
 
-/**
- * Provides extra features not in Quickshell.Services.Notifications:
- *  - Persistent storage
- *  - Popup notifications, with timeout
- *  - Notification groups by app
- */
 Singleton {
     id: root
 
@@ -74,7 +68,6 @@ Singleton {
     property bool popupInhibited: (GlobalStates?.sidebarOpen ?? false) || silent
     property var latestTimeForApp: ({})
 
-    // Path to notifications file
     readonly property string cacheDir: StandardPaths.standardLocations(StandardPaths.CacheLocation)[0].toString().replace("file://", "")
     readonly property string notificationsPath: cacheDir + "/notifications/notifications.json"
 
@@ -92,13 +85,11 @@ Singleton {
     }
 
     onListChanged: {
-        // Update latest time for each app
         root.list.forEach((notif) => {
             if (!root.latestTimeForApp[notif.appName] || notif.time > root.latestTimeForApp[notif.appName]) {
                 root.latestTimeForApp[notif.appName] = Math.max(root.latestTimeForApp[notif.appName] || 0, notif.time);
             }
         });
-        // Remove apps that no longer have notifications
         Object.keys(root.latestTimeForApp).forEach((appName) => {
             if (!root.list.some((notif) => notif.appName === appName)) {
                 delete root.latestTimeForApp[appName];
@@ -108,7 +99,6 @@ Singleton {
 
     function appNameListForGroups(groups) {
         return Object.keys(groups).sort((a, b) => {
-            // Sort by time, descending
             return groups[b].time - groups[a].time;
         });
     }
@@ -125,7 +115,6 @@ Singleton {
                 };
             }
             groups[notif.appName].notifications.push(notif);
-            // Always set to the latest time in the group
             groups[notif.appName].time = latestTimeForApp[notif.appName] || notif.time;
         });
         return groups;
@@ -136,8 +125,6 @@ Singleton {
     property var appNameList: appNameListForGroups(root.groupsByAppName)
     property var popupAppNameList: appNameListForGroups(root.popupGroupsByAppName)
 
-    // Quickshell's notification IDs starts at 1 on each run, while saved notifications
-    // can already contain higher IDs. This is for avoiding id collisions
     property int idOffset
     signal initDone();
     signal notify(notification: var);
@@ -165,7 +152,6 @@ Singleton {
             });
             root.list = [...root.list, newNotifObject];
 
-            // Popup
             if (!root.popupInhibited) {
                 newNotifObject.popup = true;
                 if (notification.expireTimeout != 0) {
@@ -197,7 +183,7 @@ Singleton {
         if (notifServerIndex !== -1) {
             notifServer.trackedNotifications.values[notifServerIndex].dismiss()
         }
-        root.discard(id); // Emit signal
+        root.discard(id);
     }
 
     function discardAllNotifications() {
@@ -257,7 +243,6 @@ Singleton {
     }
 
     Component.onCompleted: {
-        // Ensure cache directory exists
         Quickshell.execDetached(["mkdir", "-p", cacheDir + "/notifications"]);
         refresh()
     }
@@ -270,7 +255,7 @@ Singleton {
             root.list = JSON.parse(fileContents).map((notif) => {
                 return notifComponent.createObject(root, {
                     "notificationId": notif.notificationId,
-                    "actions": [], // Notification actions are meaningless if they're not tracked by the server or the sender is dead
+                    "actions": [],
                     "appIcon": notif.appIcon,
                     "appName": notif.appName,
                     "body": notif.body,
@@ -280,7 +265,6 @@ Singleton {
                     "urgency": notif.urgency,
                 });
             });
-            // Find largest notificationId
             let maxId = 0
             root.list.forEach((notif) => {
                 maxId = Math.max(maxId, notif.notificationId)

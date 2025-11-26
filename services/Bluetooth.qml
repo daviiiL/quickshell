@@ -26,7 +26,6 @@ Singleton {
         stdout: SplitParser {
             onRead: {
                 getInfo.running = true;
-                // getDevices.running = true;
             }
         }
     }

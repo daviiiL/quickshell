@@ -21,7 +21,6 @@ Item {
     implicitWidth: size
     implicitHeight: size
 
-    // Helper properties for easier conditional logic
     readonly property bool isTopLeft: corner === ScreenCorner.CornerEnum.TopLeft
     readonly property bool isBottomLeft: corner === ScreenCorner.CornerEnum.BottomLeft
     readonly property bool isTopRight: corner === ScreenCorner.CornerEnum.TopRight

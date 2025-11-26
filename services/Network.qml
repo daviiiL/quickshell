@@ -12,10 +12,6 @@ Singleton {
 
     reloadableId: "network"
 
-    // Component.onDestruction: {
-    //     getNetworks.running = false;
-    // }
-
     Process {
         running: true
         command: ["nmcli", "m"]

@@ -8,9 +8,6 @@ import "../../common"
 import "../widgets"
 import ".."
 
-/**
- * Individual notification item within a group
- */
 Item {
     id: root
     property var notificationObject
@@ -33,7 +30,6 @@ Item {
     function processNotificationBody(body, appName) {
         let processedBody = body;
 
-        // Clean Chromium-based browsers notifications - remove first line
         if (appName) {
             const lowerApp = appName.toLowerCase();
             const chromiumBrowsers = ["brave", "chrome", "chromium", "vivaldi", "opera", "microsoft edge"];

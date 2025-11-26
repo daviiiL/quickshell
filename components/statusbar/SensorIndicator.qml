@@ -8,7 +8,6 @@ import "../widgets/"
 Item {
     id: root
 
-    // Only show sensors in performance mode
     visible: PowerProfiles.profile != PowerProfile.PowerSaver
 
     implicitWidth: contentRow.implicitWidth + Theme.ui.padding.normal * 2
@@ -26,7 +25,6 @@ Item {
             color: Colors.current.secondary
         }
 
-        // CPU Temperature
         RowLayout {
             spacing: 4
             visible: Sensors.cpuTemp > 0
@@ -41,7 +39,6 @@ Item {
             }
         }
 
-        // GPU Temperature
         RowLayout {
             spacing: 4
             visible: Sensors.gpuTemp > 0
@@ -56,7 +53,6 @@ Item {
             }
         }
 
-        // NVMe Temperature
         RowLayout {
             spacing: 4
             visible: Sensors.nvmeTemp > 0

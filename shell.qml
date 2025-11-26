@@ -11,4 +11,5 @@ ShellRoot {
     Osd {}
     Sidebar {}
     Cheatsheet {}
+    Lockscreen {}
 }

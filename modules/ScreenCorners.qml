@@ -14,7 +14,6 @@ Scope {
             required property var modelData
             property HyprlandMonitor monitor: Hyprland.monitorFor(modelData)
 
-            // Hide when fullscreen - detect if any window is fullscreen on active workspace
             property list<HyprlandWorkspace> workspacesForMonitor: Hyprland.workspaces.values.filter(
                 workspace => workspace.monitor && workspace.monitor.name == monitor.name
             )

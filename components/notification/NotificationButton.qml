@@ -11,8 +11,6 @@ Item {
     height: Theme.bar.width
 
     Rectangle {
-        // scale: mouseArea.containsMouse ? 1.08 : 1
-
         anchors.fill: parent
         anchors.margins: 6
         radius: Theme.rounding.small
@@ -60,7 +58,6 @@ Item {
 
         }
 
-        // Unread badge
         Rectangle {
             visible: Notifications.unread > 0
             anchors.top: parent.top

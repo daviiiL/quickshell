@@ -39,7 +39,6 @@ Scope {
         function onBrightnessChanged(val) {
             root.visible = true;
             root.currentBrightness = val;
-            // console.log("brightness change signal received in osd", root.currentBrightness);
             hideTimer.restart();
             fadeTimer.restart();
         }
@@ -183,7 +182,6 @@ Scope {
 
                             Behavior on height {
                                 NumberAnimation {
-                                    // target: brighnessBar
                                     duration: root.animationDuration
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
@@ -235,7 +233,6 @@ Scope {
                             Behavior on height {
 
                                 NumberAnimation {
-                                    // target: brighnessBar
                                     duration: root.animationDuration
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial

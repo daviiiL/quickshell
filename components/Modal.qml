@@ -9,10 +9,6 @@ Item {
     //NOTE: for now, detached mode results in modal in the center
 
     required property var isDetached
-    //NOTE: either the left top or bottom corner of the rendered window
-    // depending on how close the window is to the screen edges
-    // required property var startX
-    // required property var startY
     required property var screen
     property alias modalAnchors: modalWindow.anchors
     property alias color: modal.color
@@ -56,16 +52,7 @@ Item {
         const h = w * root.hWRatio;
         root.modalWidth = w;
         root.modalHeight = h;
-
-    // root.calculatePosition(h, w);
     }
-
-    // function calculatePosition(h, w) {
-    //     if ((root.startX + h) > screen.height)
-    //         root.startX -= h;
-    //     if ((root.startY + w) > screen.width)
-    //         root.startY -= w;
-    // }
 
     function show() {
         modalLoader.item.visible = true;
@@ -76,7 +63,6 @@ Item {
     }
 
     Component.onCompleted: {
-        //initialize
         root.calculateWindowDimensions();
         root.setAnchorsIfDetached();
     }

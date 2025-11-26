@@ -5,6 +5,5 @@ Rectangle {
 
     implicitWidth: parent.width
     implicitHeight: spacerHeight || 15
-    // color: "red"
     color: "transparent"
 }

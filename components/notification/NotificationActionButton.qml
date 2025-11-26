@@ -4,9 +4,6 @@ import Quickshell.Services.Notifications
 import "../../common"
 import "../widgets"
 
-/**
- * Button for notification actions (close, copy, custom actions)
- */
 Rectangle {
     id: button
     property string buttonText: ""
@@ -67,7 +64,6 @@ Rectangle {
         }
     }
 
-    // Allow custom content item
     Loader {
         anchors.centerIn: parent
         sourceComponent: button.contentItem

@@ -15,11 +15,6 @@ Rectangle {
     implicitHeight: layout.height
     color: "transparent"
 
-    // Component {
-    //     id: popupComponent
-    //     Popups {}
-    // }
-
     Column {
         id: layout
         spacing: 10

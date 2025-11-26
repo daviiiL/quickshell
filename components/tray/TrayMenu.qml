@@ -84,7 +84,6 @@ PanelWindow {
                         enabled: !item.modelData.isSeparator && item.modelData.enabled
                         hoverEnabled: true
                         onClicked: {
-                            // Log the actual coordinates
                             console.log("Menu item clicked:");
                             console.log("  Local x, y:", item.x, item.y);
                             console.log("  Mapped to window:", item.mapToItem(root, 0, 0));

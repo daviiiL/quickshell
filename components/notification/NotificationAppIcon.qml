@@ -24,7 +24,6 @@ MaterialCookie {
 
     color: isUrgent ? Colors.current.error : Colors.current.secondary_container
 
-    // Material symbol when no app icon
     Loader {
         id: materialSymbolLoader
         active: root.appIcon == ""
@@ -41,7 +40,6 @@ MaterialCookie {
         }
     }
 
-    // App icon when available and no image
     Loader {
         id: appIconLoader
         active: root.image == "" && root.appIcon != ""
@@ -54,7 +52,6 @@ MaterialCookie {
         }
     }
 
-    // Notification image when available
     Loader {
         id: notifImageLoader
         active: root.image != ""

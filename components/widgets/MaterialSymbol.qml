@@ -18,7 +18,6 @@ Text {
 
     font.family: "Material Symbols Rounded"
     font.hintingPreference: Font.PreferFullHinting
-    // see https://m3.material.io/styles/typography/editorial-treatments#e9bac36c-e322-415f-a182-264a2f2b70f0
     font.variableAxes: {
         "FILL": root.fill,
         "opsz": root.fontInfo.pixelSize,

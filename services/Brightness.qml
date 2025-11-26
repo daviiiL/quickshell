@@ -5,8 +5,6 @@ import Quickshell.Io
 pragma Singleton
 
 Singleton {
-    //getBrightness();
-
     id: root
 
     property real current
@@ -37,18 +35,13 @@ Singleton {
     function checkInitDone() {
         if (root._curLoaded && root._maxLoaded) {
             root.initialized = true;
-            // console.log("Brightness initialized", root.initialized);
             root.refresh();
         }
-        // else
-        // console.log("brightness NOT initialized, val", root.initialized);
-        // NOTE: this is a test behavior... don't use yet
         root.brightnessInitialized(root.initialized);
     }
 
     function refresh() {
         const percentage = ((root.current / root.max) * 100).toPrecision(4);
-        // console.log("BRIGHTNESS: signaling change", percentage);
         root.brightnessChanged(percentage);
     }
 
@@ -108,7 +101,6 @@ Singleton {
         onLoaded: {
             if (!root.isDesktop) {
                 root.initialized = false;
-                // console.log("FileView maxBrightness read max", this.text());
                 root.max = this.text();
                 root._maxLoaded = true;
                 root.checkInitDone();
@@ -117,8 +109,6 @@ Singleton {
     }
 
     FileView {
-        // console.log("brightness change detected");
-
         id: curBrightness
 
         path: Qt.resolvedUrl(root.curBrightnessPath)
@@ -141,15 +131,6 @@ Singleton {
     }
 
     Process {
-        // console.log(JSON.stringify({
-        //     rootPath: root.backlightDevPath,
-        //     maxPath: root.maxBrightnessPath,
-        //     curPath: root.curBrightnessPath
-        // }));
-        // onExited: {
-        //     console.log("process getBacklightDir exited");
-        // }
-
         id: getBacklightDir
 
         command: ["sh", "-c", "ls /sys/class/backlight | head -n 1"]

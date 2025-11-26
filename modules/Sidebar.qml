@@ -8,7 +8,7 @@ import ".."
 import "../common"
 import "../components"
 
-Scope { // Scope
+Scope {
     id: root
     property bool detach: false
     property Component contentComponent: SidebarComponent {}
@@ -23,14 +23,14 @@ Scope { // Scope
 
     onDetachChanged: {
         if (root.detach) {
-            sidebarContent.parent = null; // Detach content from sidebar
-            sidebarLoader.active = false; // Unload sidebar
-            detachedSidebarLoader.active = true; // Load detached window
+            sidebarContent.parent = null;
+            sidebarLoader.active = false;
+            detachedSidebarLoader.active = true;
             detachedSidebarLoader.item.contentParent.children = [sidebarContent];
         } else {
-            sidebarContent.parent = null; // Detach content from window
-            detachedSidebarLoader.active = false; // Unload detached window
-            sidebarLoader.active = true; // Load sidebar
+            sidebarContent.parent = null;
+            detachedSidebarLoader.active = false;
+            sidebarLoader.active = true;
             sidebarLoader.item.contentParent.children = [sidebarContent];
         }
     }
@@ -39,7 +39,7 @@ Scope { // Scope
         id: sidebarLoader
         active: true
 
-        sourceComponent: PanelWindow { // Window
+        sourceComponent: PanelWindow {
             id: sidebarRoot
             visible: GlobalStates.sidebarLeftOpen
 
@@ -69,12 +69,11 @@ Scope { // Scope
                 item: sidebarLeftBackground
             }
 
-            HyprlandFocusGrab { // Click outside to close
+            HyprlandFocusGrab {
                 id: grab
                 windows: [sidebarRoot]
                 active: sidebarRoot.visible
                 onActiveChanged: {
-                    // Focus the selected tab
                     if (active)
                         sidebarLeftBackground.children[0].focusActiveItem();
                 }
@@ -84,7 +83,6 @@ Scope { // Scope
                 }
             }
 
-            // Content
             Rectangle {
                 id: sidebarLeftBackground
                 anchors.top: parent.top

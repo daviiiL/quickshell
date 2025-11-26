@@ -36,7 +36,6 @@ ExpandingContainer {
         anchors.left: parent.left
         anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter
-        // Glow effect when charging using brighter theme color
         primaryColor: Power.onBattery ? Colors.current.on_secondary_container : Colors.current.primary_fixed
 
         transform: Rotation {
@@ -56,7 +55,6 @@ ExpandingContainer {
 
         }
 
-        // Pulsing animation when charging
         SequentialAnimation on opacity {
             running: !Power.onBattery
             loops: Animation.Infinite

@@ -36,7 +36,6 @@ Singleton {
         stderr: StdioCollector {
             onStreamFinished: {
                 if (this.text.length > 0) {
-                    // Filter out trivial warnings
                     const filteredErrors = this.text.split('\n').filter(line => !line.includes("Can't get value of subfeature") && !line.includes("Can't read") && line.trim().length > 0).join('\n');
 
                     if (filteredErrors.length > 0) {
@@ -54,7 +53,6 @@ Singleton {
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
 
-            // AMD
             if (line.startsWith('Tctl:')) {
                 const match = line.match(/\+?(-?\d+\.?\d*)°C/);
                 if (match) {
@@ -62,7 +60,6 @@ Singleton {
                 }
             }
 
-            // Intel
             if (line.startsWith('Package id 0:')) {
                 const match = line.match(/\+?(-?\d+\.?\d*)°C/);
                 if (match) {
