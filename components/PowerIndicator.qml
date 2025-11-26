@@ -1,35 +1,47 @@
-import QtQuick
-import QtQuick.Layouts
-import Quickshell
 import "../common/"
 import "../services/"
 import "./widgets"
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
 
 ExpandingContainer {
     id: root
+
+    function formatTime(seconds) {
+        if (seconds <= 0)
+            return "--:--";
+
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor((seconds % 3600) / 60);
+        if (hours > 0)
+            return hours + "h " + minutes + "m";
+        else
+            return minutes + "m";
+    }
 
     implicitHeight: 30
     collapsedWidth: Theme.bar.width
     expandedWidth: Theme.bar.width * 4
     collapsedHeight: root.implicitHeight
     expandedHeight: root.expandedWidth
-
     color: Colors.current.background
     verticalExpansion: true
     animationDuration: 250
 
     CircularProgress {
         id: progressIndicator
+
         value: Power.percentage
         anchors.left: parent.left
         anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter
-
         // Glow effect when charging using brighter theme color
         primaryColor: Power.onBattery ? Colors.current.on_secondary_container : Colors.current.primary_fixed
 
         transform: Rotation {
             id: rotation
+
             origin.x: progressIndicator.width / 2
             origin.y: progressIndicator.height / 2
             angle: root.expanded ? -360 : 0
@@ -39,7 +51,9 @@ ExpandingContainer {
                     duration: root.animationDuration * 1.5
                     easing.type: Easing.OutCubic
                 }
+
             }
+
         }
 
         // Pulsing animation when charging
@@ -48,38 +62,35 @@ ExpandingContainer {
             loops: Animation.Infinite
 
             NumberAnimation {
-                from: 1.0
+                from: 1
                 to: 0.4
                 duration: 1000
                 easing.type: Easing.InOutSine
             }
+
             NumberAnimation {
                 from: 0.4
-                to: 1.0
+                to: 1
                 duration: 1000
                 easing.type: Easing.InOutSine
             }
+
         }
+
     }
 
     Rectangle {
         id: contentContainer
-        anchors {
-            left: progressIndicator.right
-            top: parent.top
-            bottom: parent.bottom
-            right: parent.right
-        }
 
         color: root.color
         radius: Theme.rounding.regular
         opacity: root.expanded ? 1 : 0
 
-        Behavior on opacity {
-            NumberAnimation {
-                duration: root.animationDuration
-                easing.type: Easing.OutCubic
-            }
+        anchors {
+            left: progressIndicator.right
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
         }
 
         ColumnLayout {
@@ -89,9 +100,11 @@ ExpandingContainer {
 
             Text {
                 id: timeText
+
                 text: {
                     if (Power.percentage > 0.999)
                         return "Fully charged";
+
                     return `  ${root.formatTime(Power.timeToGoal)} ${Power.onBattery ? "remaining" : "to full"}`;
                 }
                 color: Colors.current.primary
@@ -101,6 +114,7 @@ ExpandingContainer {
 
             ColumnLayout {
                 id: powerProfiles
+
                 spacing: 10
 
                 PowerProfileButton {
@@ -123,8 +137,19 @@ ExpandingContainer {
                     isActive: Power.currentProfile === "Performance"
                     onClicked: Power.setPowerProfile("Performance")
                 }
+
             }
+
         }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: root.animationDuration
+                easing.type: Easing.OutCubic
+            }
+
+        }
+
     }
 
     component PowerProfileButton: Rectangle {
@@ -133,11 +158,11 @@ ExpandingContainer {
         property string profile
         property string icon
         property bool isActive
-        signal clicked
+
+        signal clicked()
 
         implicitHeight: profileButton.implicitHeight
         implicitWidth: profileButton.implicitWidth
-
         color: "transparent"
 
         Rectangle {
@@ -156,12 +181,14 @@ ExpandingContainer {
 
             MaterialSymbol {
                 id: profileIcon
+
                 anchors.fill: parent
                 anchors.leftMargin: 3
                 anchors.rightMargin: 3
                 icon: profile.icon
                 fontColor: profile.isActive ? Colors.current.on_primary_container : Colors.current.secondary
             }
+
         }
 
         Text {
@@ -173,19 +200,7 @@ ExpandingContainer {
             font.pointSize: Theme.font.size.regular
             font.family: Theme.font.style.departureMono
         }
+
     }
 
-    function formatTime(seconds) {
-        if (seconds <= 0)
-            return "--:--";
-
-        var hours = Math.floor(seconds / 3600);
-        var minutes = Math.floor((seconds % 3600) / 60);
-
-        if (hours > 0) {
-            return hours + "h " + minutes + "m";
-        } else {
-            return minutes + "m";
-        }
-    }
 }

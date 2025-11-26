@@ -1,13 +1,13 @@
-import Quickshell
-import Quickshell.Wayland
-import Quickshell.Hyprland
-import Quickshell.Services.SystemTray
-import QtQuick
+import "../common"
 import "../components"
 import "../components/notification"
-import "../components/widgets"
 import "../components/tray"
-import "../common"
+import "../components/widgets"
+import QtQuick
+import Quickshell
+import Quickshell.Hyprland
+import Quickshell.Services.SystemTray
+import Quickshell.Wayland
 
 Scope {
     Variants {
@@ -21,6 +21,11 @@ Scope {
             property bool powerIndicatorExpanded: false
 
             screen: modelData
+            color: "transparent"
+            implicitWidth: Theme.bar.maxWidth
+            implicitHeight: modelData.height
+            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.exclusiveZone: Theme.bar.width
 
             anchors {
                 top: true
@@ -28,13 +33,92 @@ Scope {
                 bottom: true
             }
 
-            color: "transparent"
-            implicitWidth: Theme.bar.maxWidth
-            implicitHeight: modelData.height
-            WlrLayershell.layer: WlrLayer.Top
-            WlrLayershell.exclusiveZone: Theme.bar.width
+            Rectangle {
+                color: Colors.current.background
+                implicitWidth: parent.width / 4
+
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    bottom: parent.bottom
+                }
+
+                VerticalSpacer {
+                    id: top_spacer
+
+                    spacerHeight: 10
+                    anchors.top: parent.top
+                }
+
+                Workspaces {
+                    id: workspaces
+
+                    anchors {
+                        top: top_spacer.bottom
+                        left: parent.left
+                        right: parent.right
+                    }
+
+                }
+
+                Tray {
+                    id: tray
+
+                    anchors.bottom: notificationButton.top
+                }
+
+                NotificationButton {
+                    id: notificationButton
+
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        bottom: statusIcons.top
+                    }
+
+                }
+
+                StatusIcons {
+                    id: statusIcons
+
+                    anchors.bottom: clock.top
+
+                    Connections {
+                        function onExpandedChanged() {
+                            bar.statusIconsExpanded = statusIcons.expanded;
+                        }
+
+                        target: statusIcons
+                    }
+
+                }
+
+                ClockWidget {
+                    id: clock
+
+                    anchors.bottom: powerIndicator.top
+                }
+
+                PowerIndicator {
+                    id: powerIndicator
+
+                    anchors.bottom: bottom_spacer.top
+                    onExpandedChanged: {
+                        bar.powerIndicatorExpanded = expanded;
+                    }
+                }
+
+                VerticalSpacer {
+                    id: bottom_spacer
+
+                    spacerHeight: 30
+                    anchors.bottom: parent.bottom
+                }
+
+            }
 
             mask: Region {
+
                 item: Rectangle {
                     width: bar.statusIconsExpanded || bar.powerIndicatorExpanded ? Theme.bar.width * 4 : Theme.bar.width
                     height: bar.height
@@ -44,81 +128,15 @@ Scope {
                             duration: 300
                             easing.type: Easing.BezierSpline
                         }
+
                     }
+
                 }
+
             }
 
-            Rectangle {
-
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    bottom: parent.bottom
-                }
-
-                color: Colors.current.background
-                implicitWidth: parent.width / 4
-
-                VerticalSpacer {
-                    id: top_spacer
-                    spacerHeight: 10
-                    anchors.top: parent.top
-                }
-
-                Workspaces {
-                    id: workspaces
-                    anchors {
-                        top: top_spacer.bottom
-                        left: parent.left
-                        right: parent.right
-                    }
-                }
-
-                Tray {
-                    id: tray
-                    anchors.bottom: notificationButton.top
-                }
-
-                NotificationButton {
-                    id: notificationButton
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        bottom: statusIcons.top
-                    }
-                }
-
-                StatusIcons {
-                    id: statusIcons
-                    anchors.bottom: clock.top
-
-                    Connections {
-                        target: statusIcons
-                        function onExpandedChanged() {
-                            bar.statusIconsExpanded = statusIcons.expanded;
-                        }
-                    }
-                }
-
-                ClockWidget {
-                    id: clock
-                    anchors.bottom: powerIndicator.top
-                }
-
-                PowerIndicator {
-                    id: powerIndicator
-                    anchors.bottom: bottom_spacer.top
-
-                    onExpandedChanged: {
-                        bar.powerIndicatorExpanded = expanded;
-                    }
-                }
-                VerticalSpacer {
-                    id: bottom_spacer
-                    spacerHeight: 30
-                    anchors.bottom: parent.bottom
-                }
-            }
         }
+
     }
+
 }

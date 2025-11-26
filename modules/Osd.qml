@@ -13,6 +13,7 @@ Scope {
     property real currentBrightness: 0
     property bool visible: false
     property int animationDuration: 100
+    property bool brightnessDisabled: false
 
     function getBrightnessIcon(val) {
         const numString = (val * 0.05 >= 1 ? val * 0.05 : 1).toFixed(0);
@@ -42,6 +43,9 @@ Scope {
             hideTimer.restart();
             fadeTimer.restart();
         }
+        function onBrightnessCtlOff(disabled) {
+            root.brightnessDisabled = disabled;
+        }
     }
 
     Timer {
@@ -69,12 +73,20 @@ Scope {
             anchors.right: true
             margins.right: 10
 
-            implicitWidth: 140
+            implicitWidth: root.brightnessDisabled ? 80 : 140
             implicitHeight: 400
             color: "transparent"
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.exclusiveZone: 0
             mask: Region {}
+
+            Behavior on implicitWidth {
+                NumberAnimation {
+                    duration: root.animationDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Theme.anim.curves.standard
+                }
+            }
 
             Rectangle {
                 id: rect
@@ -129,7 +141,7 @@ Scope {
                     Rectangle {
                         id: volume
                         implicitHeight: 380
-                        implicitWidth: (osd.width - 30) / 2
+                        implicitWidth: root.brightnessDisabled ? (osd.width - 20) : (osd.width - 30) / 2
                         radius: rect.radius
                         color: Colors.current.primary_container
 
@@ -190,6 +202,7 @@ Scope {
 
                     Rectangle {
                         id: brightness
+                        visible: !root.brightnessDisabled
                         implicitWidth: (osd.width - 30) / 2
                         implicitHeight: 380
                         radius: rect.radius
