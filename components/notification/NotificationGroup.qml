@@ -120,8 +120,8 @@ MouseArea {
         id: background
         anchors.left: parent.left
         width: parent.width
-        color: Colors.current.surface_container_low
-        radius: Theme.rounding.regular
+        color: Colors.current.primary_container
+        radius: Theme.rounding.xs
         anchors.leftMargin: root.xOffset
 
         Behavior on anchors.leftMargin {
@@ -134,7 +134,7 @@ MouseArea {
         }
 
         clip: true
-        implicitHeight: expanded ? row.implicitHeight + padding * 2 : Math.min(80, row.implicitHeight + padding * 2)
+        implicitHeight: expanded ? row.implicitHeight + padding * 2 : Math.min(90, row.implicitHeight + padding * 2)
 
         Behavior on implicitHeight {
             id: implicitHeightAnim
@@ -186,7 +186,8 @@ MouseArea {
                 Item {
                     id: topRow
                     Layout.fillWidth: true
-                    property real fontSize: Theme.font.size.small
+                    Layout.preferredHeight: implicitHeight
+                    property real fontSize: Theme.font.size.regular + 3
                     property bool showAppName: root.multipleNotifications
                     implicitHeight: Math.max(topTextRow.implicitHeight, expandButton.implicitHeight)
 
@@ -202,8 +203,8 @@ MouseArea {
                             elide: Text.ElideRight
                             Layout.fillWidth: true
                             text: (topRow.showAppName ? notificationGroup?.appName : notificationGroup?.notifications[0]?.summary) || ""
-                            font.pixelSize: topRow.showAppName ? topRow.fontSize : Theme.font.size.regular
-                            color: topRow.showAppName ? Colors.current.on_surface_variant : Colors.current.on_surface
+                            font.pixelSize: topRow.showAppName ? topRow.fontSize : Theme.font.size.regular + 3
+                            color: Colors.current.on_primary_container
                         }
 
                         StyledText {
@@ -212,7 +213,8 @@ MouseArea {
                             horizontalAlignment: Text.AlignLeft
                             text: NotificationUtils.getFriendlyNotifTimeString(notificationGroup?.time)
                             font.pixelSize: topRow.fontSize
-                            color: Colors.current.on_surface_variant
+                            color: Colors.current.on_primary_container
+                            opacity: 0.7
                         }
                     }
 

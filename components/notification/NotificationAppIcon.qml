@@ -22,7 +22,7 @@ MaterialCookie {
     sides: isUrgent ? 10 : 0
     amplitude: implicitSize / 24
 
-    color: isUrgent ? Colors.current.error : Colors.current.secondary_container
+    color: isUrgent ? Colors.current.error : "transparent"
 
     Loader {
         id: materialSymbolLoader
@@ -30,13 +30,12 @@ MaterialCookie {
         anchors.centerIn: parent
         sourceComponent: MaterialSymbol {
             icon: {
-                const defaultIcon = NotificationUtils.findSuitableMaterialSymbol("")
-                const guessedIcon = NotificationUtils.findSuitableMaterialSymbol(root.summary)
-                return (root.urgency == NotificationUrgency.Critical && guessedIcon === defaultIcon) ?
-                    "priority_high" : guessedIcon
+                const defaultIcon = NotificationUtils.findSuitableMaterialSymbol("");
+                const guessedIcon = NotificationUtils.findSuitableMaterialSymbol(root.summary);
+                return (root.urgency == NotificationUrgency.Critical && guessedIcon === defaultIcon) ? "priority_high" : guessedIcon;
             }
             iconSize: root.materialIconSize
-            fontColor: isUrgent ? Colors.current.on_error : Colors.current.on_secondary_container
+            fontColor: isUrgent ? Colors.current.on_error : Colors.current.on_primary_container
         }
     }
 

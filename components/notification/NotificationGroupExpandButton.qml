@@ -21,7 +21,7 @@ Rectangle {
     radius: height / 2
     scale: mouseArea.pressed ? 0.94 : (mouseArea.containsMouse ? 1.04 : 1.0)
 
-    color: mouseArea.containsMouse ? Colors.current.surface_container_high : Colors.current.surface_container
+    color: mouseArea.containsMouse ? Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.16) : Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.08)
 
     Behavior on color {
         ColorAnimation {
@@ -62,13 +62,13 @@ Rectangle {
             visible: root.count > 1
             text: root.count
             font.pixelSize: root.fontSize
-            color: Colors.current.on_surface
+            color: Colors.current.on_primary_container
         }
 
         MaterialSymbol {
             icon: "keyboard_arrow_down"
             iconSize: root.iconSize
-            fontColor: Colors.current.on_surface
+            fontColor: Colors.current.on_primary_container
             rotation: expanded ? 180 : 0
 
             Behavior on rotation {

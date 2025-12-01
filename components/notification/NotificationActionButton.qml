@@ -19,7 +19,7 @@ Rectangle {
 
     color: (urgency == NotificationUrgency.Critical) ?
         (mouseArea.containsMouse ? Colors.current.error_container : Colors.current.error) :
-        (mouseArea.containsMouse ? Colors.current.surface_container_high : Colors.current.surface_container)
+        (mouseArea.containsMouse ? Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.16) : Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.08))
 
     Behavior on color {
         ColorAnimation {
@@ -58,7 +58,7 @@ Rectangle {
             width: Math.min(implicitWidth, button.width - 16)
             text: buttonText
             font.pixelSize: Theme.font.size.small
-            color: (urgency == NotificationUrgency.Critical) ? Colors.current.on_error : Colors.current.on_surface
+            color: (urgency == NotificationUrgency.Critical) ? Colors.current.on_error : Colors.current.on_primary_container
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
         }

@@ -113,7 +113,7 @@ Item {
         id: background
         width: parent.width
         anchors.left: parent.left
-        radius: Theme.rounding.small
+        radius: Theme.rounding.xs
         anchors.leftMargin: root.xOffset
 
         Behavior on anchors.leftMargin {
@@ -125,7 +125,7 @@ Item {
             }
         }
 
-        color: (expanded && !onlyNotification) ? (notificationObject.urgency == NotificationUrgency.Critical) ? Colors.current.error_container : Colors.current.surface_container_high : Colors.current.surface_container
+        color: (expanded && !onlyNotification) ? (notificationObject.urgency == NotificationUrgency.Critical) ? Colors.current.error_container : Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.b, 0.12) : Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.b, 0.08)
 
         implicitHeight: expanded ? (contentColumn.implicitHeight + padding * 2) : summaryRow.implicitHeight
 
@@ -162,7 +162,7 @@ Item {
                     Layout.fillWidth: summaryTextMetrics.width >= summaryRow.implicitWidth * root.summaryElideRatio
                     visible: !root.onlyNotification
                     font.pixelSize: root.fontSize
-                    color: Colors.current.on_surface
+                    color: Colors.current.on_primary_container
                     elide: Text.ElideRight
                     text: root.notificationObject.summary || ""
                 }
@@ -181,7 +181,7 @@ Item {
                     }
 
                     font.pixelSize: root.fontSize
-                    color: Colors.current.on_surface_variant
+                    color: Colors.current.on_primary_container
                     elide: Text.ElideRight
                     wrapMode: Text.Wrap
                     maximumLineCount: 1
@@ -201,7 +201,7 @@ Item {
                     id: notificationBodyText
                     Layout.fillWidth: true
                     font.pixelSize: root.fontSize
-                    color: Colors.current.on_surface_variant
+                    color: root.notificationObject.urgency == NotificationUrgency.Critical ? Colors.current.on_error_container : Colors.current.on_primary_container
                     wrapMode: Text.Wrap
                     elide: Text.ElideRight
                     textFormat: Text.RichText

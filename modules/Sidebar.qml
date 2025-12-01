@@ -87,18 +87,17 @@ Scope {
                 id: sidebarLeftBackground
                 anchors.top: parent.top
                 anchors.left: parent.left
-                anchors.topMargin: hyprlandGapsOut
-                anchors.leftMargin: hyprlandGapsOut
+                // anchors.topMargin: hyprlandGapsOut
+                // anchors.leftMargin: hyprlandGapsOut
                 width: sidebarRoot.sidebarWidth - hyprlandGapsOut - elevationMargin
-                height: parent.height - hyprlandGapsOut * 2
+                height: parent.height
 
                 color: Colors.current.background
                 border {
                     width: 1
                     color: Colors.current.secondary_container
                 }
-                radius: Theme.rounding.large - hyprlandGapsOut + 1
-
+                radius: Theme.rounding.xs
                 Behavior on width {
 
                     NumberAnimation {
