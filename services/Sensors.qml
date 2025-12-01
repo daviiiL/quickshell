@@ -18,7 +18,7 @@ Singleton {
 
     Timer {
         id: refreshTimer
-        interval: 5000
+        interval: 1000
         running: root.shouldRunSensors
         repeat: true
         onTriggered: readSensors.running = true

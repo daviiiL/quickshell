@@ -22,7 +22,7 @@ Item {
         }
 
         Rectangle {
-            color: root.progress > 70 ? Colors.current.error : Colors.current.on_secondary_container
+            color: root.value > 90 ? "red" : root.value > 70 ? Colors.current.error : Colors.current.on_secondary_container
             anchors {
                 left: parent.left
                 top: parent.top
