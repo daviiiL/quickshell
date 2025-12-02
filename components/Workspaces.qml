@@ -19,22 +19,46 @@ Item {
     implicitHeight: workspaceButtonSize * root.workspacesShown
 
     function updateWorkspaceOccupied() {
-        workspaceOccupied = Array.from({ length: root.workspacesShown }, (_, i) => {
+        workspaceOccupied = Array.from({
+            length: root.workspacesShown
+        }, (_, i) => {
             return Hyprland.workspaces.values.some(ws => ws.id === workspaceGroup * root.workspacesShown + i + 1);
-        })
+        });
+    }
+
+    function convertToRomanNumerals(val) {
+        let res = "";
+        while (val >= 10) {
+            res += "X";
+            val -= 10;
+        }
+
+        if (val == 9) {
+            res += "IX";
+        } else {
+            if (val >= 5) {
+                res += "V";
+                val -= 5;
+            }
+            while (val > 0) {
+                res += "I";
+                val -= 1;
+            }
+        }
+        return res;
     }
 
     Component.onCompleted: updateWorkspaceOccupied()
     Connections {
         target: Hyprland.workspaces
         function onValuesChanged() {
-            updateWorkspaceOccupied();
+            root.updateWorkspaceOccupied();
         }
     }
     Connections {
         target: Hyprland
         function onFocusedWorkspaceChanged() {
-            updateWorkspaceOccupied();
+            root.updateWorkspaceOccupied();
         }
     }
     onWorkspaceGroupChanged: {
@@ -42,7 +66,7 @@ Item {
     }
 
     WheelHandler {
-        onWheel: (event) => {
+        onWheel: event => {
             if (event.angleDelta.y < 0)
                 Hyprland.dispatch(`workspace r+1`);
             else if (event.angleDelta.y > 0)
@@ -51,17 +75,18 @@ Item {
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
     }
 
+    // Background indicator for occupied workspaces
     Column {
         z: 1
-        anchors.centerIn:root
+        anchors.centerIn: root
         spacing: 0
 
         Repeater {
             model: root.workspacesShown
 
             Item {
-                implicitWidth: workspaceButtonSize
-                implicitHeight: workspaceButtonSize
+                implicitWidth: root.workspaceButtonSize
+                implicitHeight: root.workspaceButtonSize
 
                 Rectangle {
                     id: occupiedBackground
@@ -71,8 +96,8 @@ Item {
                     height: workspaceButtonSize
                     radius: Theme.rounding.small
 
-                    property var previousOccupied: workspaceOccupied[index-1]
-                    property var nextOccupied: workspaceOccupied[index+1]
+                    property var previousOccupied: workspaceOccupied[index - 1]
+                    property var nextOccupied: workspaceOccupied[index + 1]
                     property var radiusPrev: previousOccupied ? 0 : Theme.rounding.small
                     property var radiusNext: nextOccupied ? 0 : Theme.rounding.small
 
@@ -107,9 +132,10 @@ Item {
         }
     }
 
+    // Current workspace indicator rectangle (overlays on the dots)
     Rectangle {
         z: 2
-        radius: Theme.rounding.small
+        radius: Theme.rounding.xs
         color: Colors.current.primary
 
         property real idx1: workspaceIndexInGroup
@@ -136,15 +162,17 @@ Item {
         }
     }
 
+    // Clickable buttons container
     Column {
         id: workspaceButtons
         z: 3
         spacing: 0
-        anchors.centerIn: root 
+        anchors.centerIn: root
 
         Repeater {
             model: root.workspacesShown
 
+            // Individual clickable button for each workspace
             MouseArea {
                 id: button
                 property int workspaceValue: workspaceGroup * root.workspacesShown + index + 1
@@ -153,16 +181,22 @@ Item {
 
                 onClicked: Hyprland.dispatch(`workspace ${workspaceValue}`)
 
+                // Workspace dot indicator
                 Rectangle {
                     anchors.centerIn: parent
-                    
-                    height: 5
-                    width: 5
+
+                    implicitHeight: 10
+                    implicitWidth: 10
+
+                    Text {
+                        text: root.convertToRomanNumerals(button.workspaceValue)
+                        anchors.centerIn: parent
+                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary : (workspaceOccupied[index] ? Colors.current.on_surface : Colors.current.on_surface_variant)
+                    }
+
                     radius: Theme.rounding.small
-                    color: (monitor?.activeWorkspace?.id == button.workspaceValue) ?
-                        Colors.current.on_primary :
-                        (workspaceOccupied[index] ? Colors.current.on_surface :
-                            Colors.current.on_surface_variant)
+                    // color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary : (workspaceOccupied[index] ? Colors.current.on_surface : Colors.current.on_surface_variant)
+                    color: "transparent"
                     opacity: (monitor?.activeWorkspace?.id == button.workspaceValue) ? 1.0 : 0.6
 
                     Behavior on color {
@@ -178,5 +212,5 @@ Item {
                 }
             }
         }
-      }
+    }
 }
