@@ -27,24 +27,17 @@ Item {
     }
 
     function convertToRomanNumerals(val) {
+        const map = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+
         let res = "";
-        while (val >= 10) {
-            res += "X";
-            val -= 10;
+
+        for (const [n, roman] of map) {
+            while (val >= n) {
+                res += roman;
+                val -= n;
+            }
         }
 
-        if (val == 9) {
-            res += "IX";
-        } else {
-            if (val >= 5) {
-                res += "V";
-                val -= 5;
-            }
-            while (val > 0) {
-                res += "I";
-                val -= 1;
-            }
-        }
         return res;
     }
 
@@ -92,7 +85,7 @@ Item {
                     id: occupiedBackground
                     z: 1
                     anchors.centerIn: parent
-                    width: Theme.bar.width - root.indicatorPadding * 6
+                    width: Theme.bar.width - root.indicatorPadding * 4
                     height: workspaceButtonSize
                     radius: Theme.rounding.small
 
@@ -106,7 +99,7 @@ Item {
                     bottomLeftRadius: radiusNext
                     bottomRightRadius: radiusNext
 
-                    color: Colors.current.surface_container_high
+                    color: Colors.current.secondary_container
                     opacity: workspaceOccupied[index] ? 1 : 0
 
                     Behavior on opacity {
@@ -191,7 +184,7 @@ Item {
                     Text {
                         text: root.convertToRomanNumerals(button.workspaceValue)
                         anchors.centerIn: parent
-                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary : (workspaceOccupied[index] ? Colors.current.on_surface : Colors.current.on_surface_variant)
+                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary : (workspaceOccupied[index] ? Colors.current.on_secondary_container : Colors.current.on_background)
                     }
 
                     radius: Theme.rounding.small
