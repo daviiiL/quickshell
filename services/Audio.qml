@@ -10,6 +10,7 @@ Singleton {
     property var tracker: null
 
     Timer {
+        // delays initialization by 10 secs to give audio sink time to initialize when first booting up
         interval: 10000 // 10 seconds
         running: true
         repeat: false
