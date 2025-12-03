@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Hyprland
+import qs
 import qs.common
 import qs.components.widgets
 import qs.services

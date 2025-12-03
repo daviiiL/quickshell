@@ -33,7 +33,7 @@ Scope {
             color: "transparent"
 
             aboveWindows: true
-            focusable: true
+            focusable: false
 
             Rectangle {
                 id: contentRect
