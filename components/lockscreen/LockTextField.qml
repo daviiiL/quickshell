@@ -1,8 +1,6 @@
-import "../../common"
-import "../../services"
 import QtQuick
-import QtQuick.Controls
-import Quickshell
+import qs.common
+import qs.services
 
 Rectangle {
     id: root
@@ -56,7 +54,6 @@ Rectangle {
             to: root.x
             duration: 50
         }
-
     }
 
     TextInput {
@@ -77,7 +74,6 @@ Rectangle {
         Keys.onReturnPressed: {
             if (text.length > 0)
                 Authentication.tryUnlock();
-
         }
         Keys.onEscapePressed: {
             textInput.text = "";
@@ -88,12 +84,10 @@ Rectangle {
             function onCurrentPasswordChanged() {
                 if (Authentication.currentPassword === "")
                     textInput.text = "";
-
             }
 
             target: Authentication
         }
-
     }
 
     Text {
@@ -115,5 +109,4 @@ Rectangle {
 
         target: Authentication
     }
-
 }

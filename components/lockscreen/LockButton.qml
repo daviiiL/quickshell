@@ -1,7 +1,6 @@
-import "../../common"
-import "../widgets"
 import QtQuick
-import Quickshell
+import qs.common
+import qs.components.widgets
 
 Rectangle {
     id: root
@@ -11,7 +10,7 @@ Rectangle {
     property bool isActive: false
     property bool enabled: true
 
-    signal clicked()
+    signal clicked
 
     implicitHeight: buttonText.implicitHeight + 12
     implicitWidth: 100

@@ -1,11 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
-import "../../common"
-import "../widgets"
+import qs.common
+import qs.components.widgets
 
-/**
- * Button for notification status bar (pause, count, clear)
- */
 Rectangle {
     id: button
     property string buttonIcon: ""

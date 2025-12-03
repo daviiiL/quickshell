@@ -16,7 +16,7 @@ Singleton {
                 isBinds = true;
             } else if (isBinds && !line.trim().startsWith("//") && line) {
                 if (line.startsWith("}"))
-                return;
+                    return;
                 console.log(line);
             }
         }

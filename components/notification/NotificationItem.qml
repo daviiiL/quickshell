@@ -1,12 +1,11 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Services.Notifications
-import "../../services"
-import "../.."
-import "../../common"
-import "../widgets"
-import ".."
+import qs
+import qs.components
+import qs.services
+import qs.common
+import qs.components.widgets
 
 Item {
     id: root

@@ -1,7 +1,6 @@
-import "../../common"
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
+import qs.common
 
 Rectangle {
     id: root
@@ -48,5 +47,4 @@ Rectangle {
         anchors.centerIn: parent
         spacing: root.spacing
     }
-
 }

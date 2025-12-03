@@ -1,10 +1,8 @@
-import "../../common"
-import "../../services"
-import "../widgets"
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
-import Quickshell.Io
+import qs.common
+import qs.services
+import qs.components.widgets
 
 MouseArea {
     id: root
@@ -21,17 +19,17 @@ MouseArea {
     anchors.fill: parent
     hoverEnabled: true
     acceptedButtons: Qt.AllButtons
-    onPressed: (mouse) => {
+    onPressed: mouse => {
         passwordField.textInput.forceActiveFocus();
     }
     Component.onCompleted: {
         forceFieldFocus();
     }
-    Keys.onPressed: (event) => {
+    Keys.onPressed: event => {
         const modifierKeys = [Qt.Key_Shift, Qt.Key_Control, Qt.Key_Alt, Qt.Key_Meta, Qt.Key_CapsLock, Qt.Key_NumLock, Qt.Key_ScrollLock, Qt.Key_AltGr, Qt.Key_Super_L, Qt.Key_Super_R];
         if (modifierKeys.includes(event.key)) {
             event.accepted = false;
-            return ;
+            return;
         }
         Authentication.resetClearTimer();
         root.forceFieldFocus();
@@ -78,7 +76,6 @@ MouseArea {
                 Authentication.tryUnlock();
             }
         }
-
     }
 
     LockToolbar {
@@ -110,7 +107,6 @@ MouseArea {
                 font.family: Theme.font.style.departureMono
                 anchors.verticalCenter: parent.verticalCenter
             }
-
         }
 
         Row {
@@ -131,9 +127,6 @@ MouseArea {
                 font.family: Theme.font.style.departureMono
                 anchors.verticalCenter: parent.verticalCenter
             }
-
         }
-
     }
-
 }

@@ -1,8 +1,8 @@
-import "../.."
-import "../../common"
-import "../../services"
-import "../widgets"
 import QtQuick
+import qs
+import qs.common
+import qs.services
+import qs.components.widgets
 
 Item {
     id: root
@@ -26,7 +26,6 @@ Item {
                 GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
                 if (GlobalStates.sidebarLeftOpen)
                     Notifications.markAllRead();
-
             }
         }
 
@@ -44,7 +43,6 @@ Item {
                     easing.type: Easing.BezierSpline
                     easing.bezierCurve: Theme.anim.curves.emphasized
                 }
-
             }
 
             Behavior on fontColor {
@@ -53,9 +51,7 @@ Item {
                     easing.type: Easing.BezierSpline
                     easing.bezierCurve: Theme.anim.curves.standard
                 }
-
             }
-
         }
 
         Rectangle {
@@ -77,7 +73,6 @@ Item {
                 font.pixelSize: 9
                 font.family: Theme.font.style.departureMono_bold
             }
-
         }
 
         Behavior on color {
@@ -86,7 +81,6 @@ Item {
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Theme.anim.curves.standard
             }
-
         }
 
         Behavior on scale {
@@ -95,9 +89,6 @@ Item {
                 easing.type: Easing.BezierSpline
                 easing.bezierCurve: Theme.anim.curves.emphasized
             }
-
         }
-
     }
-
 }

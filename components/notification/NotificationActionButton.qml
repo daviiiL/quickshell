@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Notifications
-import "../../common"
-import "../widgets"
+import qs.common
+import qs.components.widgets
 
 Rectangle {
     id: button
@@ -10,16 +10,14 @@ Rectangle {
     property string urgency: "normal"
     property Component contentItem: null
 
-    signal clicked()
+    signal clicked
 
     Layout.fillWidth: true
     implicitHeight: 34
     radius: Theme.rounding.small
     scale: mouseArea.pressed ? 0.96 : (mouseArea.containsMouse ? 1.02 : 1.0)
 
-    color: (urgency == NotificationUrgency.Critical) ?
-        (mouseArea.containsMouse ? Colors.current.error_container : Colors.current.error) :
-        (mouseArea.containsMouse ? Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.16) : Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.08))
+    color: (urgency == NotificationUrgency.Critical) ? (mouseArea.containsMouse ? Colors.current.error_container : Colors.current.error) : (mouseArea.containsMouse ? Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.16) : Qt.rgba(Colors.current.primary.r, Colors.current.primary.g, Colors.current.primary.b, 0.08))
 
     Behavior on color {
         ColorAnimation {

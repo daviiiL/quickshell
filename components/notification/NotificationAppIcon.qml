@@ -3,8 +3,8 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Notifications
 import "notification_utils.js" as NotificationUtils
-import "../../common"
-import "../widgets"
+import qs.common
+import qs.components.widgets
 
 MaterialCookie {
     id: root

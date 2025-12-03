@@ -1,8 +1,8 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
-import "../../services"
-import "../widgets"
+import qs.services
+import qs.components.widgets
 
 StyledListView {
     id: root

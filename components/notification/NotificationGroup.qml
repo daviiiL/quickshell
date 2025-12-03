@@ -3,10 +3,10 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Notifications
 import "notification_utils.js" as NotificationUtils
-import "../../services"
-import "../../common"
-import "../widgets"
-import ".."
+import qs.components
+import qs.services
+import qs.common
+import qs.components.widgets
 
 MouseArea {
     id: root
@@ -234,7 +234,6 @@ MouseArea {
                 }
 
                 Rectangle {
-                    // Spacer
                     implicitHeight: 15
                 }
 
@@ -242,7 +241,7 @@ MouseArea {
                     id: notificationsColumn
                     implicitHeight: contentHeight
                     Layout.fillWidth: true
-                    spacing: root.expanded ? 5 : 3
+                    spacing: expanded ? 5 : 3
                     interactive: false
 
                     Behavior on spacing {

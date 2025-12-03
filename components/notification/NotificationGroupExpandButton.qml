@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
-import "../../common"
-import "../widgets"
+import qs.common
+import qs.components.widgets
 
 /**
  * Expand button for notification groups
@@ -13,8 +13,8 @@ Rectangle {
     property real fontSize: Theme.font.size.small
     property real iconSize: Theme.font.size.regular
 
-    signal clicked()
-    signal altAction()
+    signal clicked
+    signal altAction
 
     implicitHeight: fontSize + 8
     implicitWidth: Math.max(contentRow.implicitWidth + 10, 30)
@@ -45,7 +45,7 @@ Rectangle {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: (mouse) => {
+        onClicked: mouse => {
             if (mouse.button === Qt.RightButton)
                 root.altAction();
             else

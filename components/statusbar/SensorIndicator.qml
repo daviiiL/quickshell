@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.UPower
-import "../../common/"
-import "../../services/"
-import "../widgets/"
+import qs.common
+import qs.services
+import qs.components.widgets
 
 Item {
     id: root
