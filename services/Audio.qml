@@ -14,7 +14,7 @@ Singleton {
         running: true
         repeat: false
         onTriggered: {
-            root.tracker = trackerComponent.createObject(root)
+            root.tracker = trackerComponent.createObject(root);
         }
     }
 

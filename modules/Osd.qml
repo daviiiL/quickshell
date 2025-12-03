@@ -1,11 +1,10 @@
-import "../common/"
-import "../components"
-import "../components/widgets"
-import "../services/"
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import qs.common
+import qs.components.widgets
+import qs.services
 
 Scope {
     id: root
@@ -92,7 +91,7 @@ Scope {
                 radius: Theme.rounding.xs
                 color: Colors.current.secondary_container
                 opacity: 0
-                Component.onCompleted: function() {
+                Component.onCompleted: function () {
                     Qt.callLater(() => {
                         this.opacity = 1;
                     });
@@ -113,7 +112,6 @@ Scope {
                     function onShouldFadeChanged() {
                         if (fadeTimer.shouldFade)
                             rect.opacity = 0;
-
                     }
 
                     target: fadeTimer
@@ -174,7 +172,6 @@ Scope {
                                     bottom: parent.bottom
                                     horizontalCenter: parent.horizontalCenter
                                 }
-
                             }
 
                             Behavior on height {
@@ -183,7 +180,6 @@ Scope {
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }
-
                             }
 
                             Behavior on color {
@@ -192,11 +188,8 @@ Scope {
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.standard
                                 }
-
                             }
-
                         }
-
                     }
 
                     Rectangle {
@@ -231,7 +224,6 @@ Scope {
                                     bottom: parent.bottom
                                     horizontalCenter: parent.horizontalCenter
                                 }
-
                             }
 
                             Behavior on height {
@@ -240,26 +232,19 @@ Scope {
                                     easing.type: Easing.BezierSpline
                                     easing.bezierCurve: Theme.anim.curves.expressiveFastSpatial
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
 
                 Behavior on opacity {
                     NumberAnimation {
                         duration: root.animationDuration
                     }
-
                 }
-
             }
 
-            mask: Region {
-            }
+            mask: Region {}
 
             Behavior on implicitWidth {
                 NumberAnimation {
@@ -267,11 +252,7 @@ Scope {
                     easing.type: Easing.BezierSpline
                     easing.bezierCurve: Theme.anim.curves.standard
                 }
-
             }
-
         }
-
     }
-
 }

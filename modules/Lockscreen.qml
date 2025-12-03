@@ -4,10 +4,9 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
-import ".."
-import "../common"
-import "../components/lockscreen"
-import "../services"
+import qs.common
+import qs.components.lockscreen
+import qs.services
 
 Scope {
     id: root
@@ -22,19 +21,19 @@ Scope {
     function unlockKeyring(password) {
         unlockKeyringProc.exec({
             environment: ({
-                "UNLOCK_PASSWORD": password
-            }),
+                    "UNLOCK_PASSWORD": password
+                }),
             command: ["bash", "-c", Quickshell.shellPath("scripts/keyring/unlock.sh")]
-        })
+        });
     }
 
     property var windowData: []
     function saveWindowPositionAndTile() {
-        Quickshell.execDetached(["hyprctl", "keyword", "dwindle:pseudotile", "true"])
+        Quickshell.execDetached(["hyprctl", "keyword", "dwindle:pseudotile", "true"]);
     }
 
     function restoreWindowPositionAndTile() {
-        Quickshell.execDetached(["hyprctl", "keyword", "dwindle:pseudotile", "false"])
+        Quickshell.execDetached(["hyprctl", "keyword", "dwindle:pseudotile", "false"]);
     }
 
     Connections {

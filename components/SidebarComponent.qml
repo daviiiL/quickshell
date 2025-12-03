@@ -1,10 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
-import ".."
-import "../common"
-import "../services"
-import "./widgets"
-import "./notification"
+import qs.common
+import qs.services
+import qs.components.widgets
+import qs.components.notification
 
 Item {
     id: root

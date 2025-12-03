@@ -2,12 +2,10 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Effects
-import Qt5Compat.GraphicalEffects
 import Quickshell.Io
-import "../common/"
-import "../services/"
-import "./widgets"
+import qs.common
+import qs.services
+import qs.components.widgets
 
 Item {
     id: root

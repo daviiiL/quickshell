@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
-import "../common/"
-import "../components/"
+import qs.common
+import qs.components
 
 Scope {
     Variants {
@@ -14,12 +14,8 @@ Scope {
             required property var modelData
             property HyprlandMonitor monitor: Hyprland.monitorFor(modelData)
 
-            property list<HyprlandWorkspace> workspacesForMonitor: Hyprland.workspaces.values.filter(
-                workspace => workspace.monitor && workspace.monitor.name == monitor.name
-            )
-            property var activeWorkspaceWithFullscreen: workspacesForMonitor.filter(
-                workspace => ((workspace.toplevels.values.filter(window => window.wayland?.fullscreen)[0] != undefined) && workspace.active)
-            )[0]
+            property list<HyprlandWorkspace> workspacesForMonitor: Hyprland.workspaces.values.filter(workspace => workspace.monitor && workspace.monitor.name == monitor.name)
+            property var activeWorkspaceWithFullscreen: workspacesForMonitor.filter(workspace => ((workspace.toplevels.values.filter(window => window.wayland?.fullscreen)[0] != undefined) && workspace.active))[0]
             property bool fullscreen: activeWorkspaceWithFullscreen != undefined
 
             PanelWindow {
@@ -36,11 +32,11 @@ Scope {
                 }
 
                 margins {
-                  left: Theme.bar.width
-                  top: Theme.ui.padding.normal
+                    left: Theme.bar.width
+                    top: Theme.ui.padding.normal
 
-                  right: Theme.ui.padding.normal
-                  bottom: Theme.ui.padding.normal
+                    right: Theme.ui.padding.normal
+                    bottom: Theme.ui.padding.normal
                 }
 
                 mask: Region {

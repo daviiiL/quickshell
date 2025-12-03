@@ -2,7 +2,7 @@
 // License: LGPL-3.0 - A copy can be found in `licenses` folder of repo
 
 import QtQuick
-import "../../common/"
+import qs.common
 
 Item {
     id: root

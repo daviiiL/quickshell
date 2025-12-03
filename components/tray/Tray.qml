@@ -1,10 +1,9 @@
 pragma ComponentBehavior: Bound
 
-import "../../common/"
 import QtQuick
 import QtQuick.Window
-import Quickshell
 import Quickshell.Services.SystemTray
+import qs.common
 
 Rectangle {
     id: root

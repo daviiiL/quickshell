@@ -1,12 +1,11 @@
-pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Io
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
-import ".."
-import "../common"
-import "../components"
+import qs
+import qs.common
+import qs.components
 
 Scope {
     id: root
@@ -91,7 +90,6 @@ Scope {
                 // anchors.leftMargin: hyprlandGapsOut
                 width: sidebarRoot.sidebarWidth - hyprlandGapsOut - elevationMargin
                 height: parent.height
-
                 color: Colors.current.background
                 border {
                     width: 1

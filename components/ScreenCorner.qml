@@ -1,5 +1,4 @@
 // THIS FILE IS ADAPTED FRON END-4's dotfile: https://github.com/end-4/dots-hyprland
-// Rewritten to use QtQuick.Shapes API for better rendering quality
 
 import QtQuick
 import QtQuick.Shapes
@@ -51,16 +50,20 @@ Item {
             pathHints: ShapePath.PathSolid & ShapePath.PathNonIntersecting
 
             startX: switch (root.corner) {
-                case ScreenCorner.CornerEnum.TopLeft:
-                case ScreenCorner.CornerEnum.BottomLeft: return 0;
-                case ScreenCorner.CornerEnum.TopRight:
-                case ScreenCorner.CornerEnum.BottomRight: return root.size;
+            case ScreenCorner.CornerEnum.TopLeft:
+            case ScreenCorner.CornerEnum.BottomLeft:
+                return 0;
+            case ScreenCorner.CornerEnum.TopRight:
+            case ScreenCorner.CornerEnum.BottomRight:
+                return root.size;
             }
             startY: switch (root.corner) {
-                case ScreenCorner.CornerEnum.TopLeft:
-                case ScreenCorner.CornerEnum.TopRight: return 0;
-                case ScreenCorner.CornerEnum.BottomLeft:
-                case ScreenCorner.CornerEnum.BottomRight: return root.size;
+            case ScreenCorner.CornerEnum.TopLeft:
+            case ScreenCorner.CornerEnum.TopRight:
+                return 0;
+            case ScreenCorner.CornerEnum.BottomLeft:
+            case ScreenCorner.CornerEnum.BottomRight:
+                return root.size;
             }
 
             PathAngleArc {
@@ -70,10 +73,14 @@ Item {
                 radiusX: root.size
                 radiusY: root.size
                 startAngle: switch (root.corner) {
-                    case ScreenCorner.CornerEnum.TopLeft: return 180;
-                    case ScreenCorner.CornerEnum.TopRight: return -90;
-                    case ScreenCorner.CornerEnum.BottomLeft: return 90;
-                    case ScreenCorner.CornerEnum.BottomRight: return 0;
+                case ScreenCorner.CornerEnum.TopLeft:
+                    return 180;
+                case ScreenCorner.CornerEnum.TopRight:
+                    return -90;
+                case ScreenCorner.CornerEnum.BottomLeft:
+                    return 90;
+                case ScreenCorner.CornerEnum.BottomRight:
+                    return 0;
                 }
                 sweepAngle: 90
             }

@@ -1,8 +1,5 @@
 import QtQuick
 
-/**
- * A convenience MouseArea for handling drag events.
- */
 MouseArea {
     id: root
 

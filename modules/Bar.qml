@@ -1,13 +1,10 @@
-import "../common"
-import "../components"
-import "../components/notification"
-import "../components/tray"
-import "../components/widgets"
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
-import Quickshell.Services.SystemTray
 import Quickshell.Wayland
+import qs.common
+import qs.components
+import qs.components.notification
+import qs.components.tray
 
 Scope {
     Variants {
@@ -58,7 +55,6 @@ Scope {
                         left: parent.left
                         right: parent.right
                     }
-
                 }
 
                 Tray {
@@ -75,7 +71,6 @@ Scope {
                         right: parent.right
                         bottom: statusIcons.top
                     }
-
                 }
 
                 StatusIcons {
@@ -90,7 +85,6 @@ Scope {
 
                         target: statusIcons
                     }
-
                 }
 
                 ClockWidget {
@@ -114,7 +108,6 @@ Scope {
                     spacerHeight: 30
                     anchors.bottom: parent.bottom
                 }
-
             }
 
             mask: Region {
@@ -128,15 +121,9 @@ Scope {
                             duration: 300
                             easing.type: Easing.BezierSpline
                         }
-
                     }
-
                 }
-
             }
-
         }
-
     }
-
 }

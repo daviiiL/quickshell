@@ -1,4 +1,3 @@
-import ".."
 pragma Singleton
 pragma ComponentBehavior: Bound
 
@@ -6,13 +5,14 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pam
+import qs
 
 Singleton {
     id: root
 
-    signal shouldReFocus()
-    signal unlocked()
-    signal failed()
+    signal shouldReFocus
+    signal unlocked
+    signal failed
 
     property string currentPassword: ""
     property bool unlockInProgress: false
@@ -122,7 +122,7 @@ Singleton {
                 root.unlocked();
                 stopFingerPam();
             } else if (result == PamResult.Error) {
-                tryFingerprintUnlock()
+                tryFingerprintUnlock();
             }
         }
     }

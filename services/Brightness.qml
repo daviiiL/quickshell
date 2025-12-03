@@ -1,8 +1,8 @@
-import ".."
+pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-pragma Singleton
+import qs
 
 Singleton {
     id: root
@@ -29,7 +29,6 @@ Singleton {
     function initialize() {
         if (!root.isDesktop)
             getBacklightDir.running = true;
-
     }
 
     function checkInitDone() {
@@ -75,7 +74,6 @@ Singleton {
                 }
             }
         }
-
     }
 
     Process {
@@ -89,7 +87,6 @@ Singleton {
                 root.brightnessChanged(this.text);
             }
         }
-
     }
 
     FileView {
@@ -126,7 +123,6 @@ Singleton {
         onFileChanged: {
             if (!root.isDesktop)
                 this.reload();
-
         }
     }
 
@@ -147,7 +143,5 @@ Singleton {
                 }
             }
         }
-
     }
-
 }

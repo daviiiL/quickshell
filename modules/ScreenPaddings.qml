@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import "../common/"
+import qs.common
 
 Scope {
     Variants {
@@ -15,20 +15,20 @@ Scope {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
             anchors {
-              top: true
-              left: true
-              right: true
+                top: true
+                left: true
+                right: true
             }
 
-            implicitHeight : Theme.ui.padding.normal
+            implicitHeight: Theme.ui.padding.normal
             color: "transparent"
 
             Rectangle {
-              anchors.fill: parent
-              color: Colors.current.background
+                anchors.fill: parent
+                color: Colors.current.background
             }
-          }
         }
+    }
 
     Variants {
         model: Quickshell.screens
@@ -41,21 +41,21 @@ Scope {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
             anchors {
-              bottom: true
-              left: true
-              right: true
+                bottom: true
+                left: true
+                right: true
             }
 
-            implicitHeight : Theme.ui.padding.normal
+            implicitHeight: Theme.ui.padding.normal
             color: "transparent"
 
             Rectangle {
-              anchors.fill: parent
-              color: Colors.current.background
+                anchors.fill: parent
+                color: Colors.current.background
             }
-          }
         }
-   Variants {
+    }
+    Variants {
         model: Quickshell.screens
 
         PanelWindow {
@@ -65,18 +65,18 @@ Scope {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
             anchors {
-              top: true
-              right: true
-              bottom: true
+                top: true
+                right: true
+                bottom: true
             }
 
-            implicitWidth : Theme.ui.padding.normal
+            implicitWidth: Theme.ui.padding.normal
             color: "transparent"
 
             Rectangle {
-              anchors.fill: parent
-              color: Colors.current.background
+                anchors.fill: parent
+                color: Colors.current.background
             }
-          }
+        }
     }
 }

@@ -5,11 +5,9 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Hyprland
-import ".."
-import "../common"
-import "../components"
-import "../components/widgets"
-import "../services"
+import qs.common
+import qs.components.widgets
+import qs.services
 
 Scope {
     id: root

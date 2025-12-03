@@ -6,7 +6,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
 import Qt.labs.platform
-import ".."
+import qs
 
 Singleton {
     id: root
@@ -15,10 +15,10 @@ Singleton {
         id: wrapper
         required property int notificationId
         property Notification notification
-        property list<var> actions: notification?.actions.map((action) => ({
-            "identifier": action.identifier,
-            "text": action.text,
-        })) ?? []
+        property list<var> actions: notification?.actions.map(action => ({
+                    "identifier": action.identifier,
+                    "text": action.text
+                })) ?? []
         property bool popup: false
         property string appIcon: notification?.appIcon ?? ""
         property string appName: notification?.appName ?? ""
@@ -46,8 +46,8 @@ Singleton {
             "image": notif.image,
             "summary": notif.summary,
             "time": notif.time,
-            "urgency": notif.urgency,
-        }
+            "urgency": notif.urgency
+        };
     }
 
     component NotifTimer: Timer {
@@ -56,7 +56,7 @@ Singleton {
         running: true
         onTriggered: () => {
             root.timeoutNotification(notificationId);
-            destroy()
+            destroy();
         }
     }
 
@@ -64,7 +64,7 @@ Singleton {
     property int unread: 0
     property string filePath: notificationsPath
     property list<Notif> list: []
-    property var popupList: list.filter((notif) => notif.popup);
+    property var popupList: list.filter(notif => notif.popup)
     property bool popupInhibited: (GlobalStates?.sidebarOpen ?? false) || silent
     property var latestTimeForApp: ({})
 
@@ -81,17 +81,17 @@ Singleton {
     }
 
     function stringifyList(list) {
-        return JSON.stringify(list.map((notif) => notifToJSON(notif)), null, 2);
+        return JSON.stringify(list.map(notif => notifToJSON(notif)), null, 2);
     }
 
     onListChanged: {
-        root.list.forEach((notif) => {
+        root.list.forEach(notif => {
             if (!root.latestTimeForApp[notif.appName] || notif.time > root.latestTimeForApp[notif.appName]) {
                 root.latestTimeForApp[notif.appName] = Math.max(root.latestTimeForApp[notif.appName] || 0, notif.time);
             }
         });
-        Object.keys(root.latestTimeForApp).forEach((appName) => {
-            if (!root.list.some((notif) => notif.appName === appName)) {
+        Object.keys(root.latestTimeForApp).forEach(appName => {
+            if (!root.list.some(notif => notif.appName === appName)) {
                 delete root.latestTimeForApp[appName];
             }
         });
@@ -105,7 +105,7 @@ Singleton {
 
     function groupsForList(list) {
         const groups = {};
-        list.forEach((notif) => {
+        list.forEach(notif => {
             if (!groups[notif.appName]) {
                 groups[notif.appName] = {
                     appName: notif.appName,
@@ -126,11 +126,11 @@ Singleton {
     property var popupAppNameList: appNameListForGroups(root.popupGroupsByAppName)
 
     property int idOffset
-    signal initDone();
-    signal notify(notification: var);
-    signal discard(id: int);
-    signal discardAll();
-    signal timeout(id: var);
+    signal initDone
+    signal notify(notification: var)
+    signal discard(id: int)
+    signal discardAll
+    signal timeout(id: var)
 
     NotificationServer {
         id: notifServer
@@ -143,12 +143,12 @@ Singleton {
         keepOnReload: false
         persistenceSupported: true
 
-        onNotification: (notification) => {
-            notification.tracked = true
+        onNotification: notification => {
+            notification.tracked = true;
             const newNotifObject = notifComponent.createObject(root, {
                 "notificationId": notification.id + root.idOffset,
                 "notification": notification,
-                "time": Date.now(),
+                "time": Date.now()
             });
             root.list = [...root.list, newNotifObject];
 
@@ -157,7 +157,7 @@ Singleton {
                 if (notification.expireTimeout != 0) {
                     newNotifObject.timer = notifTimerComponent.createObject(root, {
                         "notificationId": newNotifObject.notificationId,
-                        "interval": notification.expireTimeout < 0 ? 7000 : notification.expireTimeout,
+                        "interval": notification.expireTimeout < 0 ? 7000 : notification.expireTimeout
                     });
                 }
                 root.unread++;
@@ -173,86 +173,85 @@ Singleton {
 
     function discardNotification(id) {
         console.log("[Notifications] Discarding notification with ID: " + id);
-        const index = root.list.findIndex((notif) => notif.notificationId === id);
-        const notifServerIndex = notifServer.trackedNotifications.values.findIndex((notif) => notif.id + root.idOffset === id);
+        const index = root.list.findIndex(notif => notif.notificationId === id);
+        const notifServerIndex = notifServer.trackedNotifications.values.findIndex(notif => notif.id + root.idOffset === id);
         if (index !== -1) {
             root.list.splice(index, 1);
             notifFileView.setText(stringifyList(root.list));
-            triggerListChange()
+            triggerListChange();
         }
         if (notifServerIndex !== -1) {
-            notifServer.trackedNotifications.values[notifServerIndex].dismiss()
+            notifServer.trackedNotifications.values[notifServerIndex].dismiss();
         }
         root.discard(id);
     }
 
     function discardAllNotifications() {
-        root.list = []
-        triggerListChange()
+        root.list = [];
+        triggerListChange();
         notifFileView.setText(stringifyList(root.list));
-        notifServer.trackedNotifications.values.forEach((notif) => {
-            notif.dismiss()
-        })
+        notifServer.trackedNotifications.values.forEach(notif => {
+            notif.dismiss();
+        });
         root.discardAll();
     }
 
     function cancelTimeout(id) {
-        const index = root.list.findIndex((notif) => notif.notificationId === id);
+        const index = root.list.findIndex(notif => notif.notificationId === id);
         if (root.list[index] != null)
             root.list[index].timer.stop();
     }
 
     function timeoutNotification(id) {
-        const index = root.list.findIndex((notif) => notif.notificationId === id);
+        const index = root.list.findIndex(notif => notif.notificationId === id);
         if (root.list[index] != null)
             root.list[index].popup = false;
         root.timeout(id);
     }
 
     function timeoutAll() {
-        root.popupList.forEach((notif) => {
+        root.popupList.forEach(notif => {
             root.timeout(notif.notificationId);
-        })
-        root.popupList.forEach((notif) => {
+        });
+        root.popupList.forEach(notif => {
             notif.popup = false;
         });
     }
 
     function attemptInvokeAction(id, notifIdentifier) {
         console.log("[Notifications] Attempting to invoke action with identifier: " + notifIdentifier + " for notification ID: " + id);
-        const notifServerIndex = notifServer.trackedNotifications.values.findIndex((notif) => notif.id + root.idOffset === id);
+        const notifServerIndex = notifServer.trackedNotifications.values.findIndex(notif => notif.id + root.idOffset === id);
         console.log("Notification server index: " + notifServerIndex);
         if (notifServerIndex !== -1) {
             const notifServerNotif = notifServer.trackedNotifications.values[notifServerIndex];
-            const action = notifServerNotif.actions.find((action) => action.identifier === notifIdentifier);
+            const action = notifServerNotif.actions.find(action => action.identifier === notifIdentifier);
             console.log("Action found: " + JSON.stringify(action));
-            action.invoke()
-        }
-        else {
-            console.log("Notification not found in server: " + id)
+            action.invoke();
+        } else {
+            console.log("Notification not found in server: " + id);
         }
         root.discardNotification(id);
     }
 
     function triggerListChange() {
-        root.list = root.list.slice(0)
+        root.list = root.list.slice(0);
     }
 
     function refresh() {
-        notifFileView.reload()
+        notifFileView.reload();
     }
 
     Component.onCompleted: {
         Quickshell.execDetached(["mkdir", "-p", cacheDir + "/notifications"]);
-        refresh()
+        refresh();
     }
 
     FileView {
         id: notifFileView
         path: Qt.resolvedUrl("file://" + filePath)
         onLoaded: {
-            const fileContents = notifFileView.text()
-            root.list = JSON.parse(fileContents).map((notif) => {
+            const fileContents = notifFileView.text();
+            root.list = JSON.parse(fileContents).map(notif => {
                 return notifComponent.createObject(root, {
                     "notificationId": notif.notificationId,
                     "actions": [],
@@ -262,25 +261,25 @@ Singleton {
                     "image": notif.image,
                     "summary": notif.summary,
                     "time": notif.time,
-                    "urgency": notif.urgency,
+                    "urgency": notif.urgency
                 });
             });
-            let maxId = 0
-            root.list.forEach((notif) => {
-                maxId = Math.max(maxId, notif.notificationId)
-            })
+            let maxId = 0;
+            root.list.forEach(notif => {
+                maxId = Math.max(maxId, notif.notificationId);
+            });
 
-            console.log("[Notifications] File loaded")
-            root.idOffset = maxId
-            root.initDone()
+            console.log("[Notifications] File loaded");
+            root.idOffset = maxId;
+            root.initDone();
         }
-        onLoadFailed: (error) => {
-            if(error == FileViewError.FileNotFound) {
-                console.log("[Notifications] File not found, creating new file.")
-                root.list = []
+        onLoadFailed: error => {
+            if (error == FileViewError.FileNotFound) {
+                console.log("[Notifications] File not found, creating new file.");
+                root.list = [];
                 notifFileView.setText(stringifyList(root.list));
             } else {
-                console.log("[Notifications] Error loading file: " + error)
+                console.log("[Notifications] Error loading file: " + error);
             }
         }
     }

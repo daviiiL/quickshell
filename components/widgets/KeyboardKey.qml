@@ -1,5 +1,5 @@
 import QtQuick
-import "../../common"
+import qs.common
 
 Rectangle {
     id: root

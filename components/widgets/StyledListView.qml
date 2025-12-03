@@ -1,10 +1,6 @@
 import QtQuick
-import "../../common"
+import qs.common
 
-/**
- * A ListView with animations for the simple shell.
- * Simplified version without Config dependencies.
- */
 ListView {
     id: root
     spacing: 5
@@ -16,8 +12,8 @@ ListView {
     property bool animateMovement: false
 
     function resetDrag() {
-        root.dragIndex = -1
-        root.dragDistance = 0
+        root.dragIndex = -1;
+        root.dragDistance = 0;
     }
 
     maximumFlickVelocity: 3500

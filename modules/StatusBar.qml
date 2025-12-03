@@ -2,8 +2,8 @@ import Quickshell
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
-import "../components/statusbar"
-import "../common"
+import qs.common
+import qs.components.statusbar
 
 Scope {
     Variants {

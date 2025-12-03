@@ -1,7 +1,6 @@
-import "../../common/"
-import Qt5Compat.GraphicalEffects
 import QtQuick
 import Quickshell.Widgets
+import qs.common
 
 ClippingRectangle {
     id: container
@@ -16,8 +15,8 @@ ClippingRectangle {
     property alias hoverEnabled: mouseArea.hoverEnabled
     property alias mouseArea: mouseArea
 
-    signal entered()
-    signal exited()
+    signal entered
+    signal exited
 
     width: collapsedWidth
     color: Colors.current.primary_container
@@ -50,7 +49,6 @@ ClippingRectangle {
             easing.type: Easing.BezierSpline
             easing.bezierCurve: Theme.anim.curves.standardAccel
         }
-
     }
 
     Behavior on height {
@@ -59,7 +57,5 @@ ClippingRectangle {
             easing.type: Easing.BezierSpline
             easing.bezierCurve: Theme.anim.curves.standardAccel
         }
-
     }
-
 }

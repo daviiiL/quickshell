@@ -1,10 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import "../../common"
 
-/**
- * A horizontal group of buttons with consistent styling.
- */
 RowLayout {
     id: root
     spacing: 5

@@ -20,7 +20,7 @@ Singleton {
 
     property bool isLaptop: true
 
-    signal showCheatsheet()
-    signal hideCheatsheet()
-    signal toggleCheatsheet()
+    signal showCheatsheet
+    signal hideCheatsheet
+    signal toggleCheatsheet
 }

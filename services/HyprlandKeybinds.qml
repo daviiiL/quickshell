@@ -6,10 +6,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 
-/**
- * A service that provides access to Hyprland keybinds.
- * Uses the `get_keybinds.py` script to parse Hyprland config files.
- */
 Singleton {
     id: root
     property string keybindParserPath: {
@@ -20,7 +16,10 @@ Singleton {
         const home = Quickshell.env("HOME");
         return home + "/.config/hypr/config/keybinds.conf";
     }
-    property var keybinds: {"children": [], "keybinds": []}
+    property var keybinds: {
+        "children": [],
+        "keybinds": []
+    }
     property bool ready: false
 
     Connections {
@@ -28,7 +27,7 @@ Singleton {
 
         function onRawEvent(event) {
             if (event.name == "configreloaded") {
-                getKeybinds.running = true
+                getKeybinds.running = true;
             }
         }
     }
@@ -41,25 +40,25 @@ Singleton {
         stdout: SplitParser {
             onRead: data => {
                 try {
-                    root.keybinds = JSON.parse(data)
-                    root.ready = true
-                    console.log("[HyprlandKeybinds] Loaded", root.keybinds.keybinds.length, "keybinds")
+                    root.keybinds = JSON.parse(data);
+                    root.ready = true;
+                    console.log("[HyprlandKeybinds] Loaded", root.keybinds.keybinds.length, "keybinds");
                 } catch (e) {
-                    console.error("[HyprlandKeybinds] Error parsing keybinds:", e)
-                    console.error("[HyprlandKeybinds] Data:", data)
+                    console.error("[HyprlandKeybinds] Error parsing keybinds:", e);
+                    console.error("[HyprlandKeybinds] Data:", data);
                 }
             }
         }
 
         stderr: SplitParser {
             onRead: data => {
-                console.error("[HyprlandKeybinds] stderr:", data)
+                console.error("[HyprlandKeybinds] stderr:", data);
             }
         }
     }
 
     Component.onCompleted: {
-        console.log("[HyprlandKeybinds] Parser path:", keybindParserPath)
-        console.log("[HyprlandKeybinds] Config path:", keybindConfigPath)
+        console.log("[HyprlandKeybinds] Parser path:", keybindParserPath);
+        console.log("[HyprlandKeybinds] Config path:", keybindConfigPath);
     }
 }

@@ -1,8 +1,8 @@
-import "../common/"
 import Qt5Compat.GraphicalEffects
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import qs.common
 
 Scope {
     Variants {
@@ -32,7 +32,6 @@ Scope {
                     left: parent.left
                     bottom: parent.bottom
                 }
-
             }
 
             Rectangle {
@@ -63,11 +62,8 @@ Scope {
                                 duration: Theme.anim.durations.normal
                                 easing.type: Easing.OutCubic
                             }
-
                         }
-
                     }
-
                 }
 
                 Rectangle {
@@ -84,11 +80,7 @@ Scope {
                     source: wallpaperImage
                     maskSource: roundedMask
                 }
-
             }
-
         }
-
     }
-
 }

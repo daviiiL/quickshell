@@ -3,7 +3,7 @@
 
 import Quickshell
 import QtQuick
-import "./modules/"
+import qs.modules
 
 ShellRoot {
     Bar {}

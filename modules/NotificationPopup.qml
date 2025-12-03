@@ -1,12 +1,8 @@
-import "../common/"
-import "../components"
-import "../components/notification"
-import "../components/widgets"
-import "../services/"
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
-import Quickshell.Wayland
+import qs.common
+import qs.components.notification
+import qs.services
 
 Scope {
     id: root

@@ -1,9 +1,8 @@
-import "../common/"
-import "../services/"
-import "./widgets"
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
+import qs.common
+import qs.services
+import qs.components.widgets
 
 ExpandingContainer {
     id: root
@@ -50,9 +49,7 @@ ExpandingContainer {
                     duration: root.animationDuration * 1.5
                     easing.type: Easing.OutCubic
                 }
-
             }
-
         }
 
         SequentialAnimation on opacity {
@@ -72,9 +69,7 @@ ExpandingContainer {
                 duration: 1000
                 easing.type: Easing.InOutSine
             }
-
         }
-
     }
 
     Rectangle {
@@ -135,9 +130,7 @@ ExpandingContainer {
                     isActive: Power.currentProfile === "Performance"
                     onClicked: Power.setPowerProfile("Performance")
                 }
-
             }
-
         }
 
         Behavior on opacity {
@@ -145,9 +138,7 @@ ExpandingContainer {
                 duration: root.animationDuration
                 easing.type: Easing.OutCubic
             }
-
         }
-
     }
 
     component PowerProfileButton: Rectangle {
@@ -157,7 +148,7 @@ ExpandingContainer {
         property string icon
         property bool isActive
 
-        signal clicked()
+        signal clicked
 
         implicitHeight: profileText.implicitHeight + 12
         implicitWidth: 140
@@ -180,7 +171,5 @@ ExpandingContainer {
             font.pointSize: Theme.font.size.regular
             font.family: Theme.font.style.departureMono
         }
-
     }
-
 }
