@@ -11,7 +11,7 @@ Item {
     readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - 1) / root.workspacesShown)
     property list<bool> workspaceOccupied: []
 
-    property real workspaceButtonSize: 20
+    property real workspaceButtonSize: 26
     property real activeWorkspaceMargin: 2
     property real indicatorPadding: 4
     property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - 1) % root.workspacesShown
@@ -93,7 +93,7 @@ Item {
                     id: occupiedBackground
                     z: 1
                     anchors.centerIn: parent
-                    width: Theme.bar.width - root.indicatorPadding * 6
+                    width: Theme.bar.width - root.indicatorPadding * 4
                     height: workspaceButtonSize
                     radius: Theme.rounding.small
 
@@ -108,24 +108,24 @@ Item {
                     bottomRightRadius: radiusNext
 
                     color: Colors.current.surface_container_high
-                    opacity: workspaceOccupied[index] ? 1 : 0
+                    opacity: workspaceOccupied[index] ? 0.9 : 0
 
                     Behavior on opacity {
                         NumberAnimation {
                             duration: Theme.anim.durations.normal
-                            easing.type: Easing.OutSine
+                            easing.type: Easing.OutCubic
                         }
                     }
                     Behavior on radiusPrev {
                         NumberAnimation {
                             duration: Theme.anim.durations.normal
-                            easing.type: Easing.OutSine
+                            easing.type: Easing.OutCubic
                         }
                     }
                     Behavior on radiusNext {
                         NumberAnimation {
                             duration: Theme.anim.durations.normal
-                            easing.type: Easing.OutSine
+                            easing.type: Easing.OutCubic
                         }
                     }
                 }
@@ -136,8 +136,8 @@ Item {
     // Current workspace indicator rectangle (overlays on the dots)
     Rectangle {
         z: 2
-        radius: Theme.rounding.xs
-        color: Colors.current.primary
+        radius: Theme.rounding.medium
+        color: Colors.current.primary_container
 
         property real idx1: workspaceIndexInGroup
         property real idx2: workspaceIndexInGroup
@@ -151,14 +151,19 @@ Item {
 
         Behavior on idx1 {
             NumberAnimation {
-                duration: 100
-                easing.type: Easing.OutSine
+                duration: 150
+                easing.type: Easing.OutCubic
             }
         }
         Behavior on idx2 {
             NumberAnimation {
-                duration: 300
-                easing.type: Easing.OutSine
+                duration: 250
+                easing.type: Easing.OutCubic
+            }
+        }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.anim.durations.small
             }
         }
     }
@@ -182,32 +187,41 @@ Item {
 
                 onClicked: Hyprland.dispatch(`workspace ${workspaceValue}`)
 
-                // Workspace dot indicator
-                Rectangle {
+                // Workspace number indicator
+                Item {
                     anchors.centerIn: parent
-
-                    implicitHeight: 10
-                    implicitWidth: 10
+                    implicitHeight: 20
+                    implicitWidth: 20
 
                     Text {
-                        text: root.convertToRomanNumerals(button.workspaceValue)
+                        text: button.workspaceValue
                         anchors.centerIn: parent
-                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary : (workspaceOccupied[index] ? Colors.current.on_surface : Colors.current.on_surface_variant)
-                    }
 
-                    radius: Theme.rounding.small
-                    // color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary : (workspaceOccupied[index] ? Colors.current.on_surface : Colors.current.on_surface_variant)
-                    color: "transparent"
-                    opacity: (monitor?.activeWorkspace?.id == button.workspaceValue) ? 1.0 : 0.6
+                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary_container : (workspaceOccupied[index] ? Colors.current.on_surface : Colors.current.on_surface_variant)
 
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.anim.durations.small
+                        font {
+                            pixelSize: Theme.font.size.normal
+                            weight: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Font.Bold : Font.Medium
                         }
-                    }
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: Theme.anim.durations.small
+
+                        opacity: (monitor?.activeWorkspace?.id == button.workspaceValue) ? 1.0 : (workspaceOccupied[index] ? 0.8 : 0.4)
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Theme.anim.durations.small
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.small
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+                        Behavior on font.weight {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.small
+                            }
                         }
                     }
                 }

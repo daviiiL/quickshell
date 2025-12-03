@@ -7,8 +7,22 @@ import Quickshell.Services.Pipewire
 Singleton {
     id: root
 
-    PwObjectTracker {
-        objects: [Pipewire.defaultAudioSink, Pipewire.defaultAudioSource]
+    property var tracker: null
+
+    Timer {
+        interval: 10000 // 10 seconds
+        running: true
+        repeat: false
+        onTriggered: {
+            root.tracker = trackerComponent.createObject(root)
+        }
+    }
+
+    Component {
+        id: trackerComponent
+        PwObjectTracker {
+            objects: [Pipewire.defaultAudioSink, Pipewire.defaultAudioSource]
+        }
     }
 
     readonly property var defaultSinkAudio: Pipewire.defaultAudioSink?.audio || null
