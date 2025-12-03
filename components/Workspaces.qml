@@ -27,25 +27,26 @@ Item {
     }
 
     function convertToRomanNumerals(val) {
-        let res = "";
-        while (val >= 10) {
-            res += "X";
-            val -= 10;
-        }
-
-        if (val == 9) {
-            res += "IX";
-        } else {
-            if (val >= 5) {
-                res += "V";
-                val -= 5;
-            }
-            while (val > 0) {
-                res += "I";
-                val -= 1;
-            }
-        }
-        return res;
+        return val;
+    // let res = "";
+    // while (val >= 10) {
+    //     res += "X";
+    //     val -= 10;
+    // }
+    //
+    // if (val == 9) {
+    //     res += "IX";
+    // } else {
+    //     if (val >= 5) {
+    //         res += "V";
+    //         val -= 5;
+    //     }
+    //     while (val > 0) {
+    //         res += "I";
+    //         val -= 1;
+    //     }
+    // }
+    // return res;
     }
 
     Component.onCompleted: updateWorkspaceOccupied()

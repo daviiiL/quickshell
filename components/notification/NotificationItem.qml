@@ -112,8 +112,7 @@ Item {
     Rectangle {
         id: background
         width: parent.width
-        anchors.left: parent.left
-        radius: Theme.rounding.xs
+        radius: Theme.rounding.small
         anchors.leftMargin: root.xOffset
 
         Behavior on anchors.leftMargin {

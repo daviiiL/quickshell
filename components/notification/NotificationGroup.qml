@@ -8,11 +8,9 @@ import "../../common"
 import "../widgets"
 import ".."
 
-/**
- * A group of notifications from the same app.
- */
 MouseArea {
     id: root
+
     property var notificationGroup
     property var notifications: notificationGroup?.notifications ?? []
     property int notificationCount: notifications.length
@@ -20,8 +18,6 @@ MouseArea {
     property bool expanded: false
     property bool popup: false
     property real padding: 10
-    implicitHeight: background.implicitHeight
-
     property real dragConfirmThreshold: 70
     property real dismissOvershoot: 20
     property var qmlParent: root?.parent?.parent
@@ -30,6 +26,9 @@ MouseArea {
     property var dragIndexDiff: Math.abs(parentDragIndex - index)
     property real xOffset: dragIndexDiff == 0 ? parentDragDistance : Math.abs(parentDragDistance) > dragConfirmThreshold ? 0 : dragIndexDiff == 1 ? (parentDragDistance * 0.3) : dragIndexDiff == 2 ? (parentDragDistance * 0.1) : 0
 
+    implicitHeight: background.implicitHeight
+    hoverEnabled: true
+
     function destroyWithAnimation(left = false) {
         root.qmlParent.resetDrag();
         background.anchors.leftMargin = background.anchors.leftMargin;
@@ -37,7 +36,14 @@ MouseArea {
         destroyAnimation.running = true;
     }
 
-    hoverEnabled: true
+    function toggleExpanded() {
+        if (expanded)
+            implicitHeightAnim.enabled = true;
+        else
+            implicitHeightAnim.enabled = false;
+        root.expanded = !root.expanded;
+    }
+
     onContainsMouseChanged: {
         if (!root.popup)
             return;
@@ -51,40 +57,10 @@ MouseArea {
             });
     }
 
-    SequentialAnimation {
-        id: destroyAnimation
-        property bool left: true
-        running: false
-
-        NumberAnimation {
-            target: background.anchors
-            property: "leftMargin"
-            to: (root.width + root.dismissOvershoot) * (destroyAnimation.left ? -1 : 1)
-            duration: Theme.anim.durations.normal
-            easing.type: Easing.BezierSpline
-            easing.bezierCurve: Theme.anim.curves.emphasized
-        }
-        onFinished: () => {
-            root.notifications.forEach(notif => {
-                Qt.callLater(() => {
-                    Notifications.discardNotification(notif.notificationId);
-                });
-            });
-        }
-    }
-
-    function toggleExpanded() {
-        if (expanded)
-            implicitHeightAnim.enabled = true;
-        else
-            implicitHeightAnim.enabled = false;
-        root.expanded = !root.expanded;
-    }
-
     DragManager {
         id: dragManager
         anchors.fill: parent
-        interactive: !expanded
+        interactive: !root.expanded
         automaticallyReset: false
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
@@ -113,6 +89,29 @@ MouseArea {
                 root.destroyWithAnimation(diffX < 0);
             else
                 dragManager.resetDrag();
+        }
+    }
+
+    SequentialAnimation {
+        id: destroyAnimation
+        property bool left: true
+        running: false
+
+        NumberAnimation {
+            target: background.anchors
+            property: "leftMargin"
+            to: (root.width + root.dismissOvershoot) * (destroyAnimation.left ? -1 : 1)
+            duration: Theme.anim.durations.normal
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Theme.anim.curves.emphasized
+        }
+
+        onFinished: () => {
+            root.notifications.forEach(notif => {
+                Qt.callLater(() => {
+                    Notifications.discardNotification(notif.notificationId);
+                });
+            });
         }
     }
 
@@ -234,11 +233,16 @@ MouseArea {
                     }
                 }
 
+                Rectangle {
+                    // Spacer
+                    implicitHeight: 15
+                }
+
                 StyledListView {
                     id: notificationsColumn
                     implicitHeight: contentHeight
                     Layout.fillWidth: true
-                    spacing: expanded ? 5 : 3
+                    spacing: root.expanded ? 5 : 3
                     interactive: false
 
                     Behavior on spacing {

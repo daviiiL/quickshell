@@ -2,14 +2,11 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import "../../services"
-import "../../common"
 import "../widgets"
 
-/**
- * Scrollable list of notification groups
- */
 StyledListView {
     id: root
+
     property bool popup: false
 
     spacing: 3
@@ -22,9 +19,11 @@ StyledListView {
     delegate: NotificationGroup {
         required property int index
         required property var modelData
+
         popup: root.popup
+        notificationGroup: popup ? Notifications.popupGroupsByAppName[modelData] : Notifications.groupsByAppName[modelData]
+
         anchors.left: parent?.left
         anchors.right: parent?.right
-        notificationGroup: popup ? Notifications.popupGroupsByAppName[modelData] : Notifications.groupsByAppName[modelData]
     }
 }

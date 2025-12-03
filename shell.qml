@@ -12,4 +12,5 @@ ShellRoot {
     Sidebar {}
     Cheatsheet {}
     Lockscreen {}
+    NotificationPopup {}
 }
