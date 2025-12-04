@@ -136,7 +136,7 @@ Item {
     // Current workspace indicator rectangle (overlays on the dots)
     Rectangle {
         z: 2
-        radius: Theme.rounding.medium
+        radius: Theme.rounding.regular
         color: Colors.current.primary_container
 
         property real idx1: workspaceIndexInGroup
@@ -197,11 +197,15 @@ Item {
                         text: button.workspaceValue
                         anchors.centerIn: parent
 
+                        // Intermediate properties for animation
+                        property real animatedPixelSize: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Theme.font.size.large : Theme.font.size.regular
+                        property int animatedWeight: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Font.Bold : Font.Medium
+
                         color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.current.on_primary_container : (workspaceOccupied[index] ? Colors.current.on_surface : Colors.current.on_surface_variant)
 
                         font {
-                            pixelSize: Theme.font.size.normal
-                            weight: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Font.Bold : Font.Medium
+                            pixelSize: animatedPixelSize
+                            weight: animatedWeight
                         }
 
                         opacity: (monitor?.activeWorkspace?.id == button.workspaceValue) ? 1.0 : (workspaceOccupied[index] ? 0.8 : 0.4)
@@ -218,7 +222,12 @@ Item {
                                 easing.type: Easing.OutCubic
                             }
                         }
-                        Behavior on font.weight {
+                        Behavior on animatedWeight {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.small
+                            }
+                        }
+                        Behavior on animatedPixelSize {
                             NumberAnimation {
                                 duration: Theme.anim.durations.small
                             }
