@@ -30,11 +30,11 @@ Singleton {
         running: true
         repeat: true
         onTriggered: {
-            layoutProc.start();
+            layoutProc.running = true;
         }
     }
 
     Component.onCompleted: {
-        layoutProc.start();
+        layoutProc.running = true;
     }
 }

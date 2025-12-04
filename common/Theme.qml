@@ -7,7 +7,7 @@ import Quickshell
 Singleton {
     id: root
 
-    readonly property Font font: Font {}
+    readonly property ThemeFont font: ThemeFont {}
     readonly property Rounding rounding: Rounding {}
     readonly property Anim anim: Anim {}
     readonly property Bar bar: Bar {}
@@ -40,7 +40,7 @@ Singleton {
         readonly property int width: root.bar.width * 10
     }
 
-    component Font: QtObject {
+    component ThemeFont: QtObject {
         readonly property FontSize size: FontSize {}
         readonly property FontStyle style: FontStyle {}
     }

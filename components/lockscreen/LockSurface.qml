@@ -4,6 +4,7 @@ import qs
 import qs.common
 import qs.services
 import qs.components.widgets
+import qs.components.lockscreen
 
 MouseArea {
     id: root
@@ -126,6 +127,35 @@ MouseArea {
                 color: Colors.current.on_surface_variant
                 font.pointSize: Theme.font.size.regular
                 font.family: Theme.font.style.departureMono
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
+    LockToolbar {
+        id: rightToolbar
+        visible: GlobalStates.isLaptop
+        implicitHeight: mainToolbar.height
+
+        anchors {
+            left: mainToolbar.right
+            leftMargin: 10
+            verticalCenter: mainToolbar.verticalCenter
+        }
+
+        Row {
+            spacing: 15
+
+            StyledText {
+                text: "BATTERY"
+                anchors.verticalCenter: parent.verticalCenter
+                fontSize: Theme.font.size.large
+            }
+
+            ReactiveSensorIndicator {
+                value: Power.percentage * 100
+                implicitHeight: 30
+                criticalColor: "green"
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
