@@ -93,7 +93,7 @@ Item {
                     id: occupiedBackground
                     z: 1
                     anchors.centerIn: parent
-                    width: Theme.bar.width - root.indicatorPadding * 4
+                    width: Theme.bar.width - root.indicatorPadding * 6
                     height: workspaceButtonSize
                     radius: Theme.rounding.small
 
