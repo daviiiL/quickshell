@@ -139,10 +139,10 @@ Item {
         radius: Theme.rounding.regular
         color: Colors.current.primary_container
 
-        property real idx1: workspaceIndexInGroup
-        property real idx2: workspaceIndexInGroup
-        property real indicatorPosition: Math.min(idx1, idx2) * workspaceButtonSize
-        property real indicatorLength: Math.abs(idx1 - idx2) * workspaceButtonSize + workspaceButtonSize
+        property real idx1: parent.workspaceIndexInGroup
+        property real idx2: parent.workspaceIndexInGroup
+        property real indicatorPosition: Math.min(idx1, idx2) * parent.workspaceButtonSize
+        property real indicatorLength: Math.abs(idx1 - idx2) * parent.workspaceButtonSize + parent.workspaceButtonSize
 
         anchors.horizontalCenter: parent.horizontalCenter
         y: indicatorPosition
@@ -151,13 +151,13 @@ Item {
 
         Behavior on idx1 {
             NumberAnimation {
-                duration: 150
+                duration: 100
                 easing.type: Easing.OutCubic
             }
         }
         Behavior on idx2 {
             NumberAnimation {
-                duration: 250
+                duration: 400
                 easing.type: Easing.OutCubic
             }
         }
