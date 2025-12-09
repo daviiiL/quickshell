@@ -10,6 +10,7 @@ ShellRoot {
     StatusBar {}
     Osd {}
     Sidebar {}
+    ScreenCorners {}
     Cheatsheet {}
     Lockscreen {}
     NotificationPopup {}

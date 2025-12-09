@@ -33,10 +33,7 @@ Scope {
 
                 margins {
                     left: Theme.bar.width
-                    top: Theme.ui.padding.normal
-
-                    right: Theme.ui.padding.normal
-                    bottom: Theme.ui.padding.normal
+                    bottom: Theme.statusbar.height
                 }
 
                 mask: Region {
