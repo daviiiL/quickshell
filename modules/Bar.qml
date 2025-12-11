@@ -90,6 +90,13 @@ Scope {
                 ClockWidget {
                     id: clock
 
+                    anchors.bottom: power_spacer.top
+                }
+
+                VerticalSpacer {
+                    id: power_spacer
+
+                    spacerHeight: 20
                     anchors.bottom: powerIndicator.top
                 }
 

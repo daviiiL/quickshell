@@ -6,6 +6,7 @@ import qs.common
 import qs.components.statusbar
 
 Scope {
+
     Variants {
         model: Quickshell.screens
 
