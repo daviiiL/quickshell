@@ -38,7 +38,7 @@ Item {
             color: Colors.current.primary
             antialiasing: true
             font {
-                family: Theme.font.style.inter
+                family: Theme.font.style.departureMono
                 pixelSize: 150
             }
         }
