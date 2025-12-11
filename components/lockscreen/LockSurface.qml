@@ -38,6 +38,8 @@ MouseArea {
         event.accepted = false;
     }
 
+    LockClock {}
+
     Connections {
         function onShouldReFocus() {
             root.forceFieldFocus();
