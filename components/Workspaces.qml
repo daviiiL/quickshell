@@ -136,7 +136,7 @@ Item {
     // Current workspace indicator rectangle (overlays on the dots)
     Rectangle {
         z: 2
-        radius: Theme.rounding.regular
+        radius: Theme.rounding.small
         color: Colors.current.primary_container
 
         property real idx1: parent.workspaceIndexInGroup
