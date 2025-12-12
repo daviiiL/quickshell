@@ -1,17 +1,33 @@
 //@ pragma UseQApplication
 //@ pragma IconTheme breeze-dark
 
-import Quickshell
 import QtQuick
+import Quickshell
 import qs.modules
 
 ShellRoot {
-    Bar {}
-    StatusBar {}
-    Osd {}
-    Sidebar {}
-    ScreenCorners {}
-    Cheatsheet {}
-    Lockscreen {}
-    NotificationPopup {}
+    StatusBar {
+    }
+
+    Bar {
+    }
+
+    Osd {
+    }
+
+    Sidebar {
+    }
+
+    ScreenCorners {
+    }
+
+    Cheatsheet {
+    }
+
+    Lockscreen {
+    }
+
+    NotificationPopup {
+    }
+
 }

@@ -34,6 +34,7 @@ Singleton {
 
     component StatusBar: QtObject {
         readonly property int height: 30
+        readonly property int expandedHeight: this.height * 10
     }
 
     component Sidebar: QtObject {
