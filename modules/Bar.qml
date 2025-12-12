@@ -112,7 +112,7 @@ Scope {
                 VerticalSpacer {
                     id: bottom_spacer
 
-                    spacerHeight: 50
+                    spacerHeight: 40
                     anchors.bottom: parent.bottom
                 }
             }
