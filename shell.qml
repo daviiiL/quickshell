@@ -6,28 +6,12 @@ import Quickshell
 import qs.modules
 
 ShellRoot {
-    StatusBar {
-    }
-
-    Bar {
-    }
-
-    Osd {
-    }
-
-    Sidebar {
-    }
-
-    ScreenCorners {
-    }
-
-    Cheatsheet {
-    }
-
-    Lockscreen {
-    }
-
-    NotificationPopup {
-    }
-
+    Bar {}
+    StatusBar {}
+    Osd {}
+    Sidebar {}
+    ScreenCorners {}
+    Cheatsheet {}
+    Lockscreen {}
+    NotificationPopup {}
 }

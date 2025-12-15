@@ -52,10 +52,13 @@ Scope {
                     }
 
                     SensorIndicator {
+                        // collapsed status bar sensor indicator
                         id: sensorIndicator
-
+                        visible: !statusBar.expanded
                         Layout.fillHeight: true
                     }
+
+                    SystemIndicator {}
 
                     IconButton {
                         id: expandButton
