@@ -43,8 +43,7 @@ Scope {
 
                     WindowIndicator {
                         id: windowIndicator
-
-                        Layout.fillHeight: true
+                        Layout.alignment: Qt.AlignTop
                     }
 
                     Item {
