@@ -1,12 +1,14 @@
 pragma Singleton
 
 import Quickshell
+import Quickshell.Io
 import QtQuick
 
 import qs.common
 
 Singleton {
     id: root
+    property bool glancesNotInstalledNotified: false
     property bool isServerRunning: false
     property bool sensorsInitialized: false
     property bool quicklookInitialized: false
@@ -64,8 +66,22 @@ Singleton {
             getQuicklook();
         }, function (status, error) {
             onError(status, error);
+
             isServerRunning = false;
+
+            // notify send the first time to prevent looping
+            //
+            if (!root.glancesNotInstalledNotified) {
+                notifyGlancesMissing.running = true;
+                glancesNotInstalledNotified = true;
+            }
         });
+    }
+
+    Process {
+        id: notifyGlancesMissing
+        running: false
+        command: ["notify-send", '-a', 'System Shell', "SysInfo Not Initialized", "Unable to communicate with Glances. Please install glances or start a daemon", '--urgency', "critical"]
     }
 
     function getSensors() {

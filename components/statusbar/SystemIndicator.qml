@@ -28,7 +28,8 @@ Rectangle {
 
         RowLayout {
             id: contentContainer
-            anchors.fill: parent
+            Layout.fillHeight: true
+            Layout.fillWidth: true
             function normalizeSensorTemp(val) {
                 return val > 100 ? 1 : val / 100;
             }
