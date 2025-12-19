@@ -7,32 +7,35 @@ import qs.components.widgets
 Rectangle {
     id: root
     width: 100
-    color: "#2e3440"
+    color: "transparent"
+    // color: "#2e3440"
     radius: 4
 
     property bool isServerRunning: Glances.isServerRunning
-    // property var glances: Glances
 
-    implicitWidth: contentContainer.implicitWidth
+    implicitWidth: titleText.implicitWidth
 
-    Column {
+    ColumnLayout {
         spacing: 4
 
+        anchors.fill: parent
+
         StyledText {
+            id: titleText
             text: "System Status"
             fontSize: Theme.font.size.larger
         }
 
         RowLayout {
             id: contentContainer
-
+            anchors.fill: parent
             function normalizeSensorTemp(val) {
                 return val > 100 ? 1 : val / 100;
             }
-
             Column {
                 StyledText {
                     text: "Processor"
+                    fontSize: Theme.font.size.large
                 }
 
                 RowLayout {
@@ -57,6 +60,62 @@ Rectangle {
                     }
                     CircularProgress {
                         value: contentContainer.normalizeSensorTemp(Glances.cpu.frequencyPercentage)
+                    }
+                }
+            }
+        }
+
+        RowLayout {
+            StyledText {
+                text: "RAM"
+                Layout.fillWidth: true
+            }
+            ColumnLayout {
+                RowLayout {
+                    StyledText {
+                        text: "TEMPERATURE"
+                    }
+                    // value: Glances.ram.
+                    ReactiveSensorIndicator {
+                        value: Glances.ram.temp
+                        //> 100 ? 100 : Glances.ram.temp
+                    }
+                }
+            }
+        }
+        RowLayout {
+            StyledText {
+                text: "GPU"
+                Layout.fillWidth: true
+            }
+            ColumnLayout {
+                RowLayout {
+                    StyledText {
+                        text: "TEMPERATURE"
+                    }
+                    // value: Glances.ram.
+                    ReactiveSensorIndicator {
+                        value: Glances.gpu.temp
+                        //> 100 ? 100 : Glances.ram.temp
+                    }
+                }
+            }
+        }
+        RowLayout {
+            Layout.fillWidth: true
+            StyledText {
+                Layout.fillWidth: true
+                text: "STORAGE"
+            }
+            ColumnLayout {
+                RowLayout {
+                    StyledText {
+                        text: "TEMPERATURE"
+                    }
+                    // value: Glances.ram.
+                    ReactiveSensorIndicator {
+                        value: Glances.storage.temp
+                        //> 100 ? 100 : Glances.ram.temp
                     }
                 }
             }
