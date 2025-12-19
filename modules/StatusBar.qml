@@ -38,6 +38,7 @@ Scope {
 
                 RowLayout {
                     anchors.fill: parent
+                    anchors.leftMargin: Theme.bar.width
                     spacing: 0
 
                     WindowIndicator {
@@ -66,9 +67,7 @@ Scope {
                     IconButton {
                         id: expandButton
                         icon: statusBar.expanded ? "collapse_all" : "expand_all"
-
-                        Layout.fillHeight: true
-
+                        Layout.alignment: Qt.AlignTop
                         onClicked: function () {
                             GlobalStates.statusBarExpanded = !GlobalStates.statusBarExpanded;
                         }

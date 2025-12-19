@@ -6,8 +6,8 @@ import Quickshell
 import qs.modules
 
 ShellRoot {
-    Bar {}
     StatusBar {}
+    Bar {}
     Osd {}
     Sidebar {}
     ScreenCorners {}
