@@ -6,62 +6,83 @@ import qs.components.widgets
 
 Rectangle {
     id: root
-    width: 100
+
     color: "transparent"
-    // color: "#2e3440"
     radius: 4
+    implicitWidth: 400
 
-    property bool isServerRunning: Glances.isServerRunning
+    function normalizeSensorTemp(val) {
+        return val > 100 ? 1 : val / 100;
+    }
 
-    implicitWidth: titleText.implicitWidth
+    component SensorRow: RowLayout {
+        property alias label: labelText.text
+        property alias value: indicator.value
 
-    ColumnLayout {
-        spacing: 4
+        StyledText {
+            id: labelText
+            Layout.fillWidth: true
+        }
+        CircularProgress {
+            id: indicator
+        }
+    }
 
-        anchors.fill: parent
+    component SensorSection: ColumnLayout {
+        property alias title: titleText.text
+        property list<QtObject> sensors
+
+        Layout.rightMargin: root.implicitWidth / 10
 
         StyledText {
             id: titleText
+            Layout.bottomMargin: 10
+            fontSize: Theme.font.size.large
+        }
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 4
+
+        StyledText {
             text: "System Status"
             fontSize: Theme.font.size.larger
         }
 
         RowLayout {
-            id: contentContainer
             Layout.fillHeight: true
             Layout.fillWidth: true
-            function normalizeSensorTemp(val) {
-                return val > 100 ? 1 : val / 100;
-            }
-            Column {
-                StyledText {
-                    text: "Processor"
-                    fontSize: Theme.font.size.large
-                }
 
-                RowLayout {
-                    StyledText {
-                        text: "TEMPERATURE"
-                    }
-                    CircularProgress {
-                        value: contentContainer.normalizeSensorTemp(Glances.cpu.packageTemp)
-                    }
+            SensorSection {
+                title: "Processor"
+                SensorRow {
+                    label: "TEMPERATURE"
+                    value: root.normalizeSensorTemp(Glances.cpu.packageTemp)
                 }
-                RowLayout {
-                    StyledText {
-                        text: "UTILIZATION"
-                    }
-                    CircularProgress {
-                        value: contentContainer.normalizeSensorTemp(Glances.cpu.totalUtilization)
-                    }
+                SensorRow {
+                    label: "UTILIZATION"
+                    value: root.normalizeSensorTemp(Glances.cpu.totalUtilization)
                 }
-                RowLayout {
-                    StyledText {
-                        text: "FREQUENCY"
-                    }
-                    CircularProgress {
-                        value: contentContainer.normalizeSensorTemp(Glances.cpu.frequencyPercentage)
-                    }
+                SensorRow {
+                    label: "FREQUENCY"
+                    value: root.normalizeSensorTemp(Glances.cpu.frequencyPercentage)
+                }
+            }
+
+            SensorSection {
+                title: "Graphics"
+                SensorRow {
+                    label: "TEMPERATURE"
+                    value: root.normalizeSensorTemp(Glances.gpu.temp)
+                }
+                SensorRow {
+                    label: "UTILIZATION"
+                    value: root.normalizeSensorTemp(Glances.gpu.utilization)
+                }
+                SensorRow {
+                    label: "VRAM"
+                    value: root.normalizeSensorTemp(Glances.gpu.vramUtilization)
                 }
             }
         }
@@ -71,139 +92,25 @@ Rectangle {
                 text: "RAM"
                 Layout.fillWidth: true
             }
-            ColumnLayout {
-                RowLayout {
-                    StyledText {
-                        text: "TEMPERATURE"
-                    }
-                    // value: Glances.ram.
-                    ReactiveSensorIndicator {
-                        value: Glances.ram.temp
-                        //> 100 ? 100 : Glances.ram.temp
-                    }
-                }
+            StyledText {
+                text: "TEMPERATURE"
+            }
+            ReactiveSensorIndicator {
+                value: Glances.ram.temp
             }
         }
+
         RowLayout {
             StyledText {
-                text: "GPU"
-                Layout.fillWidth: true
-            }
-            ColumnLayout {
-                RowLayout {
-                    StyledText {
-                        text: "TEMPERATURE"
-                    }
-                    // value: Glances.ram.
-                    ReactiveSensorIndicator {
-                        value: Glances.gpu.temp
-                        //> 100 ? 100 : Glances.ram.temp
-                    }
-                }
-            }
-        }
-        RowLayout {
-            Layout.fillWidth: true
-            StyledText {
-                Layout.fillWidth: true
                 text: "STORAGE"
+                Layout.fillWidth: true
             }
-            ColumnLayout {
-                RowLayout {
-                    StyledText {
-                        text: "TEMPERATURE"
-                    }
-                    // value: Glances.ram.
-                    ReactiveSensorIndicator {
-                        value: Glances.storage.temp
-                        //> 100 ? 100 : Glances.ram.temp
-                    }
-                }
+            StyledText {
+                text: "TEMPERATURE"
+            }
+            ReactiveSensorIndicator {
+                value: Glances.storage.temp
             }
         }
     }
-    //         Column {
-    //             StyledText {
-    //                 text: "Processor"
-    //             }
-    //
-    //             RowLayout {
-    //                 StyledText {
-    //                     text: "TEMPERATURE"
-    //                 }
-    //                 CircularProgress {
-    //                     value: contentContainer.normalizeSensorTemp(Sensors.cpuTemp)
-    //                 }
-    //             }
-    //             RowLayout {
-    //                 StyledText {
-    //                     text: "UTILIZATION"
-    //                 }
-    //                 CircularProgress {}
-    //             }
-    //             RowLayout {
-    //                 StyledText {
-    //                     text: "FREQUENCY"
-    //                 }
-    //                 CircularProgress {}
-    //             }
-    //         }
-    //
-    //         Column {
-    //             StyledText {
-    //                 text: "Graphics"
-    //             }
-    //             RowLayout {
-    //                 StyledText {
-    //                     text: "TEMPERATURE"
-    //                 }
-    //                 CircularProgress {
-    //                     value: contentContainer.normalizeSensorTemp(Sensors.gpuTemp)
-    //                 }
-    //             }
-    //             RowLayout {
-    //                 StyledText {
-    //                     text: "UTILIZATION"
-    //                 }
-    //                 CircularProgress {}
-    //             }
-    //             RowLayout {
-    //                 StyledText {
-    //                     text: "FREQUENCY"
-    //                 }
-    //                 CircularProgress {}
-    //             }
-    //         }
-    //     }
-    //     RowLayout {
-    //         implicitWidth: parent.implicitWidth
-    //         StyledText {
-    //             Layout.fillWidth: true
-    //             text: "Memory"
-    //         }
-    //         RowLayout {
-    //             StyledText {
-    //                 text: "TEMPERATURE"
-    //             }
-    //             CircularProgress {
-    //                 value: contentContainer.normalizeSensorTemp(0)
-    //             }
-    //         }
-    //     }
-    //
-    //     RowLayout {
-    //         implicitWidth: parent.implicitWidth
-    //         StyledText {
-    //             Layout.fillWidth: true
-    //             text: "Storage"
-    //         }
-    //         RowLayout {
-    //             StyledText {
-    //                 text: "TEMPERATURE"
-    //             }
-    //             CircularProgress {
-    //                 value: contentContainer.normalizeSensorTemp(Sensors.nvmeTemp)
-    //             }
-    //         }
-    //     }
 }
