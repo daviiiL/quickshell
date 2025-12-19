@@ -145,13 +145,23 @@ Singleton {
         }
     }
 
+    Timer {
+        id: initializationTimer
+        interval: 1000
+        repeat: false
+        running: false
+        onTriggered: function () {
+            root._initialize();
+            console.info("Glances services initialized");
+        }
+    }
+
     Component.onDestruction: {
         getSensorsTimer.destroy();
         getQuicklookTimer.destroy();
     }
 
     Component.onCompleted: {
-        root._initialize();
-        console.info("Glances services initialized");
+        initializationTimer.start();
     }
 }
