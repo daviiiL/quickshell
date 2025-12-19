@@ -2,12 +2,21 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs
 import qs.common
 import qs.components.statusbar
 import qs.components.widgets
 
 Scope {
+    GlobalShortcut {
+        name: "toggleStatusBar"
+        description: "Expand/Collapse the status bar"
+        onPressed: function () {
+            GlobalStates.statusBarExpanded = !GlobalStates.statusBarExpanded;
+        }
+    }
+
     Variants {
         model: Quickshell.screens
 
