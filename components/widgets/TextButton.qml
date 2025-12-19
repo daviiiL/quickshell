@@ -1,15 +1,20 @@
 import QtQuick
-import QtQuick.Layouts
 import qs.common
 
 Rectangle {
     id: root
 
     property string text: ""
-    property color textColor: Colors.current.on_primary_container
+    property color textColor: Colors.current.primary
     property color textColorPressed: Colors.current.primary_container
     property int fontSize: 14
+    property string fontStyle: Theme.font.style.departureMono
     property int padding: 8
+
+    border {
+        color: Colors.current.primary_container
+        pixelAligned: true
+    }
 
     signal clicked
 
@@ -17,7 +22,7 @@ Rectangle {
     implicitHeight: buttonText.implicitHeight + (root.padding * 2)
     radius: Theme.ui.rounding.xs
 
-    color: mouseArea.containsMouse ? Colors.current.on_primary_container : Colors.current.primary_container
+    color: mouseArea.containsMouse ? Colors.current.on_primary_container : "transparent"
     Behavior on color {
         ColorAnimation {
             duration: 150
@@ -30,6 +35,8 @@ Rectangle {
         text: root.text
         font.pixelSize: root.fontSize
         color: mouseArea.containsMouse ? root.textColorPressed : root.textColor
+
+        font.family: root.fontStyle
 
         Behavior on color {
             ColorAnimation {
