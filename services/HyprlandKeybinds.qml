@@ -42,7 +42,7 @@ Singleton {
                 try {
                     root.keybinds = JSON.parse(data);
                     root.ready = true;
-                    console.log("[HyprlandKeybinds] Loaded", root.keybinds.keybinds.length, "keybinds");
+                    // console.log("[HyprlandKeybinds] Loaded", root.keybinds.keybinds.length, "keybinds");
                 } catch (e) {
                     console.error("[HyprlandKeybinds] Error parsing keybinds:", e);
                     console.error("[HyprlandKeybinds] Data:", data);
@@ -58,7 +58,7 @@ Singleton {
     }
 
     Component.onCompleted: {
-        console.log("[HyprlandKeybinds] Parser path:", keybindParserPath);
-        console.log("[HyprlandKeybinds] Config path:", keybindConfigPath);
+        // console.log("[HyprlandKeybinds] Parser path:", keybindParserPath);
+        // console.log("[HyprlandKeybinds] Config path:", keybindConfigPath);
     }
 }

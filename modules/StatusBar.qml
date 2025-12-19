@@ -60,6 +60,7 @@ Scope {
 
                     SystemIndicator {
                         visible: statusBar.expanded
+                        Layout.fillHeight: true
                     }
 
                     IconButton {

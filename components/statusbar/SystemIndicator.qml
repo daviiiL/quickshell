@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.common
 import qs.services
+import qs.services.apis
 import qs.components.widgets
 
 Rectangle {
@@ -10,18 +11,15 @@ Rectangle {
     color: "#2e3440"
     radius: 4
 
+    property bool isServerRunning: Glances.isServerRunning
+    // property var glances: Glances
+
     implicitWidth: contentContainer.implicitWidth
 
-    anchors {
-        top: parent.top
-        bottom: parent.bottom
-    }
     Column {
-        anchors.fill: parent
         spacing: 4
 
         StyledText {
-            anchors.horizontalCenter: parent.horizontalCenter
             text: "System Status"
             fontSize: Theme.font.size.larger
         }

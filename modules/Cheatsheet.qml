@@ -378,7 +378,7 @@ Scope {
                     }
                 }
 
-                console.log("[Cheatsheet] Returning", result.length, "categories");
+                // console.log("[Cheatsheet] Returning", result.length, "categories");
                 return result;
             }
         }
