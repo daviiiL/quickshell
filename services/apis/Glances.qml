@@ -9,6 +9,7 @@ Singleton {
     id: root
     property bool isServerRunning: false
     property bool sensorsInitialized: false
+    property bool quicklookInitialized: false
     property string glancesVersion: ""
 
     readonly property CPU cpu: CPU {}
@@ -18,6 +19,10 @@ Singleton {
 
     component CPU: QtObject {
         readonly property real packageTemp: cpuPackageTemp
+        readonly property real totalUtilization: cpuTotal
+        readonly property real currentFrequency: cpuCurrentFrequency
+        readonly property real maxFrequency: cpuMaxFrequency
+        readonly property real frequencyPercentage: cpuCurrentFrequency * 100 / cpuMaxFrequency
     }
 
     component GPU: QtObject {
@@ -33,6 +38,9 @@ Singleton {
     }
 
     property real cpuPackageTemp: 0
+    property real cpuTotal: 0
+    property real cpuCurrentFrequency: 0
+    property real cpuMaxFrequency: 0
     property real gpuTemp: 0
     property real storageTemp: 0
     property real memoryTemp: 0
@@ -53,6 +61,7 @@ Singleton {
 
             // initial run after verifying the server is running
             getSensors();
+            getQuicklook();
         }, function (status, error) {
             onError(status, error);
             isServerRunning = false;
@@ -60,30 +69,31 @@ Singleton {
     }
 
     function getSensors() {
-        glances.get("sensors", function (data) {
-            for (const item of data) {
-                if (item) {
-                    const label = item.label;
-                    switch (label) {
-                    case "CPU":
-                        root.cpuPackageTemp = item.value;
-                        break;
-                    case "Video":
-                        root.gpuTemp = item.value;
-                        break;
-                    case "SODIMM":
-                    case "DIMM":
-                        root.memoryTemp = item.value;
-                        break;
-                    case "HDD":
-                        root.storageTemp = item.value;
-                        break;
+        if (isServerRunning)
+            glances.get("sensors", function (data) {
+                for (const item of data) {
+                    if (item) {
+                        const label = item.label;
+                        switch (label) {
+                        case "CPU":
+                            root.cpuPackageTemp = item.value;
+                            break;
+                        case "Video":
+                            root.gpuTemp = item.value;
+                            break;
+                        case "SODIMM":
+                        case "DIMM":
+                            root.memoryTemp = item.value;
+                            break;
+                        case "HDD":
+                            root.storageTemp = item.value;
+                            break;
+                        }
                     }
                 }
-            }
-            if (!sensorsInitialized)
-                sensorsInitialized = true;
-        }, onError);
+                if (!sensorsInitialized)
+                    sensorsInitialized = true;
+            }, onError);
     }
 
     Timer {
@@ -96,12 +106,36 @@ Singleton {
         }
     }
 
+    function getQuicklook() {
+        if (isServerRunning) {
+            glances.get("quicklook", function (data) {
+                cpuTotal = data.cpu;
+                cpuCurrentFrequency = data.cpu_hz_current ?? "0";
+                cpuMaxFrequency = data.cpu_hz ?? "0";
+                if (!root.quicklookInitialized) {
+                    root.quicklookInitialized = true;
+                }
+            }, onError);
+        }
+    }
+
+    Timer {
+        id: getQuicklookTimer
+        interval: 1500
+        repeat: true
+        running: quicklookInitialized
+        onTriggered: function () {
+            getQuicklook();
+        }
+    }
+
     Component.onDestruction: {
         getSensorsTimer.destroy();
+        getQuicklookTimer.destroy();
     }
 
     Component.onCompleted: {
         root._initialize();
-        console.log("Glances services initialized");
+        console.info("Glances services initialized");
     }
 }
