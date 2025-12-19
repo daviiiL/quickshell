@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import qs
 import qs.common
 import qs.components
 
@@ -33,7 +34,7 @@ Scope {
 
                 margins {
                     left: Theme.bar.width
-                    bottom: Theme.statusbar.height
+                    bottom: GlobalStates.statusBarExpanded ? Theme.statusbar.expandedHeight : Theme.statusbar.height
                 }
 
                 mask: Region {

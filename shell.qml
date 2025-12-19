@@ -1,8 +1,8 @@
 //@ pragma UseQApplication
 //@ pragma IconTheme breeze-dark
 
-import Quickshell
 import QtQuick
+import Quickshell
 import qs.modules
 
 ShellRoot {

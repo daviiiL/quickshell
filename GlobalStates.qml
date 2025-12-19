@@ -20,6 +20,8 @@ Singleton {
 
     property bool isLaptop: true
 
+    property bool statusBarExpanded: true
+
     signal showCheatsheet
     signal hideCheatsheet
     signal toggleCheatsheet

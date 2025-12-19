@@ -1,12 +1,13 @@
-import Quickshell
-import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Wayland
+import qs
 import qs.common
 import qs.components.statusbar
+import qs.components.widgets
 
 Scope {
-
     Variants {
         model: Quickshell.screens
 
@@ -14,10 +15,13 @@ Scope {
             id: statusBar
 
             property var modelData
-            property bool statusIconsExpanded: false
-            property bool powerIndicatorExpanded: false
+            property bool expanded: GlobalStates.statusBarExpanded
 
             screen: modelData
+            color: "transparent"
+            implicitWidth: screen.width
+            implicitHeight: statusbarContainer.height
+            WlrLayershell.layer: WlrLayer.Top
 
             anchors {
                 left: true
@@ -25,15 +29,12 @@ Scope {
                 bottom: true
             }
 
-            color: "transparent"
-            implicitWidth: screen.width
-            implicitHeight: Theme.statusbar.height
-            WlrLayershell.layer: WlrLayer.Top
-
             Rectangle {
-
-                anchors.fill: parent
+                id: statusbarContainer
+                implicitWidth: parent.width
                 color: Colors.current.background
+
+                implicitHeight: statusBar.expanded ? Theme.statusbar.expandedHeight : Theme.statusbar.height
 
                 RowLayout {
                     anchors.fill: parent
@@ -41,6 +42,7 @@ Scope {
 
                     WindowIndicator {
                         id: windowIndicator
+
                         Layout.fillHeight: true
                     }
 
@@ -50,8 +52,26 @@ Scope {
                     }
 
                     SensorIndicator {
+                        // collapsed status bar sensor indicator
                         id: sensorIndicator
+                        visible: !statusBar.expanded
                         Layout.fillHeight: true
+                    }
+
+                    SystemIndicator {
+                        visible: statusBar.expanded
+                        Layout.fillHeight: true
+                    }
+
+                    IconButton {
+                        id: expandButton
+                        icon: statusBar.expanded ? "collapse_all" : "expand_all"
+
+                        Layout.fillHeight: true
+
+                        onClicked: function () {
+                            GlobalStates.statusBarExpanded = !GlobalStates.statusBarExpanded;
+                        }
                     }
                 }
             }

@@ -14,9 +14,9 @@ Scope {
 
     Process {
         id: unlockKeyringProc
-        onExited: (exitCode, exitStatus) => {
-            console.log("Keyring unlock exit code:", exitCode);
-        }
+        // onExited: (exitCode, exitStatus) => {
+        //     console.log("Keyring unlock exit code:", exitCode);
+        // }
     }
 
     function unlockKeyring(password) {
