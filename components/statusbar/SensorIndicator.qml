@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.UPower
 import qs.common
-import qs.services
+import qs.services.apis
 import qs.components.widgets
 
 Item {
@@ -27,7 +27,6 @@ Item {
 
         RowLayout {
             spacing: 4
-            visible: Sensors.cpuTemp > 0
 
             StyledText {
                 text: "CPU"
@@ -35,13 +34,12 @@ Item {
             }
 
             ReactiveSensorIndicator {
-                value: Sensors.cpuTemp
+                value: Glances.cpu.packageTemp
             }
         }
 
         RowLayout {
             spacing: 4
-            visible: Sensors.gpuTemp > 0
 
             StyledText {
                 text: "GPU"
@@ -49,13 +47,12 @@ Item {
             }
 
             ReactiveSensorIndicator {
-                value: Sensors.gpuTemp
+                value: Glances.gpu.temp
             }
         }
 
         RowLayout {
             spacing: 4
-            visible: Sensors.nvmeTemp > 0
 
             StyledText {
                 text: "STORAGE"
@@ -63,7 +60,20 @@ Item {
             }
 
             ReactiveSensorIndicator {
-                value: Sensors.nvmeTemp
+                value: Glances.storage.temp
+            }
+        }
+
+        RowLayout {
+            spacing: 4
+
+            StyledText {
+                text: "RAM"
+                color: Colors.current.primary
+            }
+
+            ReactiveSensorIndicator {
+                value: Glances.ram.temp
             }
         }
     }

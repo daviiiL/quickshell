@@ -340,7 +340,6 @@ Scope {
                 };
 
                 const keybinds = HyprlandKeybinds.keybinds.keybinds || [];
-                console.log("[Cheatsheet] groupKeybindsByCategory called, ready:", HyprlandKeybinds.ready, "keybinds count:", keybinds.length);
 
                 for (let i = 0; i < keybinds.length; i++) {
                     const kb = keybinds[i];
