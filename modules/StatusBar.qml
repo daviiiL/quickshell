@@ -58,7 +58,9 @@ Scope {
                         Layout.fillHeight: true
                     }
 
-                    SystemIndicator {}
+                    SystemIndicator {
+                        visible: statusBar.expanded
+                    }
 
                     IconButton {
                         id: expandButton

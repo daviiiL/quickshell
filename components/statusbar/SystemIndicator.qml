@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.common
+import qs.services
 import qs.components.widgets
 
 Rectangle {
@@ -23,46 +24,43 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             text: "System Status"
             fontSize: Theme.font.size.larger
-            Layout.fillHeight: false
         }
 
         RowLayout {
             id: contentContainer
 
+            function normalizeSensorTemp(val) {
+                return val > 100 ? 1 : val / 100;
+            }
+
             Column {
-                Layout.fillWidth: true
                 StyledText {
                     text: "Processor"
                 }
 
                 RowLayout {
-                    implicitWidth: parent.implicitWidth
                     StyledText {
                         text: "TEMPERATURE"
-                        Layout.fillWidth: true
                     }
-                    CircularProgress {}
+                    CircularProgress {
+                        value: contentContainer.normalizeSensorTemp(Sensors.cpuTemp)
+                    }
                 }
                 RowLayout {
-                    implicitWidth: parent.implicitWidth
                     StyledText {
                         text: "UTILIZATION"
-                        Layout.fillWidth: true
                     }
                     CircularProgress {}
                 }
                 RowLayout {
-                    implicitWidth: parent.implicitWidth
                     StyledText {
                         text: "FREQUENCY"
-                        Layout.fillWidth: true
                     }
                     CircularProgress {}
                 }
             }
 
             Column {
-                Layout.fillWidth: true
                 StyledText {
                     text: "Graphics"
                 }
@@ -70,7 +68,9 @@ Rectangle {
                     StyledText {
                         text: "TEMPERATURE"
                     }
-                    CircularProgress {}
+                    CircularProgress {
+                        value: contentContainer.normalizeSensorTemp(Sensors.gpuTemp)
+                    }
                 }
                 RowLayout {
                     StyledText {
@@ -85,54 +85,35 @@ Rectangle {
                     CircularProgress {}
                 }
             }
-
-            Column {
+        }
+        RowLayout {
+            implicitWidth: parent.implicitWidth
+            StyledText {
                 Layout.fillWidth: true
+                text: "Memory"
+            }
+            RowLayout {
                 StyledText {
-                    text: "Memory"
+                    text: "TEMPERATURE"
                 }
-                RowLayout {
-                    StyledText {
-                        text: "TEMPERATURE"
-                    }
-                    CircularProgress {}
-                }
-                RowLayout {
-                    StyledText {
-                        text: "UTILIZATION"
-                    }
-                    CircularProgress {}
-                }
-                RowLayout {
-                    StyledText {
-                        text: "FREQUENCY"
-                    }
-                    CircularProgress {}
+                CircularProgress {
+                    value: contentContainer.normalizeSensorTemp(0)
                 }
             }
+        }
 
-            Column {
+        RowLayout {
+            implicitWidth: parent.implicitWidth
+            StyledText {
                 Layout.fillWidth: true
+                text: "Storage"
+            }
+            RowLayout {
                 StyledText {
-                    text: "Storage"
+                    text: "TEMPERATURE"
                 }
-                RowLayout {
-                    StyledText {
-                        text: "TEMPERATURE"
-                    }
-                    CircularProgress {}
-                }
-                RowLayout {
-                    StyledText {
-                        text: "UTILIZATION"
-                    }
-                    CircularProgress {}
-                }
-                RowLayout {
-                    StyledText {
-                        text: "FREQUENCY"
-                    }
-                    CircularProgress {}
+                CircularProgress {
+                    value: contentContainer.normalizeSensorTemp(Sensors.nvmeTemp)
                 }
             }
         }
