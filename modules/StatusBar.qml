@@ -87,6 +87,7 @@ Scope {
                     SystemIndicator {
                         visible: statusBar.expanded
                         Layout.fillHeight: true
+                        Layout.bottomMargin: 10
                     }
 
                     IconButton {
