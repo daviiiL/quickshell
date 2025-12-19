@@ -56,6 +56,16 @@ Singleton {
         baseUrl: "http://0.0.0.0:61208/api/4/"
     }
 
+    Process {
+        id: laptopModeNotification
+        command: ["notify-send", "-a", "System Shell", "Laptop Mode Enabled", "dGPU reading disabled to extend battery life on laptops", "--urgency", "critical"]
+    }
+
+    Process {
+        id: glancesErrorNotification
+        command: ["notify-send", "-a", "System Shell", "SysInfo Not Initialized", "Unable to communicate with Glances. Please install glances or start a daemon", "--urgency", "critical"]
+    }
+
     Timer {
         interval: 1500
         repeat: true
@@ -89,7 +99,7 @@ Singleton {
                 readDGPU = true;
                 getGpu();
             } else {
-                Process.execute("notify-send", ['-a', 'System Shell', "Laptop Mode Enabled", "dGPU reading disabled to extend battery life on laptops", '--urgency', "critical"]);
+                laptopModeNotification.running = true;
             }
         }, function (status, error) {
             console.warn("Glances Server Error:", status, error);
@@ -97,7 +107,7 @@ Singleton {
 
             // Notify once about missing glances
             if (!glancesNotInstalledNotified) {
-                Process.execute("notify-send", ['-a', 'System Shell', "SysInfo Not Initialized", "Unable to communicate with Glances. Please install glances or start a daemon", '--urgency', "critical"]);
+                glancesErrorNotification.running = true;
                 glancesNotInstalledNotified = true;
             }
         });
