@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs
@@ -14,6 +15,22 @@ Scope {
         description: "Expand/Collapse the status bar"
         onPressed: function () {
             GlobalStates.statusBarExpanded = !GlobalStates.statusBarExpanded;
+        }
+    }
+
+    GlobalShortcut {
+        name: "expandStatusBar"
+        description: "Expand the status bar"
+        onPressed: function () {
+            GlobalStates.statusBarExpanded = true;
+        }
+    }
+
+    GlobalShortcut {
+        name: "collapseStatusBar"
+        description: "Collapse the status bar"
+        onPressed: function () {
+            GlobalStates.statusBarExpanded = false;
         }
     }
 
