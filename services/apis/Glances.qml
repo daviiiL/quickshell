@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import QtQuick
 
+import qs
 import qs.common
 
 Singleton {
@@ -11,6 +12,8 @@ Singleton {
     property bool glancesNotInstalledNotified: false
     property bool isServerRunning: false
     property bool sensorsInitialized: false
+    property bool gpuInitialized: false
+    property bool readDGPU: false
     property bool quicklookInitialized: false
     property string glancesVersion: ""
 
@@ -29,6 +32,8 @@ Singleton {
 
     component GPU: QtObject {
         readonly property real temp: gpuTemp
+        readonly property real vramUtilization: gpuVRAM
+        readonly property real utilization: gpuUtilization
     }
 
     component STORAGE: QtObject {
@@ -44,6 +49,8 @@ Singleton {
     property real cpuCurrentFrequency: 0
     property real cpuMaxFrequency: 0
     property real gpuTemp: 0
+    property real gpuVRAM: 0
+    property real gpuUtilization: 0
     property real storageTemp: 0
     property real memoryTemp: 0
 
@@ -64,6 +71,14 @@ Singleton {
             // initial run after verifying the server is running
             getSensors();
             getQuicklook();
+
+            // only monitors for gpu if is desktop to not potentially wake up the gpu from d3cold
+            if (!GlobalStates.isLaptop) {
+                root.readDGPU = true;
+                getGpu();
+            } else {
+                notifyGPUTempOnLaptop.running = true;
+            }
         }, function (status, error) {
             onError(status, error);
 
@@ -92,23 +107,29 @@ Singleton {
                         const label = item.label;
                         switch (label) {
                         case "CPU":
+                        case "Package id 0":
                             root.cpuPackageTemp = item.value;
                             break;
                         case "Video":
-                            root.gpuTemp = item.value;
+                            if (!readDGPU)
+                                root.gpuTemp = item.value;
                             break;
                         case "SODIMM":
                         case "DIMM":
-                            root.memoryTemp = item.value;
+                        case "spd5118 0":
+                        case "spd5118 1":
+                            root.memoryTemp = Math.max(item.value, root.memoryTemp);
                             break;
                         case "HDD":
-                            root.storageTemp = item.value;
+                        case "Composite":
+                            root.storageTemp = Math.max(item.value, root.storageTemp);
                             break;
                         }
                     }
                 }
-                if (!sensorsInitialized)
+                if (!sensorsInitialized) {
                     sensorsInitialized = true;
+                }
             }, onError);
     }
 
@@ -143,6 +164,35 @@ Singleton {
         onTriggered: function () {
             getQuicklook();
         }
+    }
+
+    function getGpu() {
+        if (isServerRunning && !GlobalStates.isLaptop && readDGPU) {
+            glances.get("gpu", function (data) {
+                const selectedGpu = data[0];
+                root.gpuTemp = selectedGpu.temperature;
+                root.gpuVRAM = selectedGpu.mem;
+                root.gpuUtilization = selectedGpu.proc;
+                if (!gpuInitialized)
+                    gpuInitialized = true;
+            }, onError);
+        }
+    }
+
+    Timer {
+        id: getGpuTimer
+        interval: 1500
+        repeat: true
+        running: gpuInitialized
+        onTriggered: function () {
+            getGpu();
+        }
+    }
+
+    Process {
+        id: notifyGPUTempOnLaptop
+        running: false
+        command: ["notify-send", '-a', 'System Shell', "Laptop Mode Enabled", "dGPU reading disabled to extend battery life on laptops", '--urgency', "critical"]
     }
 
     Timer {
