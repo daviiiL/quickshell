@@ -5,14 +5,14 @@ Rectangle {
     id: root
 
     property string text: ""
-    property color textColor: Colors.current.primary
-    property color textColorPressed: Colors.current.primary_container
+    property color textColor: Colors.current.secondary
+    property color textColorPressed: Colors.current.secondary_container
     property int fontSize: 14
     property string fontStyle: Theme.font.style.departureMono
     property int padding: 8
 
     border {
-        color: Colors.current.primary_container
+        color: Colors.current.secondary
         pixelAligned: true
     }
 
@@ -22,7 +22,7 @@ Rectangle {
     implicitHeight: buttonText.implicitHeight + (root.padding * 2)
     radius: Theme.ui.rounding.xs
 
-    color: mouseArea.containsMouse ? Colors.current.on_primary_container : "transparent"
+    color: mouseArea.containsMouse ? Colors.current.on_secondary_container : "transparent"
     Behavior on color {
         ColorAnimation {
             duration: 150
@@ -32,7 +32,7 @@ Rectangle {
     Text {
         id: buttonText
         anchors.centerIn: parent
-        text: root.text
+        text: mouseArea.containsMouse ? "> " + root.text : root.text
         font.pixelSize: root.fontSize
         color: mouseArea.containsMouse ? root.textColorPressed : root.textColor
 

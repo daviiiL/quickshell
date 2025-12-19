@@ -22,6 +22,7 @@ Rectangle {
         StyledText {
             id: labelText
             Layout.fillWidth: true
+            color: Colors.current.primary
         }
         CircularProgress {
             id: indicator
@@ -45,9 +46,12 @@ Rectangle {
         anchors.fill: parent
         spacing: 4
 
+        anchors.topMargin: Theme.ui.padding.normal
+
         StyledText {
-            text: "System Status"
+            text: "> System Status"
             fontSize: Theme.font.size.larger
+            color: Colors.current.primary
         }
 
         RowLayout {
@@ -94,6 +98,7 @@ Rectangle {
             }
             StyledText {
                 text: "TEMPERATURE"
+                color: Colors.current.primary
             }
             ReactiveSensorIndicator {
                 value: Glances.ram.temp
@@ -107,6 +112,7 @@ Rectangle {
             }
             StyledText {
                 text: "TEMPERATURE"
+                color: Colors.current.primary
             }
             ReactiveSensorIndicator {
                 value: Glances.storage.temp
