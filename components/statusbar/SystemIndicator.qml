@@ -75,6 +75,7 @@ Rectangle {
             }
 
             SensorSection {
+                visible: Glances.readDGPU
                 title: "Graphics"
                 SensorRow {
                     label: "TEMPERATURE"

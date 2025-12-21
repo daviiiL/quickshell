@@ -39,6 +39,7 @@ Item {
         }
 
         RowLayout {
+            visible: Glances.readDGPU
             spacing: 4
 
             StyledText {
