@@ -26,6 +26,7 @@ Item {
         }
 
         RowLayout {
+            Layout.fillHeight: true
             spacing: 4
 
             StyledText {
