@@ -67,7 +67,7 @@ Singleton {
     }
 
     Timer {
-        interval: 1500
+        interval: 2500
         repeat: true
         running: isServerRunning
         onTriggered: {
@@ -80,7 +80,7 @@ Singleton {
     }
 
     Timer {
-        interval: 1000
+        interval: 2000
         repeat: false
         running: true
         onTriggered: initialize()

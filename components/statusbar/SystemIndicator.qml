@@ -103,6 +103,7 @@ Rectangle {
             }
             ReactiveSensorIndicator {
                 value: Glances.ram.temp
+                isTempSensor: true
             }
         }
 
@@ -117,6 +118,7 @@ Rectangle {
             }
             ReactiveSensorIndicator {
                 value: Glances.storage.temp
+                isTempSensor: true
             }
         }
     }

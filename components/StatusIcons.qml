@@ -31,12 +31,13 @@ Item {
         id: container
         anchors.leftMargin: 6
         collapsedWidth: Theme.bar.width - 12
-        expandedWidth: Theme.bar.width * 4 - 12
+        expandedWidth: Theme.bar.width * 4 - 15
         anchors.left: parent.left
         animationDuration: 100
         antialiasing: true
         radius: Theme.rounding.xs
         implicitHeight: 80
+        color: Colors.current.secondary_container
 
         ColumnLayout {
             anchors.fill: parent

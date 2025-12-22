@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import qs.common
@@ -31,6 +32,7 @@ Scope {
             }
 
             Rectangle {
+
                 color: Colors.current.background
                 implicitWidth: parent.width / 4
 
@@ -40,80 +42,46 @@ Scope {
                     bottom: parent.bottom
                 }
 
-                VerticalSpacer {
-                    id: top_spacer
-
-                    spacerHeight: 10
-                    anchors.top: parent.top
-                }
-
-                Workspaces {
-                    id: workspaces
-
-                    anchors {
-                        top: top_spacer.bottom
-                        left: parent.left
-                        right: parent.right
+                ColumnLayout {
+                    anchors.fill: parent
+                    Workspaces {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 20
+                        Layout.alignment: Qt.AlignTop
                     }
-                }
 
-                Tray {
-                    id: tray
-
-                    anchors.bottom: notificationButton.top
-                }
-
-                NotificationButton {
-                    id: notificationButton
-
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        bottom: statusIcons.top
+                    Tray {
+                        Layout.alignment: Qt.AlignBottom
+                        Layout.fillHeight: true
                     }
-                }
 
-                StatusIcons {
-                    id: statusIcons
+                    NotificationButton {
+                        Layout.alignment: Qt.AlignBottom
+                    }
 
-                    anchors.bottom: clock.top
+                    StatusIcons {
+                        id: statusIcons
+                        Layout.alignment: Qt.AlignBottom
+                        Connections {
+                            function onExpandedChanged() {
+                                bar.statusIconsExpanded = statusIcons.expanded;
+                            }
 
-                    Connections {
-                        function onExpandedChanged() {
-                            bar.statusIconsExpanded = statusIcons.expanded;
+                            target: statusIcons
                         }
-
-                        target: statusIcons
                     }
-                }
 
-                ClockWidget {
-                    id: clock
-
-                    anchors.bottom: power_spacer.top
-                }
-
-                VerticalSpacer {
-                    id: power_spacer
-
-                    spacerHeight: 20
-                    anchors.bottom: powerIndicator.top
-                }
-
-                PowerIndicator {
-                    id: powerIndicator
-
-                    anchors.bottom: bottom_spacer.top
-                    onExpandedChanged: {
-                        bar.powerIndicatorExpanded = expanded;
+                    ClockWidget {
+                        Layout.alignment: Qt.AlignBottom
                     }
-                }
 
-                VerticalSpacer {
-                    id: bottom_spacer
-
-                    spacerHeight: 40
-                    anchors.bottom: parent.bottom
+                    PowerIndicator {
+                        Layout.alignment: Qt.AlignBottom
+                        Layout.bottomMargin: 10
+                        onExpandedChanged: {
+                            bar.powerIndicatorExpanded = expanded;
+                        }
+                    }
                 }
             }
 

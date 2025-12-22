@@ -24,9 +24,16 @@ ExpandingContainer {
     expandedWidth: Theme.bar.width * 4
     collapsedHeight: root.implicitHeight
     expandedHeight: root.expandedWidth
-    color: Colors.current.background
+    color: root.expanded ? Colors.current.primary_container : Colors.current.background
     verticalExpansion: true
     animationDuration: 250
+
+    Behavior on color {
+        ColorAnimation {
+            duration: root.animationDuration
+            easing.type: Easing.OutCubic
+        }
+    }
 
     CircularProgress {
         id: progressIndicator
@@ -35,7 +42,18 @@ ExpandingContainer {
         anchors.left: parent.left
         anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter
-        primaryColor: Power.onBattery ? Colors.current.on_secondary_container : Colors.current.primary_fixed
+        primaryColor: {
+            if (root.expanded)
+                return Colors.current.on_primary_container;
+            return Power.onBattery ? Colors.current.on_secondary_container : Colors.current.primary_fixed;
+        }
+
+        Behavior on primaryColor {
+            ColorAnimation {
+                duration: root.animationDuration
+                easing.type: Easing.OutCubic
+            }
+        }
 
         transform: Rotation {
             id: rotation
@@ -78,12 +96,20 @@ ExpandingContainer {
         color: root.color
         radius: Theme.rounding.regular
         opacity: root.expanded ? 1 : 0
+        scale: root.expanded ? 1 : 0.95
 
         anchors {
             left: progressIndicator.right
             top: parent.top
             bottom: parent.bottom
             right: parent.right
+        }
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: root.animationDuration
+                easing.type: Easing.OutCubic
+            }
         }
 
         ColumnLayout {
@@ -98,11 +124,18 @@ ExpandingContainer {
                     if (Power.percentage > 0.999)
                         return "Fully charged";
 
-                    return `  ${root.formatTime(Power.timeToGoal)} ${Power.onBattery ? "remaining" : "to full"}`;
+                    return `${root.formatTime(Power.timeToGoal)} left`;
                 }
-                color: Colors.current.primary
+                color: root.expanded ? Colors.current.on_primary_container : Colors.current.primary
                 font.pointSize: Theme.font.size.regular
                 font.family: Theme.font.style.departureMono
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: root.animationDuration
+                        easing.type: Easing.OutCubic
+                    }
+                }
             }
 
             ColumnLayout {
@@ -152,8 +185,21 @@ ExpandingContainer {
 
         implicitHeight: profileText.implicitHeight + 12
         implicitWidth: 140
-        color: profile.isActive ? Colors.current.primary_container : Colors.current.secondary_container
+
+        border {
+            color: Colors.current.secondary
+        }
+
+        color: profile.isActive ? Colors.current.secondary : "transparent"
+
         radius: Theme.rounding.small
+
+        Behavior on color {
+            ColorAnimation {
+                duration: root.animationDuration
+                easing.type: Easing.OutCubic
+            }
+        }
 
         MouseArea {
             anchors.fill: parent
@@ -162,14 +208,37 @@ ExpandingContainer {
         }
 
         Text {
+            text: ">"
+            color: Colors.current.primary_container
+
+            font {
+                pixelSize: Theme.font.size.large
+                family: Theme.font.style.departureMono
+            }
+
+            anchors {
+                verticalCenter: parent.verticalCenter
+                left: parent.left
+                leftMargin: 5
+            }
+        }
+
+        Text {
             id: profileText
 
             text: profile.profile
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
-            color: profile.isActive ? Colors.current.on_primary_container : Colors.current.on_secondary_container
+            color: profile.isActive ? Colors.current.primary_container : Colors.current.on_secondary_container
             font.pointSize: Theme.font.size.regular
             font.family: Theme.font.style.departureMono
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: root.animationDuration
+                    easing.type: Easing.OutCubic
+                }
+            }
         }
     }
 }

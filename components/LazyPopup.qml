@@ -12,6 +12,8 @@ LazyLoader {
 
     signal dismissed
 
+    property QtObject WindowContent: null
+
     PopupWindow {
         id: popup
 

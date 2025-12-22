@@ -8,10 +8,8 @@ import qs.common
 Rectangle {
     id: root
 
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.bottomMargin: 20
     implicitWidth: Theme.bar.width
-    implicitHeight: layout.height
+    implicitHeight: layout.implicitHeight + 20
     color: "transparent"
 
     Column {
@@ -22,6 +20,8 @@ Rectangle {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
+            bottomMargin: 10
+            topMargin: 10
         }
 
         add: Transition {

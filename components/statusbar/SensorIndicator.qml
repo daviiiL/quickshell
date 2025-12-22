@@ -36,6 +36,7 @@ Item {
 
             ReactiveSensorIndicator {
                 value: Glances.cpu.packageTemp
+                isTempSensor: true
             }
         }
 
@@ -50,6 +51,7 @@ Item {
 
             ReactiveSensorIndicator {
                 value: Glances.gpu.temp
+                isTempSensor: true
             }
         }
 
@@ -63,6 +65,7 @@ Item {
 
             ReactiveSensorIndicator {
                 value: Glances.storage.temp
+                isTempSensor: true
             }
         }
 
@@ -76,6 +79,7 @@ Item {
 
             ReactiveSensorIndicator {
                 value: Glances.ram.temp
+                isTempSensor: true
             }
         }
     }

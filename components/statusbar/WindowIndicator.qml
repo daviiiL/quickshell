@@ -62,7 +62,7 @@ Item {
             font.pixelSize: Theme.font.size.large
             color: Colors.current.primary
 
-            text: root.hasActiveWindow ? (contentRow.getAppName(root.activeWindow.appId) || "Unknown") : ""
+            text: root.hasActiveWindow ? (contentRow.getAppName(root.activeWindow.appId) || "Unknown") : `Workspace ${monitor?.activeWorkspace?.id ?? 1}`
 
             visible: text.length > 0
         }
@@ -76,7 +76,7 @@ Item {
             color: Colors.current.secondary
             elide: Text.ElideRight
 
-            text: root.hasActiveWindow ? (root.activeWindow.title || "Untitled") : `Workspace ${monitor?.activeWorkspace?.id ?? 1}`
+            text: root.hasActiveWindow ? (root.activeWindow.title || "Untitled") : `No Active Window`
         }
     }
     ColumnLayout {
@@ -103,7 +103,7 @@ Item {
                 font.pixelSize: Theme.font.size.large
                 color: Colors.current.primary
 
-                text: root.hasActiveWindow ? (contentColumn.getAppName(root.activeWindow.appId) || "Unknown") : ""
+                text: root.hasActiveWindow ? (contentColumn.getAppName(root.activeWindow.appId) || "Unknown") : "No Active Window"
 
                 visible: text.length > 0
             }
@@ -137,7 +137,8 @@ Item {
             }
             TextButton {
                 Layout.fillWidth: true
-                text: "Poweroff"
+                text: "Power off"
+
                 fontSize: Theme.font.size.large
                 onClicked: poweroffProcess.running = true
             }

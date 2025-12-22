@@ -156,8 +156,11 @@ MouseArea {
 
             ReactiveSensorIndicator {
                 value: Power.percentage * 100
-                implicitHeight: 30
+                baseHeight: 30
                 criticalColor: "green"
+                hoverEnabled: false
+                isBattery: true
+                isCharging: !Power.onBattery
                 anchors.verticalCenter: parent.verticalCenter
             }
         }

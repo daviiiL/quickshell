@@ -1,5 +1,6 @@
 import QtQuick
 import qs.common
+import qs.components.widgets
 
 Item {
     id: root
@@ -8,11 +9,16 @@ Item {
 
     property int baseWidth: 50
     property int baseHeight: Theme.statusbar.height / 4
-    readonly property int originalHeight: Theme.statusbar.height / 4
+    readonly property int originalHeight: baseHeight
 
     property int value: 0
     property int progress: (value / 100) * width
     property string criticalColor: "red"
+
+    property bool hoverEnabled: true
+    property bool isBattery: false
+    property bool isCharging: false
+    property bool isTempSensor: false
 
     readonly property color successColor: "#b4ffb4"
     readonly property color warningColor: "#ffd4ab"
@@ -75,7 +81,7 @@ Item {
             Behavior on width {
                 NumberAnimation {
                     duration: Theme.anim.durations.normal
-                    easing.type: Easing.Bezier
+                    easing.type: Easing.OutCubic
                 }
             }
 
@@ -86,13 +92,113 @@ Item {
                 }
             }
         }
+
+        Rectangle {
+            id: chargingOverlay
+            visible: root.isCharging && root.isBattery
+            color: root.successColor
+            opacity: 0.3
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+            }
+            width: root.progress
+
+            SequentialAnimation on width {
+                running: root.isCharging && root.isBattery
+                loops: Animation.Infinite
+
+                NumberAnimation {
+                    from: root.progress
+                    to: background.width
+                    duration: 1500
+                    easing.type: Easing.InOutSine
+                }
+
+                NumberAnimation {
+                    from: background.width
+                    to: root.progress
+                    duration: 1500
+                    easing.type: Easing.InOutSine
+                }
+            }
+
+            SequentialAnimation on opacity {
+                running: root.isCharging && root.isBattery
+                loops: Animation.Infinite
+
+                NumberAnimation {
+                    from: 0.3
+                    to: 0.6
+                    duration: 1500
+                    easing.type: Easing.InOutSine
+                }
+
+                NumberAnimation {
+                    from: 0.6
+                    to: 0.3
+                    duration: 1500
+                    easing.type: Easing.InOutSine
+                }
+            }
+        }
+    }
+
+    MaterialSymbol {
+        id: chargingIcon
+        z: 2
+        visible: root.isCharging && root.isBattery
+        icon: "electric_bolt"
+        fill: 1
+        iconSize: Theme.font.size.regular
+        fontColor: Colors.current.primary
+        anchors.centerIn: background
+
+        SequentialAnimation on opacity {
+            running: root.isCharging && root.isBattery
+            loops: Animation.Infinite
+
+            NumberAnimation {
+                from: 0.8
+                to: 1.0
+                duration: 800
+                easing.type: Easing.InOutSine
+            }
+
+            NumberAnimation {
+                from: 1.0
+                to: 0.8
+                duration: 800
+                easing.type: Easing.InOutSine
+            }
+        }
+
+        SequentialAnimation on scale {
+            running: root.isCharging && root.isBattery
+            loops: Animation.Infinite
+
+            NumberAnimation {
+                from: 1.0
+                to: 1.15
+                duration: 800
+                easing.type: Easing.InOutSine
+            }
+
+            NumberAnimation {
+                from: 1.15
+                to: 1.0
+                duration: 800
+                easing.type: Easing.InOutSine
+            }
+        }
     }
 
     StyledText {
         id: percentageText
         z: 3
         visible: mouseArea.containsMouse
-        text: root.value + "%"
+        text: root.isTempSensor ? root.value + "°C" : root.value + "%"
         font.pixelSize: Theme.font.size.regular
         color: root.percentageColor()
         anchors.verticalCenter: background.verticalCenter
@@ -140,7 +246,7 @@ Item {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        hoverEnabled: true
+        hoverEnabled: root.hoverEnabled
 
         onEntered: {
             root.height = root.originalHeight * 2;
@@ -153,10 +259,19 @@ Item {
         }
     }
 
+    Behavior on height {
+        NumberAnimation {
+            duration: Theme.anim.durations.normal
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.2
+        }
+    }
+
     Behavior on scale {
         NumberAnimation {
             duration: Theme.anim.durations.normal
-            easing.type: Easing.OutCubic
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.2
         }
     }
 }
