@@ -5,10 +5,15 @@ import QtQuick
 import Quickshell
 import qs.modules
 
+import qs.services
+
 ShellRoot {
+
+    property var todotest: Todo.todoFilePath
+
     StatusBar {}
-    Bar {}
     Osd {}
+    Bar {}
     Sidebar {}
     ScreenCorners {}
     Cheatsheet {}

@@ -8,6 +8,7 @@ import qs.common
 import qs.services
 import qs.components.widgets
 import qs.components.notification
+import qs.components.todo
 
 Item {
     id: root
@@ -38,6 +39,9 @@ Item {
             text: "Notifications"
         }
         TabButton {
+            text: "Todo"
+        }
+        TabButton {
             text: "ChatGPT"
         }
     }
@@ -51,6 +55,15 @@ Item {
             NotificationCenterView {
                 sidebarPadding: root.sidebarPadding
             }
+        }
+        Item {
+            id: todoTab
+            TodoView {
+                sidebarPadding: root.sidebarPadding
+            }
+        }
+        Item {
+            id: chatGptTab
         }
     }
 }

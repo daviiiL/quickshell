@@ -22,6 +22,8 @@ Singleton {
 
     property bool statusBarExpanded: false
 
+    property bool debug: false
+
     signal showCheatsheet
     signal hideCheatsheet
     signal toggleCheatsheet

@@ -77,7 +77,7 @@ Scope {
 
                     PowerIndicator {
                         Layout.alignment: Qt.AlignBottom
-                        Layout.bottomMargin: 10
+                        Layout.bottomMargin: 15
                         onExpandedChanged: {
                             bar.powerIndicatorExpanded = expanded;
                         }
