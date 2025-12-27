@@ -117,7 +117,7 @@ Scope {
                 radius: Theme.ui.radius.lg
 
                 height: buttonGrid.implicitHeight + Theme.ui.padding.lg
-                width: buttonGrid.implicitWidth
+                width: buttonGrid.implicitWidth + Theme.ui.padding.lg * 2
 
                 anchors.centerIn: parent
 
