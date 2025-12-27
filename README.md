@@ -1,11 +1,11 @@
 # daviiiL's latest quickshell
 
-> old one is [here](https://github.com/daviiiL/quickshell.git)
+> Decided to rebase the repo to my new shell look [here](https://github.com/daviiiL/quickshell-new.git)
 
 ## TODO
 
-[ ] Polish services
-[ ] Polish lockscreen ui
-[ ] Add power management window
-[ ] Add a control center window (network, bluetooth, settings, etc)
-[ ] Add a frontend for openai
+- [ ] Polish services
+- [ ] Polish lockscreen ui
+- [x] Add power management window
+- [ ] Add a control center window (network, bluetooth, settings, etc)
+- [ ] Add a frontend for openai
