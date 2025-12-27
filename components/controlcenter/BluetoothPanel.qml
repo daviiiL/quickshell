@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
+import Quickshell.Bluetooth
 
 import qs.common
 import qs.services
@@ -19,33 +20,28 @@ Rectangle {
         spacing: Theme.ui.padding.lg
 
         NetworkPanelSection {
-            title: "Ethernet"
-            checked: Network.ethernetConnected
-            onToggled: Network.toggleEthernet
-            showConnectionCard: Network.ethernetConnected
-            connectionIcon: "lan"
-            connectionTitle: Network.ethernetDevice
-            connectionSubtitle: Network.ethernetSpeed ? `Connected • ${Network.ethernetSpeed}` : "Connected"
-        }
-
-        NetworkPanelSection {
-            topMargin: Network.ethernetDevice.length > 0 ? Theme.ui.padding.lg : 0
-            title: "Wi-Fi"
-            checked: Network.wifiEnabled
-            onToggled: Network.toggleWifi
-            showConnectionCard: Network.active && Network.wifiEnabled && Network.networkName !== "lo"
-            connectionIcon: "signal_wifi_4_bar"
-            connectionTitle: Network.networkName
-            connectionSubtitle: "Connected"
+            title: "Bluetooth"
+            checked: Bluetooth.enabled
+            onToggled: Bluetooth.toggleBluetooth
+            showConnectionCard: Bluetooth.connected && Bluetooth.enabled
+            connectionIcon: "bluetooth"
+            connectionTitle: Bluetooth.firstActiveDevice?.name ?? "Unknown Device"
+            connectionSubtitle: {
+                let status = "Connected";
+                if (Bluetooth.firstActiveDevice?.batteryAvailable) {
+                    status += ` • ${Math.round(Bluetooth.firstActiveDevice.battery * 100)}%`;
+                }
+                return status;
+            }
 
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.topMargin: Theme.ui.padding.md
-                visible: Network.knownNetworks.length > 0 && Network.wifiEnabled
+                visible: Bluetooth.pairedButNotConnectedDevices.length > 0 && Bluetooth.enabled
                 spacing: Theme.ui.padding.sm
 
                 Text {
-                    text: "Known Networks"
+                    text: "Paired Devices"
                     font {
                         pixelSize: Theme.font.size.lg
                         family: Theme.font.family.inter_medium
@@ -55,24 +51,23 @@ Rectangle {
                 }
 
                 Repeater {
-                    model: Network.knownNetworks
+                    model: Bluetooth.pairedButNotConnectedDevices
 
-                    delegate: KnownNetworkItem {
-                        required property string modelData
+                    delegate: KnownBluetoothDeviceItem {
+                        required property var modelData
                         Layout.fillWidth: true
-                        networkName: modelData
+                        device: modelData
                     }
                 }
             }
 
-            // available networks
             RowLayout {
-                visible: Network.wifiEnabled && Network.networkName !== "lo"
+                visible: Bluetooth.enabled
                 Layout.fillWidth: true
                 Layout.topMargin: Theme.ui.padding.md
 
                 Text {
-                    text: "Available Networks"
+                    text: "Available Devices"
                     font {
                         pixelSize: Theme.font.size.lg
                         family: Theme.font.family.inter_medium
@@ -99,7 +94,7 @@ Rectangle {
                             family: "Material Symbols Outlined"
                         }
                         color: Colors.on_surface
-                        rotation: Network.wifiScanning ? 360 : 0
+                        rotation: Bluetooth.discovering ? 360 : 0
 
                         Behavior on rotation {
                             NumberAnimation {
@@ -113,35 +108,35 @@ Rectangle {
                         id: refreshMouseArea
                         anchors.fill: parent
                         hoverEnabled: true
-                        onClicked: Network.rescanWifi()
+                        onClicked: Bluetooth.startDiscovering()
                     }
                 }
             }
 
             ScrollView {
-                visible: Network.wifiEnabled && Network.networkName !== "lo"
+                visible: Bluetooth.enabled
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 clip: true
 
                 ListView {
-                    id: networksListView
+                    id: devicesListView
                     spacing: Theme.ui.padding.sm
 
                     model: ScriptModel {
-                        values: Network.friendlyWifiNetworks
+                        values: Bluetooth.friendlyDeviceList
                     }
 
-                    delegate: WifiNetworkItem {
+                    delegate: BluetoothDeviceItem {
                         required property var modelData
-                        width: networksListView.width
-                        network: modelData
+                        width: devicesListView.width
+                        device: modelData
                     }
                 }
             }
 
             Item {
-                visible: Network.networkName === "lo"
+                visible: !Bluetooth.enabled
                 Layout.fillHeight: true
             }
         }

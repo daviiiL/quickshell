@@ -3,17 +3,18 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Quickshell.Bluetooth
 
 import qs.common
 import qs.services
 import qs.widgets
 
 Rectangle {
-    id: wifiItem
-    required property var network
-    height: network?.askingPassword ? 160 : 60
+    id: btItem
+    required property BluetoothDevice device
+    height: device?.paired && !device?.connected ? 140 : 60
     radius: Theme.ui.radius.md
-    color: wifiMouseArea.containsMouse || network?.askingPassword ? Colors.surface_container_high : Colors.surface_container
+    color: btMouseArea.containsMouse ? Colors.surface_container_high : Colors.surface_container
 
     Behavior on height {
         NumberAnimation {
@@ -43,8 +44,18 @@ Rectangle {
             MaterialSymbol {
                 Layout.alignment: Qt.AlignVCenter
                 icon: {
-                    const strength = wifiItem.network?.strength ?? 0;
-                    return strength > 80 ? "signal_wifi_4_bar" : strength > 60 ? "network_wifi_3_bar" : strength > 40 ? "network_wifi_2_bar" : strength > 20 ? "network_wifi_1_bar" : "signal_wifi_0_bar";
+                    const type = btItem.device?.type ?? "";
+                    if (type.includes("audio") || type.includes("headset") || type.includes("headphone"))
+                        return "headphones";
+                    if (type.includes("phone"))
+                        return "phone_android";
+                    if (type.includes("computer"))
+                        return "computer";
+                    if (type.includes("keyboard"))
+                        return "keyboard";
+                    if (type.includes("mouse"))
+                        return "mouse";
+                    return "bluetooth";
                 }
                 fontColor: Colors.on_surface_variant
                 iconSize: Theme.font.size.xl
@@ -56,8 +67,7 @@ Rectangle {
                 spacing: 2
 
                 Text {
-                    text: wifiItem.network?.ssid ?? "Unknown"
-
+                    text: btItem.device?.name ?? "Unknown Device"
                     font {
                         pixelSize: Theme.font.size.md
                         family: Theme.font.family.inter_regular
@@ -67,69 +77,52 @@ Rectangle {
                 }
 
                 Text {
-                    visible: Network.wifiConnectTarget === wifiItem.network && !wifiItem.network?.askingPassword
-                    text: "Connecting..."
+                    visible: btItem.device?.paired && !btItem.device?.connected
+                    text: "Paired"
+                    font.pixelSize: Theme.font.size.xs
+                    color: Colors.on_surface_variant
+                }
+
+                Text {
+                    visible: btItem.device?.connected
+                    text: {
+                        let status = "Connected";
+                        if (btItem.device?.batteryAvailable) {
+                            status += ` • ${Math.round(btItem.device.battery * 100)}%`;
+                        }
+                        return status;
+                    }
                     font.pixelSize: Theme.font.size.xs
                     color: Colors.primary
-                }
-            }
-
-            Text {
-                id: wifiConnectingSpinner
-                text: "progress_activity"
-                visible: Network.wifiConnectTarget === wifiItem.network && !wifiItem.network?.askingPassword && !wifiItem.network?.active
-                font {
-                    pixelSize: Theme.font.size.lg
-                    family: "Material Symbols Outlined"
-                }
-                color: Colors.primary
-
-                RotationAnimator on rotation {
-                    running: Network.wifiConnectTarget === wifiItem.network && !wifiItem.network?.askingPassword
-                    from: 0
-                    to: 360
-                    duration: 1000
-                    loops: Animation.Infinite
                 }
             }
 
             Item {
                 Layout.fillWidth: true
             }
+
             Text {
-                visible: wifiItem.network?.isSecure ?? false
-                text: wifiItem.network?.active ? "check" : "lock"
+                visible: btItem.device?.connected
+                text: "check"
                 font {
                     pixelSize: Theme.font.size.xl
                     family: "Material Symbols Outlined"
                 }
-                color: Colors.on_surface_variant
+                color: Colors.primary
             }
         }
 
         ColumnLayout {
             Layout.fillWidth: true
-            visible: wifiItem.network?.askingPassword ?? false
+            visible: btItem.device?.paired && !btItem.device?.connected
             spacing: Theme.ui.padding.sm
 
-            TextField {
-                id: passwordField
+            Text {
                 Layout.fillWidth: true
-                placeholderText: "Password"
-                echoMode: TextInput.Password
-                color: Colors.on_surface
-                placeholderTextColor: Colors.on_surface
-                background: Rectangle {
-                    color: Colors.surface_container_highest
-                    radius: Theme.ui.radius.sm
-                    border.color: passwordField.activeFocus ? Colors.primary : Colors.outline
-                    border.width: 1
-                }
-
-                onAccepted: {
-                    Network.changePassword(wifiItem.network, passwordField.text);
-                }
-                padding: Theme.ui.padding.sm
+                text: "This device is paired but not connected. Click connect to establish a connection."
+                font.pixelSize: Theme.font.size.xs
+                color: Colors.on_surface_variant
+                wrapMode: Text.WordWrap
             }
 
             RowLayout {
@@ -140,23 +133,25 @@ Rectangle {
                 }
 
                 Rectangle {
-                    Layout.preferredWidth: 70
+                    Layout.preferredWidth: 80
                     Layout.preferredHeight: 32
                     radius: Theme.ui.radius.sm
-                    color: cancelBtnMouseArea.containsMouse ? Colors.surface_container_highest : Colors.surface_container_high
+                    color: unpairBtnMouseArea.containsMouse ? Colors.error_container : Colors.surface_container_highest
 
                     Text {
                         anchors.centerIn: parent
-                        text: "Cancel"
+                        text: "Unpair"
                         font.pixelSize: Theme.font.size.sm
-                        color: Colors.on_surface
+                        color: unpairBtnMouseArea.containsMouse ? Colors.on_error_container : Colors.on_surface
                     }
 
                     MouseArea {
-                        id: cancelBtnMouseArea
+                        id: unpairBtnMouseArea
                         anchors.fill: parent
                         hoverEnabled: true
-                        onClicked: wifiItem.network.askingPassword = false
+                        onClicked: {
+                            Bluetooth.unpairDevice(btItem.device);
+                        }
                     }
                 }
 
@@ -178,7 +173,7 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            Network.changePassword(wifiItem.network, passwordField.text);
+                            Bluetooth.connectDevice(btItem.device);
                         }
                     }
                 }
@@ -187,13 +182,18 @@ Rectangle {
     }
 
     MouseArea {
-        id: wifiMouseArea
+        id: btMouseArea
         anchors.fill: parent
         hoverEnabled: true
-        enabled: !(wifiItem.network?.askingPassword ?? false)
+        enabled: !(btItem.device?.paired && !btItem.device?.connected)
         onClicked: {
-            if (!wifiItem.network?.active) {
-                Network.connectToWifiNetwork(wifiItem.network);
+            if (btItem.device?.connected) {
+                Bluetooth.disconnectDevice(btItem.device);
+            } else if (btItem.device?.paired) {
+                Bluetooth.connectDevice(btItem.device);
+            } else {
+                // Pair first
+                Bluetooth.pairDevice(btItem.device);
             }
         }
     }
