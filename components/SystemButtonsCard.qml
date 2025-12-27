@@ -82,7 +82,7 @@ RectWidgetCard {
             buttonIcon: "settings"
             buttonText: "Settings"
 
-            checked: false
+            checked: GlobalStates.controlCenterPanelOpen
             onClicked: () => {
                 GlobalStates.controlCenterPanelOpen = true;
             }

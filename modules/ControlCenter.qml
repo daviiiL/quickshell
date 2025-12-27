@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 
 import qs.common
 import qs.components.controlcenter
@@ -14,29 +13,20 @@ FloatingWindow {
     visible: GlobalStates.controlCenterPanelOpen
 
     minimumSize: Qt.size(650, 750)
-    HyprlandFocusGrab {
-        id: grab
-        windows: [window]
-
-        onCleared: {
-            GlobalStates.controlCenterPanelOpen = false;
-            window.closed();
-        }
-    }
-
-    Component.onDestruction: {
-        console.log("Noooooooooooo");
-    }
+    // Component.onDestruction: {
+    //     // console.log("Noooooooooooo");
+    //     GlobalStates.controlCenterPanelOpen = false;
+    //     console.log(visible);
+    // }
 
     onVisibleChanged: {
         if (!this.visible) {
-            console.log("dismisseddddddddd");
+            // console.log("dismisseddddddddd");
             GlobalStates.controlCenterPanelOpen = false;
-            window.destroy();
+            // window.destroy();
         }
     }
 
-    Component.onCompleted: grab.active = true
     color: Colors.surface_container
     RowLayout {
         anchors.fill: parent
