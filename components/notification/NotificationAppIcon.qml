@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell
 import Quickshell.Widgets
@@ -37,7 +39,7 @@ MaterialCookie {
                 return (root.urgency == NotificationUrgency.Critical && guessedIcon === defaultIcon) ? "priority_high" : guessedIcon;
             }
             iconSize: root.materialIconSize
-            fontColor: isUrgent ? Colors.on_error : Colors.on_primary_container
+            fontColor: root.isUrgent ? Colors.on_error : Colors.on_primary_container
         }
     }
 

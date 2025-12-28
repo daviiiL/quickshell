@@ -47,14 +47,14 @@ MouseArea {
         target: Authentication
     }
 
-    BatteryCard{
-      showTitle: false
-      anchors {
-        top: parent.top
-        right: parent.right
-      }
+    BatteryCard {
+        showTitle: false
+        anchors {
+            top: parent.top
+            right: parent.right
+        }
 
-      implicitWidth: 100
+        implicitWidth: 100
     }
 
     LockToolbar {
@@ -70,7 +70,7 @@ MouseArea {
             id: passwordField
 
             implicitWidth: 300
-            placeholderText: GlobalStates.screenUnlockFailed ? "Incorrect password" : "Enter password"
+            placeholderText: GlobalStates.screenUnlockFailed ? "Try again" : "Enter password"
         }
 
         LockButton {

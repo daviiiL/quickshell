@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Wayland
 
 import qs.common
 import qs.components.controlcenter
@@ -59,7 +58,7 @@ FloatingWindow {
                 anchors.fill: parent
                 currentIndex: listview.currentIndex
 
-                ControlCenterPanel {}
+                NetworkPanel {}
 
                 BluetoothPanel {}
             }

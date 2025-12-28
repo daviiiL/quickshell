@@ -1,10 +1,10 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Services.Notifications
 import "notification_utils.js" as NotificationUtils
+import qs.components.notification
 import qs.components
 import qs.services
 import qs.common
@@ -17,7 +17,7 @@ MouseArea {
     property var notifications: notificationGroup?.notifications ?? []
     property int notificationCount: notifications.length
     property bool multipleNotifications: notificationCount > 1
-    property bool expanded: false
+    property bool expanded: popup ?? false
     property bool popup: false
     property real padding: 10
     property real dragConfirmThreshold: 70
@@ -38,10 +38,12 @@ MouseArea {
     }
 
     function toggleExpanded() {
-        if (expanded)
-            implicitHeightAnim.enabled = true;
-        else
-            implicitHeightAnim.enabled = false;
+        if (!root.popup) {
+            if (expanded)
+                implicitHeightAnim.enabled = true;
+            else
+                implicitHeightAnim.enabled = false;
+        }
         root.expanded = !root.expanded;
     }
 
@@ -134,10 +136,11 @@ MouseArea {
         }
 
         clip: true
-        implicitHeight: expanded ? row.implicitHeight + padding * 2 : Math.min(90, row.implicitHeight + padding * 2)
+        implicitHeight: (popup || expanded) ? row.implicitHeight + padding * 2 : Math.min(90, row.implicitHeight + padding * 2)
 
         Behavior on implicitHeight {
             id: implicitHeightAnim
+            enabled: !root.popup
             NumberAnimation {
                 duration: Theme.anim.durations.xs
                 easing.type: Easing.BezierSpline
@@ -166,7 +169,7 @@ MouseArea {
                 summary: root.notificationGroup?.notifications[root.notificationCount - 1]?.summary
                 urgency: root.notifications.some(n => n.urgency === NotificationUrgency.Critical.toString()) ? NotificationUrgency.Critical : NotificationUrgency.Normal
 
-                Behavior on y {
+                Behavior on Layout.preferredHeight {
                     NumberAnimation {
                         duration: Theme.anim.durations.sm
                         easing.type: Easing.BezierSpline
@@ -177,9 +180,10 @@ MouseArea {
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: expanded ? (root.multipleNotifications ? 5 : 0) : 0
+                spacing: root.expanded ? (root.multipleNotifications ? 5 : 0) : 0
 
                 Behavior on spacing {
+                    enabled: !root.popup
                     NumberAnimation {
                         duration: Theme.anim.durations.xs
                         easing.type: Easing.BezierSpline
@@ -225,6 +229,7 @@ MouseArea {
 
                     NotificationGroupExpandButton {
                         id: expandButton
+                        visible: !root.popup
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
                         count: root.notificationCount
@@ -251,6 +256,7 @@ MouseArea {
                     interactive: false
 
                     Behavior on spacing {
+                        enabled: !root.popup
                         NumberAnimation {
                             duration: Theme.anim.durations.xs
                             easing.type: Easing.BezierSpline

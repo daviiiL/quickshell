@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Wayland
 import qs.common
 import qs.components.notification
 import qs.services
@@ -28,8 +29,12 @@ Scope {
                 left: 2
             }
 
+            WlrLayershell.namespace: "quickshell:notifpopup"
+            WlrLayershell.layer: WlrLayer.Overlay
+            exclusiveZone: 0
             implicitWidth: root.popupWidth
-            implicitHeight: contentRect.implicitHeight + 20
+            implicitHeight: contentRect.implicitHeight + 30
+
             color: "transparent"
 
             aboveWindows: true
@@ -37,10 +42,15 @@ Scope {
 
             Rectangle {
                 id: contentRect
-                anchors.fill: parent
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
                 anchors.margins: 10
                 radius: Theme.ui.radius.md
-                color: Colors.primary_container
+                // color: Colors.primary_container
+                color: "transparent"
                 opacity: 0
                 implicitHeight: Math.min(listview.contentHeight + 20, root.maxHeight)
 
@@ -76,15 +86,15 @@ Scope {
                 }
             }
 
-            mask: Region {}
+            // mask: Region {}
 
-            Behavior on implicitHeight {
-                NumberAnimation {
-                    duration: root.animationDuration
-                    easing.type: Easing.BezierSpline
-                    easing.bezierCurve: Theme.anim.curves.standard
-                }
-            }
+            // Behavior on implicitHeight {
+            //     NumberAnimation {
+            //         duration: root.animationDuration
+            //         easing.type: Easing.Linear
+            //         // easing.bezierCurve: Theme.anim.curves.standard
+            //     }
+            // }
         }
     }
 }

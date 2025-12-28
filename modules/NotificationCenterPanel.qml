@@ -58,7 +58,7 @@ Scope {
                 id: contentRect
                 anchors.fill: parent
                 radius: Theme.ui.radius.md
-                color: Colors.surface_light
+                color: Colors.surface_container
                 clip: true
 
                 NotificationCenterView {
