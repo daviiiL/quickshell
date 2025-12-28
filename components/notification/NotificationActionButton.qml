@@ -55,7 +55,7 @@ Rectangle {
             anchors.centerIn: parent
             width: Math.min(implicitWidth, button.width - 16)
             text: buttonText
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.md
             color: (urgency == NotificationUrgency.Critical) ? Colors.on_error : Colors.on_primary_container
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter

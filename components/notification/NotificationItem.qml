@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import QtQuick.Layouts
 import Quickshell.Services.Notifications
 import qs.common
@@ -11,8 +12,10 @@ Item {
     property var notificationObject
     property bool expanded: false
     property bool onlyNotification: false
+    property bool singleChild: false
     property real fontSize: Theme.font.size.md
-    property real padding: onlyNotification ? 0 : 8
+    // property real padding: onlyNotification ? 0 : 8
+    property real padding: 8
     property real summaryElideRatio: 0.85
 
     property real dragConfirmThreshold: 70
@@ -42,6 +45,10 @@ Item {
         }
 
         return processedBody;
+    }
+
+    function makeTranslucent(color, alpha = 0.12) {
+        return Qt.rgba(color.r, color.g, color.b, alpha);
     }
 
     function destroyWithAnimation(left = false) {
@@ -121,7 +128,34 @@ Item {
             }
         }
 
-        color: (expanded && !onlyNotification) ? (notificationObject.urgency == NotificationUrgency.Critical) ? Colors.error_container : Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.12) : Qt.rgba(Colors.primary.r, Colors.primary.g, Colors.primary.b, 0.08)
+        color: {
+            if (root.singleChild) {
+                return "transparent";
+            }
+            if (expanded && !onlyNotification) {
+                if (notificationObject.urgency == NotificationUrgency.Critical) {
+                    return root.makeTranslucent(Colors.error_container, 0.2);
+                }
+                return root.makeTranslucent(Colors.primary_container, 0.15);
+            }
+            return root.makeTranslucent(Colors.primary_container, 0.08);
+        }
+
+        border {
+            width: (root.singleChild || !root.expanded) ? 0 : 1
+            color: {
+                if (root.singleChild || !root.expanded) {
+                    return "transparent";
+                }
+                if (expanded && !onlyNotification) {
+                    if (notificationObject.urgency == NotificationUrgency.Critical) {
+                        return Colors.error_container;
+                    }
+                    return Colors.primary_container;
+                }
+                return root.makeTranslucent(Colors.primary_container, 0.3);
+            }
+        }
 
         implicitHeight: expanded ? (contentColumn.implicitHeight + padding * 2) : summaryRow.implicitHeight
 
@@ -158,7 +192,14 @@ Item {
                     Layout.fillWidth: summaryTextMetrics.width >= summaryRow.implicitWidth * root.summaryElideRatio
                     visible: !root.onlyNotification
                     font.pixelSize: root.fontSize
-                    color: Colors.on_primary_container
+                    color: {
+                        if (root.singleChild)
+                            return Colors.on_surface;
+                        if (root.expanded && !root.onlyNotification && notificationObject.urgency === NotificationUrgency.Critical) {
+                            return Colors.on_error_container;
+                        }
+                        return Colors.on_primary_container;
+                    }
                     elide: Text.ElideRight
                     text: root.notificationObject.summary || ""
                 }
@@ -177,7 +218,7 @@ Item {
                     }
 
                     font.pixelSize: root.fontSize
-                    color: Colors.on_primary_container
+                    color: root.singleChild ? Colors.on_surface : Colors.on_primary_container
                     elide: Text.ElideRight
                     wrapMode: Text.Wrap
                     maximumLineCount: 1
@@ -197,7 +238,14 @@ Item {
                     id: notificationBodyText
                     Layout.fillWidth: true
                     font.pixelSize: root.fontSize
-                    color: root.notificationObject.urgency == NotificationUrgency.Critical ? Colors.on_error_container : Colors.on_primary_container
+                    color: {
+                        if (root.singleChild)
+                            return Colors.on_surface;
+                        if (root.expanded && !root.onlyNotification && root.notificationObject.urgency == NotificationUrgency.Critical) {
+                            return Colors.on_error_container;
+                        }
+                        return Colors.on_primary_container;
+                    }
                     wrapMode: Text.Wrap
                     elide: Text.ElideRight
                     textFormat: Text.RichText
@@ -215,11 +263,26 @@ Item {
                     id: actionRowLayout
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignBottom
+                    Item {
+                        Layout.fillWidth: true
+                    }
+                    Repeater {
+
+                        model: ScriptModel {
+                            values: root.notificationObject.actions
+                        }
+
+                        delegate: NotificationActionButton {
+                            required property var modelData
+                            Layout.fillWidth: true
+                            buttonText: modelData.text
+                        }
+                    }
 
                     NotificationActionButton {
                         Layout.fillWidth: true
                         buttonText: "Close"
-                        urgency: notificationObject.urgency
+                        urgency: root.notificationObject.urgency
                         onClicked: {
                             root.destroyWithAnimation();
                         }

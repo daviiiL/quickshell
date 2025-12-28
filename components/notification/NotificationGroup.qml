@@ -47,6 +47,10 @@ MouseArea {
         root.expanded = !root.expanded;
     }
 
+    function makeTranslucent(color, alpha = 0.15) {
+        return Qt.rgba(color.r, color.g, color.b, alpha);
+    }
+
     onContainsMouseChanged: {
         if (!root.popup)
             return;
@@ -122,9 +126,14 @@ MouseArea {
         id: background
         anchors.left: parent.left
         width: parent.width
-        color: Colors.primary_container
+        color: Colors.surface_container
         radius: Theme.ui.radius.sm
         anchors.leftMargin: root.xOffset
+
+        border {
+            width: 1
+            color: Qt.lighter(Colors.surface_container, 1.2)
+        }
 
         Behavior on anchors.leftMargin {
             enabled: !dragManager.dragging
@@ -136,7 +145,7 @@ MouseArea {
         }
 
         clip: true
-        implicitHeight: (popup || expanded) ? row.implicitHeight + padding * 2 : Math.min(90, row.implicitHeight + padding * 2)
+        implicitHeight: root.expanded ? row.implicitHeight + padding * 2 : Math.min(90, row.implicitHeight + padding * 2)
 
         Behavior on implicitHeight {
             id: implicitHeightAnim
@@ -150,10 +159,7 @@ MouseArea {
 
         RowLayout {
             id: row
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.margins: root.padding
+            anchors.fill: parent
             spacing: 10
 
             NotificationAppIcon {
@@ -212,7 +218,7 @@ MouseArea {
                             Layout.fillWidth: true
                             text: (topRow.showAppName ? root.notificationGroup?.appName : root.notificationGroup?.notifications[0]?.summary) || ""
                             font.pixelSize: topRow.showAppName ? topRow.fontSize : Theme.font.size.md
-                            color: Colors.on_primary_container
+                            color: Colors.on_surface
                         }
 
                         StyledText {
@@ -221,7 +227,7 @@ MouseArea {
                             horizontalAlignment: Text.AlignLeft
                             text: NotificationUtils.getFriendlyNotifTimeString(root.notificationGroup?.time)
                             font.pixelSize: topRow.fontSize
-                            color: Colors.on_primary_container
+                            color: Colors.on_surface_variant
 
                             opacity: 0.7
                         }
@@ -252,7 +258,7 @@ MouseArea {
                     id: notificationsColumn
                     implicitHeight: contentHeight
                     Layout.fillWidth: true
-                    spacing: expanded ? 5 : 3
+                    spacing: root.expanded ? 5 : 3
                     interactive: false
 
                     Behavior on spacing {
@@ -274,6 +280,7 @@ MouseArea {
                         notificationObject: modelData
                         expanded: root.expanded
                         onlyNotification: (root.notificationCount === 1)
+                        singleChild: (root.notificationCount === 1)
                         opacity: (!root.expanded && index == 1 && root.notificationCount > 2) ? 0.5 : 1
                         visible: root.expanded || (index < 2)
                         anchors.left: parent?.left
