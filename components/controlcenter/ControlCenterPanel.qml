@@ -22,7 +22,7 @@ Rectangle {
 
         spacing: Theme.ui.padding.lg
 
-        NetworkPanelSection {
+        ControlCenterPanelSection {
             title: "Ethernet"
             checked: Network.ethernetConnected
             onToggled: Network.toggleEthernet
@@ -32,7 +32,7 @@ Rectangle {
             connectionSubtitle: Network.ethernetSpeed ? `Connected • ${Network.ethernetSpeed}` : "Connected"
         }
 
-        NetworkPanelSection {
+        ControlCenterPanelSection {
             topMargin: Network.ethernetDevice.length > 0 ? Theme.ui.padding.lg : 0
             title: "Wi-Fi"
             checked: Network.wifiEnabled

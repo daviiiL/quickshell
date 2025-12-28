@@ -11,7 +11,7 @@ Rectangle {
     implicitWidth: 48
     implicitHeight: 28
     radius: 14
-    color: checked ? Colors.primary : Colors.surface_variant
+    color: checked ? Colors.primary : Colors.surface
 
     Behavior on color {
         ColorAnimation {
@@ -27,7 +27,7 @@ Rectangle {
         radius: 12
         x: root.checked ? parent.width - width - 2 : 2
         y: 2
-        color: Colors.on_primary
+        color: root.checked ? Colors.on_primary : Colors.on_secondary
 
         Behavior on x {
             NumberAnimation {

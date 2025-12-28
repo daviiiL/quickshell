@@ -22,7 +22,7 @@ Rectangle {
 
         spacing: Theme.ui.padding.lg
 
-        NetworkPanelSection {
+        ControlCenterPanelSection {
             title: "Bluetooth"
             checked: SystemBluetooth.enabled
             onToggled: SystemBluetooth.toggleBluetooth

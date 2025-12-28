@@ -77,13 +77,17 @@ Singleton {
         }
     }
 
+    signal colorsChanged
+
     FileView {
         id: jsonData
         path: Qt.resolvedUrl("../colors.json")
         preload: true
         blockLoading: true
         watchChanges: true
-        onFileChanged: this.reload()
+        onFileChanged: {
+            this.reload();
+        }
         onLoaded: root.load(this.text())
     }
 

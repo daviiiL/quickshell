@@ -51,18 +51,18 @@ FloatingWindow {
 
         Rectangle {
             Layout.fillHeight: true
-            Layout.preferredWidth: 2
-            color: Colors.secondary_container
-        }
-
-        StackLayout {
-            Layout.fillHeight: true
             Layout.fillWidth: true
-            currentIndex: listview.currentIndex
+            Layout.margins: Theme.ui.padding.sm
+            radius: Theme.ui.radius.lg
+            color: Colors.surface_container
+            StackLayout {
+                anchors.fill: parent
+                currentIndex: listview.currentIndex
 
-            NetworkPanel {}
+                ControlCenterPanel {}
 
-            BluetoothPanel {}
+                BluetoothPanel {}
+            }
         }
     }
 
@@ -84,6 +84,42 @@ FloatingWindow {
             onPressed: () => {
                 listview.currentIndex = itemRoot.index;
             }
+        }
+
+        Canvas {
+            id: topIndicator
+            anchors {
+                top: parent.top
+                horizontalCenter: parent.horizontalCenter
+            }
+            width: parent.width * 0.6
+            height: 3
+            opacity: itemRoot.currentIndex === itemRoot.index ? 1 : 0
+
+            Connections {
+                target: Colors
+
+                function onPrimaryChanged() {
+                    topIndicator.requestPaint();
+                }
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.anim.durations.sm
+                    easing.type: Easing.Bezier
+                    easing.bezierCurve: Theme.anim.curves.emphasized
+                }
+            }
+
+            onPaint: {
+                var ctx = getContext("2d");
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = Colors.primary;
+                ctx.fillRect(0, 0, width, height);
+            }
+
+            onOpacityChanged: requestPaint()
         }
 
         Rectangle {

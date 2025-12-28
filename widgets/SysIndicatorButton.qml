@@ -26,6 +26,7 @@ Rectangle {
     }
 
     Canvas {
+        id: indicatorLine
         visible: root.checked
         anchors.fill: parent
         antialiasing: true
@@ -49,7 +50,17 @@ Rectangle {
             ctx.stroke();
         }
 
-        Component.onCompleted: requestPaint()
+        Component.onCompleted: {
+            requestPaint();
+        }
+
+        Connections {
+            target: Colors
+
+            function onPrimaryChanged() {
+                indicatorLine.requestPaint();
+            }
+        }
     }
 
     ColumnLayout {
