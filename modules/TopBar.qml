@@ -16,6 +16,8 @@ Scope {
             id: root
             required property var modelData
 
+            WlrLayershell.namespace: "quickshell:topbar"
+
             screen: modelData
             color: "transparent"
 
