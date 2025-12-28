@@ -24,7 +24,7 @@ Singleton {
     property bool wifiScanning: false
     property bool wifiConnecting: connectProc.running
     property WifiAccessPoint wifiConnectTarget
-    readonly property list<WifiAccessPoint> wifiNetworks: []
+    property list<WifiAccessPoint> wifiNetworks: []
     readonly property WifiAccessPoint active: wifiNetworks.find(n => n.active) ?? null
     readonly property list<var> friendlyWifiNetworks: [...wifiNetworks].sort((a, b) => {
         if (a.active && !b.active)
@@ -139,7 +139,7 @@ Singleton {
         command: ["nmcli", "dev", "wifi", "list", "--rescan", "yes"]
         stdout: SplitParser {
             onRead: {
-                wifiScanning = false;
+                root.wifiScanning = false;
                 getNetworks.running = true;
             }
         }
@@ -315,6 +315,8 @@ Singleton {
                         }));
                     }
                 }
+
+                // console.debug("WiFi scan results:", wifiNetworks.map(n => `${n.ssid} (${n.strength}% @ ${n.frequency}MHz, ${n.active ? 'active' : 'inactive'})`).join(", "));
             }
         }
     }
@@ -346,9 +348,9 @@ Singleton {
         running: true
         command: ["sh", "-c", "nmcli -t -f DEVICE,TYPE,STATE device status | grep ':ethernet:' && nmcli -t -f GENERAL.DEVICE,WIRED-PROPERTIES.SPEED device show $(nmcli -t -f DEVICE,TYPE device status | grep ':ethernet$' | head -1 | cut -d: -f1) 2>/dev/null || true"]
         environment: ({
-            LANG: "C",
-            LC_ALL: "C"
-        })
+                LANG: "C",
+                LC_ALL: "C"
+            })
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.trim().split("\n");

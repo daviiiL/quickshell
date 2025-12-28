@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
 
 import qs.common
 import qs.components.controlcenter
@@ -13,25 +14,19 @@ FloatingWindow {
     visible: GlobalStates.controlCenterPanelOpen
 
     minimumSize: Qt.size(650, 750)
-    // Component.onDestruction: {
-    //     // console.log("Noooooooooooo");
-    //     GlobalStates.controlCenterPanelOpen = false;
-    //     console.log(visible);
-    // }
 
     onVisibleChanged: {
         if (!this.visible) {
-            // console.log("dismisseddddddddd");
             GlobalStates.controlCenterPanelOpen = false;
-            // window.destroy();
         }
     }
 
-    color: Colors.surface_container
+    color: Colors.surface_translucent
     RowLayout {
         anchors.fill: parent
 
         Rectangle {
+            Layout.topMargin: 10
             Layout.fillHeight: true
             Layout.preferredWidth: 200
             color: "transparent"
@@ -102,6 +97,10 @@ FloatingWindow {
 
             property color targetBgColor: parent.currentIndex === parent.index ? Qt.rgba(highlightBg.r, highlightBg.g, highlightBg.b, 0.3) : "transparent"
             color: targetBgColor
+
+            border {
+                color: listview.currentIndex === itemRoot.index ? Colors.primary_container : "transparent"
+            }
 
             Behavior on color {
                 ColorAnimation {

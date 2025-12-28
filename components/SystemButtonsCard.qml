@@ -28,14 +28,10 @@ RectWidgetCard {
         SysIndicatorButton {
             Layout.alignment: Qt.AlignHCenter
 
-            checked: Bluetooth.defaultAdapter?.enabled ?? false
+            checked: SystemBluetooth.enabled
             buttonIcon: checked ? "bluetooth" : "bluetooth_disabled"
             buttonText: "BT"
-            onClicked: () => {
-                if (Bluetooth.defaultAdapter) {
-                    Bluetooth.defaultAdapter.enabled = !Bluetooth.defaultAdapter.enabled;
-                }
-            }
+            onClicked: SystemBluetooth.toggleBluetooth
         }
         SysIndicatorButton {
             Layout.alignment: Qt.AlignHCenter

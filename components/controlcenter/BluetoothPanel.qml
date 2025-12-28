@@ -11,7 +11,10 @@ import qs.services
 import qs.widgets
 
 Rectangle {
+    id: root
     color: "transparent"
+
+    property bool showChildren: SystemBluetooth.enabled ?? false
 
     ColumnLayout {
         anchors.fill: parent
@@ -21,9 +24,9 @@ Rectangle {
 
         NetworkPanelSection {
             title: "Bluetooth"
-            checked: Bluetooth.enabled
-            onToggled: Bluetooth.toggleBluetooth
-            showConnectionCard: Bluetooth.connected && Bluetooth.enabled
+            checked: SystemBluetooth.enabled
+            onToggled: SystemBluetooth.toggleBluetooth
+            showConnectionCard: SystemBluetooth.connected
             connectionIcon: "bluetooth"
             connectionTitle: Bluetooth.firstActiveDevice?.name ?? "Unknown Device"
             connectionSubtitle: {
@@ -37,7 +40,7 @@ Rectangle {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.topMargin: Theme.ui.padding.md
-                visible: Bluetooth.pairedButNotConnectedDevices.length > 0 && Bluetooth.enabled
+                visible: SystemBluetooth.pairedButNotConnectedDevices.length > 0 && root.showChildren
                 spacing: Theme.ui.padding.sm
 
                 Text {
@@ -51,7 +54,9 @@ Rectangle {
                 }
 
                 Repeater {
-                    model: Bluetooth.pairedButNotConnectedDevices
+                    model: ScriptModel {
+                        values: SystemBluetooth.pairedButNotConnectedDevices
+                    }
 
                     delegate: KnownBluetoothDeviceItem {
                         required property var modelData
@@ -62,7 +67,7 @@ Rectangle {
             }
 
             RowLayout {
-                visible: Bluetooth.enabled
+                visible: root.showChildren
                 Layout.fillWidth: true
                 Layout.topMargin: Theme.ui.padding.md
 
@@ -94,13 +99,14 @@ Rectangle {
                             family: "Material Symbols Outlined"
                         }
                         color: Colors.on_surface
-                        rotation: Bluetooth.discovering ? 360 : 0
-
-                        Behavior on rotation {
-                            NumberAnimation {
-                                duration: 1000
-                                easing.type: Easing.Linear
-                            }
+                        rotation: SystemBluetooth.discovering ? 360 : 0
+                        NumberAnimation on rotation {
+                            loops: Animation.Infinite
+                            duration: 1000
+                            from: 0
+                            to: 360
+                            easing.type: Easing.Linear
+                            running: SystemBluetooth.discovering
                         }
                     }
 
@@ -108,23 +114,29 @@ Rectangle {
                         id: refreshMouseArea
                         anchors.fill: parent
                         hoverEnabled: true
-                        onClicked: Bluetooth.startDiscovering()
+                        onClicked: () => SystemBluetooth.startDiscovering()
                     }
                 }
             }
 
             ScrollView {
-                visible: Bluetooth.enabled
+                visible: root.showChildren
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 clip: true
+
+                onVisibleChanged: {
+                    if (this.visible) {
+                        SystemBluetooth.startDiscovering();
+                    }
+                }
 
                 ListView {
                     id: devicesListView
                     spacing: Theme.ui.padding.sm
 
                     model: ScriptModel {
-                        values: Bluetooth.friendlyDeviceList
+                        values: SystemBluetooth.friendlyDeviceList
                     }
 
                     delegate: BluetoothDeviceItem {
@@ -136,7 +148,7 @@ Rectangle {
             }
 
             Item {
-                visible: !Bluetooth.enabled
+                visible: !root.showChildren
                 Layout.fillHeight: true
             }
         }

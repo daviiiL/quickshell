@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
 import Quickshell.Bluetooth
 
 import qs.common
@@ -77,14 +76,14 @@ Rectangle {
                 }
 
                 Text {
-                    visible: btItem.device?.paired && !btItem.device?.connected
+                    visible: btItem.device && btItem.device?.paired && !btItem.device?.connected
                     text: "Paired"
                     font.pixelSize: Theme.font.size.xs
                     color: Colors.on_surface_variant
                 }
 
                 Text {
-                    visible: btItem.device?.connected
+                    visible: btItem.device?.connected ?? false
                     text: {
                         let status = "Connected";
                         if (btItem.device?.batteryAvailable) {
@@ -102,7 +101,7 @@ Rectangle {
             }
 
             Text {
-                visible: btItem.device?.connected
+                visible: btItem.device && btItem.device?.connected
                 text: "check"
                 font {
                     pixelSize: Theme.font.size.xl
@@ -114,7 +113,7 @@ Rectangle {
 
         ColumnLayout {
             Layout.fillWidth: true
-            visible: btItem.device?.paired && !btItem.device?.connected
+            visible: btItem.device && btItem.device?.paired && !btItem.device?.connected
             spacing: Theme.ui.padding.sm
 
             Text {
@@ -150,7 +149,7 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            Bluetooth.unpairDevice(btItem.device);
+                            SystemBluetooth.unpairDevice(btItem.device);
                         }
                     }
                 }
@@ -173,7 +172,7 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            Bluetooth.connectDevice(btItem.device);
+                            SystemBluetooth.connectDevice(btItem.device);
                         }
                     }
                 }
@@ -188,12 +187,12 @@ Rectangle {
         enabled: !(btItem.device?.paired && !btItem.device?.connected)
         onClicked: {
             if (btItem.device?.connected) {
-                Bluetooth.disconnectDevice(btItem.device);
+                SystemBluetooth.disconnectDevice(btItem.device);
             } else if (btItem.device?.paired) {
-                Bluetooth.connectDevice(btItem.device);
+                SystemBluetooth.connectDevice(btItem.device);
             } else {
                 // Pair first
-                Bluetooth.pairDevice(btItem.device);
+                SystemBluetooth.pairDevice(btItem.device);
             }
         }
     }

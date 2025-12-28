@@ -99,7 +99,8 @@ ColumnLayout {
                 Layout.preferredWidth: 40
                 buttonIcon: "delete_sweep"
                 onClicked: () => {
-                    Notifications.discardAllNotifications();
+                  Notifications.discardAllNotifications();
+                  GlobalStates.notificationCenterOpen = false; 
                 }
             }
         }

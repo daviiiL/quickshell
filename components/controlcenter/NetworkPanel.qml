@@ -10,6 +10,10 @@ import qs.services
 import qs.widgets
 
 Rectangle {
+    id: root
+
+    property bool showChildren: Network.wifiEnabled
+
     color: "transparent"
 
     ColumnLayout {
@@ -67,7 +71,7 @@ Rectangle {
 
             // available networks
             RowLayout {
-                visible: Network.wifiEnabled && Network.networkName !== "lo"
+                visible: root.showChildren
                 Layout.fillWidth: true
                 Layout.topMargin: Theme.ui.padding.md
 
@@ -119,9 +123,9 @@ Rectangle {
             }
 
             ScrollView {
-                visible: Network.wifiEnabled && Network.networkName !== "lo"
-                Layout.fillWidth: true
+                visible: root.showChildren
                 Layout.fillHeight: true
+                Layout.fillWidth: true
                 clip: true
 
                 ListView {
