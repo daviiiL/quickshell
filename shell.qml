@@ -38,4 +38,5 @@ ShellRoot {
     NotificationPopup {}
     NotificationCenterPanel {}
     ControlCenter {}
+    WallpaperPicker {}
 }

@@ -12,6 +12,7 @@ Singleton {
     property bool notificationCenterOpen: false
     property bool powerPanelOpen: false
     property bool controlCenterPanelOpen: false
+    property bool wallpaperPickerOpen: false
 
     property bool isLaptop: true
 }
