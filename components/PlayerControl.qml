@@ -11,7 +11,12 @@ Rectangle {
     id: root
     required property MprisPlayer player
 
-    color: Colors.surface_container
+    border {
+        width: 1
+        color: Colors.primary_container
+    }
+
+    color: Colors.background
     radius: Theme.ui.radius.lg
 
     Timer {
@@ -26,24 +31,39 @@ Rectangle {
         anchors.margins: Theme.ui.padding.md
         spacing: Theme.ui.padding.md
 
-        Rectangle {
+        Item {
             Layout.fillHeight: true
             implicitWidth: height
-            radius: Theme.ui.radius.sm
-            color: Colors.surface_container_high
+
+            Rectangle {
+                id: artBackground
+                anchors.fill: parent
+                radius: Theme.ui.radius.sm
+                color: Colors.surface_container_high
+            }
 
             StyledImage {
                 id: albumArt
                 anchors.fill: parent
-                source: Qt.resolvedUrl(root.player?.trackArtUrl ?? "")
+                source: root.player?.trackArtUrl ?? ""
                 fillMode: Image.PreserveAspectCrop
                 layer.enabled: true
-                layer.effect: OpacityMask {
-                    maskSource: Rectangle {
-                        anchors.fill: parent
-                        radius: Theme.ui.radius.sm
-                    }
-                }
+                visible: false
+            }
+
+            Rectangle {
+                id: mask
+                anchors.fill: parent
+                radius: Theme.ui.radius.sm
+                antialiasing: true
+                visible: false
+            }
+
+            OpacityMask {
+                anchors.fill: parent
+                source: albumArt
+                maskSource: mask
+                smooth: true
             }
         }
 

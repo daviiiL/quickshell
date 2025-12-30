@@ -19,7 +19,7 @@ Rectangle {
     width: 70
     height: 30
 
-    radius: (root.clickable && (mouseArea.containsMouse || mouseArea.pressed)) ? Theme.ui.radius.full : Theme.ui.radius.md
+    radius: Theme.ui.radius.md
 
     transform: Scale {
         origin.x: root.width / 2
