@@ -17,7 +17,8 @@ Text {
     property real animateFrom: 0
     property real animateTo: 1
     property int animateDuration: Theme.anim.durations.md
-
+    renderType: Text.QtRendering
+    renderTypeQuality: Text.HighRenderTypeQuality
     font.family: "Material Symbols Rounded"
     font.hintingPreference: Font.PreferFullHinting
     font.variableAxes: {
@@ -26,7 +27,6 @@ Text {
         "GRAD": root.grad,
         "wght": root.fontInfo.weight
     }
-    renderType: Text.NativeRendering
     text: root.icon
     font.pointSize: root.iconSize || 20
     color: fontColor

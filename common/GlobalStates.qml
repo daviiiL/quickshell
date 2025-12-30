@@ -15,4 +15,7 @@ Singleton {
     property bool wallpaperPickerOpen: false
 
     property bool isLaptop: true
+    property bool mediaControlsOpen: false
+    property real mediaControlsX: 0
+    property real mediaControlsY: 0
 }

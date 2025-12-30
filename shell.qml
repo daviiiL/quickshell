@@ -39,4 +39,5 @@ ShellRoot {
     NotificationCenterPanel {}
     ControlCenter {}
     WallpaperPicker {}
+    MediaControls {}
 }

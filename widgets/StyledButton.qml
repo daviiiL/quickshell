@@ -7,8 +7,9 @@ Rectangle {
     id: root
     property string icon: ""
     property string text: ""
-    required property var onClicked
-
+    property var iconSize: null
+    property bool highlighted: false
+    property bool clickable: true
     signal clicked
 
     function makeTranslucent(color) {
@@ -18,8 +19,46 @@ Rectangle {
     width: 70
     height: 30
 
-    radius: Theme.ui.radius.md
-    color: (mouseArea.containsMouse || mouseArea.pressed) ? root.makeTranslucent(Colors.primary_container) : root.makeTranslucent(Colors.secondary_container)
+    radius: (root.clickable && (mouseArea.containsMouse || mouseArea.pressed)) ? Theme.ui.radius.full : Theme.ui.radius.md
+
+    transform: Scale {
+        origin.x: root.width / 2
+        origin.y: root.height / 2
+        xScale: (root.clickable && (mouseArea.containsMouse || mouseArea.pressed)) ? 1.1 : 1.0
+        yScale: (root.clickable && (mouseArea.containsMouse || mouseArea.pressed)) ? 1.1 : 1.0
+
+        Behavior on xScale {
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutBack
+                easing.overshoot: 1.2
+            }
+        }
+
+        Behavior on yScale {
+            NumberAnimation {
+                duration: 200
+                easing.type: Easing.OutBack
+                easing.overshoot: 1.2
+            }
+        }
+    }
+
+    Behavior on radius {
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.InOutQuad
+        }
+    }
+    color: {
+        if (!root.clickable) {
+            return root.makeTranslucent(Colors.surface_variant);
+        }
+        if (root.highlighted) {
+            return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.lighter(Colors.primary, 1.1) : Colors.primary;
+        }
+        return (mouseArea.containsMouse || mouseArea.pressed) ? root.makeTranslucent(Colors.primary_container) : root.makeTranslucent(Colors.secondary_container);
+    }
 
     Behavior on color {
         ColorAnimation {
@@ -29,7 +68,12 @@ Rectangle {
     }
 
     border {
-        color: (mouseArea.containsMouse || mouseArea.pressed) ? Colors.primary_container : Colors.secondary_container
+        color: {
+            if (!root.clickable) {
+                return Colors.surface_variant;
+            }
+            return (mouseArea.containsMouse || mouseArea.pressed) ? Colors.primary_container : Colors.secondary_container;
+        }
 
         Behavior on color {
             ColorAnimation {
@@ -41,7 +85,7 @@ Rectangle {
 
     Canvas {
         id: indicatorLine
-        visible: mouseArea.containsMouse || mouseArea.pressed
+        visible: root.clickable && (mouseArea.containsMouse || mouseArea.pressed)
         anchors.fill: parent
         antialiasing: true
         opacity: 0
@@ -87,7 +131,6 @@ Rectangle {
                 indicatorLine.requestPaint();
             }
         }
-
     }
 
     ColumnLayout {
@@ -97,9 +140,18 @@ Rectangle {
         MaterialSymbol {
             Layout.alignment: Qt.AlignHCenter
             icon: root.icon
-            iconSize: Theme.font.size.md
-            fontColor: (mouseArea.containsMouse || mouseArea.pressed) ? Colors.on_primary_container : Colors.on_secondary_container
+            iconSize: root.iconSize || Theme.font.size.md
+            fontColor: {
+                if (!root.clickable) {
+                    return Colors.on_surface_variant;
+                }
+                if (root.highlighted) {
+                    return Colors.on_primary;
+                }
+                return (mouseArea.containsMouse || mouseArea.pressed) ? Colors.on_primary_container : Colors.on_secondary_container;
+            }
             visible: root.icon !== ""
+            opacity: root.clickable ? 1.0 : 0.38
 
             Behavior on fontColor {
                 ColorAnimation {
@@ -115,9 +167,15 @@ Rectangle {
                 family: Theme.font.family.inter_thin
                 pixelSize: Theme.font.size.xs
             }
-            color: (mouseArea.containsMouse || mouseArea.pressed) ? Colors.on_primary_container : Colors.on_secondary_container
+            color: {
+                if (!root.clickable) {
+                    return Colors.on_surface_variant;
+                }
+                return (mouseArea.containsMouse || mouseArea.pressed) ? Colors.on_primary_container : Colors.on_secondary_container;
+            }
             text: root.text
             visible: root.text !== ""
+            opacity: root.clickable ? 1.0 : 0.38
 
             Behavior on color {
                 ColorAnimation {
@@ -130,11 +188,13 @@ Rectangle {
 
     MouseArea {
         id: mouseArea
-        hoverEnabled: true
+        hoverEnabled: root.clickable
+        enabled: root.clickable
         anchors.fill: parent
 
         onClicked: {
-            root.clicked();
+            if (root.clickable)
+                root.clicked();
         }
     }
 }

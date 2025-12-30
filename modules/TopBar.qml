@@ -51,6 +51,113 @@ Scope {
                         Layout.leftMargin: Theme.ui.padding.sm
                     }
 
+                    Rectangle {
+                        id: mpris
+                        Layout.fillHeight: true
+                        Layout.maximumWidth: 250
+                        Layout.preferredWidth: 250
+                        visible: SystemMpris.activePlayer !== null
+                        color: "transparent"
+                        radius: Theme.ui.radius.md
+
+                        onXChanged: {
+                            GlobalStates.mediaControlsX = mpris.x;
+                        }
+
+                        onYChanged: {
+                            GlobalStates.mediaControlsY = mpris.y;
+                        }
+
+                        Component.onCompleted: {
+                            GlobalStates.mediaControlsX = mpris.x;
+                            GlobalStates.mediaControlsY = mpris.y;
+                        }
+
+                        RowLayout {
+                            id: mediaContent
+                            anchors.fill: parent
+                            anchors.margins: Theme.ui.padding.sm
+                            spacing: Theme.ui.padding.sm
+
+                            MaterialSymbol {
+                                icon: SystemMpris.isPlaying ? "music_note" : "pause"
+                                iconSize: 16
+                                fontColor: Colors.on_secondary_container
+                            }
+
+                            Item {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                clip: true
+
+                                StyledText {
+                                    anchors.left: parent.left
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    font.pixelSize: Theme.font.size.sm
+                                    color: Colors.on_secondary_container
+                                    text: {
+                                        var title = StringUtils.cleanMusicTitle(SystemMpris.activePlayer?.trackTitle || "No media");
+                                        var artist = SystemMpris.activePlayer?.trackArtist || "";
+                                        return artist ? `${title} • ${artist}` : title;
+                                    }
+                                }
+
+                                Rectangle {
+                                    visible: !mprisMouseArea.containsMouse
+                                    anchors.right: parent.right
+                                    anchors.top: parent.top
+                                    anchors.bottom: parent.bottom
+                                    width: 30
+                                    gradient: Gradient {
+                                        orientation: Gradient.Horizontal
+                                        GradientStop {
+                                            position: 0.0
+                                            color: "transparent"
+                                        }
+                                        GradientStop {
+                                            position: 1.0
+                                            color: Colors.background
+                                        }
+                                    }
+
+                                    // StyledText {
+                                    //     anchors.right: parent.right
+                                    //     anchors.verticalCenter: parent.verticalCenter
+                                    //     font.pixelSize: Theme.font.size.sm
+                                    //     color: Colors.on_secondary_container
+                                    //     text: "..."
+                                    // }
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            id: mprisMouseArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+
+                            onEntered: {
+                                mpris.color = Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.3);
+                            }
+
+                            onExited: {
+                                mpris.color = "transparent";
+                            }
+
+                            onPressed: event => {
+                                if (event.button === Qt.MiddleButton) {
+                                    SystemMpris.togglePlaying();
+                                } else if (event.button === Qt.RightButton) {
+                                    SystemMpris.next();
+                                } else if (event.button === Qt.LeftButton) {
+                                    GlobalStates.mediaControlsOpen = !GlobalStates.mediaControlsOpen;
+                                }
+                            }
+                        }
+                    }
+
                     Item {
                         id: osdContainer
                         Layout.fillHeight: true
