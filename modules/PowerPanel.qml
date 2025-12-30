@@ -168,7 +168,7 @@ Scope {
                             iconName: "restart_alt"
                             label: "Reboot"
                             onClicked: {
-                                Hyprland.dispatch("exec", "systemctl reboot");
+                                Quickshell.execDetached(["systemctl", "reboot"]);
                             }
                         }
 
@@ -178,7 +178,7 @@ Scope {
                             iconName: "power_settings_new"
                             label: "Shutdown"
                             onClicked: {
-                                Hyprland.dispatch("exec", "systemctl poweroff");
+                                Quickshell.execDetached(["systemctl", "poweroff"]);
                             }
                         }
                     }
