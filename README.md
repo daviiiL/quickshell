@@ -7,5 +7,6 @@
 - [ ] Polish services
 - [ ] Polish lockscreen ui
 - [x] Add power management window
-- [ ] Add a control center window (network, bluetooth, settings, etc)
+- [WIP] Add a control center window (network, bluetooth, settings, etc) 
+> network & bluetooth done 
 - [ ] Add a frontend for openai

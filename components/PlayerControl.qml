@@ -11,8 +11,11 @@ Rectangle {
     id: root
     required property MprisPlayer player
 
+    property bool isLockscreenModule: false
+
     border {
-        width: 1
+
+        width: isLockscreenModule ? 1 : 0
         color: Colors.primary_container
     }
 
