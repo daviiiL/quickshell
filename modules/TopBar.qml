@@ -15,7 +15,7 @@ Scope {
         PanelWindow {
             id: root
             required property var modelData
-            property color bgColor: Preferences.darkMode ? Qt.rgba(Colors.background.r, Colors.background.g, Colors.background.b, 0.9) : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.8)
+            property color bgColor: Preferences.darkMode ? "black" : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.8)
 
             readonly property color mprisIconColor: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_surface_variant
             readonly property color mprisTextColor: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_surface

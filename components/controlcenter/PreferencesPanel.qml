@@ -5,7 +5,6 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import qs.services
-import qs.widgets
 import qs.common
 
 Rectangle {
@@ -64,7 +63,7 @@ Rectangle {
 
                 Rectangle {
 
-                    Layout.fillWidth: true
+                    Layout.preferredWidth: Math.min(500, colorModeSection.width)
                     Layout.preferredHeight: 150
 
                     color: "transparent"
@@ -79,8 +78,22 @@ Rectangle {
                         }
 
                         border {
-                            width: 2
-                            color: colorModeSection.selectedMode === 0 || darkModeArea.containsMouse ? Colors.primary : "transparent"
+                            width: colorModeSection.selectedMode === 0 || darkModeArea.containsMouse ? 2 : 0
+                            color: colorModeSection.selectedMode === 0 ? Colors.primary : (darkModeArea.containsMouse ? Colors.tertiary : "transparent")
+
+                            Behavior on width {
+                                NumberAnimation {
+                                    duration: 200
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
+
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: 200
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
                         }
                         anchors {
                             left: parent.left
@@ -160,8 +173,22 @@ Rectangle {
                         width: parent.width / 2
                         radius: Theme.ui.radius.md
                         border {
-                            width: 2
-                            color: colorModeSection.selectedMode === 1 || lightModeArea.containsMouse ? Colors.primary : "transparent"
+                            width: colorModeSection.selectedMode === 1 || lightModeArea.containsMouse ? 2 : 0
+                            color: colorModeSection.selectedMode === 1 ? Colors.primary : (lightModeArea.containsMouse ? Colors.tertiary : "transparent")
+
+                            Behavior on width {
+                                NumberAnimation {
+                                    duration: 200
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
+
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: 200
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
                         }
                         color: "transparent"
 

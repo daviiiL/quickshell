@@ -4,8 +4,9 @@ import qs.services
 import qs.widgets
 
 RectWidgetCard {
-    showTitle: true
+    showTitle: Preferences.darkMode
     title: "Clock"
+    contentBackground: Preferences.darkMode ? Colors.background : "transparent"
     Rectangle {
         width: parent.width
         height: hh.height + mm.height + dd.height + 5

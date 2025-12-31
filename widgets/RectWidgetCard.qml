@@ -12,7 +12,7 @@ Rectangle {
 
     property bool showTitle: false
     property string title: ""
-    property color contentBackground: Preferences.darkMode ? Colors.background : Qt.darker(Colors.surface, 1.1)
+    property color contentBackground: Preferences.darkMode ? Colors.background : Colors.secondary_container
 
     default property alias content: contentRect.data
 
@@ -27,7 +27,7 @@ Rectangle {
             visible: root.showTitle
             Layout.fillWidth: true
             Layout.preferredHeight: 30
-            color: Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.5)
+            color: Preferences.darkMode ? Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.5) : Qt.rgba(Colors.secondary_fixed_dim.r, Colors.secondary_fixed_dim.g, Colors.secondary_fixed_dim.b, 0.5)
             topRightRadius: Theme.ui.radius.md
             topLeftRadius: Theme.ui.radius.md
 
@@ -36,7 +36,7 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 text: root.title
-                color: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_primary_container
+                color: Colors.on_secondary_container
                 font.family: Theme.font.family.inter_thin
                 font.pixelSize: Theme.font.size.md
                 renderType: Text.QtRendering

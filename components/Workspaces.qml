@@ -18,9 +18,9 @@ Item {
     property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - 1) % root.workspacesShown
 
     readonly property color occupiedBackgroundColor: Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.2)
-    readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : Colors.primary
+    readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : Qt.lighter(Colors.primary, 1.6)
     readonly property color activeIndicatorBorderColor: Preferences.darkMode ? Colors.primary_container : Colors.primary_container
-    readonly property color activeWorkspaceTextColor: Preferences.darkMode ? Colors.on_primary_container : Colors.on_surface_variant
+    readonly property color activeWorkspaceTextColor: Preferences.darkMode ? Colors.on_primary_container : Colors.on_primary
     readonly property color occupiedWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface : Colors.on_surface
     readonly property color inactiveWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface_variant : Colors.outline
 
@@ -129,9 +129,9 @@ Item {
     Rectangle {
         z: 2
         radius: Theme.ui.radius.md
-        color: makeTranslucent(root.activeIndicatorColor)
+        color: Preferences.darkMode ? makeTranslucent(root.activeIndicatorColor) : root.activeIndicatorColor
         border.color: root.activeIndicatorBorderColor
-        function makeTranslucent(color) {
+        function makeTranslucent(color: color): color {
             return Qt.rgba(color.r, color.g, color.b, 0.4);
         }
         property real idx1: parent.workspaceIndexInGroup

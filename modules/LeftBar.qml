@@ -39,7 +39,8 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-                color: Colors.surface_light_translucent
+                // color: Colors.surface_light_translucent
+                color: "transparent"
                 radius: Theme.ui.radius.md
 
                 anchors.margins: Theme.ui.padding.sm / 2

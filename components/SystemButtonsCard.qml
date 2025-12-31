@@ -7,8 +7,9 @@ import qs.widgets
 import qs.services
 
 RectWidgetCard {
-    showTitle: true
+    showTitle: Preferences.darkMode
     title: "System"
+    contentBackground: Preferences.darkMode ? Colors.background : "transparent"
 
     ColumnLayout {
         spacing: 5

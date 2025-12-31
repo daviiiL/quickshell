@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.common
 import qs.widgets
+import qs.services
 
 Rectangle {
     id: root
@@ -22,7 +23,7 @@ Rectangle {
     color: checked ? root.makeTranslucent(Colors.primary_container) : root.makeTranslucent(Colors.secondary_container)
 
     border {
-        color: checked ? Colors.primary_container : Colors.secondary_container
+        color: checked ? (Preferences.darkMode ? Colors.primary_container : Colors.primary) : Colors.secondary_container
     }
 
     Canvas {

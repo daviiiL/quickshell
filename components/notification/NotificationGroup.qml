@@ -127,7 +127,7 @@ MouseArea {
         anchors.left: parent.left
         width: parent.width
         color: Colors.surface_container
-        radius: Theme.ui.radius.sm
+        radius: Theme.ui.radius.md
         anchors.leftMargin: root.xOffset
 
         border {
@@ -239,6 +239,7 @@ MouseArea {
                         visible: !root.popup
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
+                        anchors.rightMargin: Theme.ui.padding.sm
                         count: root.notificationCount
                         expanded: root.expanded
                         fontSize: topRow.fontSize

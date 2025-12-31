@@ -87,15 +87,15 @@ Scope {
             property int verticalMovementDistance: modelData ? modelData.height : 0
             property int horizontalSqueeze: modelData ? modelData.width * 0.2 : 0
 
-            onShouldPushChanged: {
-                if (shouldPush) {
-                    root.saveWindowPositionAndTile();
-                    Quickshell.execDetached(["bash", "-c", `hyprctl keyword monitor ${targetMonitorName}, addreserved, ${verticalMovementDistance}, ${-verticalMovementDistance}, ${horizontalSqueeze}, ${horizontalSqueeze}`]);
-                } else {
-                    Quickshell.execDetached(["bash", "-c", `hyprctl keyword monitor ${targetMonitorName}, addreserved, 0, 0, 0, 0`]);
-                    root.restoreWindowPositionAndTile();
-                }
-            }
+            // onShouldPushChanged: {
+            //     if (shouldPush) {
+            //         root.saveWindowPositionAndTile();
+            //         Quickshell.execDetached(["bash", "-c", `hyprctl keyword monitor ${targetMonitorName}, addreserved, ${verticalMovementDistance}, ${-verticalMovementDistance}, ${horizontalSqueeze}, ${horizontalSqueeze}`]);
+            //     } else {
+            //         Quickshell.execDetached(["bash", "-c", `hyprctl keyword monitor ${targetMonitorName}, addreserved, 0, 0, 0, 0`]);
+            //         root.restoreWindowPositionAndTile();
+            //     }
+            // }
         }
     }
 

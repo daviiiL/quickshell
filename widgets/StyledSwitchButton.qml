@@ -1,6 +1,7 @@
 import QtQuick
 
 import qs.common
+import qs.services
 
 Rectangle {
     id: root
@@ -27,7 +28,7 @@ Rectangle {
         radius: 12
         x: root.checked ? parent.width - width - 2 : 2
         y: 2
-        color: root.checked ? Colors.on_primary : Colors.on_secondary
+        color: root.checked ? Colors.on_primary : (Preferences.darkMode ? Colors.on_secondary : Colors.outline_variant)
 
         Behavior on x {
             NumberAnimation {
