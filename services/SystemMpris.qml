@@ -33,8 +33,7 @@ Singleton {
         }
     }
     function isRealPlayer(player) {
-        return true;
-    // return (!(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.firefox')) && !(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.chromium')) && !player.dbusName?.startsWith('org.mpris.MediaPlayer2.playerctld') && !(player.dbusName?.endsWith('.mpd') && !player.dbusName.endsWith('MediaPlayer2.mpd')));
+        return (!(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.firefox')) && !(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.chromium')) && !player.dbusName?.startsWith('org.mpris.MediaPlayer2.playerctld') && !(player.dbusName?.endsWith('.mpd') && !player.dbusName.endsWith('MediaPlayer2.mpd')));
     }
 
     Instantiator {

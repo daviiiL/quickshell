@@ -17,6 +17,8 @@ Singleton {
         return UPower.displayDevice.timeToEmpty !== 0 ? UPower.displayDevice.timeToEmpty : UPower.displayDevice.timeToFull;
     }
 
+    readonly property real healthPercentage: UPower.displayDevice.healthPercentage || 1.0
+
     readonly property string currentProfile: PowerProfile.toString(PowerProfiles.profile)
     readonly property bool isPerformanceMode: currentProfile === "Performance"
     readonly property string powerProfileIcon: {
@@ -41,6 +43,33 @@ Singleton {
             return "Balanced";
         }
     }
+
+    function formatTime(seconds) {
+        if (!Number.isFinite(seconds) || seconds <= 0) {
+            return "00:00";
+        }
+
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const hh = String(hrs).padStart(2, "0");
+        const mm = String(mins).padStart(2, "0");
+        return `${hh}:${mm}`;
+    }
+
+    readonly property string batteryStatusText: {
+        if (percentage > 0.99) {
+            return "Fully charged";
+        }
+        return `EST ${formatTime(timeToGoal)} ${isCharging ? "till full" : "left"}`;
+    }
+
+    readonly property string batteryChangeRateText: {
+        if (UPower.displayDevice.changeRate === 0) {
+            return "Battery not in use";
+        }
+        return `${isCharging ? "Charging at " : "Discharging at "}${Math.abs(UPower.displayDevice.changeRate).toFixed(2)} W`;
+    }
+
     function setPowerProfile(profileName: string) {
         switch (profileName) {
         case "Performance":

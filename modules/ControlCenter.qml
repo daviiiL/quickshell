@@ -37,7 +37,14 @@ FloatingWindow {
                 currentIndex: 0
 
                 model: ScriptModel {
-                    values: ["Network", "Bluetooth"]
+                    values: {
+                        var items = ["Network", "Bluetooth"];
+                        if (GlobalStates.isLaptop) {
+                            items.push("Battery");
+                        } else
+                            items.push("Power");
+                        return items;
+                    }
                 }
 
                 delegate: ControlCenterMenuItem {
@@ -59,8 +66,8 @@ FloatingWindow {
                 currentIndex: listview.currentIndex
 
                 NetworkPanel {}
-
                 BluetoothPanel {}
+                PowerPanel {}
             }
         }
     }
@@ -123,10 +130,7 @@ FloatingWindow {
 
         Rectangle {
             anchors.fill: parent
-            // anchors {
-            //     topMargin: Theme.ui.padding.sm
-            //     bottomMargin: Theme.ui.padding.sm
-            // }
+
             radius: Theme.ui.radius.md
             property color highlightBg: Colors.primary_container
 

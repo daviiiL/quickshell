@@ -35,20 +35,7 @@ RectWidgetCard {
         }
 
         Text {
-
-            function formatTime(seconds) {
-                if (!Number.isFinite(seconds) || seconds <= 0) {
-                    return "00:00";
-                }
-
-                const hrs = Math.floor(seconds / 3600);
-                const mins = Math.floor((seconds % 3600) / 60);
-                const hh = String(hrs).padStart(2, "0");
-                const mm = String(mins).padStart(2, "0");
-                return `${hh}:${mm}`;
-            }
-
-            text: Power.percentage > 0.99 ? "Fully charged" : `EST ${formatTime(Power.timeToGoal)} ${Power.isCharging ? "till full" : "left"}`
+            text: Power.batteryStatusText
             font.family: Theme.font.family.inter_regular
             font.pixelSize: Theme.font.size.xs
             color: Colors.primary
