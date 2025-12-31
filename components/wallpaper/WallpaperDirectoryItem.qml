@@ -101,7 +101,7 @@ MouseArea {
                     anchors.fill: parent
                     sourceComponent: ThumbnailImage {
                         id: thumbnailImage
-                        generateThumbnail: false
+                        generateThumbnail: true
                         sourcePath: root.fileModelData?.filePath ?? ""
 
                         cache: false

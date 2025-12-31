@@ -36,7 +36,7 @@ StyledImage {
         checkAndLoadThumbnail();
     }
 
-    onSourceSizeChanged: {
+    onThumbnailPathChanged: {
         checkAndLoadThumbnail();
     }
 
