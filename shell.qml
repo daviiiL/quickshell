@@ -6,6 +6,7 @@ import Quickshell.Io
 
 import qs.modules
 import qs.common
+import qs.services
 
 ShellRoot {
 

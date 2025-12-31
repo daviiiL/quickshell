@@ -44,7 +44,7 @@ Rectangle {
 
                 ColumnLayout {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: parent.width * 0.6
+                    Layout.preferredWidth: root.width >= 450 ? parent.width * 0.6 : parent.width
 
                     RowLayout {
                         Layout.alignment: Qt.AlignLeft
@@ -85,6 +85,7 @@ Rectangle {
                 }
 
                 ColumnLayout {
+                    visible: root.width >= 450
                     Layout.fillHeight: true
                     Layout.preferredWidth: parent.width * 0.4
 
@@ -136,6 +137,57 @@ Rectangle {
                 }
             }
         }
+        ColumnLayout {
+            visible: root.width < 450
+            Layout.fillHeight: true
+            Layout.preferredWidth: parent.width * 0.4
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignLeft
+                Layout.rightMargin: Theme.ui.padding.sm
+
+                property color healthColor: {
+                    if (Power.healthPercentage >= 0.8) {
+                        return "#4a9d4a";
+                    } else {
+                        return Colors.error;
+                    }
+                }
+
+                MaterialSymbol {
+                    icon: "check_circle"
+                    iconSize: Theme.font.size.xxl
+                    fontColor: parent.healthColor
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                    Layout.fillWidth: true
+                    text: `Health ${Math.round(Power.healthPercentage * 100)}%`
+                    color: parent.healthColor
+                    wrapMode: Text.Wrap
+                    font {
+                        pixelSize: Theme.font.size.xl
+                        family: Theme.font.family.inter_medium
+                        weight: Font.Medium
+                    }
+                }
+            }
+
+            Text {
+                text: Power.batteryChangeRateText
+
+                color: Colors.secondary
+                font {
+                    pixelSize: Theme.font.size.md
+                    family: Theme.font.family.inter_regular
+                    weight: Font.Normal
+                }
+                Layout.leftMargin: checkIcon.implicitWidth + Theme.ui.padding.sm
+            }
+        }
+
         ColumnLayout {
             Layout.fillWidth: true
 

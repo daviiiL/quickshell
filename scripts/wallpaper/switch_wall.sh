@@ -7,23 +7,29 @@
 set -e
 
 usage() {
-    echo "Usage: $0 [--scheme <matugen-scheme>] <image-path>"
+    echo "Usage: $0 [--scheme <matugen-scheme>] [--mode <dark|light>] <image-path>"
     echo "Switches wallpaper using swww (preferred) or hyprpaper (fallback)"
     echo "Optionally generates color scheme with matugen"
     echo ""
     echo "Options:"
     echo "  --scheme <scheme>  Matugen color scheme to use (default: scheme-tonal-spot)"
+    echo "  --mode <mode>      Dark or light mode for matugen (default: dark)"
     exit 1
 }
 
 # Parse arguments
 MATUGEN_SCHEME="scheme-tonal-spot"
+MATUGEN_MODE="dark"
 WALLPAPER_PATH=""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --scheme)
             MATUGEN_SCHEME="$2"
+            shift 2
+            ;;
+        --mode)
+            MATUGEN_MODE="$2"
             shift 2
             ;;
         --help|-h)
@@ -61,7 +67,7 @@ if command -v swww &>/dev/null; then
         --transition-duration 1
 
     if command -v matugen &>/dev/null; then
-        matugen image "$WALLPAPER_PATH" --type "$MATUGEN_SCHEME" &>/dev/null &
+        matugen image "$WALLPAPER_PATH" --type "$MATUGEN_SCHEME" --mode "$MATUGEN_MODE" &>/dev/null &
     fi
 
     exit 0
@@ -76,7 +82,7 @@ if command -v hyprctl &>/dev/null; then
     done
 
     if command -v matugen &>/dev/null; then
-        matugen image "$WALLPAPER_PATH" --type "$MATUGEN_SCHEME" &>/dev/null &
+        matugen image "$WALLPAPER_PATH" --type "$MATUGEN_SCHEME" --mode "$MATUGEN_MODE" &>/dev/null &
     fi
 
     exit 0

@@ -38,7 +38,7 @@ FloatingWindow {
 
                 model: ScriptModel {
                     values: {
-                        var items = ["Network", "Bluetooth"];
+                        var items = ["Network", "Bluetooth", "Preferences"];
                         if (GlobalStates.isLaptop) {
                             items.push("Battery");
                         } else
@@ -65,6 +65,7 @@ FloatingWindow {
                 anchors.fill: parent
                 currentIndex: listview.currentIndex
 
+                PreferencesPanel {}
                 NetworkPanel {}
                 BluetoothPanel {}
                 PowerPanel {}

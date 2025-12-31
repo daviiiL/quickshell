@@ -1,11 +1,13 @@
 pragma Singleton
 pragma ComponentBehavior: Bound
-import qs.common
-import qs.common.models
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
+
+import qs.common
+import qs.common.models
+import qs.services
 
 Singleton {
     id: root
@@ -21,7 +23,8 @@ Singleton {
     property url defaultFolder: defaultFolderProc.defaultFolder
     property alias folderModel: folderModel
     property string searchQuery: ""
-    property string matugenScheme: "scheme-tonal-spot"
+    property string matugenScheme: Preferences.matugenScheme || "scheme-tonal-spot"
+    property string darkMode: Preferences.darkMode ? "dark" : "light" || "dark"
 
     readonly property list<string> extensions: ["jpg", "jpeg", "png", "webp", "avif", "bmp", "svg"]
 
@@ -59,7 +62,14 @@ Singleton {
     function apply(path) {
         if (!path || path.length === 0)
             return;
-        applyProc.exec([wallpaperSwitchScriptPath, "--scheme", root.matugenScheme, path]);
+
+        applyProc.exec([wallpaperSwitchScriptPath, "--scheme", root.matugenScheme, "--mode", Preferences.darkMode ? "dark" : "light", path]);
+
+        Preferences.setWallpaperPath(path);
+        Preferences.setMatugenScheme(root.matugenScheme);
+
+        console.log("[wallpaper]: Applied wallpaper:", path);
+
         root.changed();
     }
 

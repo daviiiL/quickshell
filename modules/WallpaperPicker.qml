@@ -103,7 +103,7 @@ FloatingWindow {
             focus: true
             color: Colors.surface
 
-            property string matugenScheme: "scheme-tonal-spot"
+            property string matugenScheme: Preferences.matugenScheme || "scheme-tonal-spot"
 
             ColumnLayout {
                 anchors.fill: parent
