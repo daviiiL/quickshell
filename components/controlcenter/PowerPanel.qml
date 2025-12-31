@@ -96,7 +96,7 @@ Rectangle {
 
                         property color healthColor: {
                             if (Power.healthPercentage >= 0.8) {
-                                return "#4a9d4a";
+                                return Preferences.darkMode ? "#4a9d4a" : "#2d7a2d";
                             } else {
                                 return Colors.error;
                             }
@@ -149,7 +149,7 @@ Rectangle {
 
                 property color healthColor: {
                     if (Power.healthPercentage >= 0.8) {
-                        return "#4a9d4a";
+                        return Preferences.darkMode ? "#4a9d4a" : "#2d7a2d";
                     } else {
                         return Colors.error;
                     }

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 
 import qs.common
+import qs.services
 
 Rectangle {
     id: root
@@ -11,7 +12,7 @@ Rectangle {
 
     property bool showTitle: false
     property string title: ""
-    property color contentBackground: Colors.background
+    property color contentBackground: Preferences.darkMode ? Colors.background : Qt.darker(Colors.surface, 1.1)
 
     default property alias content: contentRect.data
 
@@ -35,7 +36,7 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 text: root.title
-                color: Colors.on_secondary_container
+                color: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_primary_container
                 font.family: Theme.font.family.inter_thin
                 font.pixelSize: Theme.font.size.md
                 renderType: Text.QtRendering

@@ -6,6 +6,7 @@ import Qt5Compat.GraphicalEffects
 import Quickshell.Services.Mpris
 import qs.common
 import qs.widgets
+import qs.services
 
 Rectangle {
     id: root
@@ -14,12 +15,11 @@ Rectangle {
     property bool isLockscreenModule: false
 
     border {
-
         width: isLockscreenModule ? 1 : 0
         color: Colors.primary_container
     }
 
-    color: Colors.background
+    color: Preferences.darkMode ? Colors.background : Colors.surface
     radius: Theme.ui.radius.lg
 
     Timer {

@@ -85,16 +85,6 @@ Scope {
                     }
                 }
             }
-
-            // mask: Region {}
-
-            // Behavior on implicitHeight {
-            //     NumberAnimation {
-            //         duration: root.animationDuration
-            //         easing.type: Easing.Linear
-            //         // easing.bezierCurve: Theme.anim.curves.standard
-            //     }
-            // }
         }
     }
 }

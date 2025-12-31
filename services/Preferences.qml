@@ -12,7 +12,6 @@ Singleton {
     property bool darkMode: defaultAdapter.darkMode || true
     property string wallpaperPath: defaultAdapter.wallpaperPath || ""
     property string matugenScheme: defaultAdapter.matugenScheme || "scheme-tonal-spot"
-    readonly property string username: Quickshell.env("USER")
     readonly property string homeDir: Quickshell.env("HOME")
     readonly property string filePath: root.homeDir + "/.cache/quickshell_preferences.json"
     readonly property string defaultWallpaperPath: `${homeDir}/.config/quickshell/assets/default_paper.jpg`
@@ -49,20 +48,20 @@ Singleton {
         adapter: defaultAdapter
 
         onAdapterUpdated: {
-            console.log("adapter updated");
+            // console.debug("adapter updated");
             this.writeAdapter();
         }
 
         onLoaded: {
-            console.debug("Preferences loaded");
+            // console.debug("Preferences loaded");
             root.darkMode = defaultAdapter.darkMode;
             root.wallpaperPath = defaultAdapter.wallpaperPath;
             root.matugenScheme = defaultAdapter.matugenScheme;
-            console.debug(root.darkMode);
+            // console.debug(root.darkMode);
         }
 
         onLoadFailed: {
-            console.debug("load failed - creating default preferences");
+            // console.debug("load failed - creating default preferences");
             defaultAdapter.darkMode = true;
             defaultAdapter.wallpaperPath = root.defaultWallpaperPath;
             defaultAdapter.matugenScheme = "scheme-tonal-spot";

@@ -15,6 +15,14 @@ Scope {
         PanelWindow {
             id: root
             required property var modelData
+            property color bgColor: Preferences.darkMode ? Qt.rgba(Colors.background.r, Colors.background.g, Colors.background.b, 0.9) : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.8)
+
+            readonly property color mprisIconColor: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_surface_variant
+            readonly property color mprisTextColor: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_surface
+            readonly property color mprisHoverBgColor: Preferences.darkMode ? Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.3) : Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.2)
+            readonly property color powerButtonIconColor: Preferences.darkMode ? Colors.secondary : Colors.primary
+            readonly property color powerButtonHoverIconColor: Preferences.darkMode ? Colors.on_primary_container : Colors.on_primary_container
+            readonly property color powerButtonHoverBgColor: Preferences.darkMode ? Colors.primary_container : Colors.primary_container
 
             WlrLayershell.namespace: "quickshell:topbar"
 
@@ -40,7 +48,7 @@ Scope {
 
                 anchors.margins: Theme.ui.padding.sm / 2
 
-                color: Qt.rgba(Colors.background.r, Colors.background.g, Colors.background.b, 0.9)
+                color: root.bgColor
 
                 RowLayout {
                     anchors.fill: parent
@@ -54,8 +62,8 @@ Scope {
                     Rectangle {
                         id: mpris
                         Layout.fillHeight: true
-                        Layout.maximumWidth: 250
-                        Layout.preferredWidth: 250
+                        Layout.maximumWidth: 150
+                        Layout.preferredWidth: 150
                         visible: SystemMpris.activePlayer !== null
                         color: "transparent"
                         radius: Theme.ui.radius.md
@@ -82,7 +90,7 @@ Scope {
                             MaterialSymbol {
                                 icon: SystemMpris.isPlaying ? "music_note" : "pause"
                                 iconSize: 16
-                                fontColor: Colors.on_secondary_container
+                                fontColor: root.mprisIconColor
                             }
 
                             Item {
@@ -94,11 +102,11 @@ Scope {
                                     anchors.left: parent.left
                                     anchors.verticalCenter: parent.verticalCenter
                                     font.pixelSize: Theme.font.size.sm
-                                    color: Colors.on_secondary_container
+                                    color: root.mprisTextColor
                                     text: {
                                         var title = StringUtils.cleanMusicTitle(SystemMpris.activePlayer?.trackTitle || "No media");
-                                        var artist = SystemMpris.activePlayer?.trackArtist || "";
-                                        return artist ? `${title} • ${artist}` : title;
+                                        // var artist = SystemMpris.activePlayer?.trackArtist || "";
+                                        return title;
                                     }
                                 }
 
@@ -107,7 +115,7 @@ Scope {
                                     anchors.right: parent.right
                                     anchors.top: parent.top
                                     anchors.bottom: parent.bottom
-                                    width: 30
+                                    width: 25
                                     gradient: Gradient {
                                         orientation: Gradient.Horizontal
                                         GradientStop {
@@ -116,17 +124,9 @@ Scope {
                                         }
                                         GradientStop {
                                             position: 1.0
-                                            color: Colors.background
+                                            color: root.bgColor
                                         }
                                     }
-
-                                    // StyledText {
-                                    //     anchors.right: parent.right
-                                    //     anchors.verticalCenter: parent.verticalCenter
-                                    //     font.pixelSize: Theme.font.size.sm
-                                    //     color: Colors.on_secondary_container
-                                    //     text: "..."
-                                    // }
                                 }
                             }
                         }
@@ -139,7 +139,7 @@ Scope {
                             acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
 
                             onEntered: {
-                                mpris.color = Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.3);
+                                mpris.color = root.mprisHoverBgColor;
                             }
 
                             onExited: {
@@ -237,12 +237,12 @@ Scope {
                         Layout.preferredHeight: icon.implicitHeight + 4
                         Layout.rightMargin: Theme.ui.padding.sm
                         Layout.preferredWidth: icon.implicitWidth
-                        color: Qt.rgba(Colors.primary_container.r, Colors.primary_container.g, Colors.primary_container.b, 0)
+                        color: Qt.rgba(root.powerButtonHoverBgColor.r, root.powerButtonHoverBgColor.g, root.powerButtonHoverBgColor.b, 0)
                         radius: Theme.ui.radius.md
                         MaterialSymbol {
                             id: icon
                             anchors.fill: parent
-                            fontColor: Colors.secondary
+                            fontColor: root.powerButtonIconColor
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
                             icon: "settings_power"
@@ -262,13 +262,13 @@ Scope {
                             hoverEnabled: true
 
                             onEntered: {
-                                icon.fontColor = Colors.on_primary_container;
-                                parent.color = Colors.primary_container;
+                                icon.fontColor = root.powerButtonHoverIconColor;
+                                parent.color = root.powerButtonHoverBgColor;
                             }
 
                             onExited: {
-                                icon.fontColor = Colors.secondary;
-                                parent.color = Qt.rgba(Colors.primary_container.r, Colors.primary_container.g, Colors.primary_container.b, 0);
+                                icon.fontColor = root.powerButtonIconColor;
+                                parent.color = Qt.rgba(root.powerButtonHoverBgColor.r, root.powerButtonHoverBgColor.g, root.powerButtonHoverBgColor.b, 0);
                             }
 
                             onPressed: {

@@ -163,7 +163,8 @@ MouseArea {
             spacing: 10
 
             NotificationAppIcon {
-
+                Layout.leftMargin: root.padding
+                Layout.topMargin: root.padding
                 Layout.alignment: Qt.AlignTop
                 Layout.fillWidth: false
                 Layout.preferredWidth: implicitWidth

@@ -12,10 +12,11 @@ Item {
 
     default property alias text: titleText.text
 
+    property color bgColor: Preferences.darkMode ? makeTranslucent(Colors.surface) : makeTranslucent(Qt.darker(Colors.surface_container_low, 2))
     property real max: 100
     property real value: 0
     function makeTranslucent(color) {
-        return Qt.rgba(color.r, color.g, color.b, 0.4);
+        return Qt.rgba(color.r, color.g, color.b, 0.8);
     }
 
     Text {
@@ -46,7 +47,7 @@ Item {
         }
 
         implicitWidth: Math.min(500, parent.width)
-        color: root.makeTranslucent(Colors.primary_container)
+        color: root.bgColor
         border.color: Colors.primary_container
         radius: Theme.ui.radius.md
         antialiasing: true
@@ -89,7 +90,7 @@ Item {
             Rectangle {
                 id: mask
                 anchors.fill: parent
-                radius: Theme.ui.radius.md
+                radius: Theme.ui.radius.sm
                 antialiasing: true
                 visible: false
             }

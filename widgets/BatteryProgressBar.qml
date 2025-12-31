@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Qt5Compat.GraphicalEffects
 import qs.common
+import qs.services
 
 Item {
     id: root
@@ -41,7 +42,7 @@ Item {
                         top: parent.top
                         bottom: parent.bottom
                     }
-                    color: "#4a9d4a"
+                    color: Preferences.darkMode ? "#4a9d4a" : "#2d7a2d"
 
                     property real animProgress: 0
                     width: parent.width * ((root.value / root.total) + animProgress * (1 - root.value / root.total))
@@ -69,8 +70,8 @@ Item {
                 Rectangle {
                     id: progress
 
-                    readonly property color successColor: "#4a9d4a"
-                    readonly property color warningColor: "#ffd4ab"
+                    readonly property color successColor: Preferences.darkMode ? "#4a9d4a" : "#2d7a2d"
+                    readonly property color warningColor: Preferences.darkMode ? "#ffd4ab" : "#d97706"
 
                     anchors {
                         left: parent.left

@@ -68,8 +68,6 @@ Singleton {
         Preferences.setWallpaperPath(path);
         Preferences.setMatugenScheme(root.matugenScheme);
 
-        console.log("[wallpaper]: Applied wallpaper:", path);
-
         root.changed();
     }
 

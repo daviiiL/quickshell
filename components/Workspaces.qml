@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import qs.common
+import qs.services
 
 Item {
     id: root
@@ -15,6 +16,13 @@ Item {
     property real activeWorkspaceMargin: 2
     property real indicatorPadding: 4
     property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - 1) % root.workspacesShown
+
+    readonly property color occupiedBackgroundColor: Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.2)
+    readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : Colors.primary
+    readonly property color activeIndicatorBorderColor: Preferences.darkMode ? Colors.primary_container : Colors.primary_container
+    readonly property color activeWorkspaceTextColor: Preferences.darkMode ? Colors.on_primary_container : Colors.on_surface_variant
+    readonly property color occupiedWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface : Colors.on_surface
+    readonly property color inactiveWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface_variant : Colors.outline
 
     implicitWidth: workspaceButtonSize * root.workspacesShown
     implicitHeight: Theme.ui.topBarHeight
@@ -92,7 +100,7 @@ Item {
                     topRightRadius: radiusNext
                     bottomRightRadius: radiusNext
 
-                    color: Colors.surface_container_high
+                    color: root.occupiedBackgroundColor
                     opacity: workspaceOccupied[index] ? 0.9 : 0
 
                     Behavior on opacity {
@@ -121,8 +129,8 @@ Item {
     Rectangle {
         z: 2
         radius: Theme.ui.radius.md
-        color: makeTranslucent(Colors.primary_container)
-        border.color: Colors.primary_container
+        color: makeTranslucent(root.activeIndicatorColor)
+        border.color: root.activeIndicatorBorderColor
         function makeTranslucent(color) {
             return Qt.rgba(color.r, color.g, color.b, 0.4);
         }
@@ -185,7 +193,7 @@ Item {
                         property real animatedPixelSize: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Theme.font.size.lg : Theme.font.size.md
                         property int animatedWeight: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Font.Bold : Font.Medium
 
-                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Colors.on_primary_container : (workspaceOccupied[index] ? Colors.on_surface : Colors.on_surface_variant)
+                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? root.activeWorkspaceTextColor : (workspaceOccupied[index] ? root.occupiedWorkspaceTextColor : root.inactiveWorkspaceTextColor)
 
                         font {
                             pixelSize: animatedPixelSize

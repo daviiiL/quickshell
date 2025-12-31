@@ -2,6 +2,7 @@
 
 import QtQuick
 import QtQuick.Shapes
+import qs.common
 
 Item {
     id: root
@@ -15,7 +16,7 @@ Item {
     property var corner: ScreenCorner.CornerEnum.TopLeft
 
     property int size: 25
-    property color color: "#000000"
+    property color color: Colors.background
 
     implicitWidth: size
     implicitHeight: size
