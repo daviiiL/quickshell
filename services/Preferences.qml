@@ -19,7 +19,10 @@ Singleton {
     function toggleDarkMode(value: int) {
         root.darkMode = value === 0 ? true : false;
         defaultAdapter.darkMode = root.darkMode;
+
+        // generate a new colorscheme by re-running the wallpaper script
         Wallpapers.apply(root.wallpaperPath);
+
         prefFileView.writeAdapter();
     }
 

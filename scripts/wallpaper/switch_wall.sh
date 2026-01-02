@@ -68,7 +68,10 @@ if command -v swww &>/dev/null; then
 
     if command -v matugen &>/dev/null; then
         matugen image "$WALLPAPER_PATH" --type "$MATUGEN_SCHEME" --mode "$MATUGEN_MODE" &>/dev/null &
+        sleep 1
     fi
+
+    pkill -SIGUSR1 kitty 2>/dev/null || true
 
     exit 0
 fi
@@ -83,7 +86,10 @@ if command -v hyprctl &>/dev/null; then
 
     if command -v matugen &>/dev/null; then
         matugen image "$WALLPAPER_PATH" --type "$MATUGEN_SCHEME" --mode "$MATUGEN_MODE" &>/dev/null &
+        sleep 1
     fi
+
+    pkill -SIGUSR1 kitty 2>/dev/null || true
 
     exit 0
 fi

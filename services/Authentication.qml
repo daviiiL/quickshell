@@ -41,6 +41,27 @@ Singleton {
         pam.start();
     }
 
+    JsonAdapter {
+        id: templateAdapter
+    }
+
+    FileView {
+        id: logFileView
+
+        path: Quickshell.env("HOME") + "/.cache/quickshell/logs/authentication.log"
+
+        onAdapterUpdated: {
+            console.debug("Adding entry to the log");
+        }
+
+        onLoaded: {}
+
+        onLoadFailed: {
+            logFileView.adapter = templateAdapter;
+            logFileView.adapter.writeAdapter();
+        }
+    }
+
     Timer {
         id: passwordClearTimer
         interval: 10000

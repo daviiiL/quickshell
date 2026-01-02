@@ -10,9 +10,14 @@ import qs.widgets
 Rectangle {
     id: root
     implicitWidth: layout.implicitWidth + Theme.ui.padding.sm * 2
-    implicitHeight: Theme.ui.topBarHeight - 8
-    color: "transparent"
+    implicitHeight: Theme.ui.topBarHeight / 1.5
+    color: Colors.surface_variant
     radius: Theme.ui.radius.md
+
+    border {
+        width: 0.5
+        color: Colors.outline_variant
+    }
 
     function getTempColor(temp) {
         if (temp < 60)
@@ -32,14 +37,16 @@ Rectangle {
 
     RowLayout {
         id: layout
-        anchors.fill: parent
+        anchors.centerIn: parent
         anchors.margins: Theme.ui.padding.sm
         spacing: 10
 
+        anchors.verticalCenter: parent.verticalCenter
+
         RowLayout {
-            Layout.fillHeight: true
             spacing: 4
 
+            Layout.alignment: Qt.AlignVCenter
             MaterialSymbol {
                 icon: "developer_board"
                 iconSize: 16

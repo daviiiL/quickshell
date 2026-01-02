@@ -317,6 +317,11 @@ Rectangle {
             }
 
             Component.onCompleted: requestPaint()
+
+            onOpacityChanged: {
+                if (opacity)
+                    requestPaint();
+            }
         }
 
         RowLayout {

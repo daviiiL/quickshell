@@ -12,7 +12,7 @@ Rectangle {
 
     property bool showTitle: false
     property string title: ""
-    property color contentBackground: Preferences.darkMode ? Colors.background : Colors.secondary_container
+    property color contentBackground: Preferences.darkMode ? Colors.background : Colors.surface_variant
 
     default property alias content: contentRect.data
 

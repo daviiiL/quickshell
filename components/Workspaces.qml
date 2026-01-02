@@ -4,8 +4,11 @@ import Quickshell.Hyprland
 import qs.common
 import qs.services
 
-Item {
+Rectangle {
     id: root
+    function makeTranslucent(color, alpha) {
+        return Qt.rgba(color.r, color.g, color.b, 0.4);
+    }
 
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.QsWindow.window?.screen)
     readonly property int workspacesShown: 10
@@ -17,15 +20,22 @@ Item {
     property real indicatorPadding: 4
     property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - 1) % root.workspacesShown
 
-    readonly property color occupiedBackgroundColor: Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.2)
-    readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : Qt.lighter(Colors.primary, 1.6)
-    readonly property color activeIndicatorBorderColor: Preferences.darkMode ? Colors.primary_container : Colors.primary_container
-    readonly property color activeWorkspaceTextColor: Preferences.darkMode ? Colors.on_primary_container : Colors.on_primary
+    readonly property color occupiedBackgroundColor: Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.1)
+    readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : root.makeTranslucent(Colors.inverse_primary, 1.3)
+    readonly property color activeIndicatorBorderColor: Preferences.darkMode ? Colors.primary_container : Colors.primary
+    readonly property color activeWorkspaceTextColor: Preferences.darkMode ? Colors.on_primary_container : Colors.primary
     readonly property color occupiedWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface : Colors.on_surface
-    readonly property color inactiveWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface_variant : Colors.outline
+    readonly property color inactiveWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface_variant : Colors.on_surface
 
     implicitWidth: workspaceButtonSize * root.workspacesShown
     implicitHeight: Theme.ui.topBarHeight
+
+    color: "transparent"
+    radius: Theme.ui.radius.lg
+    // border {
+    //     width: 0.5
+    //     color: Colors.outline_variant
+    // }
 
     function updateWorkspaceOccupied() {
         const base = workspaceGroup * root.workspacesShown;
@@ -88,12 +98,12 @@ Item {
                     anchors.centerIn: parent
                     width: workspaceButtonSize
                     height: Theme.ui.topBarHeight - root.indicatorPadding * 6
-                    radius: Theme.ui.radius.sm
+                    radius: Theme.ui.radius.lg
 
                     property var previousOccupied: workspaceOccupied[index - 1]
                     property var nextOccupied: workspaceOccupied[index + 1]
-                    property var radiusPrev: previousOccupied ? 0 : Theme.ui.radius.sm
-                    property var radiusNext: nextOccupied ? 0 : Theme.ui.radius.sm
+                    property var radiusPrev: previousOccupied ? 0 : Theme.ui.radius.lg
+                    property var radiusNext: nextOccupied ? 0 : Theme.ui.radius.lg
 
                     topLeftRadius: radiusPrev
                     bottomLeftRadius: radiusPrev
@@ -128,9 +138,10 @@ Item {
 
     Rectangle {
         z: 2
-        radius: Theme.ui.radius.md
+        radius: Theme.ui.radius.lg
         color: Preferences.darkMode ? makeTranslucent(root.activeIndicatorColor) : root.activeIndicatorColor
         border.color: root.activeIndicatorBorderColor
+        border.width: 0.5
         function makeTranslucent(color: color): color {
             return Qt.rgba(color.r, color.g, color.b, 0.4);
         }
@@ -143,7 +154,7 @@ Item {
 
         x: indicatorPosition
         width: indicatorLength
-        height: Theme.ui.topBarHeight - root.indicatorPadding * 2
+        height: Theme.ui.topBarHeight - root.indicatorPadding * 6
         Behavior on idx1 {
             NumberAnimation {
                 duration: 100
