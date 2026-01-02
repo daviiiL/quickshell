@@ -5,8 +5,7 @@
 ## TODO
 
 - [ ] Polish services
-- [ ] Polish lockscreen ui
+- [x] Polish lockscreen ui (hiding component and a pixel shifting clock to save my oled monitors)
 - [x] Add power management window
-- [WIP] Add a control center window (network, bluetooth, settings, etc) 
-> network & bluetooth done 
+- [x] Add a control center window (network, bluetooth, settings, etc) 
 - [ ] Add a frontend for openai
