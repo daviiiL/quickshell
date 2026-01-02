@@ -63,6 +63,8 @@ Scope {
                             color: Colors.secondary
                             font {
                                 family: Theme.font.family.inter_bold
+
+                                weight: Font.Bold
                             }
                         }
 
@@ -71,7 +73,7 @@ Scope {
                         }
 
                         Text {
-                            text: "V1"
+                            text: "V2"
                             color: Colors.secondary
                             font {}
                         }

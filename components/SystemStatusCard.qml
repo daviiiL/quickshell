@@ -6,12 +6,13 @@ import QtQuick.Layouts
 import qs.common
 import qs.services.apis
 import qs.widgets
+import qs.services
 
 Rectangle {
     id: root
     implicitWidth: layout.implicitWidth + Theme.ui.padding.sm * 2
     implicitHeight: Theme.ui.topBarHeight / 1.5
-    color: Colors.surface_variant
+    color: Preferences.darkMode ? Colors.surface : Colors.surface_variant
     radius: Theme.ui.radius.md
 
     border {
