@@ -60,6 +60,7 @@ Singleton {
     readonly property color tertiary_fixed: current.tertiary_fixed
     readonly property color tertiary_fixed_dim: current.tertiary_fixed_dim
 
+    // derived colors
     readonly property color surface_light: Qt.lighter(root.surface, 1)
     readonly property color surface_light_translucent: Qt.rgba(surface_light.r, surface_light.g, surface_light.b, 0.9)
     readonly property color surface_translucent: Qt.rgba(surface.r, surface.g, surface.b, 0.96)

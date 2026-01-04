@@ -17,14 +17,12 @@ Singleton {
     readonly property bool connected: Bluetooth.devices.values.some(d => d.connected)
 
     function sortFunction(a, b) {
-        // Ones with meaningful names before MAC addresses
         const macRegex = /^([0-9A-Fa-f]{2}-){5}[0-9A-Fa-f]{2}$/;
         const aIsMac = macRegex.test(a.name);
         const bIsMac = macRegex.test(b.name);
         if (aIsMac !== bIsMac)
             return aIsMac ? 1 : -1;
 
-        // Alphabetical by name
         return a.name.localeCompare(b.name);
     }
 
@@ -33,15 +31,26 @@ Singleton {
     property list<var> unpairedDevices: Bluetooth.devices.values.filter(d => !d.paired && !d.connected).sort(sortFunction)
     property list<var> friendlyDeviceList: [...connectedDevices, ...pairedButNotConnectedDevices, ...unpairedDevices]
 
-    // property var devicesList: Bluetooth.defaultAdapter?.devices
-    // property var connectedDevicesList: devicesList.values.filter(device => device.connected)
-    // property var pairedDevicesList: devicesList.values.filter(device => device.paired)
-    // property var boundedDevicesList: devicesList.values.filter(device => device.bonded)
-
     function toggleBluetooth(): void {
         if (Bluetooth.defaultAdapter) {
             Bluetooth.defaultAdapter.enabled = !enabled;
         }
+    }
+
+    function bluetoothDeviceIconName(type: string): string {
+        const t = type ?? "";
+
+        if (t.includes("audio") || t.includes("headset") || t.includes("headphone"))
+            return "headphones";
+        if (t.includes("phone"))
+            return "phone_android";
+        if (t.includes("computer"))
+            return "computer";
+        if (t.includes("keyboard"))
+            return "keyboard";
+        if (t.includes("mouse"))
+            return "mouse";
+        return "bluetooth";
     }
 
     Timer {
@@ -52,21 +61,9 @@ Singleton {
         running: false
         onTriggered: () => {
             root.stopDiscovering();
-        // console.debug("Disabling BT Discovery by Timer ");
-        // console.log(`Bluetooth Discovery is now ${Bluetooth.defaultAdapter.discovering ? "still running" : "stopped"}`);
         }
     }
 
-    // Timer {
-    //     id: checkBTDiscoveryStatus
-    //     interval: 2000
-    //     repeat: true
-    //     running: true
-    //     onTriggered: {
-    //         console.debug(`${Bluetooth.defaultAdapter.discovering ? "DISCOVERING BT DEVICES" : "BT DISCOVERY STOPPED"}`);
-    //     }
-    // }
-    //
     function startDiscovering(): void {
         if (Bluetooth.defaultAdapter && enabled) {
             // console.debug("BT Discovery started");

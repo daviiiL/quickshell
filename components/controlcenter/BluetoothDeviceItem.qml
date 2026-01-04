@@ -9,27 +9,11 @@ import qs.services
 import qs.widgets
 
 Rectangle {
-    id: btItem
+    id: root
     required property BluetoothDevice device
     height: device?.paired && !device?.connected ? 140 : 60
     radius: Theme.ui.radius.md
     color: btMouseArea.containsMouse ? Colors.surface_container_high : Colors.surface_container
-
-    Behavior on height {
-        NumberAnimation {
-            duration: Theme.anim.durations.sm
-            easing.type: Easing.Bezier
-            easing.bezierCurve: Theme.anim.curves.emphasized
-        }
-    }
-
-    Behavior on color {
-        ColorAnimation {
-            duration: Theme.anim.durations.sm
-            easing.type: Easing.Bezier
-            easing.bezierCurve: Theme.anim.curves.emphasized
-        }
-    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -42,20 +26,7 @@ Rectangle {
 
             MaterialSymbol {
                 Layout.alignment: Qt.AlignVCenter
-                icon: {
-                    const type = btItem.device?.type ?? "";
-                    if (type.includes("audio") || type.includes("headset") || type.includes("headphone"))
-                        return "headphones";
-                    if (type.includes("phone"))
-                        return "phone_android";
-                    if (type.includes("computer"))
-                        return "computer";
-                    if (type.includes("keyboard"))
-                        return "keyboard";
-                    if (type.includes("mouse"))
-                        return "mouse";
-                    return "bluetooth";
-                }
+                icon: SystemBluetooth.bluetoothDeviceIconName(root.device?.type)
                 fontColor: Colors.on_surface_variant
                 iconSize: Theme.font.size.xl
             }
@@ -66,7 +37,7 @@ Rectangle {
                 spacing: 2
 
                 Text {
-                    text: btItem.device?.name ?? "Unknown Device"
+                    text: root.device?.name ?? "Unknown Device"
                     font {
                         pixelSize: Theme.font.size.md
                         family: Theme.font.family.inter_regular
@@ -76,18 +47,18 @@ Rectangle {
                 }
 
                 Text {
-                    visible: btItem.device && btItem.device?.paired && !btItem.device?.connected
+                    visible: root.device && root.device?.paired && !root.device?.connected
                     text: "Paired"
                     font.pixelSize: Theme.font.size.xs
                     color: Colors.on_surface_variant
                 }
 
                 Text {
-                    visible: btItem.device?.connected ?? false
+                    visible: root.device?.connected ?? false
                     text: {
                         let status = "Connected";
-                        if (btItem.device?.batteryAvailable) {
-                            status += ` • ${Math.round(btItem.device.battery * 100)}%`;
+                        if (root.device?.batteryAvailable) {
+                            status += ` • ${Math.round(root.device.battery * 100)}%`;
                         }
                         return status;
                     }
@@ -101,7 +72,7 @@ Rectangle {
             }
 
             Text {
-                visible: btItem.device && btItem.device?.connected
+                visible: root.device && root.device?.connected
                 text: "check"
                 font {
                     pixelSize: Theme.font.size.xl
@@ -113,12 +84,12 @@ Rectangle {
 
         ColumnLayout {
             Layout.fillWidth: true
-            visible: btItem.device && btItem.device?.paired && !btItem.device?.connected
+            visible: root.device && root.device?.paired && !root.device?.connected
             spacing: Theme.ui.padding.sm
 
             Text {
                 Layout.fillWidth: true
-                text: "This device is paired but not connected. Click connect to establish a connection."
+                text: "Paired and ready to connect."
                 font.pixelSize: Theme.font.size.xs
                 color: Colors.on_surface_variant
                 wrapMode: Text.WordWrap
@@ -149,7 +120,7 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            SystemBluetooth.unpairDevice(btItem.device);
+                            SystemBluetooth.unpairDevice(root.device);
                         }
                     }
                 }
@@ -172,7 +143,7 @@ Rectangle {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            SystemBluetooth.connectDevice(btItem.device);
+                            SystemBluetooth.connectDevice(root.device);
                         }
                     }
                 }
@@ -184,16 +155,31 @@ Rectangle {
         id: btMouseArea
         anchors.fill: parent
         hoverEnabled: true
-        enabled: !(btItem.device?.paired && !btItem.device?.connected)
+        enabled: !(root.device?.paired && !root.device?.connected)
         onClicked: {
-            if (btItem.device?.connected) {
-                SystemBluetooth.disconnectDevice(btItem.device);
-            } else if (btItem.device?.paired) {
-                SystemBluetooth.connectDevice(btItem.device);
+            if (root.device?.connected) {
+                SystemBluetooth.disconnectDevice(root.device);
+            } else if (root.device?.paired) {
+                SystemBluetooth.connectDevice(root.device);
             } else {
-                // Pair first
-                SystemBluetooth.pairDevice(btItem.device);
+                SystemBluetooth.pairDevice(root.device);
             }
+        }
+    }
+
+    Behavior on height {
+        NumberAnimation {
+            duration: Theme.anim.durations.sm
+            easing.type: Easing.Bezier
+            easing.bezierCurve: Theme.anim.curves.emphasized
+        }
+    }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: Theme.anim.durations.sm
+            easing.type: Easing.Bezier
+            easing.bezierCurve: Theme.anim.curves.emphasized
         }
     }
 }

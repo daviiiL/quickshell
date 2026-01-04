@@ -29,7 +29,7 @@ Rectangle {
         hoverEnabled: true
         z: -1
         onClicked: {
-            Bluetooth.connectDevice(knownItem.device);
+            SystemBluetooth.connectDevice(knownItem.device);
         }
     }
 

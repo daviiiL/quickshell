@@ -33,6 +33,7 @@ Singleton {
             return 1;
         return b.strength - a.strength;
     })
+
     property list<string> knownNetworks: []
     property string wifiStatus: "disconnected"
 
