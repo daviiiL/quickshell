@@ -18,7 +18,8 @@ StyledImage {
     required property string sourcePath
     property string thumbnailSizeName: Images.thumbnailSizeNameForDimensions(sourceSize.width, sourceSize.height)
     property string thumbnailPath: {
-        if (sourcePath.length == 0) return "";
+        if (sourcePath.length == 0)
+            return "";
         const resolvedUrlWithoutFileProtocol = FileUtils.trimFileProtocol(`${Qt.resolvedUrl(sourcePath)}`);
         const encodedUrlWithoutFileProtocol = resolvedUrlWithoutFileProtocol.split("/").map(part => encodeURIComponent(part)).join("/");
         const md5Hash = Qt.md5(`file://${encodedUrlWithoutFileProtocol}`);
@@ -56,7 +57,7 @@ StyledImage {
                 // Thumbnail doesn't exist and we should generate it
                 thumbnailGeneration.running = true;
             }
-            // If exitCode !== 0 and !generateThumbnail, do nothing (no warning)
+        // If exitCode !== 0 and !generateThumbnail, do nothing (no warning)
         }
     }
 
@@ -65,9 +66,7 @@ StyledImage {
         command: {
             const maxSize = Images.thumbnailSizes[root.thumbnailSizeName];
             const cacheDir = `${Quickshell.env("HOME")}/.cache`;
-            return ["bash", "-c",
-                `mkdir -p '${cacheDir}/thumbnails/${root.thumbnailSizeName}' && magick '${root.sourcePath}' -resize ${maxSize}x${maxSize} '${FileUtils.trimFileProtocol(root.thumbnailPath)}'`
-            ]
+            return ["bash", "-c", `mkdir -p '${cacheDir}/thumbnails/${root.thumbnailSizeName}' && magick '${root.sourcePath}' -resize ${maxSize}x${maxSize} '${FileUtils.trimFileProtocol(root.thumbnailPath)}'`];
         }
         onExited: exitCode => {
             if (exitCode === 0) {

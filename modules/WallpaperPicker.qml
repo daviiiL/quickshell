@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -19,6 +20,8 @@ FloatingWindow {
     visible: GlobalStates.wallpaperPickerOpen ?? false
 
     color: "transparent"
+
+    title: "Wallpaper Picker"
 
     GlobalShortcut {
         name: "pickWallpaper"
@@ -103,8 +106,6 @@ FloatingWindow {
             focus: true
             color: Colors.surface
 
-            property string matugenScheme: Preferences.matugenScheme || "scheme-tonal-spot"
-
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: Theme.ui.padding.md
@@ -155,6 +156,7 @@ FloatingWindow {
                     ComboBox {
                         id: dropdown
                         Layout.preferredWidth: 150
+                        property bool initializing: true
 
                         background: Rectangle {
                             color: Colors.surface_container
@@ -213,18 +215,26 @@ FloatingWindow {
 
                         textRole: "name"
 
-                        currentIndex: 7
+                        function initialize() {
+                            const scheme = Preferences.matugenScheme;
+                            for (let i = 0; i < matugenSchemesModel.count; i++) {
+                                if (matugenSchemesModel.get(i).value === scheme) {
+                                    dropdown.currentIndex = i;
+                                    break;
+                                }
+                            }
+                        }
 
                         onCurrentIndexChanged: {
-                            const scheme = matugenSchemesModel.get(currentIndex).value;
-                            wallpaperGridBackground.matugenScheme = scheme;
-                            Wallpapers.matugenScheme = scheme;
+                            if (!initializing) {
+                                const scheme = matugenSchemesModel.get(currentIndex).value;
+                                Preferences.setColorScheme(scheme);
+                            }
                         }
 
                         Component.onCompleted: {
-                            const scheme = matugenSchemesModel.get(currentIndex).value;
-                            wallpaperGridBackground.matugenScheme = scheme;
-                            Wallpapers.matugenScheme = scheme;
+                            initialize();
+                            initializing = false;
                         }
 
                         delegate: ItemDelegate {
@@ -270,19 +280,6 @@ FloatingWindow {
                                 ScrollIndicator.vertical: ScrollIndicator {}
                             }
                         }
-                        /*     delegate: ItemDelegate {
-                            required property var styleData
-                            text: "name"
-                            font.pixelSize: Theme.font.size.md
-                            background: Rectangle {
-                                color: dropdown. ? Colors.primary_container : "transparent"
-                                radius: Theme.ui.radius.sm
-
-                                border.width: Theme.ui.borderWidth
-                                border.color: (styleData.selected || styleData.active) ? Colors.primary : "transparent"
-
-                            }} */
-
                     }
                 }
 
@@ -347,8 +344,6 @@ FloatingWindow {
                         grid: grid
                         width: grid.cellWidth
                         height: grid.cellHeight
-                        matugenScheme: wallpaperGridBackground.matugenScheme
-                        // colBackground: (index === grid?.currentIndex || containsMouse) ? Colors.primary : Colors.surface_container
                         colText: (index === grid.currentIndex || containsMouse) ? Colors.on_primary_container : Colors.on_surface_variant
                         colBackground: (index === grid.currentIndex || containsMouse) ? root.makeTranslucent(Colors.primary_container) : root.makeTranslucent(Colors.secondary_container)
 

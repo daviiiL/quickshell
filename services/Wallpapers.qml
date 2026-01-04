@@ -63,11 +63,19 @@ Singleton {
         if (!path || path.length === 0)
             return;
 
-        applyProc.exec([wallpaperSwitchScriptPath, "--scheme", root.matugenScheme, "--mode", Preferences.darkMode ? "dark" : "light", path]);
-
+        // console.debug(`Applying wallpaper ${path}`);
+        applyProc.exec([wallpaperSwitchScriptPath, path]);
         Preferences.setWallpaperPath(path);
-        Preferences.setMatugenScheme(root.matugenScheme);
+        root.changed();
+    }
 
+    function applyWithCurPreferences(path: string, isDarkMode: bool, scheme: string): void {
+        if (!path || path.length === 0)
+            return;
+
+        console.debug(`Applying wallpaper ${path} with current preferences: darkMode=${isDarkMode}, scheme=${scheme}`);
+        applyProc.exec([wallpaperSwitchScriptPath, "--scheme", scheme, "--mode", isDarkMode ? "dark" : "light", path]);
+        Preferences.setWallpaperPath(path);
         root.changed();
     }
 

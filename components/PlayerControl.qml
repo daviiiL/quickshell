@@ -15,8 +15,8 @@ Rectangle {
     property bool isLockscreenModule: false
 
     border {
-        width: isLockscreenModule ? 1 : 0
-        color: Colors.primary_container
+        width: 1
+        color: Colors.outline_variant
     }
 
     color: Preferences.darkMode ? Colors.background : Colors.surface

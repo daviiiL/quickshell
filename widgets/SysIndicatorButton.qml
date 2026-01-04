@@ -10,50 +10,18 @@ Rectangle {
     property string buttonIcon: "wifi"
     property string buttonText: "WiFi"
 
-    property var onClicked: null
-
-    function makeTranslucent(color) {
-        return Qt.rgba(color.r, color.g, color.b, 0.4);
-    }
+    signal clicked
 
     width: 50
     height: 50
 
     radius: Theme.ui.radius.md
-    color: checked ? root.makeTranslucent(Colors.primary_container) : root.makeTranslucent(Colors.secondary_container)
-    scale: mouseArea.pressed ? 0.95 : 1.0
+    color: Qt.alpha(checked ? (Preferences.darkMode ? Colors.primary_container : Colors.primary_fixed_dim) : Colors.secondary_container, 0.4)
+    scale: mouseArea.containsMouse ? 0.95 : 1.0
 
     border {
-        color: checked ? (Preferences.darkMode ? Colors.primary_container : root.makeTranslucent(Colors.secondary)) : Colors.secondary_container
+        color: checked ? (Preferences.darkMode ? Colors.primary_container : Qt.alpha(Colors.secondary, 0.7)) : Qt.alpha(Colors.outline_variant, 0.4)
         width: 1
-    }
-
-    Behavior on color {
-        ColorAnimation {
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    Behavior on scale {
-        NumberAnimation {
-            duration: 150
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    Behavior on border.color {
-        ColorAnimation {
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    Behavior on border.width {
-        NumberAnimation {
-            duration: 200
-            easing.type: Easing.OutCubic
-        }
     }
 
     Canvas {
@@ -141,12 +109,36 @@ Rectangle {
     }
     MouseArea {
         id: mouseArea
-        hoverEnabled: false
         anchors.fill: parent
 
-        onClicked: () => {
-            if (root.onClicked)
-                root.onClicked();
+        onClicked: root.clicked()
+    }
+
+    Behavior on color {
+        ColorAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
+        }
+    }
+
+    Behavior on scale {
+        NumberAnimation {
+            duration: 150
+            easing.type: Easing.OutCubic
+        }
+    }
+
+    Behavior on border.color {
+        ColorAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
+        }
+    }
+
+    Behavior on border.width {
+        NumberAnimation {
+            duration: 200
+            easing.type: Easing.OutCubic
         }
     }
 }

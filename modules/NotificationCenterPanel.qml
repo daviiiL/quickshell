@@ -61,6 +61,11 @@ Scope {
                 color: Colors.surface_container_low
                 clip: true
 
+                border {
+                    width: 1
+                    color: Colors.outline_variant
+                }
+
                 NotificationCenterView {
                     anchors.fill: parent
                 }

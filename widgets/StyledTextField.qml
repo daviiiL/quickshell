@@ -5,17 +5,13 @@ import qs.common
 TextField {
     id: root
 
-    function makeTranslucent(color) {
-        return Qt.rgba(color.r, color.g, color.b, 0.4);
-    }
-
     padding: 8
     leftPadding: 12
     rightPadding: 12
 
     background: Rectangle {
         radius: Theme.ui.radius.md
-        color: root.activeFocus ? root.makeTranslucent(Colors.primary_container) : root.makeTranslucent(Colors.secondary_container)
+        color: Qt.alpha(root.activeFocus ? Colors.primary_container : Colors.secondary_container, 0.4)
 
         border {
             color: root.activeFocus ? Colors.primary_container : Colors.secondary_container

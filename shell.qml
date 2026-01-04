@@ -3,7 +3,7 @@
 
 import Quickshell
 import Quickshell.Io
-
+import QtQuick
 import qs.modules
 import qs.common
 import qs.services
@@ -18,27 +18,38 @@ ShellRoot {
         stdout: StdioCollector {
             onStreamFinished: {
                 GlobalStates.isLaptop = this.text.trim() === "laptop";
-                // console.debug(this.text.trim() == "laptop");
             }
         }
     }
 
-    PowerPanel {}
-    LeftBar {
-        id: leftBar
+    property bool preferencesLoaded: Preferences.isLoaded
 
-        onInstantiated: () => {
-            topBarLoader.loading = true;
+    Loader {
+        active: Preferences.isLoaded
+        asynchronous: false
+
+        sourceComponent: Component {
+            Item {
+                PowerPanel {}
+
+                LeftBar {
+                    id: leftBar
+
+                    onInstantiated: () => {
+                        topBarLoader.loading = true;
+                    }
+                }
+                LazyLoader {
+                    id: topBarLoader
+                    TopBar {}
+                }
+                Lockscreen {}
+                NotificationPopup {}
+                NotificationCenterPanel {}
+                ControlCenter {}
+                WallpaperPicker {}
+                MediaControls {}
+            }
         }
     }
-    LazyLoader {
-        id: topBarLoader
-        TopBar {}
-    }
-    Lockscreen {}
-    NotificationPopup {}
-    NotificationCenterPanel {}
-    ControlCenter {}
-    WallpaperPicker {}
-    MediaControls {}
 }

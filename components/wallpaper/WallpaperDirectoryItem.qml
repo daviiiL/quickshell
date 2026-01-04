@@ -9,7 +9,7 @@ import Qt5Compat.GraphicalEffects
 
 MouseArea {
     id: root
-    required property string matugenScheme
+    property string matugenScheme: Preferences.matugenScheme || "scheme-tonal-spot"
     required property var fileModelData
     required property int index
     required property var grid

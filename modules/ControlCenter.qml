@@ -25,6 +25,7 @@ FloatingWindow {
         anchors.fill: parent
 
         Rectangle {
+            id: menuContainer
             Layout.topMargin: 10
             Layout.fillHeight: true
             Layout.preferredWidth: 200
@@ -65,9 +66,9 @@ FloatingWindow {
                 anchors.fill: parent
                 currentIndex: listview.currentIndex
 
+                PreferencesPanel {}
                 NetworkPanel {}
                 BluetoothPanel {}
-                PreferencesPanel {}
                 PowerPanel {}
             }
         }
@@ -76,7 +77,7 @@ FloatingWindow {
     component ControlCenterMenuItem: Rectangle {
         id: itemRoot
         height: 50
-        width: parent.width
+        width: menuContainer.width
         color: "transparent"
 
         required property int index

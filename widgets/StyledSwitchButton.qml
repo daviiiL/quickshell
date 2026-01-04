@@ -7,7 +7,7 @@ Rectangle {
     id: root
 
     required property bool checked
-    required property var onClicked
+    signal clicked
 
     implicitWidth: 48
     implicitHeight: 28
@@ -41,6 +41,6 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: root.onClicked()
+        onClicked: root.clicked()
     }
 }

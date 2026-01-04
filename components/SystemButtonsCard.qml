@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell.Bluetooth
 
 import qs.common
 import qs.widgets
