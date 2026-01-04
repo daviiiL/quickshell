@@ -78,29 +78,29 @@ ColumnLayout {
                 margins: 5
             }
 
-            NotificationStatusButton {
+            StyledButton {
                 Layout.fillWidth: false
                 Layout.preferredWidth: 40
-                buttonIcon: "notifications_paused"
-                toggled: Notifications.silent
+                icon: "notifications_paused"
+                highlighted: Notifications.silent
                 onClicked: () => {
                     Notifications.silent = !Notifications.silent;
                 }
             }
 
-            NotificationStatusButton {
-                enabled: false
+            StyledButton {
+                clickable: false
                 Layout.fillWidth: true
-                buttonText: Notifications.list.length + " notifications"
+                text: Notifications.list.length + " notifications"
             }
 
-            NotificationStatusButton {
+            StyledButton {
                 Layout.fillWidth: false
                 Layout.preferredWidth: 40
-                buttonIcon: "delete_sweep"
+                icon: "delete_sweep"
                 onClicked: () => {
                   Notifications.discardAllNotifications();
-                  GlobalStates.notificationCenterOpen = false; 
+                  GlobalStates.notificationCenterOpen = false;
                 }
             }
         }
