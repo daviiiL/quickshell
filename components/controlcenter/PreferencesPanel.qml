@@ -265,6 +265,21 @@ Rectangle {
             editable: false
             textRole: "name"
 
+            Connections {
+                target: Preferences
+
+                function onColorSchemeChanged() {
+                    const scheme = Preferences.getColorScheme();
+                    console.debug(scheme);
+                    for (let i = 0; i < colorSchemesModel.count; i++) {
+                        if (colorSchemesModel.get(i).value === scheme) {
+                            colorSchemeDropdown.currentIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
             onCurrentIndexChanged: {
                 if (colorSchemeDropdown.isInitializing) {
                     return;
@@ -274,7 +289,7 @@ Rectangle {
                 Preferences.setColorScheme(scheme);
 
                 // console.debug(`[pref panel] Matugen scheme changed to ${scheme} via combobox`);
-                Wallpapers.applyWithCurPreferences(Preferences.wallpaperPath, Preferences.darkMode, scheme);
+                // Wallpapers.applyWithCurPreferences(Preferences.wallpaperPath, Preferences.darkMode, scheme);
             }
 
             Component.onCompleted: {
@@ -331,6 +346,52 @@ Rectangle {
                     keyNavigationEnabled: true
 
                     ScrollIndicator.vertical: ScrollIndicator {}
+                }
+            }
+        }
+
+        Rectangle {
+            id: applyButton
+            Layout.preferredWidth: 60
+            Layout.preferredHeight: 32
+
+            color: applyArea.containsMouse ? Colors.primary_container : Colors.surface_bright
+            radius: Theme.ui.radius.sm
+            border.width: 1
+            border.color: Colors.outline_variant
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 150
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            MouseArea {
+                id: applyArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+
+                onClicked: {
+                    const scheme = colorSchemesModel.get(colorSchemeDropdown.currentIndex).value;
+                    console.debug(`[pref panel] Applying color scheme: ${scheme}`);
+                    Wallpapers.applyWithCurPreferences(Preferences.wallpaperPath, Preferences.darkMode, scheme);
+                }
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: "Apply"
+                font.pixelSize: Theme.font.size.md
+                font.family: Theme.font.family.inter_regular
+                color: applyArea.containsMouse ? Colors.on_primary_container : Colors.primary
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 150
+                        easing.type: Easing.OutCubic
+                    }
                 }
             }
         }

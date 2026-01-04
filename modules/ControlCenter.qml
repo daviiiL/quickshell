@@ -66,9 +66,9 @@ FloatingWindow {
                 anchors.fill: parent
                 currentIndex: listview.currentIndex
 
-                PreferencesPanel {}
                 NetworkPanel {}
                 BluetoothPanel {}
+                PreferencesPanel {}
                 PowerPanel {}
             }
         }

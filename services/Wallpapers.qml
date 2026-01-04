@@ -95,7 +95,7 @@ Singleton {
                 root.setDirectory(selectProc.filePath);
                 return;
             }
-            root.apply(selectProc.filePath);
+            root.applyWithCurPreferences(selectProc.filePath, Preferences.darkMode, Preferences.matugenScheme);
         }
     }
 

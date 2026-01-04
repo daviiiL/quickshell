@@ -9,3 +9,7 @@
 - [x] Add power management window
 - [x] Add a control center window (network, bluetooth, settings, etc) 
 - [ ] Add a frontend for openai
+
+## Known Bugs 
+
+- [ ] when changing colorscheme from the control center, the wallpaper picker still holds onto the initial value loaded from Preferences... even after preferences.colorscheme has changed...

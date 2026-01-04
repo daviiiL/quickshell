@@ -17,6 +17,8 @@ Singleton {
     readonly property string defaultWallpaperPath: `${homeDir}/.config/quickshell/assets/default_paper.jpg`
     property bool isLoaded: false
 
+    signal colorSchemeChanged
+
     function setColorMode(value: int) {
         root.darkMode = value === 0 ? true : false;
         defaultAdapter.darkMode = root.darkMode;
@@ -35,6 +37,7 @@ Singleton {
         console.debug("[Preferences.qml]: Switching matugen scheme to: " + scheme);
         root.matugenScheme = scheme;
         defaultAdapter.storedMatugenScheme = scheme;
+        root.colorSchemeChanged();
     }
 
     function applySelectedVisualPreferences() {

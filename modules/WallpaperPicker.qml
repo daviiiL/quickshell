@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -235,6 +234,21 @@ FloatingWindow {
                         Component.onCompleted: {
                             initialize();
                             initializing = false;
+                        }
+
+                        Connections {
+                            target: Preferences
+
+                            function onColorSchemeChanged() {
+                                const scheme = Preferences.getColorScheme();
+                                console.debug(scheme);
+                                for (let i = 0; i < matugenSchemesModel.count; i++) {
+                                    if (matugenSchemesModel.get(i).value === scheme) {
+                                        dropdown.currentIndex = i;
+                                        break;
+                                    }
+                                }
+                            }
                         }
 
                         delegate: ItemDelegate {
