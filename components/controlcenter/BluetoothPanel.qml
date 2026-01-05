@@ -25,7 +25,7 @@ Rectangle {
         ControlCenterPanelSection {
             title: "Bluetooth"
             checked: SystemBluetooth.enabled
-            onToggled: SystemBluetooth.toggleBluetooth
+            onToggled: SystemBluetooth.toggleBluetooth()
             showConnectionCard: SystemBluetooth.connected
             connectionIcon: "bluetooth"
             connectionTitle: Bluetooth.firstActiveDevice?.name ?? "Unknown Device"

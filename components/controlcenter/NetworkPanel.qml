@@ -25,7 +25,7 @@ Rectangle {
         ControlCenterPanelSection {
             title: "Ethernet"
             checked: Network.ethernetConnected
-            onToggled: Network.toggleEthernet
+            onToggled: Network.toggleEthernet()
             showConnectionCard: Network.ethernetConnected
             connectionIcon: "lan"
             connectionTitle: Network.ethernetDevice
@@ -36,7 +36,7 @@ Rectangle {
             topMargin: Network.ethernetDevice.length > 0 ? Theme.ui.padding.lg : 0
             title: "Wi-Fi"
             checked: Network.wifiEnabled
-            onToggled: Network.toggleWifi
+            onToggled: Network.toggleWifi()
             showConnectionCard: Network.active && Network.wifiEnabled && Network.networkName !== "lo"
             connectionIcon: "signal_wifi_4_bar"
             connectionTitle: Network.networkName

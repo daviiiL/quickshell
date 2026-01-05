@@ -8,7 +8,8 @@ ColumnLayout {
 
     required property string title
     required property bool checked
-    required property var onToggled
+
+    signal toggled
 
     property bool showConnectionCard: false
     property string connectionIcon: "wifi"
@@ -42,7 +43,7 @@ ColumnLayout {
 
         StyledSwitchButton {
             checked: root.checked
-            onClicked: root.onToggled
+            onClicked: root.toggled()
         }
     }
 
