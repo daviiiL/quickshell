@@ -34,7 +34,7 @@ Singleton {
     }
 
     function setColorScheme(scheme: string) {
-        console.debug("[Preferences.qml]: Switching matugen scheme to: " + scheme);
+        // console.debug("[Preferences.qml]: Switching matugen scheme to: " + scheme);
         root.matugenScheme = scheme;
         defaultAdapter.storedMatugenScheme = scheme;
         root.colorSchemeChanged();

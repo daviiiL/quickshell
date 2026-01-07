@@ -49,6 +49,7 @@ ShellRoot {
                 ControlCenter {}
                 WallpaperPicker {}
                 MediaControls {}
+                AppLauncherPanel {}
             }
         }
     }

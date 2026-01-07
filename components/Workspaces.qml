@@ -201,18 +201,22 @@ Rectangle {
                         anchors.centerIn: parent
                         renderType: Text.QtRendering
                         renderTypeQuality: Text.HighRenderTypeQuality
-                        property real animatedPixelSize: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Theme.font.size.lg : Theme.font.size.md
-                        property int animatedWeight: (monitor?.activeWorkspace?.id == button.workspaceValue) ? Font.Bold : Font.Medium
 
-                        color: (monitor?.activeWorkspace?.id == button.workspaceValue) ? root.activeWorkspaceTextColor : (workspaceOccupied[index] ? root.occupiedWorkspaceTextColor : root.inactiveWorkspaceTextColor)
+                        readonly property bool isActive: monitor?.activeWorkspace?.id == button.workspaceValue
+                        property real targetScale: isActive ? 1.15 : 1.0
+
+                        color: isActive ? root.activeWorkspaceTextColor : (workspaceOccupied[index] ? root.occupiedWorkspaceTextColor : root.inactiveWorkspaceTextColor)
 
                         font {
-                            pixelSize: animatedPixelSize
-                            weight: animatedWeight
+                            pixelSize: Theme.font.size.md
+                            weight: isActive ? Font.Bold : Font.Medium
                             family: Theme.font.family.inter_regular
                         }
 
-                        opacity: (monitor?.activeWorkspace?.id == button.workspaceValue) ? 1.0 : (workspaceOccupied[index] ? 0.8 : 0.4)
+                        opacity: isActive ? 1.0 : (workspaceOccupied[index] ? 0.8 : 0.4)
+
+                        scale: targetScale
+                        transformOrigin: Item.Center
 
                         Behavior on color {
                             ColorAnimation {
@@ -226,14 +230,10 @@ Rectangle {
                                 easing.type: Easing.OutCubic
                             }
                         }
-                        Behavior on animatedWeight {
+                        Behavior on targetScale {
                             NumberAnimation {
                                 duration: Theme.anim.durations.xs
-                            }
-                        }
-                        Behavior on animatedPixelSize {
-                            NumberAnimation {
-                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutCubic
                             }
                         }
                     }

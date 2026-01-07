@@ -241,7 +241,7 @@ FloatingWindow {
 
                             function onColorSchemeChanged() {
                                 const scheme = Preferences.getColorScheme();
-                                console.debug(scheme);
+                                // console.debug(scheme);
                                 for (let i = 0; i < matugenSchemesModel.count; i++) {
                                     if (matugenSchemesModel.get(i).value === scheme) {
                                         dropdown.currentIndex = i;

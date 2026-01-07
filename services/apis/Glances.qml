@@ -100,7 +100,7 @@ Singleton {
                 readDGPU = true;
                 getGpu();
             } else {
-                laptopModeNotification.running = true;
+                // laptopModeNotification.running = true;
             }
 
             initializationTimer.repeat = false;

@@ -270,7 +270,7 @@ Rectangle {
 
                 function onColorSchemeChanged() {
                     const scheme = Preferences.getColorScheme();
-                    console.debug(scheme);
+                    // console.debug(scheme);
                     for (let i = 0; i < colorSchemesModel.count; i++) {
                         if (colorSchemesModel.get(i).value === scheme) {
                             colorSchemeDropdown.currentIndex = i;
@@ -375,7 +375,7 @@ Rectangle {
 
                 onClicked: {
                     const scheme = colorSchemesModel.get(colorSchemeDropdown.currentIndex).value;
-                    console.debug(`[pref panel] Applying color scheme: ${scheme}`);
+                    // console.debug(`[pref panel] Applying color scheme: ${scheme}`);
                     Wallpapers.applyWithCurPreferences(Preferences.wallpaperPath, Preferences.darkMode, scheme);
                 }
             }
