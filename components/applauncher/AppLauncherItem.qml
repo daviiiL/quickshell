@@ -10,6 +10,8 @@ Rectangle {
     id: root
 
     required property string query
+    required property int currentParentIndex
+    required property int index
 
     property var item: modelData
 
@@ -21,8 +23,8 @@ Rectangle {
     height: 60
     radius: Theme.ui.radius.md
 
-    property bool isHovered: mouseArea.containsMouse
-    color: isHovered ? Qt.alpha(Colors.primary_container, 0.3) : "transparent"
+    property bool isSelected: mouseArea.containsMouse || index === currentParentIndex
+    color: isSelected ? Qt.alpha(Colors.primary_container, 0.3) : "transparent"
 
     Behavior on color {
         ColorAnimation {
@@ -44,7 +46,7 @@ Rectangle {
             if (contentLower[i] === queryLower[qIndex]) {
                 if (i > lastIndex)
                     result += StringUtils.escapeHtml(content.slice(lastIndex, i));
-                result += `<u><font color="${Colors.primary}">` + StringUtils.escapeHtml(content[i]) + `</font></u>`;
+                result += `<u style="{text-decoration: none;}"><font color="${Colors.primary}">` + StringUtils.escapeHtml(content[i]) + `</font></u>`;
                 lastIndex = i + 1;
                 qIndex++;
             }
@@ -60,7 +62,6 @@ Rectangle {
         anchors.margins: Theme.ui.padding.sm
         spacing: Theme.ui.padding.sm
 
-        // Icon
         Image {
             Layout.preferredWidth: 32
             Layout.preferredHeight: 32
@@ -76,7 +77,7 @@ Rectangle {
                 Layout.fillWidth: true
                 text: root.highlightContent(root.itemName, root.query)
                 textFormat: Text.StyledText
-                font.pixelSize: Theme.font.size.md
+                font.pixelSize: Theme.font.size.lg
                 color: Colors.on_surface
                 elide: Text.ElideRight
             }
@@ -91,12 +92,11 @@ Rectangle {
             }
         }
 
-        // Action text (on hover)
         StyledText {
             text: root.itemVerb
             font.pixelSize: Theme.font.size.sm
             color: Colors.on_primary_container
-            visible: root.isHovered
+            visible: root.isSelected
         }
     }
 
@@ -122,6 +122,10 @@ Rectangle {
                 Qt.callLater(() => root.modelData.execute());
             }
             event.accepted = true;
+        }
+
+        if (event.key === Qt.Key_Escape) {
+            GlobalStates.appLauncherOpen = false;
         }
     }
 }

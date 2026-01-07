@@ -25,7 +25,6 @@ Scope {
             visible: GlobalStates.appLauncherOpen
 
             function closeAppLauncher() {
-                // Move focus away from text field before closing
                 backgroundMouseArea.forceActiveFocus();
                 GlobalStates.appLauncherOpen = false;
             }
@@ -106,8 +105,10 @@ Scope {
                             id: searchField
 
                             Layout.fillWidth: true
-                            placeholderText: ""
-                            font.pixelSize: Theme.font.size.md
+                            placeholderText: "Search applications"
+                            font.pixelSize: Theme.font.size.lg
+
+                            placeholderTextColor: Qt.lighter(Colors.primary_container, 1.3)
 
                             onTextChanged: {
                                 AppLauncher.query = text;
@@ -138,6 +139,7 @@ Scope {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 1
+                        Layout.topMargin: Theme.ui.padding.sm
                         color: Colors.outline_variant
                         visible: resultsList.count > 0
                     }
@@ -160,6 +162,7 @@ Scope {
                             width: resultsList.width
                             query: AppLauncher.query
                             focus: ListView.isCurrentItem
+                            currentParentIndex: resultsList.currentIndex
                         }
 
                         Keys.onPressed: event => {
@@ -172,16 +175,8 @@ Scope {
 
                         Text {
                             anchors.centerIn: parent
-                            visible: resultsList.count === 0 && AppLauncher.query !== ""
-                            text: "No applications found"
-                            font.pixelSize: Theme.font.size.md
-                            color: Colors.on_surface_variant
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            visible: resultsList.count === 0 && AppLauncher.query === ""
-                            text: "Start typing to search..."
+                            visible: resultsList.count === 0
+                            text: AppLauncher.query === "" ? "Start typing to search..." : "No applications found"
                             font.pixelSize: Theme.font.size.md
                             color: Colors.on_surface_variant
                         }
