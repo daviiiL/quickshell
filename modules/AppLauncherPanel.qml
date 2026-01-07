@@ -24,6 +24,12 @@ Scope {
             screen: modelData
             visible: GlobalStates.appLauncherOpen
 
+            function closeAppLauncher() {
+                // Move focus away from text field before closing
+                backgroundMouseArea.forceActiveFocus();
+                GlobalStates.appLauncherOpen = false;
+            }
+
             anchors {
                 top: true
                 left: true
@@ -40,9 +46,10 @@ Scope {
             exclusiveZone: 0
 
             MouseArea {
+                id: backgroundMouseArea
                 anchors.fill: parent
                 onClicked: {
-                    GlobalStates.appLauncherOpen = false;
+                    panel.closeAppLauncher();
                 }
             }
 
@@ -115,13 +122,13 @@ Scope {
                                     if (resultsList.count > 0) {
                                         const firstItem = resultsList.itemAtIndex(0);
                                         if (firstItem && firstItem.modelData?.execute) {
-                                            GlobalStates.appLauncherOpen = false;
+                                            panel.closeAppLauncher();
                                             firstItem.modelData.execute();
                                         }
                                     }
                                     event.accepted = true;
                                 } else if (event.key === Qt.Key_Escape) {
-                                    GlobalStates.appLauncherOpen = false;
+                                    panel.closeAppLauncher();
                                     event.accepted = true;
                                 }
                             }
@@ -183,10 +190,11 @@ Scope {
             }
 
             onVisibleChanged: {
-                if (!visible) {
-                    GlobalStates.appLauncherOpen = false;
-                    AppLauncher.query = "";
+                if (visible) {
+                    searchField.forceActiveFocus();
+                } else {
                     searchField.clear();
+                    AppLauncher.query = "";
                 }
             }
         }

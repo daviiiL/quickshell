@@ -110,7 +110,7 @@ Rectangle {
         onClicked: {
             if (root.modelData?.execute) {
                 GlobalStates.appLauncherOpen = false;
-                root.modelData.execute();
+                Qt.callLater(() => root.modelData.execute());
             }
         }
     }
@@ -119,7 +119,7 @@ Rectangle {
         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             if (root.modelData?.execute) {
                 GlobalStates.appLauncherOpen = false;
-                root.modelData.execute();
+                Qt.callLater(() => root.modelData.execute());
             }
             event.accepted = true;
         }
