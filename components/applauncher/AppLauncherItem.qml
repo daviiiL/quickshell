@@ -97,6 +97,11 @@ Rectangle {
             font.pixelSize: Theme.font.size.sm
             color: Colors.on_primary_container
             visible: root.isSelected
+            Behavior on visible {
+                NumberAnimation {
+                    duration: 150
+                }
+            }
         }
     }
 
