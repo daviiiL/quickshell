@@ -71,7 +71,7 @@ Scope {
                     topMargin: panel.screen.height / 4
                 }
 
-                color: Colors.surface
+                color: Preferences.darkMode ? Colors.surface : Colors.surface_container_low
                 radius: Theme.ui.radius.lg
 
                 MouseArea {
@@ -108,7 +108,7 @@ Scope {
                             placeholderText: "Search applications"
                             font.pixelSize: Theme.font.size.lg
 
-                            placeholderTextColor: Qt.lighter(Colors.primary_container, 1.3)
+                            placeholderTextColor: Preferences.darkMode ? Qt.lighter(Colors.primary_container, 1.3) : Qt.lighter(Colors.on_secondary_container, 5)
 
                             onTextChanged: {
                                 AppLauncher.query = text;
