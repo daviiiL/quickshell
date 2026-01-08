@@ -14,7 +14,7 @@ Scope {
         PanelWindow {
             id: root
             required property var modelData
-            property color bgColor: Preferences.darkMode ? "black" : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.9)
+            property color bgColor: Preferences.darkMode ? Colors.background : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.9)
 
             WlrLayershell.namespace: "quickshell:topbar"
 
@@ -38,7 +38,8 @@ Scope {
                 anchors.fill: parent
                 radius: Theme.ui.radius.md
 
-                anchors.margins: Theme.ui.padding.sm / 2
+                anchors.margins: Theme.ui.padding.sm
+                anchors.bottomMargin: 0
 
                 color: root.bgColor
 

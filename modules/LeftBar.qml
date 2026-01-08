@@ -16,7 +16,7 @@ Scope {
         PanelWindow {
             id: root
             required property var modelData
-            property color bgColor: Qt.rgba(Colors.surface_light.r, Colors.surface_light.g, Colors.surface_light.b, 0.7)
+            property color bgColor: Qt.rgba(Colors.surface_light.r, Colors.surface_light.g, Colors.surface_light.b, 0.9)
 
             Component.onCompleted: {
                 scope.instantiated(true);
