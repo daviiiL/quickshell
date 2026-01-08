@@ -42,6 +42,12 @@ Scope {
 
                 color: root.bgColor
 
+                Behavior on color {
+                    ColorAnimation {
+                        duration: Theme.anim.durations.md
+                    }
+                }
+
                 RowLayout {
                     anchors.fill: parent
                     spacing: Theme.ui.padding.md

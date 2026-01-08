@@ -10,6 +10,7 @@ Singleton {
     id: root
 
     property bool darkMode
+    property bool usePreferredScheme
     property string wallpaperPath
     property string matugenScheme
     readonly property string homeDir: Quickshell.env("HOME")
@@ -22,6 +23,33 @@ Singleton {
     function setColorMode(value: int) {
         root.darkMode = value === 0 ? true : false;
         defaultAdapter.darkMode = root.darkMode;
+
+        if (root.usePreferredScheme) {
+            if (root.darkMode)
+                root.setColorScheme("scheme-tonal-spot", true);
+            else
+                root.setColorScheme("scheme-neutral", true);
+
+            applySelectedVisualPreferences();
+        }
+    }
+
+    function toggleUsePreferredScheme() {
+        root.usePreferredScheme = !root.usePreferredScheme;
+        defaultAdapter.usePreferredScheme = root.usePreferredScheme;
+
+        if (root.usePreferredScheme) {
+            if (root.darkMode)
+                root.setColorScheme("scheme-tonal-spot", true);
+            else
+                root.setColorScheme("scheme-neutral", true);
+
+            applySelectedVisualPreferences();
+        }
+    }
+
+    function getUsePreferredScheme(): bool {
+        return root.usePreferredScheme;
     }
 
     function setWallpaperPath(path: string) {
@@ -33,8 +61,10 @@ Singleton {
         return isLoaded ? root.matugenScheme : "unknown";
     }
 
-    function setColorScheme(scheme: string) {
-        // console.debug("[Preferences.qml]: Switching matugen scheme to: " + scheme);
+    function setColorScheme(scheme: string, internal: bool) {
+        if (usePreferredScheme && internal === false)
+            console.warn("Preferences: Using preferred scheme... Shouldn't set custom color scheme");
+
         root.matugenScheme = scheme;
         defaultAdapter.storedMatugenScheme = scheme;
         root.colorSchemeChanged();
@@ -50,6 +80,7 @@ Singleton {
         property bool darkMode
         property string storedWallpaperPath
         property string storedMatugenScheme
+        property bool usePreferredScheme
     }
 
     Io.FileView {
@@ -60,28 +91,29 @@ Singleton {
 
         onAdapterUpdated: {
             if (root.isLoaded) {
-                // console.debug(`[Preferences.qml]: Preferences JSON adapter wrote to ${root.preferenceCacheFile}`);
                 this.writeAdapter();
             }
         }
 
         onLoaded: {
-            // console.debug("[Preferences.qml]: Preferences loaded");
             root.darkMode = defaultAdapter.darkMode;
             root.matugenScheme = defaultAdapter.storedMatugenScheme;
             root.wallpaperPath = defaultAdapter.storedWallpaperPath;
+            root.usePreferredScheme = defaultAdapter.usePreferredScheme;
             root.isLoaded = true;
         }
 
         onLoadFailed: {
-            // console.debug("[Preferences.qml]: load failed - creating default preferences");
             defaultAdapter.darkMode = true;
             defaultAdapter.storedWallpaperPath = root.defaultWallpaperPath;
             defaultAdapter.storedMatugenScheme = "scheme-tonal-spot";
+            defaultAdapter.usePreferredScheme = true;
 
             root.darkMode = true;
             root.wallpaperPath = root.defaultWallpaperPath;
             root.matugenScheme = "scheme-tonal-spot";
+            root.usePreferredScheme = true;
+
             root.isLoaded = true;
             prefFileView.writeAdapter();
             Wallpapers.applyWithCurPreferences(root.defaultWallpaperPath, true, "scheme-tonal-spot");

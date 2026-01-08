@@ -26,6 +26,12 @@ Scope {
             screen: modelData
             color: Colors.surface_light_translucent
 
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.anim.durations.md
+                }
+            }
+
             implicitWidth: Theme.ui.leftBarWidth
 
             WlrLayershell.layer: WlrLayer.Top
@@ -39,7 +45,6 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-                // color: Colors.surface_light_translucent
                 color: "transparent"
                 radius: Theme.ui.radius.md
 

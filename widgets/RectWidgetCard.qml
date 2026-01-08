@@ -18,6 +18,13 @@ Rectangle {
 
     implicitHeight: (showTitle ? 30 : 0) + contentRect.implicitHeight
 
+    Behavior on implicitHeight {
+        NumberAnimation {
+            duration: Theme.anim.durations.sm
+            easing.type: Easing.OutCubic
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
@@ -25,11 +32,32 @@ Rectangle {
         Rectangle {
             id: titleRect
             visible: root.showTitle
+            opacity: root.showTitle ? 1.0 : 0.0
             Layout.fillWidth: true
-            Layout.preferredHeight: 30
+            Layout.preferredHeight: root.showTitle ? 30 : 0
             color: Preferences.darkMode ? Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.5) : Qt.rgba(Colors.secondary_fixed_dim.r, Colors.secondary_fixed_dim.g, Colors.secondary_fixed_dim.b, 0.5)
             topRightRadius: Theme.ui.radius.md
             topLeftRadius: Theme.ui.radius.md
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.anim.durations.sm
+                }
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.anim.durations.sm
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            Behavior on Layout.preferredHeight {
+                NumberAnimation {
+                    duration: Theme.anim.durations.sm
+                    easing.type: Easing.OutCubic
+                }
+            }
 
             Layout.alignment: Qt.AlignTop
 
@@ -54,6 +82,26 @@ Rectangle {
             topLeftRadius: root.showTitle ? 0 : Theme.ui.radius.md
             topRightRadius: root.showTitle ? 0 : Theme.ui.radius.md
             color: root.contentBackground
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.anim.durations.sm
+                }
+            }
+
+            Behavior on topLeftRadius {
+                NumberAnimation {
+                    duration: Theme.anim.durations.sm
+                    easing.type: Easing.OutCubic
+                }
+            }
+
+            Behavior on topRightRadius {
+                NumberAnimation {
+                    duration: Theme.anim.durations.sm
+                    easing.type: Easing.OutCubic
+                }
+            }
         }
     }
 }

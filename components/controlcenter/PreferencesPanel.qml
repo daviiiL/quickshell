@@ -31,7 +31,7 @@ Rectangle {
 
                 text: "Style"
                 font {
-                    pixelSize: Theme.font.size.lg
+                    pixelSize: Theme.font.size.xl
                     family: Theme.font.family.inter_regular
                     weight: Font.Bold
                 }
@@ -44,7 +44,7 @@ Rectangle {
             Rectangle {
 
                 Layout.preferredWidth: Math.min(500, colorModeSection.width)
-                Layout.preferredHeight: 190
+                Layout.preferredHeight: Preferences.usePreferredScheme ? 200 : 240
 
                 color: Colors.surface_container_high
                 radius: Theme.ui.radius.md
@@ -55,8 +55,9 @@ Rectangle {
                     spacing: Theme.ui.padding.sm
 
                     Rectangle {
+                        id: previewRow
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
+                        Layout.preferredHeight: 140
                         color: "transparent"
 
                         PreferenceDesktopPreview {
@@ -92,7 +93,55 @@ Rectangle {
                         }
                     }
 
+                    RowLayout {
+                        id: schemeCheckboxRow
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 32
+
+                        CheckBox {
+                            id: preferredSchemeCheckBox
+                            text: "Use suggested color palette"
+                            font {
+                                family: Theme.font.family.inter_regular
+                                pixelSize: Theme.font.size.lg
+                            }
+                            palette.windowText: Colors.on_surface
+
+                            checked: Preferences.usePreferredScheme
+
+                            onClicked: () => Preferences.toggleUsePreferredScheme()
+
+                            indicator: Rectangle {
+                                anchors.verticalCenter: parent.verticalCenter
+                                implicitHeight: 20
+                                implicitWidth: 20
+                                color: Colors.secondary_container
+                                radius: Theme.ui.radius.lg
+
+                                Canvas {
+                                    anchors.fill: parent
+                                    visible: preferredSchemeCheckBox.checked
+                                    onPaint: {
+                                        var ctx = getContext("2d");
+                                        ctx.clearRect(0, 0, width, height);
+
+                                        var r = Math.min(width, height) * 0.3;
+                                        var cx = width / 2;
+                                        var cy = height / 2;
+
+                                        ctx.beginPath();
+                                        ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
+                                        ctx.fillStyle = Colors.on_secondary_container;
+                                        ctx.fill();
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     MatugenSchemeComboBox {
+                        id: schemeComboboxRow
+                        visible: !Preferences.usePreferredScheme
                         Layout.fillWidth: true
                         Layout.preferredHeight: 32
                     }
@@ -206,7 +255,7 @@ Rectangle {
             id: colorSchemeDropdown
             Layout.preferredWidth: 180
             Layout.fillWidth: true
-
+            Layout.preferredHeight: applyButton.height
             property bool isInitializing: true
 
             background: Rectangle {
