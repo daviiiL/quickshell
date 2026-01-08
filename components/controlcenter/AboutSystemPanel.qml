@@ -174,7 +174,7 @@ Rectangle {
                         anchors.fill: parent
 
                         sourceComponent: {
-                            switch (infoLayoutRoot.modelData.type) {
+                            switch (modelData.type) {
                             case "device":
                                 return deviceCard;
                             case "cpu":
@@ -193,9 +193,9 @@ Rectangle {
                         }
 
                         onLoaded: {
-                            if (infoLayoutRoot.modelData.type === "gpu" && item) {
-                                item.gpuTitle = infoLayoutRoot.modelData.title;
-                                item.gpuIndex = infoLayoutRoot.modelData.index;
+                            if (modelData.type === "gpu" && item) {
+                                item.gpuTitle = modelData.title;
+                                item.gpuIndex = modelData.index;
                             }
                         }
                     }
