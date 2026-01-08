@@ -26,11 +26,11 @@ Rectangle {
     property bool isSelected: mouseArea.containsMouse || index === currentParentIndex
     color: isSelected ? Qt.alpha(Colors.primary_container, 0.3) : "transparent"
 
-    Behavior on color {
-        ColorAnimation {
-            duration: 150
-        }
-    }
+    // Behavior on color {
+    //     ColorAnimation {
+    //         duration: 150
+    //     }
+    // }
 
     function highlightContent(content, query) {
         if (!query || query.length === 0)
@@ -89,18 +89,6 @@ Rectangle {
                 color: Colors.on_surface_variant
                 elide: Text.ElideRight
                 visible: text !== ""
-            }
-        }
-
-        StyledText {
-            text: root.itemVerb
-            font.pixelSize: Theme.font.size.sm
-            color: Colors.on_primary_container
-            visible: root.isSelected
-            Behavior on visible {
-                NumberAnimation {
-                    duration: 150
-                }
             }
         }
     }

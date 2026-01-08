@@ -49,7 +49,7 @@ Singleton {
         readonly property ThemeElevation elevation: ThemeElevation {}
         readonly property ThemePadding padding: ThemePadding {}
         readonly property int topBarHeight: 48
-        readonly property int leftBarWidth: 86
+        readonly property int leftBarWidth: 74
         readonly property int borderWidth: 1
         readonly property int iconSize: 24
     }
@@ -72,6 +72,7 @@ Singleton {
     }
 
     component ThemePadding: QtObject {
+        readonly property int xs: 4
         readonly property int sm: 8
         readonly property int md: 16
         readonly property int lg: 24

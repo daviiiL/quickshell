@@ -44,7 +44,7 @@ Rectangle {
 
                 ColumnLayout {
                     Layout.fillHeight: true
-                    Layout.preferredWidth: root.width >= 450 ? parent.width * 0.6 : parent.width
+                    Layout.preferredWidth: root.width >= 500 ? parent.width * 0.6 : parent.width
 
                     RowLayout {
                         Layout.alignment: Qt.AlignLeft
@@ -85,14 +85,13 @@ Rectangle {
                 }
 
                 ColumnLayout {
-                    visible: root.width >= 450
+                    visible: root.width >= 500
                     Layout.fillHeight: true
                     Layout.preferredWidth: parent.width * 0.4
+                    Layout.alignment: Qt.AlignHCenter
 
                     RowLayout {
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignLeft
-                        Layout.rightMargin: Theme.ui.padding.sm
+                        Layout.alignment: Qt.AlignHCenter
 
                         property color healthColor: {
                             if (Power.healthPercentage >= 0.8) {
@@ -110,11 +109,8 @@ Rectangle {
                         }
 
                         Text {
-                            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                            Layout.fillWidth: true
                             text: `Health ${Math.round(Power.healthPercentage * 100)}%`
                             color: parent.healthColor
-                            wrapMode: Text.Wrap
                             font {
                                 pixelSize: Theme.font.size.xl
                                 family: Theme.font.family.inter_medium
@@ -124,6 +120,7 @@ Rectangle {
                     }
 
                     Text {
+                        Layout.alignment: Qt.AlignHCenter
                         text: Power.batteryChangeRateText
 
                         color: Colors.secondary
@@ -132,13 +129,12 @@ Rectangle {
                             family: Theme.font.family.inter_regular
                             weight: Font.Normal
                         }
-                        Layout.leftMargin: checkIcon.implicitWidth + Theme.ui.padding.sm
                     }
                 }
             }
         }
         ColumnLayout {
-            visible: root.width < 450
+            visible: root.width < 500
             Layout.fillHeight: true
             Layout.preferredWidth: parent.width * 0.4
 
@@ -189,7 +185,9 @@ Rectangle {
         }
 
         ColumnLayout {
-            Layout.fillWidth: true
+            Layout.preferredWidth: Math.min(root.width, 500)
+            Layout.maximumWidth: 500
+            Layout.alignment: Qt.AlignLeft
 
             spacing: Theme.ui.padding.md
 

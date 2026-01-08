@@ -28,11 +28,11 @@ Rectangle {
             onToggled: SystemBluetooth.toggleBluetooth()
             showConnectionCard: SystemBluetooth.connected
             connectionIcon: "bluetooth"
-            connectionTitle: Bluetooth.firstActiveDevice?.name ?? "Unknown Device"
+            connectionTitle: SystemBluetooth.firstActiveDevice?.name ?? "Unknown Device"
             connectionSubtitle: {
                 let status = "Connected";
-                if (Bluetooth.firstActiveDevice?.batteryAvailable) {
-                    status += ` • ${Math.round(Bluetooth.firstActiveDevice.battery * 100)}%`;
+                if (SystemBluetooth.firstActiveDevice?.batteryAvailable) {
+                    status += ` • ${Math.round(SystemBluetooth.firstActiveDevice.battery * 100)}%`;
                 }
                 return status;
             }

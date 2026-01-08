@@ -35,7 +35,7 @@ Rectangle {
             opacity: root.showTitle ? 1.0 : 0.0
             Layout.fillWidth: true
             Layout.preferredHeight: root.showTitle ? 30 : 0
-            color: Preferences.darkMode ? Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.5) : Qt.rgba(Colors.secondary_fixed_dim.r, Colors.secondary_fixed_dim.g, Colors.secondary_fixed_dim.b, 0.5)
+            color: Preferences.darkMode ? Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.2) : Qt.rgba(Colors.secondary_fixed_dim.r, Colors.secondary_fixed_dim.g, Colors.secondary_fixed_dim.b, 0.5)
             topRightRadius: Theme.ui.radius.md
             topLeftRadius: Theme.ui.radius.md
 

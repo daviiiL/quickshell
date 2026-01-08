@@ -16,6 +16,7 @@ Scope {
         PanelWindow {
             id: root
             required property var modelData
+            property color bgColor: Qt.rgba(Colors.surface_light.r, Colors.surface_light.g, Colors.surface_light.b, 0.7)
 
             Component.onCompleted: {
                 scope.instantiated(true);
@@ -24,13 +25,7 @@ Scope {
             visible: !GlobalStates.powerPanelOpen
 
             screen: modelData
-            color: Colors.surface_light_translucent
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: Theme.anim.durations.md
-                }
-            }
+            color: "transparent"
 
             implicitWidth: Theme.ui.leftBarWidth
 
@@ -45,10 +40,13 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-                color: "transparent"
-                radius: Theme.ui.radius.md
+                color: root.bgColor
 
-                anchors.margins: Theme.ui.padding.sm / 2
+                Behavior on color {
+                    ColorAnimation {
+                        duration: Theme.anim.durations.md
+                    }
+                }
 
                 ColumnLayout {
                     anchors {
@@ -60,15 +58,14 @@ Scope {
                     RowLayout {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 15
-                        Layout.leftMargin: Theme.ui.padding.md
-                        Layout.rightMargin: Theme.ui.padding.md
+                        Layout.leftMargin: Theme.ui.padding.sm
+                        Layout.rightMargin: Theme.ui.padding.sm
 
                         Text {
                             text: "SYS"
                             color: Colors.secondary
                             font {
                                 family: Theme.font.family.inter_bold
-
                                 weight: Font.Bold
                             }
                         }
@@ -85,27 +82,27 @@ Scope {
                     }
 
                     ClockCard {
-                        Layout.leftMargin: Theme.ui.padding.sm
-                        Layout.rightMargin: Theme.ui.padding.sm
+                        Layout.leftMargin: Theme.ui.padding.xs
+                        Layout.rightMargin: Theme.ui.padding.xs
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignHCenter
                     }
                     BatteryCard {
-                        Layout.leftMargin: Theme.ui.padding.sm
-                        Layout.rightMargin: Theme.ui.padding.sm
+                        Layout.leftMargin: Theme.ui.padding.xs
+                        Layout.rightMargin: Theme.ui.padding.xs
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignHCenter
                     }
 
                     SystemButtonsCard {
-                        Layout.leftMargin: Theme.ui.padding.sm
-                        Layout.rightMargin: Theme.ui.padding.sm
+                        Layout.leftMargin: Theme.ui.padding.xs
+                        Layout.rightMargin: Theme.ui.padding.xs
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignHCenter
                     }
                     SystemTrayCard {
-                        Layout.leftMargin: Theme.ui.padding.sm
-                        Layout.rightMargin: Theme.ui.padding.sm
+                        Layout.leftMargin: Theme.ui.padding.xs
+                        Layout.rightMargin: Theme.ui.padding.xs
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         Layout.alignment: Qt.AlignHCenter

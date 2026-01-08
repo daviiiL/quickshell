@@ -90,7 +90,7 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
-                    Bluetooth.unpairDevice(knownItem.device);
+                    SystemBluetooth.unpairDevice(knownItem.device);
                 }
             }
         }

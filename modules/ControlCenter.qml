@@ -44,6 +44,8 @@ FloatingWindow {
                             items.push("Battery");
                         } else
                             items.push("Power");
+
+                        items.push("About System");
                         return items;
                     }
                 }
@@ -70,6 +72,7 @@ FloatingWindow {
                 BluetoothPanel {}
                 PreferencesPanel {}
                 PowerPanel {}
+                AboutSystemPanel {}
             }
         }
     }
