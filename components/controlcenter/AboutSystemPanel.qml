@@ -126,34 +126,27 @@ Rectangle {
                 });
 
                 var rows = [];
-                var useGrid = root.width >= 900;
+                var cellMinWidth = 350;
+                var spacing = Theme.ui.padding.md;
+                var availableWidth = root.width - (Theme.ui.padding.lg * 2);
+                var columns = Math.max(1, Math.floor((availableWidth + spacing) / (cellMinWidth + spacing)));
 
-                if (useGrid) {
-                    for (var j = 0; j < items.length; j += 2) {
-                        if (items[j].type === "refresh") {
-                            rows.push({
-                                items: [items[j]],
-                                isRefresh: true
-                            });
-                        } else if (j + 1 < items.length && items[j + 1].type !== "refresh") {
-                            rows.push({
-                                items: [items[j], items[j + 1]],
-                                isRefresh: false
-                            });
-                        } else {
-                            rows.push({
-                                items: [items[j]],
-                                isRefresh: false
-                            });
+                for (var j = 0; j < items.length; j += columns) {
+                    var rowItems = [];
+                    var isRefresh = false;
+
+                    for (var k = 0; k < columns && (j + k) < items.length; k++) {
+                        var item = items[j + k];
+                        rowItems.push(item);
+                        if (item.type === "refresh") {
+                            isRefresh = true;
                         }
                     }
-                } else {
-                    for (var k = 0; k < items.length; k++) {
-                        rows.push({
-                            items: [items[k]],
-                            isRefresh: items[k].type === "refresh"
-                        });
-                    }
+
+                    rows.push({
+                        items: rowItems,
+                        isRefresh: isRefresh
+                    });
                 }
 
                 return rows;
@@ -161,13 +154,14 @@ Rectangle {
         }
 
         delegate: RowLayout {
+            id: infoLayoutRoot
             required property var modelData
 
             width: ListView.view.width
             spacing: Theme.ui.padding.md
 
             Repeater {
-                model: modelData.items
+                model: parent.modelData.items
 
                 Item {
                     required property var modelData
@@ -180,7 +174,7 @@ Rectangle {
                         anchors.fill: parent
 
                         sourceComponent: {
-                            switch (modelData.type) {
+                            switch (infoLayoutRoot.modelData.type) {
                             case "device":
                                 return deviceCard;
                             case "cpu":
@@ -199,9 +193,9 @@ Rectangle {
                         }
 
                         onLoaded: {
-                            if (modelData.type === "gpu" && item) {
-                                item.gpuTitle = modelData.title;
-                                item.gpuIndex = modelData.index;
+                            if (infoLayoutRoot.modelData.type === "gpu" && item) {
+                                item.gpuTitle = infoLayoutRoot.modelData.title;
+                                item.gpuIndex = infoLayoutRoot.modelData.index;
                             }
                         }
                     }
@@ -447,6 +441,8 @@ Rectangle {
         id: infoRow
         required property string label
         required property string value
+
+        property int gpuIndex
 
         Layout.fillWidth: true
         spacing: Theme.ui.padding.md

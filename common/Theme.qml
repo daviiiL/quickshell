@@ -49,7 +49,7 @@ Singleton {
         readonly property ThemeElevation elevation: ThemeElevation {}
         readonly property ThemePadding padding: ThemePadding {}
         readonly property int topBarHeight: 48
-        readonly property int leftBarWidth: 74
+        readonly property int leftBarWidth: 76
         readonly property int borderWidth: 1
         readonly property int iconSize: 24
     }
