@@ -31,7 +31,7 @@ Rectangle {
             margins: Theme.ui.padding.lg
         }
 
-        text: "About This System"
+        text: "About System"
         font {
             pixelSize: Theme.font.size.xxl
             family: Theme.font.family.inter_bold

@@ -45,7 +45,7 @@ FloatingWindow {
                         } else
                             items.push("Power");
 
-                        items.push("About System");
+                        items.push("System Info");
                         return items;
                     }
                 }
@@ -138,7 +138,6 @@ FloatingWindow {
 
             radius: Theme.ui.radius.md
             property color highlightBg: Colors.primary_container
-
             property color targetBgColor: parent.currentIndex === parent.index ? Qt.rgba(highlightBg.r, highlightBg.g, highlightBg.b, 0.3) : "transparent"
             color: targetBgColor
 
