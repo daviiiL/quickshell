@@ -134,6 +134,7 @@ Rectangle {
                                         ctx.fillStyle = Colors.on_secondary_container;
                                         ctx.fill();
                                     }
+                                    onVisibleChanged: requestPaint()
                                 }
                             }
                         }
@@ -320,12 +321,14 @@ Rectangle {
                 function onColorSchemeChanged() {
                     const scheme = Preferences.getColorScheme();
                     // console.debug(scheme);
+                    colorSchemeDropdown.isInitializing = true;
                     for (let i = 0; i < colorSchemesModel.count; i++) {
                         if (colorSchemesModel.get(i).value === scheme) {
                             colorSchemeDropdown.currentIndex = i;
                             break;
                         }
                     }
+                    colorSchemeDropdown.isInitializing = false;
                 }
             }
 
@@ -335,7 +338,7 @@ Rectangle {
                 }
 
                 const scheme = colorSchemesModel.get(currentIndex).value;
-                Preferences.setColorScheme(scheme);
+                Preferences.setColorScheme(scheme, false);
 
                 // console.debug(`[pref panel] Matugen scheme changed to ${scheme} via combobox`);
                 // Wallpapers.applyWithCurPreferences(Preferences.wallpaperPath, Preferences.darkMode, scheme);

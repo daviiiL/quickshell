@@ -62,7 +62,7 @@ Singleton {
     }
 
     function setColorScheme(scheme: string, internal: bool) {
-        if (usePreferredScheme && internal === false)
+        if (root.usePreferredScheme && !internal)
             console.warn("Preferences: Using preferred scheme... Shouldn't set custom color scheme");
 
         root.matugenScheme = scheme;

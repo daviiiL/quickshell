@@ -227,7 +227,7 @@ FloatingWindow {
                         onCurrentIndexChanged: {
                             if (!initializing) {
                                 const scheme = matugenSchemesModel.get(currentIndex).value;
-                                Preferences.setColorScheme(scheme);
+                                Preferences.setColorScheme(scheme, false);
                             }
                         }
 
@@ -242,12 +242,14 @@ FloatingWindow {
                             function onColorSchemeChanged() {
                                 const scheme = Preferences.getColorScheme();
                                 // console.debug(scheme);
+                                dropdown.initializing = true;
                                 for (let i = 0; i < matugenSchemesModel.count; i++) {
                                     if (matugenSchemesModel.get(i).value === scheme) {
                                         dropdown.currentIndex = i;
                                         break;
                                     }
                                 }
+                                dropdown.initializing = false;
                             }
                         }
 
