@@ -24,7 +24,7 @@ Scope {
             implicitHeight: Theme.ui.topBarHeight
 
             WlrLayershell.layer: WlrLayer.Top
-            WlrLayershell.exclusiveZone: implicitHeight
+            WlrLayershell.exclusiveZone: GlobalStates.powerPanelOpen ? 0 : implicitHeight
 
             anchors {
                 right: true
@@ -32,7 +32,7 @@ Scope {
                 top: true
             }
 
-            visible: !GlobalStates.powerPanelOpen
+            visible: true
 
             Rectangle {
                 anchors.fill: parent
@@ -41,7 +41,26 @@ Scope {
                 anchors.margins: Theme.ui.padding.sm
                 anchors.bottomMargin: 0
 
+                opacity: GlobalStates.powerPanelOpen ? 0 : 1
+                transform: Translate {
+                    y: GlobalStates.powerPanelOpen ? -root.implicitHeight : 0
+                }
+
                 color: root.bgColor
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 300
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                Behavior on y {
+                    NumberAnimation {
+                        duration: 300
+                        easing.type: Easing.OutCubic
+                    }
+                }
 
                 Behavior on color {
                     ColorAnimation {

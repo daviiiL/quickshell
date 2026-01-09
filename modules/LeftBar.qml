@@ -22,7 +22,7 @@ Scope {
                 scope.instantiated(true);
             }
 
-            visible: !GlobalStates.powerPanelOpen
+            visible: true
 
             screen: modelData
             color: "transparent"
@@ -30,7 +30,7 @@ Scope {
             implicitWidth: Theme.ui.leftBarWidth
 
             WlrLayershell.layer: WlrLayer.Top
-            WlrLayershell.exclusiveZone: implicitWidth
+            WlrLayershell.exclusiveZone: GlobalStates.powerPanelOpen ? 0 : implicitWidth
 
             anchors {
                 left: true
@@ -40,7 +40,27 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
+
+                opacity: GlobalStates.powerPanelOpen ? 0 : 1
+                transform: Translate {
+                    x: GlobalStates.powerPanelOpen ? -root.implicitWidth : 0
+                }
+
                 color: root.bgColor
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 300
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                Behavior on x {
+                    NumberAnimation {
+                        duration: 300
+                        easing.type: Easing.OutCubic
+                    }
+                }
 
                 Behavior on color {
                     ColorAnimation {

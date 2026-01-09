@@ -30,6 +30,13 @@ Scope {
             required property var modelData
 
             property int focusedButtonIndex: 0
+            property bool closing: false
+
+            onVisibleChanged: {
+                if (visible && GlobalStates.powerPanelOpen) {
+                    closing = false;
+                }
+            }
 
             function setKeyActionFocusIndex(key) {
                 const i = focusedButtonIndex;
@@ -54,6 +61,22 @@ Scope {
                 }
             }
 
+            function closePanel(): void {
+                GlobalStates.powerPanelOpen = !GlobalStates.powerPanelOpen;
+                panel.closing = false;
+            }
+
+            Timer {
+                id: closePanelTimer
+                running: false
+                repeat: false
+                interval: 400
+                onTriggered: () => {
+                    console.debug("Panel closing");
+                    panel.closePanel();
+                }
+            }
+
             function toggleButtonOnKeys() {
                 switch (focusedButtonIndex) {
                 case 0:
@@ -72,7 +95,7 @@ Scope {
             }
 
             screen: modelData
-            visible: GlobalStates.powerPanelOpen
+            visible: GlobalStates.powerPanelOpen || closing
 
             anchors {
                 top: true
@@ -92,13 +115,36 @@ Scope {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    GlobalStates.powerPanelOpen = false;
+                    panel.closing = true;
+                    closePanelTimer.running = true;
                 }
             }
+
+            Rectangle {
+                opacity: panel.closing ? 0 : (GlobalStates.powerPanelOpen ? 1 : 0)
+
+                anchors.fill: parent
+                z: -1
+                color: Colors.surface
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 400
+                        easing.type: Easing.OutCubic
+                    }
+                }
+            }
+
             Rectangle {
                 id: contentRect
+
+                opacity: panel.closing ? 0 : (GlobalStates.powerPanelOpen ? 1 : 0)
+                scale: panel.closing ? 0.9 : (GlobalStates.powerPanelOpen ? 1 : 0.9)
+
                 Keys.onEscapePressed: {
-                    GlobalStates.powerPanelOpen = false;
+                    // globalstates.powerpanelopen = false;
+                    panel.closing = true;
+                    closePanelTimer.running = true;
                 }
 
                 Keys.onPressed: event => {
@@ -119,6 +165,21 @@ Scope {
                 width: buttonGrid.implicitWidth + Theme.ui.padding.lg * 2
 
                 anchors.centerIn: parent
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 350
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: 350
+                        easing.type: Easing.OutBack
+                        easing.overshoot: 1.2
+                    }
+                }
 
                 MouseArea {
                     anchors.fill: parent

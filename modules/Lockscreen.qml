@@ -50,8 +50,7 @@ Scope {
         locked: GlobalStates.screenLocked
 
         WlSessionLockSurface {
-            color: "transparent"
-
+            color: "black"
             Loader {
                 active: GlobalStates.screenLocked
                 anchors.fill: parent
