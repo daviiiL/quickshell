@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell
 import qs.common
 import qs.services
 
@@ -14,15 +13,11 @@ Rectangle {
         return Qt.rgba(color.r, color.g, color.b, 0.4);
     }
 
-    readonly property int workspacesShown: 10
     property real workspaceButtonSize: 26
     property real activeWorkspaceMargin: 2
     property real indicatorPadding: 4
 
-    property var screenWorkspaces: []
-    property int focusedWorkspaceIndex: -1
-
-    property var workspaceIdMap: ({})
+    property int focusedWorkspacePositionInRow: -1
 
     readonly property color occupiedBackgroundColor: Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.1)
     readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : root.makeTranslucent(Colors.inverse_primary, 1.3)
@@ -31,51 +26,12 @@ Rectangle {
     readonly property color occupiedWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface : Colors.on_surface
     readonly property color inactiveWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface_variant : Colors.on_surface
 
-    implicitWidth: workspaceButtonSize * root.workspacesShown
+    implicitWidth: workspaceRow.width
     implicitHeight: Theme.ui.topBarHeight
 
     color: "transparent"
     radius: Theme.ui.radius.lg
 
-    // Hidden Repeater to track workspace state for this screen
-    Repeater {
-        model: SystemNiri.workspaces
-
-        Item {
-            required property var model
-
-            Component.onCompleted: {
-                if (model.output === root.screen?.name) {
-                    updateWorkspaceState();
-                }
-            }
-
-            Connections {
-                target: model
-                function onIsFocusedChanged() {
-                    updateWorkspaceState();
-                }
-                function onIndexChanged() {
-                    updateWorkspaceState();
-                }
-            }
-
-            function updateWorkspaceState() {
-                if (model.output !== root.screen?.name)
-                    return;
-
-                if (model.isFocused) {
-                    root.focusedWorkspaceIndex = model.index - 1;
-                }
-
-                let newMap = root.workspaceIdMap;
-                newMap[model.index - 1] = model.id;
-                root.workspaceIdMap = newMap;
-            }
-        }
-    }
-
-    // Active workspace indicator
     Rectangle {
         z: 2
         radius: Theme.ui.radius.lg
@@ -83,8 +39,8 @@ Rectangle {
         border.color: root.activeIndicatorBorderColor
         border.width: 0.5
 
-        property real idx1: root.focusedWorkspaceIndex
-        property real idx2: root.focusedWorkspaceIndex
+        property real idx1: root.focusedWorkspacePositionInRow
+        property real idx2: root.focusedWorkspacePositionInRow
         property real indicatorPosition: Math.max(0, Math.min(idx1, idx2)) * root.workspaceButtonSize
         property real indicatorLength: Math.abs(idx1 - idx2) * root.workspaceButtonSize + root.workspaceButtonSize
 
@@ -92,7 +48,7 @@ Rectangle {
         x: indicatorPosition
         width: indicatorLength
         height: Theme.ui.topBarHeight - root.indicatorPadding * 6
-        opacity: root.focusedWorkspaceIndex >= 0 ? 1.0 : 0
+        opacity: root.focusedWorkspacePositionInRow >= 0 ? 1.0 : 0
 
         Behavior on idx1 {
             NumberAnimation {
@@ -113,70 +69,130 @@ Rectangle {
         }
     }
 
-    // Workspace buttons - Use Instantiator to create them with access to model
     Row {
+        id: workspaceRow
         z: 3
         spacing: 0
         anchors.centerIn: root
 
         Repeater {
-            model: root.workspacesShown
+            model: SystemNiri.workspaces
 
-            Rectangle {
-                id: workspaceButton
+            Item {
+                id: workspaceContainer
+                required property var model
                 required property int index
+
                 implicitWidth: root.workspaceButtonSize
                 implicitHeight: root.workspaceButtonSize
-                color: "transparent"
-                // visible: root.workspaceIdMap[index] !== undefined
+                visible: workspaceContainer.model.output === root.screen?.name
 
-                readonly property int niriIndex: index + 1
+                opacity: visible ? 1.0 : 0.0
+                scale: visible ? 1.0 : 0.0
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        SystemNiri.niri.focusWorkspace(parent.index);
+                property int myPositionInRow: 0
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.anim.durations.sm
+                        easing.type: Easing.OutCubic
                     }
-                    cursorShape: Qt.PointingHandCursor
+                }
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: Theme.anim.durations.sm
+                        easing.type: Easing.OutBack
+                    }
                 }
 
-                Text {
-                    text: parent.index + 1
-                    anchors.centerIn: parent
-                    renderType: Text.QtRendering
-                    renderTypeQuality: Text.HighRenderTypeQuality
+                Component.onCompleted: {
+                    calculatePosition();
+                }
 
-                    readonly property bool isActive: parent.index === root.focusedWorkspaceIndex
-                    property real targetScale: isActive ? 1.15 : 1.0
+                onVisibleChanged: {
+                    if (visible)
+                        calculatePosition();
+                }
 
-                    color: isActive ? root.activeWorkspaceTextColor : root.inactiveWorkspaceTextColor
+                function calculatePosition() {
+                    if (!visible)
+                        return;
 
-                    font {
-                        pixelSize: Theme.font.size.md
-                        weight: isActive ? Font.Bold : Font.Medium
-                        family: Theme.font.family.inter_regular
+                    let pos = 0;
+                    for (let i = 0; i < workspaceRow.children.length; i++) {
+                        let child = workspaceRow.children[i];
+                        if (child === workspaceContainer)
+                            break;
+                        if (child.visible)
+                            pos++;
                     }
+                    myPositionInRow = pos;
 
-                    opacity: isActive ? 1.0 : 0.4
-                    scale: targetScale
-                    transformOrigin: Item.Center
+                    if (workspaceContainer.model.isFocused) {
+                        root.focusedWorkspacePositionInRow = pos;
+                    }
+                }
 
-                    Behavior on color {
-                        ColorAnimation {
-                            duration: Theme.anim.durations.xs
-                            easing.type: Easing.OutCubic
+                Connections {
+                    target: workspaceContainer.model
+                    function onIsFocusedChanged() {
+                        if (workspaceContainer.model.isFocused && workspaceContainer.visible) {
+                            root.focusedWorkspacePositionInRow = workspaceContainer.myPositionInRow;
                         }
                     }
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: Theme.anim.durations.xs
-                            easing.type: Easing.OutCubic
+                }
+
+                Rectangle {
+                    id: workspaceButton
+                    anchors.fill: parent
+                    color: "transparent"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            SystemNiri.niri.focusWorkspaceById(workspaceContainer.model.id);
                         }
+                        cursorShape: Qt.PointingHandCursor
                     }
-                    Behavior on targetScale {
-                        NumberAnimation {
-                            duration: Theme.anim.durations.xs
-                            easing.type: Easing.OutCubic
+
+                    Text {
+                        z: 2
+                        text: workspaceContainer.model.index
+                        anchors.centerIn: parent
+                        renderType: Text.QtRendering
+                        renderTypeQuality: Text.HighRenderTypeQuality
+
+                        property real targetScale: workspaceContainer.model.isFocused ? 1.15 : 1.0
+
+                        color: workspaceContainer.model.isFocused ? root.activeWorkspaceTextColor : root.inactiveWorkspaceTextColor
+
+                        font {
+                            pixelSize: Theme.font.size.md
+                            weight: workspaceContainer.model.isFocused ? Font.Bold : Font.Medium
+                            family: Theme.font.family.inter_regular
+                        }
+
+                        opacity: workspaceContainer.model.isFocused ? 1.0 : 0.4
+                        scale: targetScale
+                        transformOrigin: Item.Center
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+                        Behavior on targetScale {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutCubic
+                            }
                         }
                     }
                 }
