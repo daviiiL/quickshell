@@ -1,24 +1,28 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
 import qs.common
 import qs.services
 
 Rectangle {
     id: root
+
+    property var screen
+
     function makeTranslucent(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, 0.4);
     }
 
-    readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.QsWindow.window?.screen)
     readonly property int workspacesShown: 10
-    readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - 1) / root.workspacesShown)
-    property list<bool> workspaceOccupied: []
-
     property real workspaceButtonSize: 26
     property real activeWorkspaceMargin: 2
     property real indicatorPadding: 4
-    property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - 1) % root.workspacesShown
+
+    property var screenWorkspaces: []
+    property int focusedWorkspaceIndex: -1
+
+    property var workspaceIdMap: ({})
 
     readonly property color occupiedBackgroundColor: Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.1)
     readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : root.makeTranslucent(Colors.inverse_primary, 1.3)
@@ -32,129 +36,64 @@ Rectangle {
 
     color: "transparent"
     radius: Theme.ui.radius.lg
-    // border {
-    //     width: 0.5
-    //     color: Colors.outline_variant
-    // }
 
-    function updateWorkspaceOccupied() {
-        const base = workspaceGroup * root.workspacesShown;
-        const toplevels = Hyprland.toplevels.values ?? [];
-        workspaceOccupied = Array.from({
-            length: root.workspacesShown
-        }, (_, i) => {
-            const targetId = base + i + 1;
+    // Hidden Repeater to track workspace state for this screen
+    Repeater {
+        model: SystemNiri.workspaces
 
-            return toplevels.some(tl => tl.workspace && tl.workspace.id === targetId);
-        });
-    }
+        Item {
+            required property var model
 
-    function convertToRomanNumerals(val) {
-        return val;
-    }
-
-    Component.onCompleted: updateWorkspaceOccupied()
-    Connections {
-        target: Hyprland.workspaces
-        function onValuesChanged() {
-            root.updateWorkspaceOccupied();
-        }
-    }
-    Connections {
-        target: Hyprland
-        function onFocusedWorkspaceChanged() {
-            root.updateWorkspaceOccupied();
-        }
-    }
-    onWorkspaceGroupChanged: {
-        updateWorkspaceOccupied();
-    }
-
-    WheelHandler {
-        onWheel: event => {
-            if (event.angleDelta.y < 0)
-                Hyprland.dispatch(`workspace r+1`);
-            else if (event.angleDelta.y > 0)
-                Hyprland.dispatch(`workspace r-1`);
-        }
-        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
-    }
-
-    Row {
-        z: 1
-        anchors.centerIn: root
-        spacing: 0
-
-        Repeater {
-            model: root.workspacesShown
-
-            Item {
-                implicitWidth: root.workspaceButtonSize
-                implicitHeight: root.workspaceButtonSize
-
-                Rectangle {
-                    id: occupiedBackground
-                    z: 1
-                    anchors.centerIn: parent
-                    width: workspaceButtonSize
-                    height: Theme.ui.topBarHeight - root.indicatorPadding * 6
-                    radius: Theme.ui.radius.lg
-
-                    property var previousOccupied: workspaceOccupied[index - 1]
-                    property var nextOccupied: workspaceOccupied[index + 1]
-                    property var radiusPrev: previousOccupied ? 0 : Theme.ui.radius.lg
-                    property var radiusNext: nextOccupied ? 0 : Theme.ui.radius.lg
-
-                    topLeftRadius: radiusPrev
-                    bottomLeftRadius: radiusPrev
-                    topRightRadius: radiusNext
-                    bottomRightRadius: radiusNext
-
-                    color: root.occupiedBackgroundColor
-                    opacity: workspaceOccupied[index] ? 0.9 : 0
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: Theme.anim.durations.sm
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-                    Behavior on radiusPrev {
-                        NumberAnimation {
-                            duration: Theme.anim.durations.sm
-                            easing.type: Easing.OutCubic
-                        }
-                    }
-                    Behavior on radiusNext {
-                        NumberAnimation {
-                            duration: Theme.anim.durations.sm
-                            easing.type: Easing.OutCubic
-                        }
-                    }
+            Component.onCompleted: {
+                if (model.output === root.screen?.name) {
+                    updateWorkspaceState();
                 }
+            }
+
+            Connections {
+                target: model
+                function onIsFocusedChanged() {
+                    updateWorkspaceState();
+                }
+                function onIndexChanged() {
+                    updateWorkspaceState();
+                }
+            }
+
+            function updateWorkspaceState() {
+                if (model.output !== root.screen?.name)
+                    return;
+
+                if (model.isFocused) {
+                    root.focusedWorkspaceIndex = model.index - 1;
+                }
+
+                let newMap = root.workspaceIdMap;
+                newMap[model.index - 1] = model.id;
+                root.workspaceIdMap = newMap;
             }
         }
     }
 
+    // Active workspace indicator
     Rectangle {
         z: 2
         radius: Theme.ui.radius.lg
-        color: Preferences.darkMode ? makeTranslucent(root.activeIndicatorColor) : root.activeIndicatorColor
+        color: Preferences.darkMode ? Qt.alpha(root.activeIndicatorColor, 0.4) : root.activeIndicatorColor
         border.color: root.activeIndicatorBorderColor
         border.width: 0.5
-        function makeTranslucent(color: color): color {
-            return Qt.rgba(color.r, color.g, color.b, 0.4);
-        }
-        property real idx1: parent.workspaceIndexInGroup
-        property real idx2: parent.workspaceIndexInGroup
-        property real indicatorPosition: Math.min(idx1, idx2) * parent.workspaceButtonSize
-        property real indicatorLength: Math.abs(idx1 - idx2) * parent.workspaceButtonSize + parent.workspaceButtonSize
+
+        property real idx1: root.focusedWorkspaceIndex
+        property real idx2: root.focusedWorkspaceIndex
+        property real indicatorPosition: Math.max(0, Math.min(idx1, idx2)) * root.workspaceButtonSize
+        property real indicatorLength: Math.abs(idx1 - idx2) * root.workspaceButtonSize + root.workspaceButtonSize
 
         anchors.verticalCenter: parent.verticalCenter
-
         x: indicatorPosition
         width: indicatorLength
         height: Theme.ui.topBarHeight - root.indicatorPadding * 6
+        opacity: root.focusedWorkspaceIndex >= 0 ? 1.0 : 0
+
         Behavior on idx1 {
             NumberAnimation {
                 duration: 100
@@ -167,15 +106,15 @@ Rectangle {
                 easing.type: Easing.OutCubic
             }
         }
-        Behavior on color {
-            ColorAnimation {
+        Behavior on opacity {
+            NumberAnimation {
                 duration: Theme.anim.durations.xs
             }
         }
     }
 
+    // Workspace buttons - Use Instantiator to create them with access to model
     Row {
-        id: workspaceButtons
         z: 3
         spacing: 0
         anchors.centerIn: root
@@ -183,58 +122,61 @@ Rectangle {
         Repeater {
             model: root.workspacesShown
 
-            MouseArea {
-                id: button
-                property int workspaceValue: workspaceGroup * root.workspacesShown + index + 1
-                implicitWidth: workspaceButtonSize
-                implicitHeight: workspaceButtonSize
+            Rectangle {
+                id: workspaceButton
+                required property int index
+                implicitWidth: root.workspaceButtonSize
+                implicitHeight: root.workspaceButtonSize
+                color: "transparent"
+                // visible: root.workspaceIdMap[index] !== undefined
 
-                onClicked: Hyprland.dispatch(`workspace ${workspaceValue}`)
+                readonly property int niriIndex: index + 1
 
-                Item {
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        SystemNiri.niri.focusWorkspace(parent.index);
+                    }
+                    cursorShape: Qt.PointingHandCursor
+                }
+
+                Text {
+                    text: parent.index + 1
                     anchors.centerIn: parent
-                    implicitHeight: 20
-                    implicitWidth: 20
+                    renderType: Text.QtRendering
+                    renderTypeQuality: Text.HighRenderTypeQuality
 
-                    Text {
-                        text: button.workspaceValue
-                        anchors.centerIn: parent
-                        renderType: Text.QtRendering
-                        renderTypeQuality: Text.HighRenderTypeQuality
+                    readonly property bool isActive: parent.index === root.focusedWorkspaceIndex
+                    property real targetScale: isActive ? 1.15 : 1.0
 
-                        readonly property bool isActive: monitor?.activeWorkspace?.id == button.workspaceValue
-                        property real targetScale: isActive ? 1.15 : 1.0
+                    color: isActive ? root.activeWorkspaceTextColor : root.inactiveWorkspaceTextColor
 
-                        color: isActive ? root.activeWorkspaceTextColor : (workspaceOccupied[index] ? root.occupiedWorkspaceTextColor : root.inactiveWorkspaceTextColor)
+                    font {
+                        pixelSize: Theme.font.size.md
+                        weight: isActive ? Font.Bold : Font.Medium
+                        family: Theme.font.family.inter_regular
+                    }
 
-                        font {
-                            pixelSize: Theme.font.size.md
-                            weight: isActive ? Font.Bold : Font.Medium
-                            family: Theme.font.family.inter_regular
+                    opacity: isActive ? 1.0 : 0.4
+                    scale: targetScale
+                    transformOrigin: Item.Center
+
+                    Behavior on color {
+                        ColorAnimation {
+                            duration: Theme.anim.durations.xs
+                            easing.type: Easing.OutCubic
                         }
-
-                        opacity: isActive ? 1.0 : (workspaceOccupied[index] ? 0.8 : 0.4)
-
-                        scale: targetScale
-                        transformOrigin: Item.Center
-
-                        Behavior on color {
-                            ColorAnimation {
-                                duration: Theme.anim.durations.xs
-                                easing.type: Easing.OutCubic
-                            }
+                    }
+                    Behavior on opacity {
+                        NumberAnimation {
+                            duration: Theme.anim.durations.xs
+                            easing.type: Easing.OutCubic
                         }
-                        Behavior on opacity {
-                            NumberAnimation {
-                                duration: Theme.anim.durations.xs
-                                easing.type: Easing.OutCubic
-                            }
-                        }
-                        Behavior on targetScale {
-                            NumberAnimation {
-                                duration: Theme.anim.durations.xs
-                                easing.type: Easing.OutCubic
-                            }
+                    }
+                    Behavior on targetScale {
+                        NumberAnimation {
+                            duration: Theme.anim.durations.xs
+                            easing.type: Easing.OutCubic
                         }
                     }
                 }

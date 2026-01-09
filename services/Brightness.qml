@@ -3,7 +3,6 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Quickshell.Hyprland
 
 Singleton {
     id: root
@@ -134,17 +133,5 @@ Singleton {
         function decrement() {
             root.decreaseBrightness();
         }
-    }
-
-    GlobalShortcut {
-        name: "brightnessIncrease"
-        description: "Increase brightness"
-        onPressed: root.increaseBrightness()
-    }
-
-    GlobalShortcut {
-        name: "brightnessDecrease"
-        description: "Decrease brightness"
-        onPressed: root.decreaseBrightness()
     }
 }

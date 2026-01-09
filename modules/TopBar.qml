@@ -57,6 +57,7 @@ Scope {
                         Layout.preferredHeight: parent.height - Theme.ui.padding.sm
                         Layout.leftMargin: Theme.ui.padding.sm
                         Layout.alignment: Qt.AlignVCenter
+                        screen: root.screen
                     }
 
                     TopBarMprisControl {

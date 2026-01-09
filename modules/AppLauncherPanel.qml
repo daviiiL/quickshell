@@ -195,15 +195,6 @@ Scope {
         }
     }
 
-    GlobalShortcut {
-        name: "toggleAppLauncher"
-        description: "Open the application launcher"
-
-        onPressed: {
-            GlobalStates.appLauncherOpen = !GlobalStates.appLauncherOpen;
-        }
-    }
-
     IpcHandler {
         target: "appLauncher"
 

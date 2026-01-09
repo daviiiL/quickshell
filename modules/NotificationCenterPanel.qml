@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
+import Quickshell.Io
 import qs.common
 import qs.components.notification
 
@@ -14,11 +14,10 @@ Scope {
     property int panelWidth: 400
     property int panelHeight: 600
 
-    GlobalShortcut {
-        name: "notificationCenterToggle"
-        description: "Toggles the notification center"
+    IpcHandler {
+        target: "notifcenter"
 
-        onPressed: {
+        function toggle() {
             GlobalStates.notificationCenterOpen = !GlobalStates.notificationCenterOpen;
         }
     }

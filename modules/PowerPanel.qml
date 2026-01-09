@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
+import Quickshell.Io
 import qs.common
 import qs.widgets
 
@@ -14,11 +14,10 @@ Scope {
     property int panelWidth: 400
     property int panelHeight: 600
 
-    GlobalShortcut {
-        name: "powerPanelToggle"
-        description: "Toggles the power panel"
+    IpcHandler {
+        target: "powerpanel"
 
-        onPressed: {
+        function toggle(): void {
             GlobalStates.powerPanelOpen = !GlobalStates.powerPanelOpen;
         }
     }

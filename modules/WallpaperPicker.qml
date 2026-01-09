@@ -1,7 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import Quickshell
-import Quickshell.Hyprland
+import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -22,10 +22,10 @@ FloatingWindow {
 
     title: "Wallpaper Picker"
 
-    GlobalShortcut {
-        name: "pickWallpaper"
-        description: "Open the wallpaper picker"
-        onPressed: {
+    IpcHandler {
+        target: "wallpaperPicker"
+
+        function open(): void {
             GlobalStates.wallpaperPickerOpen = true;
         }
     }

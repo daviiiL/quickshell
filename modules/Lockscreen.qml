@@ -95,13 +95,4 @@ Scope {
             Authentication.shouldReFocus();
         }
     }
-
-    GlobalShortcut {
-        name: "lockScreen"
-        description: "Locks the screen"
-
-        onPressed: {
-            root.lock();
-        }
-    }
 }
