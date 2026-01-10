@@ -5,7 +5,6 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import qs.common
 import qs.services
 import qs.widgets
@@ -55,13 +54,54 @@ Scope {
             Rectangle {
                 id: contentRect
 
+                property bool searchFieldVisible: false
+
                 width: 600
                 implicitHeight: resultsList.visible ? 400 : searchFieldContainer.implicitHeight + Theme.ui.padding.sm * 4
 
+                scale: panel.visible ? 1 : 0.92
+                opacity: panel.visible ? 1 : 0
+
+                transform: Translate {
+                    y: panel.visible ? 0 : -20
+
+                    Behavior on y {
+                        NumberAnimation {
+                            duration: Theme.anim.durations.xs * 1.5
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                }
+
+                Timer {
+                    id: searchFieldDelayTimer
+                    interval: Theme.anim.durations.xs * 0.85
+                    running: false
+                    repeat: false
+                    onTriggered: {
+                        contentRect.searchFieldVisible = true;
+                        searchField.forceActiveFocus();
+                    }
+                }
+
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: Theme.anim.durations.xs * 1.5
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Theme.anim.durations.xs * 1.2
+                        easing.type: Easing.OutQuad
+                    }
+                }
+
                 Behavior on implicitHeight {
                     NumberAnimation {
-                        duration: Theme.anim.durations.xs
-                        easing.type: Easing.InOutQuad
+                        duration: Theme.anim.durations.xs * 1.8
+                        easing.type: Easing.OutCubic
                     }
                 }
 
@@ -94,6 +134,25 @@ Scope {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
                         spacing: Theme.ui.padding.sm
+
+                        opacity: contentRect.searchFieldVisible ? 1 : 0
+                        transform: Translate {
+                            y: contentRect.searchFieldVisible ? 0 : 10
+
+                            Behavior on y {
+                                NumberAnimation {
+                                    duration: Theme.anim.durations.xs * 1.2
+                                    easing.type: Easing.OutCubic
+                                }
+                            }
+                        }
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.xs * 1.2
+                                easing.type: Easing.OutQuad
+                            }
+                        }
 
                         MaterialSymbol {
                             icon: "search"
@@ -142,6 +201,14 @@ Scope {
                         Layout.topMargin: Theme.ui.padding.sm
                         color: Colors.outline_variant
                         visible: resultsList.count > 0
+                        opacity: resultsList.count > 0 ? 1 : 0
+
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutQuad
+                            }
+                        }
                     }
 
                     ListView {
@@ -155,6 +222,39 @@ Scope {
 
                         model: ScriptModel {
                             values: AppLauncher.results
+                        }
+
+                        add: Transition {
+                            NumberAnimation {
+                                properties: "opacity"
+                                from: 0
+                                to: 1
+                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutQuad
+                            }
+                            NumberAnimation {
+                                properties: "y"
+                                from: -10
+                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+
+                        remove: Transition {
+                            NumberAnimation {
+                                properties: "opacity"
+                                to: 0
+                                duration: Theme.anim.durations.xs * 0.8
+                                easing.type: Easing.InQuad
+                            }
+                        }
+
+                        displaced: Transition {
+                            NumberAnimation {
+                                properties: "y"
+                                duration: Theme.anim.durations.xs
+                                easing.type: Easing.OutCubic
+                            }
                         }
 
                         delegate: AppLauncherItem {
@@ -186,8 +286,11 @@ Scope {
 
             onVisibleChanged: {
                 if (visible) {
+                    searchFieldDelayTimer.start();
                     searchField.forceActiveFocus();
                 } else {
+                    contentRect.searchFieldVisible = false;
+                    searchFieldDelayTimer.stop();
                     searchField.clear();
                     AppLauncher.query = "";
                 }

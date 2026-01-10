@@ -32,9 +32,50 @@ Scope {
             property int focusedButtonIndex: 0
             property bool closing: false
 
+            function resetButtonAnimations(): void {
+                lockButton.animationStart = false;
+                logoutButton.animationStart = false;
+                rebootButton.animationStart = false;
+                shutdownButton.animationStart = false;
+            }
+
             onVisibleChanged: {
                 if (visible && GlobalStates.powerPanelOpen) {
                     closing = false;
+                    buttonAnimationDelay.start();
+                } else {
+                    resetButtonAnimations();
+                }
+            }
+
+            Timer {
+                id: buttonAnimationDelay
+                interval: 100
+                repeat: false
+                onTriggered: buttonAnimationSequence.start()
+            }
+
+            Timer {
+                id: buttonAnimationSequence
+                interval: 30
+                repeat: true
+
+                property int currentIndex: 0
+                property var buttons: [lockButton, logoutButton, rebootButton, shutdownButton]
+
+                onTriggered: {
+                    if (currentIndex < buttons.length) {
+                        buttons[currentIndex].animationStart = true;
+                        currentIndex++;
+                    } else {
+                        stop();
+                    }
+                }
+
+                function start(): void {
+                    currentIndex = 0;
+                    panel.resetButtonAnimations();
+                    running = true;
                 }
             }
 
@@ -72,7 +113,6 @@ Scope {
                 repeat: false
                 interval: 400
                 onTriggered: () => {
-                    console.debug("Panel closing");
                     panel.closePanel();
                 }
             }
@@ -104,13 +144,28 @@ Scope {
                 bottom: true
             }
 
-            color: Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.3)
+            color: "transparent"
 
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
             WlrLayershell.namespace: "quickshell:powerpanel"
 
             exclusiveZone: 0
+
+            Rectangle {
+                anchors.fill: parent
+                z: -1
+                color: Colors.background
+
+                opacity: panel.closing ? 0 : (GlobalStates.powerPanelOpen ? 1 : 0)
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 400
+                        easing.type: Easing.OutCubic
+                    }
+                }
+            }
 
             MouseArea {
                 anchors.fill: parent
@@ -121,28 +176,9 @@ Scope {
             }
 
             Rectangle {
-                opacity: panel.closing ? 0 : (GlobalStates.powerPanelOpen ? 1 : 0)
-
-                anchors.fill: parent
-                z: -1
-                color: Colors.surface
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: 400
-                        easing.type: Easing.OutCubic
-                    }
-                }
-            }
-
-            Rectangle {
                 id: contentRect
 
-                opacity: panel.closing ? 0 : (GlobalStates.powerPanelOpen ? 1 : 0)
-                scale: panel.closing ? 0.9 : (GlobalStates.powerPanelOpen ? 1 : 0.9)
-
                 Keys.onEscapePressed: {
-                    // globalstates.powerpanelopen = false;
                     panel.closing = true;
                     closePanelTimer.running = true;
                 }
@@ -157,29 +193,13 @@ Scope {
                     }
                 }
 
-                color: Qt.rgba(Colors.surface_container.r, Colors.surface_container.g, Colors.surface_container.b, 0.55)
-
+                color: Colors.surface_container_low
                 radius: Theme.ui.radius.lg
 
                 height: buttonGrid.implicitHeight + Theme.ui.padding.lg
                 width: buttonGrid.implicitWidth + Theme.ui.padding.lg * 2
 
                 anchors.centerIn: parent
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: 350
-                        easing.type: Easing.OutCubic
-                    }
-                }
-
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: 350
-                        easing.type: Easing.OutBack
-                        easing.overshoot: 1.2
-                    }
-                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -198,13 +218,16 @@ Scope {
 
                         PowerActionButton {
                             id: lockButton
+
                             index: 0
                             iconName: "lock"
                             label: "Lock"
                             onClicked: {
                                 GlobalStates.powerPanelOpen = false;
-                                Hyprland.dispatch("global quickshell:lock");
+                                // Hyprland.dispatch("global quickshell:lock");
                             }
+
+                            focusedButtonIndex: panel.focusedButtonIndex
                         }
 
                         PowerActionButton {
@@ -215,6 +238,7 @@ Scope {
                             onClicked: {
                                 Hyprland.dispatch("exit");
                             }
+                            focusedButtonIndex: panel.focusedButtonIndex
                         }
                     }
 
@@ -230,6 +254,7 @@ Scope {
                             onClicked: {
                                 Quickshell.execDetached(["systemctl", "reboot"]);
                             }
+                            focusedButtonIndex: panel.focusedButtonIndex
                         }
 
                         PowerActionButton {
@@ -240,11 +265,30 @@ Scope {
                             onClicked: {
                                 Quickshell.execDetached(["systemctl", "poweroff"]);
                             }
+                            focusedButtonIndex: panel.focusedButtonIndex
                         }
                     }
 
                     Item {
                         Layout.fillHeight: true
+                    }
+                }
+
+                opacity: panel.closing ? 0 : (GlobalStates.powerPanelOpen ? 1 : 0)
+                scale: panel.closing ? 0.9 : (GlobalStates.powerPanelOpen ? 1 : 0.9)
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 350
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: 350
+                        easing.type: Easing.OutBack
+                        easing.overshoot: 1.2
                     }
                 }
             }
@@ -258,15 +302,18 @@ Scope {
     component PowerActionButton: Rectangle {
         id: buttonRoot
 
-        property int index
-
+        required property int focusedButtonIndex
         required property string iconName
         required property string label
-        signal clicked
 
+        property int index
         property bool hovered: false
-        property bool keyboardFocused: panel.focusedButtonIndex === index
+        property bool animationStart: false
+
+        property bool keyboardFocused: focusedButtonIndex === index
         property bool isActive: hovered || keyboardFocused
+
+        signal clicked
 
         function makeTranslucent(color) {
             return Qt.rgba(color.r, color.g, color.b, 0.4);
@@ -282,35 +329,15 @@ Scope {
             color: isActive ? Colors.primary_container : Colors.secondary_container
         }
 
-        Behavior on color {
-            ColorAnimation {
-                duration: Theme.anim.durations.md
-                easing.type: Easing.Bezier
-                easing.bezierCurve: Theme.anim.curves.standard
-            }
-        }
-
-        Behavior on border.color {
-            ColorAnimation {
-                duration: Theme.anim.durations.sm
-                easing.type: Easing.Bezier
-                easing.bezierCurve: Theme.anim.curves.standard
-            }
-        }
+        opacity: animationStart ? 1 : 0
+        scale: animationStart ? 1 : 0.8
 
         Canvas {
             anchors.fill: parent
             antialiasing: true
             visible: opacity > 0
-            opacity: buttonRoot.isActive ? 1 : 0
 
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: Theme.anim.durations.sm
-                    easing.type: Easing.Bezier
-                    easing.bezierCurve: Theme.anim.curves.standard
-                }
-            }
+            opacity: buttonRoot.isActive ? 1 : 0
 
             onPaint: {
                 const ctx = getContext("2d");
@@ -332,6 +359,14 @@ Scope {
             }
 
             Component.onCompleted: requestPaint()
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: Theme.anim.durations.sm
+                    easing.type: Easing.Bezier
+                    easing.bezierCurve: Theme.anim.curves.standard
+                }
+            }
         }
 
         ColumnLayout {
@@ -368,6 +403,37 @@ Scope {
 
             onExited: {
                 buttonRoot.hovered = false;
+            }
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 300
+                easing.type: Easing.OutCubic
+            }
+        }
+
+        Behavior on scale {
+            NumberAnimation {
+                duration: 300
+                easing.type: Easing.OutBack
+                easing.overshoot: 1.1
+            }
+        }
+
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.anim.durations.md
+                easing.type: Easing.Bezier
+                easing.bezierCurve: Theme.anim.curves.standard
+            }
+        }
+
+        Behavior on border.color {
+            ColorAnimation {
+                duration: Theme.anim.durations.sm
+                easing.type: Easing.Bezier
+                easing.bezierCurve: Theme.anim.curves.standard
             }
         }
     }
