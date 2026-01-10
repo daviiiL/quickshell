@@ -128,6 +128,7 @@ Singleton {
                 switch (item.label) {
                 case "CPU":
                 case "Package id 0":
+                case "Tctl":
                     cpuPackageTemp = item.value;
                     break;
                 case "Video":

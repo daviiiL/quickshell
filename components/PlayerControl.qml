@@ -16,7 +16,7 @@ Rectangle {
 
     border {
         width: 1
-        color: Colors.outline_variant
+        color: Colors.outline
     }
 
     color: Preferences.darkMode ? Colors.background : Colors.surface

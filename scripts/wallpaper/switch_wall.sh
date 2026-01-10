@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # Simple wallpaper switcher for Quickshell
-# Supports both swww and hyprpaper
+# Uses swww for wallpaper switching
 # Optionally generates color scheme with matugen
 
 set -e
 
 usage() {
     echo "Usage: $0 [--scheme <matugen-scheme>] [--mode <dark|light>] <image-path>"
-    echo "Switches wallpaper using swww (preferred) or hyprpaper (fallback)"
+    echo "Switches wallpaper using swww"
     echo "Optionally generates color scheme with matugen"
     echo ""
     echo "Options:"
@@ -76,26 +76,5 @@ if command -v swww &>/dev/null; then
     exit 0
 fi
 
-if command -v hyprctl &>/dev/null; then
-    hyprctl hyprpaper preload "$WALLPAPER_PATH"
-
-    monitors=$(hyprctl monitors -j | jq -r '.[] | .name')
-    for monitor in $monitors; do
-        hyprctl hyprpaper wallpaper "$monitor,$WALLPAPER_PATH"
-    done
-
-    if command -v matugen &>/dev/null; then
-        matugen image "$WALLPAPER_PATH" --type "$MATUGEN_SCHEME" --mode "$MATUGEN_MODE" &>/dev/null &
-        sleep 1
-    fi
-
-    pkill -SIGUSR1 kitty 2>/dev/null || true
-
-    exit 0
-fi
-
-echo "Error: Neither swww nor hyprpaper is available" >&2
-echo "Please install one of them:" >&2
-echo "  - swww: https://github.com/LGFae/swww" >&2
-echo "  - hyprpaper: https://github.com/hyprwm/hyprpaper" >&2
+notify-send -a "Wallpaper Service" "Error: swww is not available" "Please install swww: https://github.com/LGFae/swww"
 exit 1

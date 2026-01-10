@@ -3,76 +3,195 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
+import Quickshell.Io
 
 import qs.common
 import qs.components.controlcenter
 
-FloatingWindow {
-    id: window
-    title: "Control Center"
-    visible: GlobalStates.controlCenterPanelOpen
+Scope {
+    id: root
 
-    minimumSize: Qt.size(650, 750)
+    IpcHandler {
+        target: "controlcenter"
 
-    onVisibleChanged: {
-        if (!this.visible) {
-            GlobalStates.controlCenterPanelOpen = false;
+        function toggle(): void {
+            GlobalStates.controlCenterPanelOpen = !GlobalStates.controlCenterPanelOpen;
         }
     }
 
-    color: Colors.surface_translucent
-    RowLayout {
-        anchors.fill: parent
+    Variants {
+        model: Quickshell.screens
 
-        Rectangle {
-            id: menuContainer
-            Layout.topMargin: 10
-            Layout.fillHeight: true
-            Layout.preferredWidth: 200
+        PanelWindow {
+            id: window
+            required property var modelData
+
+            property bool closing: false
+
+            function closePanel(): void {
+                GlobalStates.controlCenterPanelOpen = false;
+                window.closing = false;
+            }
+
+            Timer {
+                id: closePanelTimer
+                running: false
+                repeat: false
+                interval: 400
+                onTriggered: () => {
+                    window.closePanel();
+                }
+            }
+
+            screen: modelData
+            visible: GlobalStates.controlCenterPanelOpen || closing
+
+            anchors {
+                top: true
+                left: true
+                right: true
+                bottom: true
+            }
+
             color: "transparent"
-            Layout.leftMargin: Theme.ui.padding.sm
 
-            ListView {
-                id: listview
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+            WlrLayershell.namespace: "quickshell:controlcenter"
+
+            exclusiveZone: 0
+
+            Rectangle {
+                id: background
                 anchors.fill: parent
-                currentIndex: 0
+                anchors.margins: Theme.ui.padding.lg
+                z: -1
+                color: Colors.background
+                radius: Theme.ui.radius.lg
 
-                model: ScriptModel {
-                    values: {
-                        var items = ["Network", "Bluetooth", "Preferences"];
-                        if (GlobalStates.isLaptop) {
-                            items.push("Battery");
-                        } else
-                            items.push("Power");
+                border {
+                    width: 1
+                    color: Colors.outline_variant
+                }
 
-                        items.push("System Info");
-                        return items;
+                opacity: window.closing ? 0 : (GlobalStates.controlCenterPanelOpen ? 1 : 0)
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 400
+                        easing.type: Easing.OutCubic
+                    }
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    window.closing = true;
+                    closePanelTimer.running = true;
+                }
+            }
+
+            Rectangle {
+                id: contentRect
+
+                Keys.onEscapePressed: {
+                    window.closing = true;
+                    closePanelTimer.running = true;
+                }
+
+                color: Colors.surface_translucent
+                radius: Theme.ui.radius.lg
+
+                width: 650
+                height: 750
+
+                anchors.fill: background
+                anchors.margins: Theme.ui.padding.sm
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: false
+                }
+
+                RowLayout {
+                    anchors.fill: parent
+
+                    Rectangle {
+                        id: menuContainer
+                        Layout.topMargin: 10
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: 200
+                        color: "transparent"
+                        Layout.leftMargin: Theme.ui.padding.sm
+
+                        ListView {
+                            id: listview
+                            anchors.fill: parent
+                            currentIndex: 0
+
+                            model: ScriptModel {
+                                values: {
+                                    var items = ["Network", "Bluetooth", "Preferences"];
+                                    if (GlobalStates.isLaptop) {
+                                        items.push("Battery");
+                                    } else
+                                        items.push("Power");
+
+                                    items.push("System Info");
+                                    return items;
+                                }
+                            }
+
+                            delegate: ControlCenterMenuItem {
+                                required property string modelData
+                                currentIndex: listview.currentIndex
+                                title: modelData
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        Layout.margins: Theme.ui.padding.sm
+                        radius: Theme.ui.radius.lg
+                        color: Colors.surface_container
+                        StackLayout {
+                            anchors.fill: parent
+                            currentIndex: listview.currentIndex
+
+                            NetworkPanel {}
+                            BluetoothPanel {}
+                            PreferencesPanel {}
+                            PowerPanel {}
+                            AboutSystemPanel {}
+                        }
                     }
                 }
 
-                delegate: ControlCenterMenuItem {
-                    required property string modelData
-                    currentIndex: listview.currentIndex
-                    title: modelData
+                opacity: window.closing ? 0 : (GlobalStates.controlCenterPanelOpen ? 1 : 0)
+                scale: window.closing ? 0.9 : (GlobalStates.controlCenterPanelOpen ? 1 : 0.9)
+
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 350
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: 350
+                        easing.type: Easing.OutBack
+                        easing.overshoot: 1.2
+                    }
                 }
             }
-        }
 
-        Rectangle {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Layout.margins: Theme.ui.padding.sm
-            radius: Theme.ui.radius.lg
-            color: Colors.surface_container
-            StackLayout {
-                anchors.fill: parent
-                currentIndex: listview.currentIndex
-
-                NetworkPanel {}
-                BluetoothPanel {}
-                PreferencesPanel {}
-                PowerPanel {}
-                AboutSystemPanel {}
+            Component.onCompleted: {
+                contentRect.forceActiveFocus();
             }
         }
     }

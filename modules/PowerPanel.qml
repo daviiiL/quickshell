@@ -223,8 +223,8 @@ Scope {
                             iconName: "lock"
                             label: "Lock"
                             onClicked: {
+                                Quickshell.execDetached(["qs", "ipc", "call", "lock", "activate"]);
                                 GlobalStates.powerPanelOpen = false;
-                                // Hyprland.dispatch("global quickshell:lock");
                             }
 
                             focusedButtonIndex: panel.focusedButtonIndex
@@ -236,7 +236,7 @@ Scope {
                             iconName: "logout"
                             label: "Logout"
                             onClicked: {
-                                Hyprland.dispatch("exit");
+                                Quickshell.execDetached(["niri", "msg", "action", "quit"]);
                             }
                             focusedButtonIndex: panel.focusedButtonIndex
                         }

@@ -14,6 +14,7 @@ Singleton {
     property int _current: 0
     property int _max: 1
     property string _backlightPath: ""
+    property string _backlightDevice: ""
     property string _brightnessPath: ""
     property string _maxBrightnessPath: ""
     property bool _pathsReady: false
@@ -36,7 +37,8 @@ Singleton {
         if (!available)
             return;
         value = Math.max(1, Math.min(100, value));
-        setProc.command = ["brightnessctl", "--class", "backlight", "s", value + "%", "--quiet"];
+        setProc.command = ["brightnessctl", "--class", "backlight", "s", value + "%", "--quiet", "-d", root._backlightDevice];
+        // console.log(`Running command: ${setProc.command.join(" ")}`);
         setProc.running = true;
     }
 
@@ -50,8 +52,10 @@ Singleton {
                 const device = this.text.trim();
                 if (device.length > 0) {
                     root._backlightPath = "/sys/class/backlight/" + device;
+                    root._backlightDevice = device;
                     checkPathsProc.running = true;
                 }
+                // console.debug(root._backlightPath, root._backlightDevice);
             }
         }
     }

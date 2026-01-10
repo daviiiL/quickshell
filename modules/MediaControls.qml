@@ -4,7 +4,6 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import Quickshell.Io
 import qs.common
 import qs.components
@@ -48,12 +47,37 @@ Scope {
                 left: GlobalStates.mediaControlsX
             }
 
-            HyprlandFocusGrab {
-                windows: [mediaControlsRoot]
-                active: mediaControlsLoader.active
-                onCleared: () => {
+            Timer {
+                id: autoHideTimer
+                interval: 5000
+                repeat: false
+                running: false
+
+                onTriggered: {
                     GlobalStates.mediaControlsOpen = false;
                 }
+            }
+
+            Component.onCompleted: {
+                autoHideTimer.running = true;
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                propagateComposedEvents: true
+
+                onEntered: {
+                    autoHideTimer.restart();
+                }
+
+                onExited: {
+                    autoHideTimer.restart();
+                }
+
+                onPressed: mouse => mouse.accepted = false
+                onReleased: mouse => mouse.accepted = false
+                onClicked: mouse => mouse.accepted = false
             }
 
             ColumnLayout {
