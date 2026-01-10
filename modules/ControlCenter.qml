@@ -23,7 +23,7 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        PanelWindow {
+        FloatingWindow {
             id: window
             required property var modelData
 
@@ -47,51 +47,15 @@ Scope {
             screen: modelData
             visible: GlobalStates.controlCenterPanelOpen || closing
 
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
+            onVisibleChanged: {
+                if (!visible)
+                    closePanel();
             }
+
+            width: 670
+            height: 770
 
             color: "transparent"
-
-            WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-            WlrLayershell.namespace: "quickshell:controlcenter"
-
-            exclusiveZone: 0
-
-            Rectangle {
-                id: background
-                anchors.fill: parent
-                anchors.margins: Theme.ui.padding.lg
-                z: -1
-                color: Colors.background
-                radius: Theme.ui.radius.lg
-
-                border {
-                    width: 1
-                    color: Colors.outline_variant
-                }
-
-                opacity: window.closing ? 0 : (GlobalStates.controlCenterPanelOpen ? 1 : 0)
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: 400
-                        easing.type: Easing.OutCubic
-                    }
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    window.closing = true;
-                    closePanelTimer.running = true;
-                }
-            }
 
             Rectangle {
                 id: contentRect
@@ -101,19 +65,9 @@ Scope {
                     closePanelTimer.running = true;
                 }
 
+                anchors.fill: parent
+
                 color: Colors.surface_translucent
-                radius: Theme.ui.radius.lg
-
-                width: 650
-                height: 750
-
-                anchors.fill: background
-                anchors.margins: Theme.ui.padding.sm
-
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: false
-                }
 
                 RowLayout {
                     anchors.fill: parent
