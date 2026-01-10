@@ -13,18 +13,26 @@ Scope {
 
         PanelWindow {
             id: root
+
             required property var modelData
             property color bgColor: Preferences.darkMode ? Colors.background : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.9)
 
             WlrLayershell.namespace: "quickshell:topbar"
 
             screen: modelData
-            color: "transparent"
+            color: GlobalStates.powerPanelOpen ? Colors.background : "transparent"
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 150
+                    easing.type: Easing.OutCubic
+                }
+            }
 
             implicitHeight: Theme.ui.topBarHeight
 
             WlrLayershell.layer: WlrLayer.Top
-            WlrLayershell.exclusiveZone: GlobalStates.powerPanelOpen ? 0 : implicitHeight
+            WlrLayershell.exclusiveZone: implicitHeight
 
             anchors {
                 right: true
@@ -42,22 +50,12 @@ Scope {
                 anchors.bottomMargin: 0
 
                 opacity: GlobalStates.powerPanelOpen ? 0 : 1
-                transform: Translate {
-                    y: GlobalStates.powerPanelOpen ? -root.implicitHeight : 0
-                }
 
                 color: root.bgColor
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: 300
-                        easing.type: Easing.OutCubic
-                    }
-                }
-
-                Behavior on y {
-                    NumberAnimation {
-                        duration: 300
+                        duration: 150
                         easing.type: Easing.OutCubic
                     }
                 }

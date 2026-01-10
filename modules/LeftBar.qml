@@ -25,12 +25,19 @@ Scope {
             visible: true
 
             screen: modelData
-            color: "transparent"
+            color: GlobalStates.powerPanelOpen ? Colors.background : "transparent"
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 150
+                    easing.type: Easing.OutCubic
+                }
+            }
 
             implicitWidth: Theme.ui.leftBarWidth
 
             WlrLayershell.layer: WlrLayer.Top
-            WlrLayershell.exclusiveZone: GlobalStates.powerPanelOpen ? 0 : implicitWidth
+            WlrLayershell.exclusiveZone: implicitWidth
 
             anchors {
                 left: true
@@ -40,24 +47,13 @@ Scope {
 
             Rectangle {
                 anchors.fill: parent
-
                 opacity: GlobalStates.powerPanelOpen ? 0 : 1
-                transform: Translate {
-                    x: GlobalStates.powerPanelOpen ? -root.implicitWidth : 0
-                }
 
                 color: root.bgColor
 
                 Behavior on opacity {
                     NumberAnimation {
-                        duration: 300
-                        easing.type: Easing.OutCubic
-                    }
-                }
-
-                Behavior on x {
-                    NumberAnimation {
-                        duration: 300
+                        duration: 150
                         easing.type: Easing.OutCubic
                     }
                 }
