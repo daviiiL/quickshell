@@ -4,7 +4,6 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import qs.common
 import qs.components.lockscreen
 import qs.services
@@ -31,7 +30,6 @@ Scope {
             const password = Authentication.currentPassword;
             root.unlockKeyring(password);
             GlobalStates.screenLocked = false;
-            Quickshell.execDetached(["bash", "-c", "sleep 0.2; hyprctl --batch \"dispatch togglespecialworkspace; dispatch togglespecialworkspace\""]);
             Authentication.reset();
         }
     }

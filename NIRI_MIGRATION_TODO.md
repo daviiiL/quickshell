@@ -3,14 +3,14 @@
 This document lists all Hyprland dependencies that need to be updated for Niri compatibility.
 
 ## QML Files Requiring Updates
+<!---->
+<!-- ### 1. **modules/AppLauncherPanel.qml** -->
+<!-- - Line 8: `import Quickshell.Hyprland` → Replace with `import Quickshell.Niri` -->
 
-### 1. **modules/AppLauncherPanel.qml**
-- Line 8: `import Quickshell.Hyprland` → Replace with `import Quickshell.Niri`
-
-### 2. **modules/Lockscreen.qml**
-- Line 7: `import Quickshell.Hyprland` → Replace with `import Quickshell.Niri`
-- Line 34: `hyprctl --batch "dispatch togglespecialworkspace; dispatch togglespecialworkspace"`
-  → Replace with Niri IPC commands to toggle workspaces
+<!-- ### 2. **modules/Lockscreen.qml** -->
+<!-- - Line 7: `import Quickshell.Hyprland` → Replace with `import Quickshell.Niri` -->
+<!-- - Line 34: `hyprctl --batch "dispatch togglespecialworkspace; dispatch togglespecialworkspace"` -->
+<!--   → Replace with Niri IPC commands to toggle workspaces -->
 
 ### 3. **modules/PowerPanel.qml**
 - Line 145: `Hyprland.dispatch("global quickshell:lock")` → Replace with Niri lock command
