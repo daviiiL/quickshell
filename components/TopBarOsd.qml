@@ -43,20 +43,26 @@ Item {
     }
 
     Connections {
-        target: Audio.defaultSinkAudio
+        target: SystemAudio.ready ? SystemAudio.currentAudioSink : null
 
         function onVolumeChanged() {
-            progressbar.value = Audio.volume;
+            progressbar.value = SystemAudio.volume;
             progressbar.max = 1;
             progressbar.text = "Volume";
+  progressbar.fgColor = SystemAudio.volume >= 1 ? Colors.error : Colors.primary
             progressbar.showing = true;
             hideTopProgressBar.restart();
         }
+    }
+
+    Connections {
+        target: SystemAudio.ready ? SystemAudio : null
 
         function onMutedChanged() {
-            progressbar.value = Audio.volume;
+            progressbar.value = SystemAudio.volume;
             progressbar.max = 1;
-            progressbar.text = "Volume";
+            progressbar.fgColor = SystemAudio.muted ? Colors.primary_container : Colors.primary;
+            progressbar.text = SystemAudio.muted ? "Speaker Muted" : "Volume";
             progressbar.showing = true;
             hideTopProgressBar.restart();
         }

@@ -13,10 +13,11 @@ Item {
     default property alias text: titleText.text
 
     property color bgColor: Preferences.darkMode ? makeTranslucent(Colors.surface) : makeTranslucent(Colors.surface)
+    property color fgColor: Colors.primary
     property real max: 100
     property real value: 0
     function makeTranslucent(color) {
-        return Qt.rgba(color.r, color.g, color.b, 0.8);
+        return Qt.alpha(color, 0.8);
     }
 
     Text {
@@ -75,11 +76,11 @@ Item {
                     }
 
                     width: parent.width * (root.value / root.max)
-                    color: Colors.primary
+                    color: root.fgColor
 
                     Behavior on width {
                         NumberAnimation {
-                            duration: Theme.anim.durations.md
+                            duration: Theme.anim.durations.sm
                             easing.type: Easing.Bezier
                             easing.bezierCurve: Theme.anim.curves.standard
                         }
