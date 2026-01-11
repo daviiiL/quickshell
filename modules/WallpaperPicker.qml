@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
@@ -11,18 +12,56 @@ import qs.services
 import qs.widgets
 import qs.components.wallpaper
 
-FloatingWindow {
+PanelWindow {
     id: root
     function makeTranslucent(color) {
         return Qt.rgba(color.r, color.g, color.b, 0.4);
     }
-    visible: GlobalStates.wallpaperPickerOpen ?? false
 
+    property bool closing: false
+    property int panelWidth: 600
+
+    function closePanel(): void {
+        GlobalStates.wallpaperPickerOpen = false;
+        root.closing = false;
+    }
+
+    Timer {
+        id: closePanelTimer
+        running: false
+        repeat: false
+        interval: 200
+        onTriggered: () => {
+            root.closePanel();
+        }
+    }
+
+    visible: GlobalStates.wallpaperPickerOpen || closing
+
+    onVisibleChanged: {
+        if (!visible)
+            closePanel();
+    }
+
+    anchors {
+        left: true
+        top: true
+        bottom: true
+    }
+
+    margins {
+        top: Theme.ui.padding.sm
+        bottom: Theme.ui.padding.sm
+    }
+
+    implicitWidth: panelWidth
     color: "transparent"
 
-    minimumSize: Qt.size(600, 800)
+    WlrLayershell.layer: WlrLayer.Top
+    WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    WlrLayershell.namespace: "quickshell:wallpaperpicker"
 
-    title: "Wallpaper Picker"
+    exclusiveZone: 0
 
     IpcHandler {
         target: "wallpaperPicker"
@@ -32,14 +71,14 @@ FloatingWindow {
         }
     }
 
-    onVisibleChanged: {
-        if (!this.visible)
-            GlobalStates.wallpaperPickerOpen = false;
-    }
-
     MouseArea {
         id: content
-        anchors.fill: parent
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
+        implicitWidth: root.panelWidth - Theme.ui.padding.sm
         property int columns: 4
         property real previewCellAspectRatio: 4 / 3
 
@@ -65,7 +104,9 @@ FloatingWindow {
 
         Keys.onPressed: event => {
             if (event.key === Qt.Key_Escape) {
+                root.closing = true;
                 GlobalStates.wallpaperPickerOpen = false;
+                closePanelTimer.running = true;
                 event.accepted = true;
             } else if (event.key === Qt.Key_Left) {
                 grid.moveSelection(-1);
@@ -106,6 +147,24 @@ FloatingWindow {
             anchors.fill: parent
             focus: true
             color: Colors.surface
+            radius: Theme.ui.radius.md
+            clip: true
+
+            transform: Translate {
+                x: GlobalStates.wallpaperPickerOpen ? Theme.ui.padding.sm : -root.panelWidth
+
+                Behavior on x {
+                    NumberAnimation {
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
+                }
+            }
+
+            border {
+                width: 1
+                color: Colors.outline_variant
+            }
 
             ColumnLayout {
                 anchors.fill: parent
@@ -403,7 +462,9 @@ FloatingWindow {
                     StyledButton {
                         text: "Close"
                         onClicked: {
+                            root.closing = true;
                             GlobalStates.wallpaperPickerOpen = false;
+                            closePanelTimer.running = true;
                         }
                     }
                 }
@@ -422,7 +483,8 @@ FloatingWindow {
         Connections {
             target: Wallpapers
             function onChanged() {
-                GlobalStates.wallpaperPickerOpen = false;
+                root.closing = true;
+                closePanelTimer.running = true;
             }
         }
     }

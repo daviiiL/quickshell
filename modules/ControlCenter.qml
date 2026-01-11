@@ -23,11 +23,12 @@ Scope {
     Variants {
         model: Quickshell.screens
 
-        FloatingWindow {
+        PanelWindow {
             id: window
             required property var modelData
 
             property bool closing: false
+            property int panelWidth: modelData.width / 2
 
             function closePanel(): void {
                 GlobalStates.controlCenterPanelOpen = false;
@@ -38,7 +39,7 @@ Scope {
                 id: closePanelTimer
                 running: false
                 repeat: false
-                interval: 400
+                interval: 200
                 onTriggered: () => {
                     window.closePanel();
                 }
@@ -52,21 +53,61 @@ Scope {
                     closePanel();
             }
 
-            minimumSize: Qt.size(400, 300)
+            anchors {
+                left: true
+                top: true
+                bottom: true
+            }
 
+            margins {
+                top: Theme.ui.padding.sm
+                bottom: Theme.ui.padding.sm
+            }
+
+            implicitWidth: panelWidth
             color: "transparent"
+
+            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+            WlrLayershell.namespace: "quickshell:controlcenter"
+
+            exclusiveZone: 0
 
             Rectangle {
                 id: contentRect
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+
+                implicitWidth: window.panelWidth - Theme.ui.padding.sm
 
                 Keys.onEscapePressed: {
                     window.closing = true;
+                    GlobalStates.controlCenterPanelOpen = false;
                     closePanelTimer.running = true;
                 }
 
-                anchors.fill: parent
+                color: Colors.surface
+                radius: Theme.ui.radius.md
+                clip: true
 
-                color: Colors.surface_translucent
+                transform: Translate {
+                    x: GlobalStates.controlCenterPanelOpen ? Theme.ui.padding.sm : -window.panelWidth
+
+                    Behavior on x {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                }
+
+                border {
+                    width: 1
+                    color: Colors.outline_variant
+                }
 
                 RowLayout {
                     anchors.fill: parent
@@ -121,24 +162,6 @@ Scope {
                             PowerPanel {}
                             AboutSystemPanel {}
                         }
-                    }
-                }
-
-                opacity: window.closing ? 0 : (GlobalStates.controlCenterPanelOpen ? 1 : 0)
-                scale: window.closing ? 0.9 : (GlobalStates.controlCenterPanelOpen ? 1 : 0.9)
-
-                Behavior on opacity {
-                    NumberAnimation {
-                        duration: 350
-                        easing.type: Easing.OutCubic
-                    }
-                }
-
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: 350
-                        easing.type: Easing.OutBack
-                        easing.overshoot: 1.2
                     }
                 }
             }
