@@ -47,33 +47,18 @@ Scope {
                 left: GlobalStates.mediaControlsX
             }
 
-            Timer {
-                id: autoHideTimer
-                interval: 5000
-                repeat: false
-                running: false
-
-                onTriggered: {
-                    GlobalStates.mediaControlsOpen = false;
-                }
-            }
-
-            Component.onCompleted: {
-                autoHideTimer.running = true;
-            }
-
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
                 propagateComposedEvents: true
 
-                onEntered: {
-                    autoHideTimer.restart();
-                }
-
-                onExited: {
-                    autoHideTimer.restart();
-                }
+                // onEntered: {
+                //     autoHideTimer.restart();
+                // }
+                //
+                // onExited: {
+                //     GlobalStates.mediaControlsOpen = false;
+                // }
 
                 onPressed: mouse => mouse.accepted = false
                 onReleased: mouse => mouse.accepted = false

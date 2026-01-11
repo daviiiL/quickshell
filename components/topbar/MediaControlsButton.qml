@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import qs.common
@@ -6,17 +8,27 @@ import qs.services
 
 Rectangle {
     id: root
-    Layout.fillHeight: true
-    Layout.maximumWidth: 150
-    Layout.preferredWidth: 150
-    visible: SystemMpris.activePlayer !== null
-    color: "transparent"
-    radius: Theme.ui.radius.md
 
-    readonly property color iconColor: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_surface_variant
-    readonly property color textColor: Preferences.darkMode ? Colors.on_secondary_container : Colors.on_surface
-    readonly property color hoverBgColor: Preferences.darkMode ? Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.3) : Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.2)
-    readonly property color gradientColor: Preferences.darkMode ? "black" : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.9)
+    Layout.fillHeight: true
+    Layout.maximumWidth: 200
+    Layout.preferredWidth: 200
+    Layout.topMargin: 3
+    Layout.bottomMargin: 3
+
+    readonly property color iconColor: Colors.primary
+    readonly property color textColor: Colors.on_surface
+    readonly property color bgColor: Preferences.darkMode ? Colors.surface_container : Colors.primary_container
+    readonly property color hoverBgColor: Colors.surface_container_high
+    readonly property GradientColors gradientColors: GradientColors {}
+
+    component GradientColors: QtObject {
+        readonly property color start: Preferences.darkMode ? "transparent" : root.bgColor
+        readonly property color end: Preferences.darkMode ? Colors.surface : Colors.background
+    }
+
+    visible: SystemMpris.activePlayer !== null
+    radius: Theme.ui.radius.md
+    color: bgColor
 
     onXChanged: {
         GlobalStates.mediaControlsX = root.x;
@@ -31,10 +43,29 @@ Rectangle {
         GlobalStates.mediaControlsY = root.y;
     }
 
+    Rectangle {
+        z: 2
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: 25
+        gradient: Gradient {
+            orientation: Gradient.Horizontal
+            GradientStop {
+                position: 0.0
+                color: root.gradientColors.start
+            }
+            GradientStop {
+                position: 1.0
+                color: root.gradientColors.end
+            }
+        }
+    }
+
     RowLayout {
         id: mediaContent
         anchors.fill: parent
-        anchors.margins: Theme.ui.padding.sm
+        anchors.leftMargin: Theme.ui.padding.sm
         spacing: Theme.ui.padding.sm
 
         MaterialSymbol {
@@ -55,27 +86,8 @@ Rectangle {
                 color: root.textColor
                 text: {
                     var title = StringUtils.cleanMusicTitle(SystemMpris.activePlayer?.trackTitle || "No media");
-                    // var artist = SystemMpris.activePlayer?.trackArtist || "";
-                    return title;
-                }
-            }
-
-            Rectangle {
-                visible: !mprisMouseArea.containsMouse
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                width: 25
-                gradient: Gradient {
-                    orientation: Gradient.Horizontal
-                    GradientStop {
-                        position: 0.0
-                        color: "transparent"
-                    }
-                    GradientStop {
-                        position: 1.0
-                        color: root.gradientColor
-                    }
+                    var artist = SystemMpris.activePlayer?.trackArtist || "";
+                    return `${title} by ${artist}`;
                 }
             }
         }
@@ -93,7 +105,7 @@ Rectangle {
         }
 
         onExited: {
-            root.color = "transparent";
+            root.color = root.bgColor;
         }
 
         onPressed: event => {

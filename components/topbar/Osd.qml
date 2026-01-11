@@ -3,14 +3,14 @@ import QtQuick.Layouts
 
 import qs.common
 import qs.services
-import qs.components
+import qs.components.topbar
 
 Item {
     id: osdContainer
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    TopProgressBar {
+    OsdProgressBar {
         id: progressbar
         property bool showing: false
         visible: opacity > 0
@@ -42,29 +42,24 @@ Item {
         onTriggered: progressbar.showing = false
     }
 
-    Connections {
-        target: SystemAudio.ready ? SystemAudio.currentAudioSink : null
-
-        function onVolumeChanged() {
-            progressbar.value = SystemAudio.volume;
-            progressbar.max = 1;
-            progressbar.text = "Volume";
-  progressbar.fgColor = SystemAudio.volume >= 1 ? Colors.error : Colors.primary
-            progressbar.showing = true;
-            hideTopProgressBar.restart();
-        }
+    function updateVolumeOsd(): void {
+        progressbar.value = SystemAudio.muted ? 0 : SystemAudio.volume;
+        progressbar.max = 1;
+        progressbar.fgColor = SystemAudio.muted ? Colors.primary_container : (progressbar.value >= 1 ? Colors.error : Colors.primary);
+        progressbar.text = SystemAudio.muted ? "Speaker Muted" : "Volume";
+        progressbar.showing = true;
+        hideTopProgressBar.restart();
     }
 
     Connections {
         target: SystemAudio.ready ? SystemAudio : null
 
+        function onSafeVolumeChanged() {
+            osdContainer.updateVolumeOsd();
+        }
+
         function onMutedChanged() {
-            progressbar.value = SystemAudio.volume;
-            progressbar.max = 1;
-            progressbar.fgColor = SystemAudio.muted ? Colors.primary_container : Colors.primary;
-            progressbar.text = SystemAudio.muted ? "Speaker Muted" : "Volume";
-            progressbar.showing = true;
-            hideTopProgressBar.restart();
+            osdContainer.updateVolumeOsd();
         }
     }
 

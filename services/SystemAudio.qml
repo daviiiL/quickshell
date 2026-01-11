@@ -43,13 +43,13 @@ Singleton {
         target: "volume"
 
         function increment(): void {
-            if (root.ready)
+            if (root.ready && !root.muted)
                 Pipewire.defaultAudioSink.audio.volume = Math.min(1, Pipewire.defaultAudioSink.audio.volume + 0.05);
             root.safeVolumeChanged();
         }
 
         function decrement(): void {
-            if (root.ready)
+            if (root.ready && !root.muted)
                 Pipewire.defaultAudioSink.audio.volume = Math.max(0, Pipewire.defaultAudioSink.audio.volume - 0.05);
             root.safeVolumeChanged();
         }

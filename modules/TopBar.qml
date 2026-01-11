@@ -1,10 +1,11 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+
 import Quickshell.Wayland
 import qs.common
-import qs.components
-import qs.services
+import qs.components.topbar
 
 Scope {
 
@@ -14,25 +15,17 @@ Scope {
         PanelWindow {
             id: root
 
-            required property var modelData
-            property color bgColor: Preferences.darkMode ? Colors.background : Qt.rgba(Colors.surface.r, Colors.surface.g, Colors.surface.b, 0.9)
-
-            WlrLayershell.namespace: "quickshell:topbar"
-
-            screen: modelData
-            color: GlobalStates.powerPanelOpen ? Colors.background : "transparent"
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: 150
-                    easing.type: Easing.OutCubic
-                }
-            }
-
-            implicitHeight: Theme.ui.topBarHeight
-
             WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.namespace: "quickshell:topbar"
             WlrLayershell.exclusiveZone: implicitHeight
+
+            required property var modelData
+            property color bgColor: Colors.background
+            screen: modelData
+
+            visible: true
+            color: GlobalStates.powerPanelOpen ? Colors.background : "transparent"
+            implicitHeight: Theme.ui.topBarHeight
 
             anchors {
                 right: true
@@ -40,18 +33,27 @@ Scope {
                 top: true
             }
 
-            visible: true
-
             Rectangle {
                 anchors.fill: parent
-                radius: Theme.ui.radius.md
-
                 anchors.margins: Theme.ui.padding.sm
                 anchors.bottomMargin: 0
 
-                opacity: GlobalStates.powerPanelOpen ? 0 : 1
-
                 color: root.bgColor
+                opacity: GlobalStates.powerPanelOpen ? 0 : 1
+                radius: Theme.ui.radius.md
+
+                RowLayout {
+                    anchors.fill: parent
+                    spacing: Theme.ui.padding.md
+
+                    BarLeftSection {
+                        screen: root.screen
+                    }
+
+                    BarCenterSection {}
+
+                    BarRightSection {}
+                }
 
                 Behavior on opacity {
                     NumberAnimation {
@@ -65,31 +67,44 @@ Scope {
                         duration: Theme.anim.durations.md
                     }
                 }
+            }
 
-                RowLayout {
-                    anchors.fill: parent
-                    spacing: Theme.ui.padding.md
-
-                    Workspaces {
-                        Layout.preferredHeight: parent.height - Theme.ui.padding.sm
-                        Layout.leftMargin: Theme.ui.padding.sm
-                        Layout.alignment: Qt.AlignVCenter
-                        screen: root.screen
-                    }
-
-                    TopBarMprisControl {
-                        id: mpris
-                    }
-
-                    TopBarOsd {}
-
-                    SystemStatusCard {
-                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                    }
-
-                    PowerButton {}
+            Behavior on color {
+                ColorAnimation {
+                    duration: 150
+                    easing.type: Easing.OutCubic
                 }
             }
         }
+    }
+
+    component BarLeftSection: RowLayout {
+        Layout.leftMargin: Theme.ui.padding.sm
+        Layout.fillHeight: true
+
+        property var screen
+
+        Workspaces {
+            Layout.fillHeight: true
+            screen: parent.screen
+        }
+
+        MediaControlsButton {}
+    }
+
+    component BarCenterSection: RowLayout {
+        Layout.fillHeight: true
+
+        Osd {}
+    }
+
+    component BarRightSection: RowLayout {
+        Layout.fillHeight: true
+
+        SystemStatusCard {
+            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+        }
+
+        PowerButton {}
     }
 }
