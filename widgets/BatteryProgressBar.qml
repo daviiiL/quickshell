@@ -15,13 +15,17 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: Colors.surface_container
+        color: Colors.secondary_container
         anchors.leftMargin: Theme.ui.padding.sm
         anchors.rightMargin: Theme.ui.padding.sm
-        radius: Theme.ui.radius.md
+        radius: Theme.ui.radius.lg - 2
         antialiasing: true
         smooth: true
 
+        // border {
+        //     width: 2
+        //     color: Colors.primary
+        // }
 
         Item {
             id: progressContainer
@@ -79,8 +83,7 @@ Item {
                         bottom: parent.bottom
                     }
                     width: parent.width * (root.value / root.total)
-                    color: root.charging ? successColor : root.value <= (root.total * 0.2) ? Colors.error : root.value <= (root.total * 0.8) ? Colors.primary : successColor
-
+                    color: root.charging ? successColor : root.value <= (root.total * 0.2) ? Colors.error : Colors.primary
                     Behavior on width {
                         NumberAnimation {
                             duration: Theme.anim.durations.sm

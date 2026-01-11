@@ -72,7 +72,7 @@ ShellRoot {
 
                             const cmd = ["razer-cli", '-c', razercolor];
                             Quickshell.execDetached(cmd);
-                            Quickshell.execDetached(["notify-send", "-a", "Razer CLI", "Syncing peripheral lighting", "Applying theme color to razer devices"]);
+                            // Quickshell.execDetached(["notify-send", "-a", "Razer CLI", "Syncing peripheral lighting", "Applying theme color to razer devices"]);
                         }
                     }
                 }
