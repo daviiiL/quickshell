@@ -13,7 +13,7 @@ RectWidgetCard {
     ColumnLayout {
         spacing: 5
         width: parent.width
-        SysIndicatorButton {
+        StyledIndicatorButton {
             Layout.alignment: Qt.AlignHCenter
             Layout.topMargin: 10
             checked: Notifications.unread > 0
@@ -25,7 +25,7 @@ RectWidgetCard {
                 GlobalStates.notificationCenterOpen = !GlobalStates.notificationCenterOpen;
             }
         }
-        SysIndicatorButton {
+        StyledIndicatorButton {
             Layout.alignment: Qt.AlignHCenter
 
             checked: SystemBluetooth.enabled
@@ -33,7 +33,7 @@ RectWidgetCard {
             buttonText: "BT"
             onClicked: SystemBluetooth.toggleBluetooth()
         }
-        SysIndicatorButton {
+        StyledIndicatorButton {
             Layout.alignment: Qt.AlignHCenter
 
             buttonIcon: Network.materialSymbol
@@ -52,7 +52,7 @@ RectWidgetCard {
 
             onClicked: () => Network.toggleWifi()
         }
-        SysIndicatorButton {
+        StyledIndicatorButton {
             Layout.alignment: Qt.AlignHCenter
 
             buttonIcon: Power.powerProfileIcon
@@ -71,7 +71,7 @@ RectWidgetCard {
             }
         }
 
-        SysIndicatorButton {
+        StyledIndicatorButton {
             Layout.alignment: Qt.AlignHCenter
             Layout.bottomMargin: 10
 
