@@ -23,7 +23,7 @@ Scope {
             property color bgColor: Colors.background
             screen: modelData
 
-            visible: true
+            visible: !GlobalStates.powerPanelOpen
             color: GlobalStates.powerPanelOpen ? Colors.background : "transparent"
             implicitHeight: Theme.ui.topBarHeight
 

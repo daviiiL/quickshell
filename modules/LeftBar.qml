@@ -22,7 +22,7 @@ Scope {
                 scope.instantiated(true);
             }
 
-            visible: true
+            visible: !GlobalStates.powerPanelOpen
 
             screen: modelData
             color: GlobalStates.powerPanelOpen ? Colors.background : "transparent"

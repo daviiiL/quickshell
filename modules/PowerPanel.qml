@@ -200,7 +200,6 @@ Scope {
                 width: buttonGrid.implicitWidth + Theme.ui.padding.lg * 2
 
                 anchors.centerIn: parent
-
                 MouseArea {
                     anchors.fill: parent
                     hoverEnabled: false
