@@ -20,6 +20,8 @@ FloatingWindow {
 
     color: "transparent"
 
+    minimumSize: Qt.size(600, 800)
+
     title: "Wallpaper Picker"
 
     IpcHandler {

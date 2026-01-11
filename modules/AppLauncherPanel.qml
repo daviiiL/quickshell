@@ -224,39 +224,6 @@ Scope {
                             values: AppLauncher.results
                         }
 
-                        add: Transition {
-                            NumberAnimation {
-                                properties: "opacity"
-                                from: 0
-                                to: 1
-                                duration: Theme.anim.durations.xs
-                                easing.type: Easing.OutQuad
-                            }
-                            NumberAnimation {
-                                properties: "y"
-                                from: -10
-                                duration: Theme.anim.durations.xs
-                                easing.type: Easing.OutCubic
-                            }
-                        }
-
-                        remove: Transition {
-                            NumberAnimation {
-                                properties: "opacity"
-                                to: 0
-                                duration: Theme.anim.durations.xs * 0.8
-                                easing.type: Easing.InQuad
-                            }
-                        }
-
-                        displaced: Transition {
-                            NumberAnimation {
-                                properties: "y"
-                                duration: Theme.anim.durations.xs
-                                easing.type: Easing.OutCubic
-                            }
-                        }
-
                         delegate: AppLauncherItem {
                             required property var modelData
                             width: resultsList.width

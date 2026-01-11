@@ -52,8 +52,7 @@ Scope {
                     closePanel();
             }
 
-            width: 670
-            height: 770
+            minimumSize: Qt.size(400, 300)
 
             color: "transparent"
 
