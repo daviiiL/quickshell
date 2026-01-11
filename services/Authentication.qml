@@ -70,6 +70,7 @@ Singleton {
         onCompleted: result => {
             if (result == PamResult.Success) {
                 root.unlocked();
+                Quickshell.execDetached(["bash", "-c", Quickshell.shellPath("scripts/startup-sound.sh")]);
             } else {
                 root.clearPassword();
                 root.unlockInProgress = false;

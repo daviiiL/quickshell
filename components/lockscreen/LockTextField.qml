@@ -63,13 +63,15 @@ Rectangle {
         anchors.margins: 10
         echoMode: TextInput.Password
         color: Colors.current.primary
-        font.pointSize: Theme.font.size.md
+        // font.pointSize: Theme.font.size.md
         font.family: Theme.font.family.inter_regular
         verticalAlignment: TextInput.AlignVCenter
         focus: true
         selectByMouse: true
 
         clip: true
+
+        font.pixelSize: Theme.font.size.lg
 
         onTextChanged: {
             Authentication.currentPassword = text;

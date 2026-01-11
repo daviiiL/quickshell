@@ -14,9 +14,14 @@ Rectangle {
 
     implicitHeight: buttonText.implicitHeight + 12
     implicitWidth: 100
-    color: root.isActive ? Colors.current.primary_container : Colors.current.secondary_container
-    radius: Theme.ui.radius.lg
+    color: root.isActive ? Colors.current.surface_container_high : Colors.current.surface_container_low
+    radius: Theme.ui.radius.md
     opacity: root.enabled ? 1.0 : 0.5
+
+    border {
+        width: root.isActive ? 1 : 0
+        color: Colors.outline_variant
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -34,8 +39,8 @@ Rectangle {
             visible: root.icon !== ""
             icon: root.icon
             fill: 1
-            iconSize: Theme.font.size.md
-            fontColor: root.isActive ? Colors.current.on_primary_container : Colors.current.on_secondary_container
+            iconSize: Theme.font.size.lg
+            fontColor: root.isActive ? Colors.primary : Colors.on_surface
             anchors.verticalCenter: parent.verticalCenter
         }
 

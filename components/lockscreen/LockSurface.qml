@@ -133,6 +133,11 @@ MouseArea {
     LockToolbar {
         id: mainToolbar
 
+        border {
+            width: 1
+            color: Colors.outline_variant
+        }
+
         anchors {
             horizontalCenter: parent.horizontalCenter
             bottom: parent.bottom
@@ -172,7 +177,6 @@ MouseArea {
         target: passwordField.textInput
 
         function onTextChanged() {
-            // User is actively typing, keep components alive & visible
             if (GlobalStates.isLaptop) {
                 batteryCard.visible = true;
                 batteryCard.opacity = 1.0;
@@ -202,10 +206,6 @@ MouseArea {
     onPositionChanged: {
         root.onActivity();
     }
-
-    // Keys.onPressed: {
-    //
-    // }
 
     Component.onDestruction: {
         hideComponentsTimer.stop();
