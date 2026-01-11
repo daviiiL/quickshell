@@ -44,7 +44,7 @@ Rectangle {
             Rectangle {
 
                 Layout.preferredWidth: Math.min(500, colorModeSection.width)
-                Layout.preferredHeight: Preferences.usePreferredScheme ? 200 : 240
+                Layout.preferredHeight: Preferences.usePreferredScheme ? 240 : 280
 
                 color: Colors.surface_container_high
                 radius: Theme.ui.radius.md
@@ -145,6 +145,53 @@ Rectangle {
                         visible: !Preferences.usePreferredScheme
                         Layout.fillWidth: true
                         Layout.preferredHeight: 32
+                    }
+
+                    RowLayout {
+                        id: openrazerCheckboxRow
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 32
+
+                        CheckBox {
+                            id: openrazerCheckBox
+                            text: "OpenRazer services installed"
+                            font {
+                                family: Theme.font.family.inter_regular
+                                pixelSize: Theme.font.size.lg
+                            }
+                            palette.windowText: Colors.on_surface
+
+                            checked: Preferences.openrazerInstalled
+
+                            onClicked: () => Preferences.toggleOpenRazerInstalled()
+
+                            indicator: Rectangle {
+                                anchors.verticalCenter: parent.verticalCenter
+                                implicitHeight: 20
+                                implicitWidth: 20
+                                color: Colors.secondary_container
+                                radius: Theme.ui.radius.lg
+
+                                Canvas {
+                                    anchors.fill: parent
+                                    visible: openrazerCheckBox.checked
+                                    onPaint: {
+                                        var ctx = getContext("2d");
+                                        ctx.clearRect(0, 0, width, height);
+
+                                        var r = Math.min(width, height) * 0.3;
+                                        var cx = width / 2;
+                                        var cy = height / 2;
+
+                                        ctx.beginPath();
+                                        ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
+                                        ctx.fillStyle = Colors.on_secondary_container;
+                                        ctx.fill();
+                                    }
+                                    onVisibleChanged: requestPaint()
+                                }
+                            }
+                        }
                     }
                 }
             }

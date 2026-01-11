@@ -171,6 +171,7 @@ Scope {
 
                             onTextChanged: {
                                 AppLauncher.query = text;
+                                resultsList.currentIndex = 0;
                             }
 
                             Keys.onPressed: event => {

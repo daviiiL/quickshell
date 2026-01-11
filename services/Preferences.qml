@@ -11,6 +11,7 @@ Singleton {
 
     property bool darkMode
     property bool usePreferredScheme
+    property bool openrazerInstalled
     property string wallpaperPath
     property string matugenScheme
     readonly property string homeDir: Quickshell.env("HOME")
@@ -19,6 +20,11 @@ Singleton {
     property bool isLoaded: false
 
     signal colorSchemeChanged
+
+    function toggleOpenRazerInstalled(): void {
+        root.openrazerInstalled = !root.openrazerInstalled;
+        defaultAdapter.openrazerInstalled = root.openrazerInstalled;
+    }
 
     function setColorMode(value: int) {
         root.darkMode = value === 0 ? true : false;
@@ -81,6 +87,7 @@ Singleton {
         property string storedWallpaperPath
         property string storedMatugenScheme
         property bool usePreferredScheme
+        property bool openrazerInstalled
     }
 
     Io.FileView {
@@ -100,6 +107,7 @@ Singleton {
             root.matugenScheme = defaultAdapter.storedMatugenScheme;
             root.wallpaperPath = defaultAdapter.storedWallpaperPath;
             root.usePreferredScheme = defaultAdapter.usePreferredScheme;
+            root.openrazerInstalled = defaultAdapter.openrazerInstalled;
             root.isLoaded = true;
         }
 
@@ -108,11 +116,13 @@ Singleton {
             defaultAdapter.storedWallpaperPath = root.defaultWallpaperPath;
             defaultAdapter.storedMatugenScheme = "scheme-tonal-spot";
             defaultAdapter.usePreferredScheme = true;
+            defaultAdapter.openrazerInstalled = false;
 
             root.darkMode = true;
             root.wallpaperPath = root.defaultWallpaperPath;
             root.matugenScheme = "scheme-tonal-spot";
             root.usePreferredScheme = true;
+            root.openrazerInstalled = false;
 
             root.isLoaded = true;
             prefFileView.writeAdapter();

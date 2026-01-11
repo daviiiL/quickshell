@@ -1,5 +1,6 @@
 pragma Singleton
 pragma ComponentBehavior: Bound
+
 import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
@@ -25,6 +26,7 @@ Singleton {
     property string searchQuery: ""
     property string matugenScheme: Preferences.matugenScheme || "scheme-tonal-spot"
     property string darkMode: Preferences.darkMode ? "dark" : "light" || "dark"
+    property bool openrazerInstalled: Preferences.openrazerInstalled || false
 
     readonly property list<string> extensions: ["jpg", "jpeg", "png", "webp", "avif", "bmp", "svg"]
 
@@ -76,6 +78,7 @@ Singleton {
         // console.debug(`Applying wallpaper ${path} with current preferences: darkMode=${isDarkMode}, scheme=${scheme}`);
         applyProc.exec([wallpaperSwitchScriptPath, "--scheme", scheme, "--mode", isDarkMode ? "dark" : "light", path]);
         Preferences.setWallpaperPath(path);
+
         root.changed();
     }
 
