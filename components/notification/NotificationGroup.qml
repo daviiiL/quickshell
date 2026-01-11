@@ -47,21 +47,17 @@ MouseArea {
         root.expanded = !root.expanded;
     }
 
-    function makeTranslucent(color, alpha = 0.15) {
-        return Qt.rgba(color.r, color.g, color.b, alpha);
-    }
-
     onContainsMouseChanged: {
         if (!root.popup)
             return;
-        if (root.containsMouse)
-            root.notifications.forEach(notif => {
+
+        root.notifications.forEach(notif => {
+            if (root.containsMouse) {
                 Notifications.cancelTimeout(notif.notificationId);
-            });
-        else
-            root.notifications.forEach(notif => {
+            } else {
                 Notifications.timeoutNotification(notif.notificationId);
-            });
+            }
+        });
     }
 
     DragManager {
@@ -252,12 +248,9 @@ MouseArea {
                     }
                 }
 
-                Rectangle {
-                    implicitHeight: 15
-                }
-
                 StyledListView {
                     id: notificationsColumn
+                    Layout.topMargin: 15
                     implicitHeight: contentHeight
                     Layout.fillWidth: true
                     spacing: root.expanded ? 5 : 3

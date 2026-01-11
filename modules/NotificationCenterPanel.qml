@@ -18,7 +18,7 @@ Scope {
 
     Timer {
         id: closeDelayTimer
-        interval: 200 // Match animation duration
+        interval: 200
         repeat: false
         running: false
         onTriggered: {
@@ -33,13 +33,22 @@ Scope {
             GlobalStates.notificationCenterOpen = !GlobalStates.notificationCenterOpen;
 
             if (GlobalStates.notificationCenterOpen) {
-                // Opening: show panel immediately, opacity will animate 0→1
                 root.panelActuallyVisible = true;
                 closeDelayTimer.stop();
             } else {
-                // Closing: opacity animates 1→0, then hide panel after delay
                 closeDelayTimer.restart();
             }
+        }
+
+        function close() {
+            GlobalStates.notificationCenterOpen = false;
+            closeDelayTimer.restart();
+        }
+
+        function open() {
+            GlobalStates.notificationCenterOpen = true;
+            root.panelActuallyVisible = true;
+            closeDelayTimer.stop();
         }
     }
 
@@ -76,13 +85,20 @@ Scope {
 
             Rectangle {
                 id: contentRect
-                anchors.fill: parent
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+
+                implicitWidth: panel.implicitWidth - Theme.ui.padding.sm
+
                 radius: Theme.ui.radius.md
-                color: Colors.surface_container_low
+                color: Colors.surface
                 clip: true
 
                 transform: Translate {
-                    x: GlobalStates.notificationCenterOpen ? 0 : -root.panelWidth
+                    x: GlobalStates.notificationCenterOpen ? Theme.ui.padding.sm : -root.panelWidth
 
                     Behavior on x {
                         NumberAnimation {

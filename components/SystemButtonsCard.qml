@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 
 import qs.common
 import qs.widgets
@@ -22,7 +23,7 @@ RectWidgetCard {
             buttonText: "Notif"
             onClicked: () => {
                 Notifications.markAllRead();
-                GlobalStates.notificationCenterOpen = !GlobalStates.notificationCenterOpen;
+                Quickshell.execDetached(["qs", "ipc", "call", "notifcenter", "toggle"]);
             }
         }
         StyledIndicatorButton {
