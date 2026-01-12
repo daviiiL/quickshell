@@ -7,22 +7,37 @@ import qs.services
 
 Rectangle {
     id: root
-    Layout.preferredHeight: icon.implicitHeight + 4
+    Layout.preferredHeight: Preferences.focusedMode ? 24 : (icon.implicitHeight + 4)
     Layout.rightMargin: Theme.ui.padding.sm
-    Layout.preferredWidth: icon.implicitWidth
-    color: Qt.rgba(hoverBgColor.r, hoverBgColor.g, hoverBgColor.b, 0)
-    radius: Theme.ui.radius.md
+    Layout.preferredWidth: Preferences.focusedMode ? 24 : icon.implicitWidth
+    color: Qt.alpha(hoverBgColor, 0)
+    radius: Preferences.focusedMode ? 1 : Theme.ui.radius.md
 
     readonly property color iconColor: Preferences.darkMode ? Colors.secondary : Colors.primary
     readonly property color hoverIconColor: Preferences.darkMode ? Colors.on_primary_container : Colors.on_primary_container
-    readonly property color hoverBgColor: Preferences.darkMode ? Colors.primary_container : Colors.primary_container
+    readonly property color hoverBgColor: Preferences.focusedMode ? Qt.alpha(Colors.primary_container, 0.3) : Colors.primary_container
+
+    border {
+        width: Preferences.focusedMode ? 1 : 0
+        color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.6) : Colors.outline
+    }
+
+    Rectangle {
+        visible: Preferences.focusedMode
+        width: 6
+        height: 1
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.bottomMargin: -0.5
+        anchors.rightMargin: 2
+        color: Colors.primary
+        opacity: 0.7
+    }
 
     MaterialSymbol {
         id: icon
-        anchors.fill: parent
         fontColor: root.iconColor
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.centerIn: parent
         icon: "settings_power"
         iconSize: 15
     }
@@ -46,7 +61,7 @@ Rectangle {
 
         onExited: {
             icon.fontColor = root.iconColor;
-            parent.color = Qt.rgba(root.hoverBgColor.r, root.hoverBgColor.g, root.hoverBgColor.b, 0);
+            parent.color = Qt.alpha(root.hoverBgColor, 0);
         }
 
         onPressed: {

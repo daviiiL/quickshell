@@ -17,18 +17,34 @@ Rectangle {
 
     readonly property color iconColor: Colors.primary
     readonly property color textColor: Colors.on_surface
-    readonly property color bgColor: Preferences.darkMode ? Colors.surface_container : Colors.primary_container
-    readonly property color hoverBgColor: Colors.surface_container_high
+    readonly property color bgColor: Preferences.focusedMode ? Qt.alpha(Colors.surface_container, 0.25) : (Preferences.darkMode ? Colors.surface_container : Colors.primary_container)
+    readonly property color hoverBgColor: Preferences.focusedMode ? Qt.alpha(Colors.surface_container_high, 0.4) : Colors.surface_container_high
     readonly property GradientColors gradientColors: GradientColors {}
 
     component GradientColors: QtObject {
-        readonly property color start: Preferences.darkMode ? "transparent" : root.bgColor
-        readonly property color end: Preferences.darkMode ? Colors.surface : Colors.background
+        readonly property color start: Preferences.focusedMode ? "transparent" : (Preferences.darkMode ? "transparent" : root.bgColor)
+        readonly property color end: Preferences.focusedMode ? "transparent" : (Preferences.darkMode ? Colors.surface : Colors.background)
     }
 
     visible: SystemMpris.activePlayer !== null
-    radius: Theme.ui.radius.md
+    radius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
     color: bgColor
+
+    border {
+        width: Preferences.focusedMode ? 1 : 0
+        color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.5) : Colors.outline
+    }
+
+    Rectangle {
+        visible: Preferences.focusedMode
+        width: 2
+        height: parent.height * 0.6
+        anchors.left: parent.left
+        anchors.leftMargin: -1
+        anchors.verticalCenter: parent.verticalCenter
+        color: Colors.primary
+        opacity: 0.7
+    }
 
     onXChanged: {
         GlobalStates.mediaControlsX = root.x;
@@ -65,8 +81,8 @@ Rectangle {
     RowLayout {
         id: mediaContent
         anchors.fill: parent
-        anchors.leftMargin: Theme.ui.padding.sm
-        spacing: Theme.ui.padding.sm
+        anchors.leftMargin: Preferences.focusedMode ? Theme.ui.padding.xs : Theme.ui.padding.sm
+        spacing: Preferences.focusedMode ? 6 : Theme.ui.padding.sm
 
         MaterialSymbol {
             icon: SystemMpris.isPlaying ? "music_note" : "pause"

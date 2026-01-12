@@ -1,5 +1,6 @@
 import QtQuick
 import qs.common
+import qs.services
 
 Item {
     id: root
@@ -12,14 +13,14 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: height / 2
+        radius: Preferences.focusedMode ? 1 : (height / 2)
         color: root.trackColor
 
         Rectangle {
             width: Math.max(0, Math.min(1, root.value)) * parent.width
             height: parent.height
             color: root.highlightColor
-            radius: height / 2
+            radius: Preferences.focusedMode ? 0 : (height / 2)
 
             Behavior on width {
                 NumberAnimation {

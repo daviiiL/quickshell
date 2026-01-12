@@ -15,12 +15,12 @@ Rectangle {
     width: 50
     height: 50
 
-    radius: Theme.ui.radius.md
-    color: Qt.alpha(checked ? (Preferences.darkMode ? Colors.primary_container : Colors.primary_fixed_dim) : Colors.secondary_container, 0.4)
+    radius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
+    color: Preferences.focusedMode ? Qt.alpha(checked ? Colors.primary_container : Colors.surface, 0.25) : Qt.alpha(checked ? (Preferences.darkMode ? Colors.primary_container : Colors.primary_fixed_dim) : Colors.secondary_container, 0.4)
     scale: mouseArea.containsMouse ? 0.95 : 1.0
 
     border {
-        color: checked ? (Preferences.darkMode ? Colors.primary_container : Qt.alpha(Colors.secondary, 0.7)) : Qt.alpha(Colors.outline_variant, 0.4)
+        color: Preferences.focusedMode ? Qt.alpha(checked ? Colors.primary : Colors.outline, 0.6) : (checked ? (Preferences.darkMode ? Colors.primary_container : Qt.alpha(Colors.secondary, 0.7)) : Qt.alpha(Colors.outline_variant, 0.4))
         width: 1
     }
 

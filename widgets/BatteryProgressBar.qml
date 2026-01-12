@@ -15,12 +15,17 @@ Item {
     Rectangle {
         id: background
         anchors.fill: parent
-        color: Colors.secondary_container
+        color: Preferences.focusedMode ? "transparent" : Colors.secondary_container
         anchors.leftMargin: Theme.ui.padding.sm
         anchors.rightMargin: Theme.ui.padding.sm
-        radius: Theme.ui.radius.lg - 2
+        radius: Preferences.focusedMode ? 1 : (Theme.ui.radius.lg - 2)
         antialiasing: true
         smooth: true
+
+        border {
+            width: Preferences.focusedMode ? 1 : 0
+            color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.4) : "transparent"
+        }
 
         Item {
             id: progressContainer
@@ -100,7 +105,7 @@ Item {
             Rectangle {
                 id: mask
                 anchors.fill: parent
-                radius: Theme.ui.radius.md
+                radius: Preferences.focusedMode ? 1 : Theme.ui.radius.md
                 antialiasing: true
                 visible: false
             }

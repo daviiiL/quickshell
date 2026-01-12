@@ -15,12 +15,12 @@ Rectangle {
     property bool isLockscreenModule: false
 
     border {
-        width: 1
-        color: Colors.outline
+        width: Preferences.focusedMode ? 1 : 1
+        color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.5) : Colors.outline
     }
 
-    color: Preferences.darkMode ? Colors.background : Colors.surface
-    radius: Theme.ui.radius.lg
+    color: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : (Preferences.darkMode ? Colors.background : Colors.surface)
+    radius: Preferences.focusedMode ? 2 : Theme.ui.radius.lg
 
     Timer {
         running: root.player?.playbackState == MprisPlaybackState.Playing
@@ -41,7 +41,7 @@ Rectangle {
             Rectangle {
                 id: artBackground
                 anchors.fill: parent
-                radius: Theme.ui.radius.sm
+                radius: Preferences.focusedMode ? 1 : Theme.ui.radius.sm
                 color: Colors.surface_container_high
             }
 
@@ -57,7 +57,7 @@ Rectangle {
             Rectangle {
                 id: mask
                 anchors.fill: parent
-                radius: Theme.ui.radius.sm
+                radius: Preferences.focusedMode ? 1 : Theme.ui.radius.sm
                 antialiasing: true
                 visible: false
             }

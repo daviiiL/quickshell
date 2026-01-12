@@ -10,14 +10,26 @@ import qs.services
 
 Rectangle {
     id: root
-    implicitWidth: layout.implicitWidth + Theme.ui.padding.sm * 2
+    implicitWidth: layout.implicitWidth + (Preferences.focusedMode ? Theme.ui.padding.sm * 1.5 : Theme.ui.padding.sm * 2)
     implicitHeight: Theme.ui.topBarHeight / 1.5
-    color: Preferences.darkMode ? Colors.surface : Colors.surface_variant
-    radius: Theme.ui.radius.md
+    color: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : (Preferences.darkMode ? Colors.surface : Colors.surface_variant)
+    radius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
 
     border {
-        width: 0.5
-        color: Colors.outline_variant
+        width: Preferences.focusedMode ? 1 : 0.5
+        color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.6) : Colors.outline_variant
+    }
+
+    Rectangle {
+        visible: Preferences.focusedMode
+        width: 8
+        height: 1
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.topMargin: -0.5
+        anchors.leftMargin: 6
+        color: Colors.primary
+        opacity: 0.8
     }
 
     function getTempColor(temp) {
@@ -39,8 +51,8 @@ Rectangle {
     RowLayout {
         id: layout
         anchors.centerIn: parent
-        anchors.margins: Theme.ui.padding.sm
-        spacing: 10
+        anchors.margins: Preferences.focusedMode ? Theme.ui.padding.xs : Theme.ui.padding.sm
+        spacing: Preferences.focusedMode ? 8 : 10
 
         anchors.verticalCenter: parent.verticalCenter
 
@@ -152,10 +164,10 @@ Rectangle {
                 Rectangle {
                     id: ramBackground
                     anchors.fill: parent
-                    color: Colors.surface_container_low
-                    radius: Theme.ui.radius.sm
+                    color: Preferences.focusedMode ? "transparent" : Colors.surface_container_low
+                    radius: Preferences.focusedMode ? 1 : Theme.ui.radius.sm
                     border.width: 1
-                    border.color: Qt.rgba(Colors.outline.r, Colors.outline.g, Colors.outline.b, 0.3)
+                    border.color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.4) : Qt.alpha(Colors.outline, 0.3)
                     antialiasing: true
 
                     Rectangle {
@@ -167,7 +179,7 @@ Rectangle {
                         }
                         width: parent.width * Math.min(Glances.ram.utilization / 100, 1.0)
                         color: root.getTempColor(Glances.ram.temp)
-                        radius: Theme.ui.radius.sm
+                        radius: Preferences.focusedMode ? 0 : Theme.ui.radius.sm
                         antialiasing: true
 
                         Behavior on width {

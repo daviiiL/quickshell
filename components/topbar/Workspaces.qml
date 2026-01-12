@@ -19,10 +19,10 @@ Rectangle {
 
     property int focusedWorkspacePositionInRow: -1
 
-    readonly property color occupiedBackgroundColor: Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.1)
-    readonly property color activeIndicatorColor: Preferences.darkMode ? Colors.primary_container : root.makeTranslucent(Colors.inverse_primary, 1.3)
-    readonly property color activeIndicatorBorderColor: Preferences.darkMode ? Colors.primary_container : Colors.primary
-    readonly property color activeWorkspaceTextColor: Preferences.darkMode ? Colors.on_primary_container : Colors.primary
+    readonly property color occupiedBackgroundColor: Preferences.focusedMode ? Qt.alpha(Colors.surface_container_high, 0.3) : (Preferences.darkMode ? Colors.surface_container_high : Qt.darker(Colors.surface_container, 1.1))
+    readonly property color activeIndicatorColor: Preferences.focusedMode ? Qt.alpha(Colors.primary_container, 0.3) : (Preferences.darkMode ? Colors.primary_container : root.makeTranslucent(Colors.inverse_primary, 1.3))
+    readonly property color activeIndicatorBorderColor: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.7) : (Preferences.darkMode ? Colors.primary_container : Colors.primary)
+    readonly property color activeWorkspaceTextColor: Preferences.focusedMode ? Colors.primary : (Preferences.darkMode ? Colors.on_primary_container : Colors.primary)
     readonly property color occupiedWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface : Colors.on_surface
     readonly property color inactiveWorkspaceTextColor: Preferences.darkMode ? Colors.on_surface_variant : Colors.on_surface
 
@@ -34,10 +34,10 @@ Rectangle {
 
     Rectangle {
         z: 2
-        radius: Theme.ui.radius.lg
-        color: Preferences.darkMode ? Qt.alpha(root.activeIndicatorColor, 0.4) : root.activeIndicatorColor
+        radius: Preferences.focusedMode ? 1 : Theme.ui.radius.lg
+        color: Preferences.focusedMode ? "transparent" : (Preferences.darkMode ? Qt.alpha(root.activeIndicatorColor, 0.4) : root.activeIndicatorColor)
         border.color: root.activeIndicatorBorderColor
-        border.width: 0.5
+        border.width: Preferences.focusedMode ? 1 : 0.5
 
         property real idx1: root.focusedWorkspacePositionInRow
         property real idx2: root.focusedWorkspacePositionInRow
@@ -66,6 +66,27 @@ Rectangle {
             NumberAnimation {
                 duration: Theme.anim.durations.xs
             }
+        }
+
+        Rectangle {
+            visible: Preferences.focusedMode
+            width: 4
+            height: 1
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.topMargin: -0.5
+            color: Colors.primary
+            opacity: 0.8
+        }
+        Rectangle {
+            visible: Preferences.focusedMode
+            width: 4
+            height: 1
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.bottomMargin: -0.5
+            color: Colors.primary
+            opacity: 0.8
         }
     }
 

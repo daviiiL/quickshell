@@ -12,13 +12,15 @@ Item {
 
     default property alias text: titleText.text
 
-    property color bgColor: Preferences.darkMode ? makeTranslucent(Colors.surface) : makeTranslucent(Colors.surface)
+    property color bgColor: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : makeTranslucent(Colors.surface)
     property color fgColor: Colors.primary
     property real max: 100
     property real value: 0
     function makeTranslucent(color) {
         return Qt.alpha(color, 0.8);
     }
+
+    property int borderRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
 
     Text {
         id: titleText
@@ -49,12 +51,36 @@ Item {
 
         implicitWidth: Math.min(500, parent.width)
         color: root.bgColor
-        border.color: Colors.primary_container
-        radius: Theme.ui.radius.md
+        border.color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.6) : Colors.primary_container
+        border.width: 1
+        radius: root.borderRadius
         antialiasing: true
         smooth: true
 
         anchors.margins: Theme.ui.padding.sm
+
+        Rectangle {
+            visible: Preferences.focusedMode
+            width: 10
+            height: 1
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.topMargin: -0.5
+            anchors.leftMargin: 10
+            color: Colors.primary
+            opacity: 0.8
+        }
+        Rectangle {
+            visible: Preferences.focusedMode
+            width: 10
+            height: 1
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.bottomMargin: -0.5
+            anchors.rightMargin: 10
+            color: Colors.primary
+            opacity: 0.8
+        }
 
         Item {
             id: progressContainer
@@ -91,7 +117,7 @@ Item {
             Rectangle {
                 id: mask
                 anchors.fill: parent
-                radius: Theme.ui.radius.md
+                radius: root.borderRadius
                 antialiasing: true
                 visible: false
             }

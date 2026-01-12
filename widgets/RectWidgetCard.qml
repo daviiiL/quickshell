@@ -6,9 +6,26 @@ import qs.services
 
 Rectangle {
     id: root
-    color: contentBackground
+    color: Preferences.focusedMode ? "transparent" : contentBackground
 
-    radius: Theme.ui.radius.md
+    radius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
+
+    border {
+        width: Preferences.focusedMode ? 1 : 0
+        color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.5) : "transparent"
+    }
+
+    Rectangle {
+        visible: Preferences.focusedMode
+        width: 6
+        height: 1
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: -0.5
+        anchors.rightMargin: 4
+        color: Colors.primary
+        opacity: 0.8
+    }
 
     property bool showTitle: false
     property string title: ""
@@ -35,9 +52,9 @@ Rectangle {
             opacity: root.showTitle ? 1.0 : 0.0
             Layout.fillWidth: true
             Layout.preferredHeight: root.showTitle ? 30 : 0
-            color: Preferences.darkMode ? Qt.rgba(Colors.secondary_container.r, Colors.secondary_container.g, Colors.secondary_container.b, 0.2) : Qt.rgba(Colors.secondary_fixed_dim.r, Colors.secondary_fixed_dim.g, Colors.secondary_fixed_dim.b, 0.5)
-            topRightRadius: Theme.ui.radius.md
-            topLeftRadius: Theme.ui.radius.md
+            color: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : (Preferences.darkMode ? Qt.alpha(Colors.secondary_container, 0.2) : Qt.alpha(Colors.secondary_fixed_dim, 0.5))
+            topRightRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
+            topLeftRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
 
             Behavior on color {
                 ColorAnimation {
@@ -77,11 +94,11 @@ Rectangle {
             Layout.fillWidth: true
             implicitHeight: childrenRect.height
             Layout.preferredHeight: implicitHeight
-            bottomLeftRadius: Theme.ui.radius.md
-            bottomRightRadius: Theme.ui.radius.md
-            topLeftRadius: root.showTitle ? 0 : Theme.ui.radius.md
-            topRightRadius: root.showTitle ? 0 : Theme.ui.radius.md
-            color: root.contentBackground
+            bottomLeftRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
+            bottomRightRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
+            topLeftRadius: root.showTitle ? 0 : (Preferences.focusedMode ? 2 : Theme.ui.radius.md)
+            topRightRadius: root.showTitle ? 0 : (Preferences.focusedMode ? 2 : Theme.ui.radius.md)
+            color: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : root.contentBackground
 
             Behavior on color {
                 ColorAnimation {

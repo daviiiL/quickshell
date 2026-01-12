@@ -3,9 +3,11 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Qt5Compat.GraphicalEffects
 import Quickshell.Wayland
 import qs.common
 import qs.components
+import qs.services
 
 Scope {
     id: scope
@@ -16,7 +18,7 @@ Scope {
         PanelWindow {
             id: root
             required property var modelData
-            property color bgColor: Qt.rgba(Colors.surface_light.r, Colors.surface_light.g, Colors.surface_light.b, 0.9)
+            property color bgColor: Preferences.focusedMode ? "transparent" : Qt.alpha(Colors.surface_light, 0.9)
 
             Component.onCompleted: {
                 scope.instantiated(true);
@@ -48,8 +50,66 @@ Scope {
             Rectangle {
                 anchors.fill: parent
                 opacity: GlobalStates.powerPanelOpen ? 0 : 1
+                clip: true
+                radius: Preferences.focusedMode ? 2 : 0
+
+                border {
+                    width: Preferences.focusedMode ? 1 : 0
+                    color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.5) : Colors.outline
+                }
 
                 color: root.bgColor
+
+                Item {
+                    anchors.fill: parent
+                    visible: Preferences.focusedMode
+
+                    Rectangle {
+                        id: noiseTexture
+                        anchors.fill: parent
+                        visible: false
+                        layer.enabled: true
+
+                        Canvas {
+                            anchors.fill: parent
+                            onPaint: {
+                                var ctx = getContext("2d");
+                                var imageData = ctx.createImageData(width, height);
+                                var data = imageData.data;
+
+                                for (var i = 0; i < data.length; i += 4) {
+                                    var gray = Math.random() * 50 + 100;
+                                    data[i] = gray;
+                                    data[i + 1] = gray;
+                                    data[i + 2] = gray;
+                                    data[i + 3] = 100;
+                                }
+
+                                ctx.putImageData(imageData, 0, 0);
+                            }
+                            Component.onCompleted: requestPaint()
+                        }
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: Colors.primary_container
+                            opacity: 0.7
+                        }
+                    }
+
+                    FastBlur {
+                        anchors.fill: parent
+                        source: noiseTexture
+                        radius: 40
+                        cached: true
+                        transparentBorder: true
+                    }
+
+                    Rectangle {
+                        anchors.fill: parent
+                        color: Qt.alpha(Colors.surface, 0.25)
+                    }
+                }
 
                 Behavior on opacity {
                     NumberAnimation {

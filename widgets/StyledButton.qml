@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.common
 import qs.widgets
+import qs.services
 
 Rectangle {
     id: root
@@ -19,7 +20,7 @@ Rectangle {
     width: 70
     height: 30
 
-    radius: Theme.ui.radius.md
+    radius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
 
     transform: Scale {
         origin.x: root.width / 2
@@ -51,6 +52,16 @@ Rectangle {
         }
     }
     color: {
+        if (Preferences.focusedMode) {
+            if (!root.clickable) {
+                return Qt.alpha(Colors.surface_variant, 0.25);
+            }
+            if (root.highlighted) {
+                return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.alpha(Colors.primary, 0.4) : Qt.alpha(Colors.primary, 0.3);
+            }
+            return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.alpha(Colors.primary_container, 0.35) : Qt.alpha(Colors.secondary_container, 0.25);
+        }
+
         if (!root.clickable) {
             return root.makeTranslucent(Colors.surface_variant);
         }
@@ -68,7 +79,15 @@ Rectangle {
     }
 
     border {
+        width: Preferences.focusedMode ? 1 : 0
         color: {
+            if (Preferences.focusedMode) {
+                if (!root.clickable) {
+                    return Qt.alpha(Colors.outline, 0.4);
+                }
+                return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.alpha(Colors.primary, 0.6) : Qt.alpha(Colors.outline, 0.5);
+            }
+
             if (!root.clickable) {
                 return Colors.surface_variant;
             }
