@@ -67,7 +67,7 @@ Scope {
             implicitWidth: panelWidth
             color: "transparent"
 
-            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
             WlrLayershell.namespace: "quickshell:controlcenter"
 

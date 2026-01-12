@@ -26,6 +26,14 @@ Item {
         }
     }
 
+    Connections {
+        target: Colors.colorsChanged
+
+        function onColorsChanged() {
+            checkIndicator.requestPaint();
+        }
+    }
+
     Rectangle {
         id: indicator
 

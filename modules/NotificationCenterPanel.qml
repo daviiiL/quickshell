@@ -70,18 +70,18 @@ Scope {
 
             margins {
                 top: Theme.ui.padding.sm
-                // left: Theme.ui.padding.sm
                 bottom: Theme.ui.padding.sm
             }
 
             implicitWidth: root.panelWidth
             color: "transparent"
 
-            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
             WlrLayershell.namespace: "quickshell:notificationcenter"
 
             exclusiveZone: 0
+            focusable: true
 
             Rectangle {
                 id: contentRect
@@ -90,12 +90,24 @@ Scope {
                     top: parent.top
                     bottom: parent.bottom
                 }
-
+                Keys.onEscapePressed: {
+                    DebugLogger.debug("Escape captured", "Notif panel");
+                    GlobalStates.notificationCenterOpen = false;
+                    closeDelayTimer.restart();
+                }
                 implicitWidth: panel.implicitWidth - Theme.ui.padding.sm
-
                 radius: Theme.ui.radius.md
                 color: Colors.surface
                 clip: true
+
+                MouseArea {
+                    id: contentRectMouseArea
+                    propagateComposedEvents: true
+                    hoverEnabled: true
+                    anchors.fill: parent
+                }
+
+                focus: contentRectMouseArea.containsMouse
 
                 transform: Translate {
                     x: GlobalStates.notificationCenterOpen ? Theme.ui.padding.sm : -root.panelWidth
