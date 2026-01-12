@@ -42,17 +42,26 @@ Rectangle {
             }
 
             Rectangle {
+                id: styleContainer
 
                 Layout.preferredWidth: Math.min(500, colorModeSection.width)
-                Layout.preferredHeight: Preferences.usePreferredScheme ? 240 : 280
+                Layout.preferredHeight: contentLayout.implicitHeight + (Theme.ui.padding.sm * 2)
 
                 color: Colors.surface_container_high
                 radius: Theme.ui.radius.md
 
+                Behavior on Layout.preferredHeight {
+                    NumberAnimation {
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
+                }
+
                 ColumnLayout {
+                    id: contentLayout
                     anchors.fill: parent
                     anchors.margins: Theme.ui.padding.sm
-                    spacing: Theme.ui.padding.sm
+                    spacing: Theme.ui.padding.xs
 
                     Rectangle {
                         id: previewRow
@@ -93,105 +102,43 @@ Rectangle {
                         }
                     }
 
-                    RowLayout {
-                        id: schemeCheckboxRow
+                    StyledRadioButton {
+                        id: preferredSchemeCheckBox
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 32
-
-                        CheckBox {
-                            id: preferredSchemeCheckBox
-                            text: "Use suggested color palette"
-                            font {
-                                family: Theme.font.family.inter_regular
-                                pixelSize: Theme.font.size.lg
-                            }
-                            palette.windowText: Colors.on_surface
-
-                            checked: Preferences.usePreferredScheme
-
-                            onClicked: () => Preferences.toggleUsePreferredScheme()
-
-                            indicator: Rectangle {
-                                anchors.verticalCenter: parent.verticalCenter
-                                implicitHeight: 20
-                                implicitWidth: 20
-                                color: Colors.secondary_container
-                                radius: Theme.ui.radius.lg
-
-                                Canvas {
-                                    anchors.fill: parent
-                                    visible: preferredSchemeCheckBox.checked
-                                    onPaint: {
-                                        var ctx = getContext("2d");
-                                        ctx.clearRect(0, 0, width, height);
-
-                                        var r = Math.min(width, height) * 0.3;
-                                        var cx = width / 2;
-                                        var cy = height / 2;
-
-                                        ctx.beginPath();
-                                        ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
-                                        ctx.fillStyle = Colors.on_secondary_container;
-                                        ctx.fill();
-                                    }
-                                    onVisibleChanged: requestPaint()
-                                }
-                            }
-                        }
+                        text: "Use suggested color palette"
+                        checked: Preferences.usePreferredScheme
+                        onClicked: () => Preferences.toggleUsePreferredScheme()
                     }
 
                     MatugenSchemeComboBox {
                         id: schemeComboboxRow
                         visible: !Preferences.usePreferredScheme
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 32
-                    }
+                        Layout.preferredHeight: visible ? 32 : 0
+                        opacity: visible ? 1 : 0
 
-                    RowLayout {
-                        id: openrazerCheckboxRow
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 32
-
-                        CheckBox {
-                            id: openrazerCheckBox
-                            text: "OpenRazer services installed"
-                            font {
-                                family: Theme.font.family.inter_regular
-                                pixelSize: Theme.font.size.lg
-                            }
-                            palette.windowText: Colors.on_surface
-
-                            checked: Preferences.openrazerInstalled
-
-                            onClicked: () => Preferences.toggleOpenRazerInstalled()
-
-                            indicator: Rectangle {
-                                anchors.verticalCenter: parent.verticalCenter
-                                implicitHeight: 20
-                                implicitWidth: 20
-                                color: Colors.secondary_container
-                                radius: Theme.ui.radius.lg
-
-                                Canvas {
-                                    anchors.fill: parent
-                                    visible: openrazerCheckBox.checked
-                                    onPaint: {
-                                        var ctx = getContext("2d");
-                                        ctx.clearRect(0, 0, width, height);
-
-                                        var r = Math.min(width, height) * 0.3;
-                                        var cx = width / 2;
-                                        var cy = height / 2;
-
-                                        ctx.beginPath();
-                                        ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
-                                        ctx.fillStyle = Colors.on_secondary_container;
-                                        ctx.fill();
-                                    }
-                                    onVisibleChanged: requestPaint()
-                                }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: 200
+                                easing.type: Easing.OutCubic
                             }
                         }
+                    }
+
+                    StyledRadioButton {
+                        id: openrazerCheckBox
+                        Layout.fillWidth: true
+                        text: "OpenRazer services installed"
+                        checked: Preferences.openrazerInstalled
+                        onClicked: () => Preferences.toggleOpenRazerInstalled()
+                    }
+
+                    StyledRadioButton {
+                        id: focusedModeCheckBox
+                        Layout.fillWidth: true
+                        text: "Focused Mode"
+                        checked: Preferences.focusedMode
+                        onClicked: () => Preferences.toggleFocusMode()
                     }
                 }
             }

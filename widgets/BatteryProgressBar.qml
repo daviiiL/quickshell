@@ -22,11 +22,6 @@ Item {
         antialiasing: true
         smooth: true
 
-        // border {
-        //     width: 2
-        //     color: Colors.primary
-        // }
-
         Item {
             id: progressContainer
             anchors.fill: parent

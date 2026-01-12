@@ -6,6 +6,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.common
 import qs.components.topbar
+import qs.services
 
 Scope {
 
@@ -20,7 +21,7 @@ Scope {
             WlrLayershell.exclusiveZone: implicitHeight
 
             required property var modelData
-            property color bgColor: Colors.background
+            property color bgColor: Preferences.focusedMode ? "transparent" : Colors.background
             screen: modelData
 
             visible: !GlobalStates.powerPanelOpen
@@ -37,7 +38,10 @@ Scope {
                 anchors.fill: parent
                 anchors.margins: Theme.ui.padding.sm
                 anchors.bottomMargin: 0
-
+                border {
+                    width: Preferences.focusedMode ? 1 : 0
+                    color: Colors.outline
+                }
                 color: root.bgColor
                 opacity: GlobalStates.powerPanelOpen ? 0 : 1
                 radius: Theme.ui.radius.md

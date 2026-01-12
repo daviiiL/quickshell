@@ -4,6 +4,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
+import qs.services
+
 Singleton {
     id: root
 
@@ -65,6 +67,10 @@ Singleton {
     readonly property color surface_light_translucent: Qt.rgba(surface_light.r, surface_light.g, surface_light.b, 0.9)
     readonly property color surface_translucent: Qt.rgba(surface.r, surface.g, surface.b, 0.96)
 
+    // defined colors
+    readonly property color success: Preferences.darkMode ? "#4a9d4a" : "#2d7a2d"
+    readonly property color warning: Preferences.darkMode ? "#ffd4ab" : "#d97706"
+
     function load(data: string): void {
         const obj = JSON.parse(data);
 
@@ -85,6 +91,7 @@ Singleton {
         watchChanges: true
         onFileChanged: {
             this.reload();
+            root.colorsChanged();
         }
         onLoaded: root.load(this.text())
     }

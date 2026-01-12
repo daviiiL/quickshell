@@ -12,6 +12,7 @@ Singleton {
     property bool darkMode
     property bool usePreferredScheme
     property bool openrazerInstalled
+    property bool focusedMode
     property string wallpaperPath
     property string matugenScheme
     readonly property string homeDir: Quickshell.env("HOME")
@@ -20,6 +21,11 @@ Singleton {
     property bool isLoaded: false
 
     signal colorSchemeChanged
+
+    function toggleFocusMode(): void {
+        root.focusedMode = !root.focusedMode;
+        defaultAdapter.focusedMode = root.focusedMode;
+    }
 
     function toggleOpenRazerInstalled(): void {
         root.openrazerInstalled = !root.openrazerInstalled;
@@ -88,6 +94,7 @@ Singleton {
         property string storedMatugenScheme
         property bool usePreferredScheme
         property bool openrazerInstalled
+        property bool focusedMode
     }
 
     Io.FileView {
@@ -108,6 +115,7 @@ Singleton {
             root.wallpaperPath = defaultAdapter.storedWallpaperPath;
             root.usePreferredScheme = defaultAdapter.usePreferredScheme;
             root.openrazerInstalled = defaultAdapter.openrazerInstalled;
+            root.focusedMode = defaultAdapter.focusedMode;
             root.isLoaded = true;
         }
 
@@ -117,12 +125,14 @@ Singleton {
             defaultAdapter.storedMatugenScheme = "scheme-tonal-spot";
             defaultAdapter.usePreferredScheme = true;
             defaultAdapter.openrazerInstalled = false;
+            defaultAdapter.focusedMode = false;
 
             root.darkMode = true;
             root.wallpaperPath = root.defaultWallpaperPath;
             root.matugenScheme = "scheme-tonal-spot";
             root.usePreferredScheme = true;
             root.openrazerInstalled = false;
+            root.focusedMode = false;
 
             root.isLoaded = true;
             prefFileView.writeAdapter();

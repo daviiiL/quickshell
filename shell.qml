@@ -41,7 +41,10 @@ ShellRoot {
                 }
                 LazyLoader {
                     id: topBarLoader
-                    TopBar {}
+                    Item {
+                        TopBar {}
+                        DebugPanel {}
+                    }
                 }
                 Lockscreen {}
                 NotificationPopup {}

@@ -19,4 +19,6 @@ Singleton {
     property real mediaControlsX: 0
     property real mediaControlsY: 0
     property bool appLauncherOpen: false
+
+    property bool debugMode: false
 }
