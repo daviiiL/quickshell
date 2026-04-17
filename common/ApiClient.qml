@@ -30,7 +30,6 @@ QtObject {
                 try {
                     data = JSON.parse(xhr.responseText);
                 } catch (e) {
-                    // Response wasn't JSON; pass through the raw text.
                 }
                 if (onSuccess)
                     onSuccess(data, xhr);

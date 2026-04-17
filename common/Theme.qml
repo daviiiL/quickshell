@@ -50,8 +50,28 @@ Singleton {
         readonly property ThemePadding padding: ThemePadding {}
         readonly property int topBarHeight: 48
         readonly property int leftBarWidth: 76
+        readonly property int mainBarHeight: 48
+        readonly property int sidePanelWidth: 320
         readonly property int borderWidth: 1
         readonly property int iconSize: 24
+
+        readonly property int mainBarSubGroupPadX:   14
+        readonly property int mainBarButtonHeight:   30
+        readonly property int mainBarButtonPadX:     9
+        readonly property int mainBarButtonGap:      7
+        readonly property int mainBarButtonRadius:   3
+        readonly property int mainBarIconSize:       15
+        readonly property int mainBarDockIconSize:   18
+        readonly property int mainBarDockItemSize:   34
+        readonly property int mainBarDockItemGap:    3
+        readonly property int mainBarDockItemRadius: 4
+        readonly property int mainBarWsSize:         32
+        readonly property int mainBarWsGap:          8
+        readonly property int mainBarWsRadius:       3
+        readonly property int mainBarHairWidth:      1
+        readonly property int mainBarBatteryWidth:   44
+        readonly property int mainBarBatteryHeight:  12
+        readonly property int mainBarBatterySlant:   3
     }
 
     component ThemeRadius: QtObject {
@@ -79,25 +99,26 @@ Singleton {
     }
 
     component FontFamily: QtObject {
-        readonly property string departureMono: "DepartureMono Nerd Font"
-        readonly property string inter_extra_bold_italic: "Inter Extra Bold Italic Nerd Font Complete.otf: Inter Nerd Font,Inter Extra Bold:style=Extra Bold Italic,Italic"
-        readonly property string inter_light: "Inter Light Nerd Font Complete.otf: Inter Nerd Font,Inter Light:style=Light,Regular"
-        readonly property string inter_thin: "Inter Thin Nerd Font Complete.otf: Inter Nerd Font,Inter Thin:style=Thin,Regular"
-        readonly property string inter_medium_italic: "Inter Medium Italic Nerd Font Complete.otf: Inter Nerd Font,Inter Medium:style=Medium Italic,Italic"
-        readonly property string inter_black: "Inter Black Nerd Font Complete.otf: Inter Nerd Font,Inter Black:style=Black,Regular"
-        readonly property string inter_bold_italic: "Inter Bold Italic Nerd Font Complete.otf: Inter Nerd Font:style=Bold Italic"
-        readonly property string inter_thin_italic: "Inter Thin Italic Nerd Font Complete.otf: Inter Nerd Font,Inter Thin:style=Thin Italic,Italic"
-        readonly property string inter_regular: "Inter Regular Nerd Font Complete.otf: Inter Nerd Font:style=Regular"
-        readonly property string inter_italic: "Inter Italic Nerd Font Complete.otf: Inter Nerd Font:style=Italic"
-        readonly property string inter_extra_bold: "Inter Extra Bold Nerd Font Complete.otf: Inter Nerd Font,Inter Extra Bold:style=Extra Bold,Regular"
-        readonly property string inter_bold: "Inter Bold Nerd Font Complete.otf: Inter Nerd Font:style=Bold"
-        readonly property string inter_extra_light_italic: "Inter Extra Light Italic Nerd Font Complete.otf: Inter Nerd Font,Inter Extra Light:style=Extra Light Italic,Italic"
-        readonly property string inter_semi_bold_italic: "Inter Semi Bold Italic Nerd Font Complete.otf: Inter Nerd Font,Inter Semi Bold:style=Semi Bold Italic,Italic"
-        readonly property string inter_medium: "Inter Medium Nerd Font Complete.otf: Inter Nerd Font,Inter Medium:style=Medium,Regular"
-        readonly property string inter_black_italic: "Inter Black Italic Nerd Font Complete.otf: Inter Nerd Font,Inter Black:style=Black Italic,Italic"
-        readonly property string inter_extra_light: "Inter Extra Light Nerd Font Complete.otf: Inter Nerd Font,Inter Extra Light:style=Extra Light,Regular"
-        readonly property string inter_light_italic: "Inter Light Italic Nerd Font Complete.otf: Inter Nerd Font,Inter Light:style=Light Italic,Italic"
-        readonly property string inter_semi_bold: "Inter Semi Bold Nerd Font Complete.otf: Inter Nerd Font,Inter Semi Bold:style=Semi Bold,Regular"
+        readonly property string inter: "Inter Nerd Font Propo"
+        readonly property string departureMono: "Inter Nerd Font Propo"
+        readonly property string inter_thin:              "Inter Nerd Font Propo"
+        readonly property string inter_extra_light:       "Inter Nerd Font Propo"
+        readonly property string inter_light:             "Inter Nerd Font Propo"
+        readonly property string inter_regular:           "Inter Nerd Font Propo"
+        readonly property string inter_medium:            "Inter Nerd Font Propo"
+        readonly property string inter_semi_bold:         "Inter Nerd Font Propo"
+        readonly property string inter_bold:              "Inter Nerd Font Propo"
+        readonly property string inter_extra_bold:        "Inter Nerd Font Propo"
+        readonly property string inter_black:             "Inter Nerd Font Propo"
+        readonly property string inter_thin_italic:        "Inter Nerd Font Propo"
+        readonly property string inter_extra_light_italic: "Inter Nerd Font Propo"
+        readonly property string inter_light_italic:      "Inter Nerd Font Propo"
+        readonly property string inter_italic:            "Inter Nerd Font Propo"
+        readonly property string inter_medium_italic:     "Inter Nerd Font Propo"
+        readonly property string inter_semi_bold_italic:  "Inter Nerd Font Propo"
+        readonly property string inter_bold_italic:       "Inter Nerd Font Propo"
+        readonly property string inter_extra_bold_italic: "Inter Nerd Font Propo"
+        readonly property string inter_black_italic:      "Inter Nerd Font Propo"
     }
 
     component FontSize: QtObject {

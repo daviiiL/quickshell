@@ -12,8 +12,8 @@ Rectangle {
 
     property color activeColor: Colors.primaryContainer
     property color inactiveColor: Colors.secondaryContainer
-    property color activeTextColor: Colors.onPrimaryContainer
-    property color inactiveTextColor: Colors.onSecondaryContainer
+    property color activeTextColor: Colors.fgPrimaryContainer
+    property color inactiveTextColor: Colors.fgSecondaryContainer
     property color accentColor: Colors.primary
     property color borderColor: Colors.outline
     property color indicatorColor: Colors.secondary

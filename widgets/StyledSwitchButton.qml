@@ -10,8 +10,8 @@ Rectangle {
 
     property color activeColor: Colors.primary
     property color inactiveColor: Colors.surface
-    property color handleActiveColor: Colors.onPrimary
-    property color handleInactiveColor: Colors.onSecondary
+    property color handleActiveColor: Colors.fgPrimary
+    property color handleInactiveColor: Colors.fgSecondary
 
     implicitWidth: 48
     implicitHeight: 28

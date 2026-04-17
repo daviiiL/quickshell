@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 
-# Generate thumbnails for wallpaper images using ImageMagick
-# Following the FreeDesktop.org thumbnail specification
-# https://specifications.freedesktop.org/thumbnail-spec/latest/
-
 set -e
 
-# Thumbnail sizes mapping
 get_thumbnail_size() {
     case "$1" in
         normal) echo 128 ;;
@@ -24,7 +19,6 @@ usage() {
 }
 
 urlencode() {
-    # Percent-encode a string for use in a URI
     local str="$1"
     local encoded=""
     local c
@@ -43,14 +37,12 @@ generate_thumbnail() {
     local abs_path
     abs_path="$(realpath "$src")"
 
-    # Skip non-image files (GIFs, videos, etc.)
     case "${abs_path,,}" in
         *.gif|*.mp4|*.webm|*.mkv|*.avi|*.mov)
             return
             ;;
     esac
 
-    # Calculate MD5 hash of file:// URI
     local encoded_path
     encoded_path="$(urlencode "$abs_path")"
     local uri="file://$encoded_path"
@@ -60,19 +52,16 @@ generate_thumbnail() {
     local out="$CACHE_DIR/$hash.png"
     mkdir -p "$CACHE_DIR"
 
-    # Skip if thumbnail already exists
     if [ -f "$out" ]; then
         echo "FILE $abs_path"
         return
     fi
 
-    # Generate thumbnail using ImageMagick
     if magick "$abs_path" -resize "${THUMBNAIL_SIZE}x${THUMBNAIL_SIZE}" "$out" 2>/dev/null; then
         echo "FILE $abs_path"
     fi
 }
 
-# Parse arguments
 SIZE_NAME="normal"
 MODE=""
 TARGET=""
@@ -127,7 +116,6 @@ case "$MODE" in
             exit 2
         fi
 
-        # Count total image files
         if [ "$PROGRESS" -eq 1 ]; then
             for f in "$TARGET"/*; do
                 [ -f "$f" ] || continue
@@ -139,7 +127,6 @@ case "$MODE" in
             done
         fi
 
-        # Generate thumbnails
         for f in "$TARGET"/*; do
             [ -f "$f" ] || continue
             case "${f,,}" in

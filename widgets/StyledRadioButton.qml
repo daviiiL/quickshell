@@ -11,8 +11,8 @@ Item {
     property string text: ""
 
     property color indicatorColor: Colors.secondaryContainer
-    property color checkColor: Colors.onSecondaryContainer
-    property color textColor: Colors.onSurface
+    property color checkColor: Colors.fgSecondaryContainer
+    property color textColor: Colors.fgSurface
 
     signal clicked
 

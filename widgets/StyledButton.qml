@@ -17,10 +17,10 @@ Rectangle {
     property color activeColor: Colors.primaryContainer
     property color inactiveColor: Colors.secondaryContainer
     property color disabledColor: Colors.surfaceVariant
-    property color activeTextColor: Colors.onPrimaryContainer
-    property color inactiveTextColor: Colors.onSecondaryContainer
-    property color disabledTextColor: Colors.onSurfaceVariant
-    property color highlightedTextColor: Colors.onPrimary
+    property color activeTextColor: Colors.fgPrimaryContainer
+    property color inactiveTextColor: Colors.fgSecondaryContainer
+    property color disabledTextColor: Colors.fgSurfaceVariant
+    property color highlightedTextColor: Colors.fgPrimary
     property color borderColor: Colors.outline
 
     readonly property bool active: mouseArea.containsMouse || mouseArea.pressed

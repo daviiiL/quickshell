@@ -16,7 +16,7 @@ Rectangle {
 
     property color contentBackground: Colors.surfaceVariant
     property color accentColor: Colors.primary
-    property color titleColor: Colors.onSecondaryContainer
+    property color titleColor: Colors.fgSecondaryContainer
     property color titleBg: Qt.alpha(Colors.secondaryContainer, 0.2)
 
     default property alias content: contentRect.data

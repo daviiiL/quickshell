@@ -4,7 +4,6 @@ import Quickshell
 Singleton {
     id: root
 
-    // Accepts url or string; returns filesystem path without the file:// prefix.
     function trimFileProtocol(str) {
         const s = (typeof str === "string") ? str : str.toString();
         return s.startsWith("file://") ? s.slice(7) : s;
@@ -29,7 +28,6 @@ Singleton {
             return "";
         const trimmed = trimFileProtocol(str);
         const lastDot = trimmed.lastIndexOf(".");
-        // Only trim if the dot is in the final path segment.
         if (lastDot > trimmed.lastIndexOf("/"))
             return trimmed.slice(0, lastDot);
         return trimmed;

@@ -4,10 +4,6 @@ import Quickshell.Io
 import qs.common
 import qs.widgets
 
-// Follows the FreeDesktop.org thumbnail spec:
-// https://specifications.freedesktop.org/thumbnail-spec/thumbnail-spec-latest.html
-// Thumbnails are cached at ~/.cache/thumbnails/<size>/<md5hash>.png and generated
-// on demand via ImageMagick when missing.
 StyledImage {
     id: root
 

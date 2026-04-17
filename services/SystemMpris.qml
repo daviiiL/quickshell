@@ -9,9 +9,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
 
-/**
- * A service that provides easy access to the active Mpris player.
- */
 Singleton {
     id: root
     property list<MprisPlayer> players: Mpris.players.values.filter(player => isRealPlayer(player))
@@ -161,7 +158,6 @@ Singleton {
         if (targetPlayer && this.activePlayer) {
             this.__reverse = Mpris.players.indexOf(targetPlayer) < Mpris.players.indexOf(this.activePlayer);
         } else {
-            // always animate forward if going to null
             this.__reverse = false;
         }
 

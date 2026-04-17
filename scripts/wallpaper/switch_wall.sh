@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# Simple wallpaper switcher for Quickshell
-# Uses swww for wallpaper switching
-# Optionally generates color scheme with matugen
-
 set -e
 
 usage() {
@@ -17,7 +13,6 @@ usage() {
     exit 1
 }
 
-# Parse arguments
 MATUGEN_SCHEME="scheme-tonal-spot"
 MATUGEN_MODE="dark"
 WALLPAPER_PATH=""
@@ -42,18 +37,15 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Check if image path is provided
 if [ -z "$WALLPAPER_PATH" ]; then
     usage
 fi
 
-# Validate that the file exists
 if [ ! -f "$WALLPAPER_PATH" ]; then
     echo "Error: File not found: $WALLPAPER_PATH" >&2
     exit 1
 fi
 
-# Get absolute path
 WALLPAPER_PATH="$(realpath "$WALLPAPER_PATH")"
 
 if command -v swww &>/dev/null; then

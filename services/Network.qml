@@ -8,9 +8,6 @@ import Quickshell
 import Quickshell.Io
 import qs.services.network
 
-/**
- * Network service with nmcli.
- */
 Singleton {
     id: root
 
@@ -110,7 +107,7 @@ Singleton {
     }
 
     function openPublicWifiPortal() {
-        Quickshell.execDetached(["xdg-open", "https://nmcheck.gnome.org/"]); // From some StackExchange thread, seems to work
+        Quickshell.execDetached(["xdg-open", "https://nmcheck.gnome.org/"]);
     }
 
     function changePassword(network: WifiAccessPoint, password: string, username = ""): void {
@@ -158,7 +155,7 @@ Singleton {
 
     Process {
         id: changePasswordProc
-        onExited: { // Re-attempt connection after changing password
+        onExited: {
             connectProc.running = false;
             connectProc.running = true;
         }
@@ -301,7 +298,6 @@ Singleton {
                     };
                 }).filter(n => n.ssid && n.ssid.length > 0);
 
-                // Group networks by SSID; prefer the active one, else the strongest
                 const networkMap = new Map();
                 for (const network of allNetworks) {
                     const existing = networkMap.get(network.ssid);
@@ -372,7 +368,6 @@ Singleton {
                         root.ethernetDevice = parts[0];
                         root.ethernetConnected = parts[2] === "connected";
 
-                        // Parse speed from remaining lines
                         const speedLine = lines.find(l => l.includes("WIRED-PROPERTIES.SPEED:"));
                         if (speedLine) {
                             const speed = speedLine.split(":")[1];

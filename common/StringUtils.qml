@@ -7,8 +7,6 @@ import Quickshell
 Singleton {
     id: root
 
-    // Strips leading bracketed annotations commonly seen in track titles
-    // (e.g. "(Official Video)", "[Lyrics]", "【MV】").
     function cleanMusicTitle(title) {
         if (!title)
             return "";

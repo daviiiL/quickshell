@@ -6,7 +6,6 @@ FolderListModel {
 
     property list<url> folderHistory: []
     property int currentFolderHistoryIndex: -1
-    // Set before programmatic navigation to suppress the next folderChanged push.
     property bool historyNavigationLock: false
 
     function lockNextNavigation() {
@@ -16,7 +15,6 @@ FolderListModel {
     function pushToHistory(path) {
         if (folderHistory[currentFolderHistoryIndex] === path)
             return;
-        // Truncate any forward history before pushing the new entry.
         folderHistory = folderHistory.slice(0, currentFolderHistoryIndex + 1);
         folderHistory.push(path);
         currentFolderHistoryIndex = folderHistory.length - 1;

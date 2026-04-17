@@ -16,10 +16,10 @@ ColumnLayout {
     property string connectionTitle: ""
     property string connectionSubtitle: ""
 
-    property color titleColor: Colors.onSurface
+    property color titleColor: Colors.fgSurface
     property color bodyBg: Colors.surfaceContainerHigh
     property color accentColor: Colors.primary
-    property color subtitleColor: Colors.onSurfaceVariant
+    property color subtitleColor: Colors.fgSurfaceVariant
 
     property int topMargin: 0
     default property alias content: contentArea.data

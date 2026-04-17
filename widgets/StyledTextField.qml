@@ -7,8 +7,8 @@ TextField {
 
     property color focusedBgColor: Colors.primaryContainer
     property color unfocusedBgColor: Colors.secondaryContainer
-    property color focusedTextColor: Colors.onPrimaryContainer
-    property color unfocusedTextColor: Colors.onSecondaryContainer
+    property color focusedTextColor: Colors.fgPrimaryContainer
+    property color unfocusedTextColor: Colors.fgSecondaryContainer
 
     padding: 8
     leftPadding: 12
