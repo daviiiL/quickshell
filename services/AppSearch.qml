@@ -19,11 +19,9 @@ Singleton {
         if (search === "")
             return [];
 
-        const res = Fuzzy.go(search, preppedNames, {
+        return Fuzzy.go(search, preppedNames, {
             "all": true,
             "key": "name"
         }).map(r => r.obj.entry);
-
-        return res;
     }
 }

@@ -33,7 +33,16 @@ Singleton {
         }
     }
     function isRealPlayer(player) {
-        return (!(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.firefox')) && !(hasPlasmaIntegration && player.dbusName.startsWith('org.mpris.MediaPlayer2.chromium')) && !player.dbusName?.startsWith('org.mpris.MediaPlayer2.playerctld') && !(player.dbusName?.endsWith('.mpd') && !player.dbusName.endsWith('MediaPlayer2.mpd')));
+        const name = player.dbusName ?? "";
+        // Plasma browser integration already exposes a unified player; skip the raw browser ones.
+        if (hasPlasmaIntegration && (name.startsWith('org.mpris.MediaPlayer2.firefox') || name.startsWith('org.mpris.MediaPlayer2.chromium')))
+            return false;
+        if (name.startsWith('org.mpris.MediaPlayer2.playerctld'))
+            return false;
+        // Skip mpd subclients (foo.mpd) but keep the canonical MediaPlayer2.mpd
+        if (name.endsWith('.mpd') && !name.endsWith('MediaPlayer2.mpd'))
+            return false;
+        return true;
     }
 
     Instantiator {
@@ -79,11 +88,9 @@ Singleton {
         }
 
         function onTrackArtUrlChanged() {
-            // console.log("arturl:", activePlayer.trackArtUrl)
-            // root.updateTrack();
+            // Cantata sends cover updates BEFORE the track info; preserve the reverse flag
+            // so these art-url changes don't break the reverse animation.
             if (root.activePlayer.uniqueId == root.activeTrack.uniqueId && root.activePlayer.trackArtUrl != root.activeTrack.artUrl) {
-                // cantata likes to send cover updates *BEFORE* updating the track info.
-                // as such, art url changes shouldn't be able to break the reverse animation
                 const r = root.__reverse;
                 root.updateTrack();
                 root.__reverse = r;
@@ -94,7 +101,6 @@ Singleton {
     onActivePlayerChanged: this.updateTrack()
 
     function updateTrack() {
-        //console.log(`update: ${this.activePlayer?.trackTitle ?? ""} : ${this.activePlayer?.trackArtists}`)
         this.activeTrack = {
             uniqueId: this.activePlayer?.uniqueId ?? 0,
             artUrl: this.activePlayer?.trackArtUrl ?? "",

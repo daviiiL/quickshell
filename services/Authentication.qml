@@ -44,9 +44,7 @@ Singleton {
     Timer {
         id: passwordClearTimer
         interval: 10000
-        onTriggered: {
-            root.reset();
-        }
+        onTriggered: root.reset()
     }
 
     onCurrentPasswordChanged: {
@@ -62,9 +60,8 @@ Singleton {
         id: pam
 
         onPamMessage: {
-            if (this.responseRequired) {
+            if (this.responseRequired)
                 this.respond(root.currentPassword);
-            }
         }
 
         onCompleted: result => {

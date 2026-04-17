@@ -58,11 +58,6 @@ Singleton {
     }
 
     Process {
-        id: laptopModeNotification
-        command: ["notify-send", "-a", "System Shell", "Laptop Mode Enabled", "dGPU reading disabled to extend battery life on laptops", "--urgency", "critical"]
-    }
-
-    Process {
         id: glancesErrorNotification
         command: ["notify-send", "-a", "System Shell", "SysInfo Not Initialized", "Unable to communicate with Glances. Please install glances or start a daemon", "--urgency", "critical"]
     }
@@ -99,8 +94,6 @@ Singleton {
             if (!GlobalStates.isLaptop) {
                 readDGPU = true;
                 getGpu();
-            } else {
-                // laptopModeNotification.running = true;
             }
 
             initializationTimer.repeat = false;

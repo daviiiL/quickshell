@@ -16,6 +16,11 @@ ColumnLayout {
     property string connectionTitle: ""
     property string connectionSubtitle: ""
 
+    property color titleColor: Colors.onSurface
+    property color bodyBg: Colors.surfaceContainerHigh
+    property color accentColor: Colors.primary
+    property color subtitleColor: Colors.onSurfaceVariant
+
     property int topMargin: 0
     default property alias content: contentArea.data
 
@@ -34,7 +39,7 @@ ColumnLayout {
                 family: Theme.font.family.inter_bold
                 weight: Font.Bold
             }
-            color: Colors.on_surface
+            color: root.titleColor
         }
 
         Item {
@@ -51,7 +56,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: 60
         visible: root.showConnectionCard
-        color: Colors.surface_container_high
+        color: root.bodyBg
         radius: Theme.ui.radius.md
 
         RowLayout {
@@ -63,7 +68,7 @@ ColumnLayout {
             MaterialSymbol {
                 icon: root.connectionIcon
                 iconSize: Theme.font.size.xxl
-                fontColor: Colors.primary
+                fontColor: root.accentColor
                 Layout.alignment: Qt.AlignVCenter
             }
 
@@ -80,13 +85,13 @@ ColumnLayout {
                         family: Theme.font.family.inter_medium
                         weight: Font.Medium
                     }
-                    color: Colors.on_surface
+                    color: root.titleColor
                 }
 
                 Text {
                     text: root.connectionSubtitle
                     font.pixelSize: Theme.font.size.sm
-                    color: Colors.on_surface_variant
+                    color: root.subtitleColor
                 }
             }
 
@@ -98,7 +103,7 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignVCenter
                 icon: "check"
                 iconSize: Theme.font.size.xl
-                fontColor: Colors.primary
+                fontColor: root.accentColor
             }
         }
     }

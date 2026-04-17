@@ -59,13 +59,11 @@ Singleton {
         const hours = Math.floor((seconds % 86400) / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
 
-        if (days > 0) {
+        if (days > 0)
             return `${days}d ${hours}h ${minutes}m`;
-        } else if (hours > 0) {
+        if (hours > 0)
             return `${hours}h ${minutes}m`;
-        } else {
-            return `${minutes}m`;
-        }
+        return `${minutes}m`;
     }
 
     Process {
@@ -80,15 +78,11 @@ Singleton {
         }
 
         onExited: (exitCode, exitStatus) => {
-            // console.debug("SystemInfo: fastfetch process exited with code:", exitCode);
             if (exitCode === 0) {
                 try {
                     const jsonData = JSON.parse(fastfetchProc.jsonBuffer);
                     root.parseData(jsonData);
                     root.loaded = true;
-                    // console.debug("SystemInfo: Data parsed successfully, loaded =", root.loaded);
-                    // console.debug("SystemInfo: Memory used:", root.memoryUsed, "Disk used:", root.diskUsed);
-
                     saveCacheProc.exec(["bash", "-c", `cat > "${root.cacheFilePath}" <<'EOF'\n${fastfetchProc.jsonBuffer}\nEOF`]);
                 } catch (e) {
                     console.error("Failed to parse fastfetch JSON:", e);
@@ -169,9 +163,7 @@ Singleton {
     }
 
     function refresh() {
-        // console.debug("SystemInfo: refresh() called");
         fastfetchProc.jsonBuffer = "";
         fastfetchProc.exec(["fastfetch", "--json", "--config", root.configPath]);
-        // console.debug("SystemInfo: fastfetch process started");
     }
 }

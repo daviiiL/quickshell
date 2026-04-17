@@ -6,13 +6,27 @@ import qs.services
 
 Rectangle {
     id: root
-    color: Preferences.focusedMode ? "transparent" : contentBackground
 
-    radius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
+    readonly property int focusedRadius: 2
+    readonly property int normalRadius: Theme.ui.radius.md
+    readonly property int activeRadius: Preferences.focusedMode ? focusedRadius : normalRadius
+
+    property bool showTitle: false
+    property string title: ""
+
+    property color contentBackground: Colors.surfaceVariant
+    property color accentColor: Colors.primary
+    property color titleColor: Colors.onSecondaryContainer
+    property color titleBg: Qt.alpha(Colors.secondaryContainer, 0.2)
+
+    default property alias content: contentRect.data
+
+    color: Preferences.focusedMode ? "transparent" : contentBackground
+    radius: activeRadius
 
     border {
         width: Preferences.focusedMode ? 1 : 0
-        color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.5) : "transparent"
+        color: Preferences.focusedMode ? Qt.alpha(root.accentColor, 0.5) : "transparent"
     }
 
     Rectangle {
@@ -23,15 +37,9 @@ Rectangle {
         anchors.right: parent.right
         anchors.topMargin: -0.5
         anchors.rightMargin: 4
-        color: Colors.primary
+        color: root.accentColor
         opacity: 0.8
     }
-
-    property bool showTitle: false
-    property string title: ""
-    property color contentBackground: Preferences.darkMode ? Colors.background : Colors.surface_variant
-
-    default property alias content: contentRect.data
 
     implicitHeight: (showTitle ? 30 : 0) + contentRect.implicitHeight
 
@@ -52,9 +60,9 @@ Rectangle {
             opacity: root.showTitle ? 1.0 : 0.0
             Layout.fillWidth: true
             Layout.preferredHeight: root.showTitle ? 30 : 0
-            color: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : (Preferences.darkMode ? Qt.alpha(Colors.secondary_container, 0.2) : Qt.alpha(Colors.secondary_fixed_dim, 0.5))
-            topRightRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
-            topLeftRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
+            color: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : root.titleBg
+            topRightRadius: root.activeRadius
+            topLeftRadius: root.activeRadius
 
             Behavior on color {
                 ColorAnimation {
@@ -81,7 +89,7 @@ Rectangle {
             Text {
                 anchors.centerIn: parent
                 text: root.title
-                color: Colors.on_secondary_container
+                color: root.titleColor
                 font.family: Theme.font.family.inter_thin
                 font.pixelSize: Theme.font.size.md
                 renderType: Text.QtRendering
@@ -94,10 +102,10 @@ Rectangle {
             Layout.fillWidth: true
             implicitHeight: childrenRect.height
             Layout.preferredHeight: implicitHeight
-            bottomLeftRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
-            bottomRightRadius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
-            topLeftRadius: root.showTitle ? 0 : (Preferences.focusedMode ? 2 : Theme.ui.radius.md)
-            topRightRadius: root.showTitle ? 0 : (Preferences.focusedMode ? 2 : Theme.ui.radius.md)
+            bottomLeftRadius: root.activeRadius
+            bottomRightRadius: root.activeRadius
+            topLeftRadius: root.showTitle ? 0 : root.activeRadius
+            topRightRadius: root.showTitle ? 0 : root.activeRadius
             color: Preferences.focusedMode ? Qt.alpha(Colors.surface, 0.3) : root.contentBackground
 
             Behavior on color {

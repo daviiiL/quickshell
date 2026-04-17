@@ -10,17 +10,25 @@ Rectangle {
     property string buttonIcon: "wifi"
     property string buttonText: "WiFi"
 
+    property color activeColor: Colors.primaryContainer
+    property color inactiveColor: Colors.secondaryContainer
+    property color activeTextColor: Colors.onPrimaryContainer
+    property color inactiveTextColor: Colors.onSecondaryContainer
+    property color accentColor: Colors.primary
+    property color borderColor: Colors.outline
+    property color indicatorColor: Colors.secondary
+
     signal clicked
 
     width: 50
     height: 50
 
     radius: Preferences.focusedMode ? 2 : Theme.ui.radius.md
-    color: Preferences.focusedMode ? Qt.alpha(checked ? Colors.primary_container : Colors.surface, 0.25) : Qt.alpha(checked ? (Preferences.darkMode ? Colors.primary_container : Colors.primary_fixed_dim) : Colors.secondary_container, 0.4)
+    color: Preferences.focusedMode ? Qt.alpha(checked ? root.activeColor : Colors.surface, 0.25) : Qt.alpha(checked ? root.activeColor : root.inactiveColor, 0.4)
     scale: mouseArea.containsMouse ? 0.95 : 1.0
 
     border {
-        color: Preferences.focusedMode ? Qt.alpha(checked ? Colors.primary : Colors.outline, 0.6) : (checked ? (Preferences.darkMode ? Colors.primary_container : Qt.alpha(Colors.secondary, 0.7)) : Qt.alpha(Colors.outline_variant, 0.4))
+        color: Preferences.focusedMode ? Qt.alpha(checked ? root.accentColor : root.borderColor, 0.6) : (checked ? root.activeColor : Qt.alpha(Colors.outlineVariant, 0.4))
         width: 1
     }
 
@@ -33,7 +41,7 @@ Rectangle {
 
         Behavior on opacity {
             NumberAnimation {
-                duration: 250
+                duration: Theme.anim.durations.xs
                 easing.type: Easing.OutCubic
             }
         }
@@ -42,7 +50,7 @@ Rectangle {
             const ctx = getContext("2d");
             ctx.reset();
 
-            ctx.strokeStyle = Colors.secondary;
+            ctx.strokeStyle = root.indicatorColor;
             ctx.lineWidth = 1.8;
             ctx.lineCap = "round";
 
@@ -57,19 +65,8 @@ Rectangle {
             ctx.stroke();
         }
 
-        Component.onCompleted: {
-            requestPaint();
-        }
-
-        onVisibleChanged: () => requestPaint()
-
-        Connections {
-            target: Colors
-
-            function onPrimaryChanged() {
-                indicatorLine.requestPaint();
-            }
-        }
+        Component.onCompleted: requestPaint()
+        onVisibleChanged: requestPaint()
     }
 
     ColumnLayout {
@@ -80,11 +77,11 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
             icon: root.buttonIcon
             iconSize: Theme.font.size.md
-            fontColor: root.checked ? Colors.on_primary_container : Colors.on_secondary_container
+            fontColor: root.checked ? root.activeTextColor : root.inactiveTextColor
 
             Behavior on fontColor {
                 ColorAnimation {
-                    duration: 200
+                    duration: Theme.anim.durations.xs
                     easing.type: Easing.OutCubic
                 }
             }
@@ -96,27 +93,27 @@ Rectangle {
                 family: Theme.font.family.inter_thin
                 pixelSize: Theme.font.size.xs
             }
-            color: root.checked ? Colors.on_primary_container : Colors.on_secondary_container
+            color: root.checked ? root.activeTextColor : root.inactiveTextColor
             text: root.buttonText
 
             Behavior on color {
                 ColorAnimation {
-                    duration: 200
+                    duration: Theme.anim.durations.xs
                     easing.type: Easing.OutCubic
                 }
             }
         }
     }
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-
         onClicked: root.clicked()
     }
 
     Behavior on color {
         ColorAnimation {
-            duration: 200
+            duration: Theme.anim.durations.xs
             easing.type: Easing.OutCubic
         }
     }
@@ -130,14 +127,14 @@ Rectangle {
 
     Behavior on border.color {
         ColorAnimation {
-            duration: 200
+            duration: Theme.anim.durations.xs
             easing.type: Easing.OutCubic
         }
     }
 
     Behavior on border.width {
         NumberAnimation {
-            duration: 200
+            duration: Theme.anim.durations.xs
             easing.type: Easing.OutCubic
         }
     }

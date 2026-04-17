@@ -66,7 +66,6 @@ Singleton {
 
     function startDiscovering(): void {
         if (Bluetooth.defaultAdapter && enabled) {
-            // console.debug("BT Discovery started");
             Bluetooth.defaultAdapter.discovering = true;
             discoveringTimer.running = true;
         }

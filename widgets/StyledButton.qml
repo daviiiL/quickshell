@@ -13,6 +13,19 @@ Rectangle {
     property bool clickable: true
     signal clicked
 
+    property color accentColor: Colors.primary
+    property color activeColor: Colors.primaryContainer
+    property color inactiveColor: Colors.secondaryContainer
+    property color disabledColor: Colors.surfaceVariant
+    property color activeTextColor: Colors.onPrimaryContainer
+    property color inactiveTextColor: Colors.onSecondaryContainer
+    property color disabledTextColor: Colors.onSurfaceVariant
+    property color highlightedTextColor: Colors.onPrimary
+    property color borderColor: Colors.outline
+
+    readonly property bool active: mouseArea.containsMouse || mouseArea.pressed
+    readonly property bool scaled: clickable && active
+
     function makeTranslucent(color) {
         return Qt.rgba(color.r, color.g, color.b, 0.4);
     }
@@ -25,12 +38,12 @@ Rectangle {
     transform: Scale {
         origin.x: root.width / 2
         origin.y: root.height / 2
-        xScale: (root.clickable && (mouseArea.containsMouse || mouseArea.pressed)) ? 1.1 : 1.0
-        yScale: (root.clickable && (mouseArea.containsMouse || mouseArea.pressed)) ? 1.1 : 1.0
+        xScale: root.scaled ? 1.1 : 1.0
+        yScale: root.scaled ? 1.1 : 1.0
 
         Behavior on xScale {
             NumberAnimation {
-                duration: 200
+                duration: Theme.anim.durations.xs
                 easing.type: Easing.OutBack
                 easing.overshoot: 1.2
             }
@@ -38,7 +51,7 @@ Rectangle {
 
         Behavior on yScale {
             NumberAnimation {
-                duration: 200
+                duration: Theme.anim.durations.xs
                 easing.type: Easing.OutBack
                 easing.overshoot: 1.2
             }
@@ -47,28 +60,24 @@ Rectangle {
 
     Behavior on radius {
         NumberAnimation {
-            duration: 200
+            duration: Theme.anim.durations.xs
             easing.type: Easing.InOutQuad
         }
     }
     color: {
         if (Preferences.focusedMode) {
-            if (!root.clickable) {
-                return Qt.alpha(Colors.surface_variant, 0.25);
-            }
-            if (root.highlighted) {
-                return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.alpha(Colors.primary, 0.4) : Qt.alpha(Colors.primary, 0.3);
-            }
-            return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.alpha(Colors.primary_container, 0.35) : Qt.alpha(Colors.secondary_container, 0.25);
+            if (!root.clickable)
+                return Qt.alpha(root.disabledColor, 0.25);
+            if (root.highlighted)
+                return root.active ? Qt.alpha(root.accentColor, 0.4) : Qt.alpha(root.accentColor, 0.3);
+            return root.active ? Qt.alpha(root.activeColor, 0.35) : Qt.alpha(root.inactiveColor, 0.25);
         }
 
-        if (!root.clickable) {
-            return root.makeTranslucent(Colors.surface_variant);
-        }
-        if (root.highlighted) {
-            return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.lighter(Colors.primary, 1.1) : Colors.primary;
-        }
-        return (mouseArea.containsMouse || mouseArea.pressed) ? root.makeTranslucent(Colors.primary_container) : root.makeTranslucent(Colors.secondary_container);
+        if (!root.clickable)
+            return root.makeTranslucent(root.disabledColor);
+        if (root.highlighted)
+            return root.active ? Qt.lighter(root.accentColor, 1.1) : root.accentColor;
+        return root.active ? root.makeTranslucent(root.activeColor) : root.makeTranslucent(root.inactiveColor);
     }
 
     Behavior on color {
@@ -82,16 +91,14 @@ Rectangle {
         width: Preferences.focusedMode ? 1 : 0
         color: {
             if (Preferences.focusedMode) {
-                if (!root.clickable) {
-                    return Qt.alpha(Colors.outline, 0.4);
-                }
-                return (mouseArea.containsMouse || mouseArea.pressed) ? Qt.alpha(Colors.primary, 0.6) : Qt.alpha(Colors.outline, 0.5);
+                if (!root.clickable)
+                    return Qt.alpha(root.borderColor, 0.4);
+                return root.active ? Qt.alpha(root.accentColor, 0.6) : Qt.alpha(root.borderColor, 0.5);
             }
 
-            if (!root.clickable) {
-                return Colors.surface_variant;
-            }
-            return (mouseArea.containsMouse || mouseArea.pressed) ? Colors.primary_container : Colors.secondary_container;
+            if (!root.clickable)
+                return root.disabledColor;
+            return root.active ? root.activeColor : root.inactiveColor;
         }
 
         Behavior on color {
@@ -104,27 +111,25 @@ Rectangle {
 
     Canvas {
         id: indicatorLine
-        visible: root.clickable && (mouseArea.containsMouse || mouseArea.pressed)
+        visible: root.clickable && root.active
         anchors.fill: parent
         antialiasing: true
         opacity: 0
 
         Behavior on opacity {
             NumberAnimation {
-                duration: 200
+                duration: Theme.anim.durations.xs
                 easing.type: Easing.InOutQuad
             }
         }
 
-        onVisibleChanged: {
-            opacity = visible ? 1 : 0;
-        }
+        onVisibleChanged: opacity = visible ? 1 : 0
 
         onPaint: {
             const ctx = getContext("2d");
             ctx.reset();
 
-            ctx.strokeStyle = Colors.primary;
+            ctx.strokeStyle = root.accentColor;
             ctx.lineWidth = 3;
             ctx.lineCap = "round";
 
@@ -139,17 +144,7 @@ Rectangle {
             ctx.stroke();
         }
 
-        Component.onCompleted: {
-            requestPaint();
-        }
-
-        Connections {
-            target: Colors
-
-            function onPrimaryChanged() {
-                indicatorLine.requestPaint();
-            }
-        }
+        Component.onCompleted: requestPaint()
     }
 
     ColumnLayout {
@@ -161,13 +156,11 @@ Rectangle {
             icon: root.icon
             iconSize: root.iconSize || Theme.font.size.md
             fontColor: {
-                if (!root.clickable) {
-                    return Colors.on_surface_variant;
-                }
-                if (root.highlighted) {
-                    return Colors.on_primary;
-                }
-                return (mouseArea.containsMouse || mouseArea.pressed) ? Colors.on_primary_container : Colors.on_secondary_container;
+                if (!root.clickable)
+                    return root.disabledTextColor;
+                if (root.highlighted)
+                    return root.highlightedTextColor;
+                return root.active ? root.activeTextColor : root.inactiveTextColor;
             }
             visible: root.icon !== ""
             opacity: root.clickable ? 1.0 : 0.38
@@ -187,10 +180,9 @@ Rectangle {
                 pixelSize: Theme.font.size.xs
             }
             color: {
-                if (!root.clickable) {
-                    return Colors.on_surface_variant;
-                }
-                return (mouseArea.containsMouse || mouseArea.pressed) ? Colors.on_primary_container : Colors.on_secondary_container;
+                if (!root.clickable)
+                    return root.disabledTextColor;
+                return root.active ? root.activeTextColor : root.inactiveTextColor;
             }
             text: root.text
             visible: root.text !== ""

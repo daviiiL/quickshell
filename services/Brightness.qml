@@ -38,7 +38,6 @@ Singleton {
             return;
         value = Math.max(1, Math.min(100, value));
         setProc.command = ["brightnessctl", "--class", "backlight", "s", value + "%", "--quiet", "-d", root._backlightDevice];
-        // console.log(`Running command: ${setProc.command.join(" ")}`);
         setProc.running = true;
     }
 
@@ -55,7 +54,6 @@ Singleton {
                     root._backlightDevice = device;
                     checkPathsProc.running = true;
                 }
-                // console.debug(root._backlightPath, root._backlightDevice);
             }
         }
     }
@@ -88,7 +86,6 @@ Singleton {
         blockWrites: true
 
         onLoaded: {
-            // console.debug("Max brightness loaded:", this.text());
             const value = parseInt(this.text());
             if (!isNaN(value) && value > 0) {
                 root._max = value;
@@ -106,7 +103,6 @@ Singleton {
         watchChanges: true
 
         onLoaded: {
-            // console.debug("Current brightness loaded:", this.text());
             const value = parseInt(this.text());
             if (!isNaN(value)) {
                 root._current = value;
@@ -114,17 +110,12 @@ Singleton {
             }
         }
 
-        onFileChanged: {
-            // console.debug("Brightness file changed");
-            this.reload();
-        }
+        onFileChanged: this.reload()
     }
 
     function _updateBrightness() {
-        if (_max > 0) {
-            const newBrightness = (_current / _max) * 100;
-            root._brightness = newBrightness;
-        }
+        if (_max > 0)
+            root._brightness = (_current / _max) * 100;
     }
 
     IpcHandler {

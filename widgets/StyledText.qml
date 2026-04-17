@@ -6,7 +6,7 @@ Text {
 
     font.family: Theme.font.family.inter_regular
     font.pixelSize: Theme.font.size.md
-    color: Colors.on_surface
+    color: Colors.onSurface
 
     wrapMode: Text.Wrap
     verticalAlignment: Text.AlignVCenter

@@ -3,9 +3,9 @@ pragma ComponentBehavior: Bound
 
 // Took many bits from https://github.com/caelestia-dots/shell (GPLv3)
 
+import QtQuick
 import Quickshell
 import Quickshell.Io
-import QtQuick
 import qs.services.network
 
 /**
@@ -13,6 +13,12 @@ import qs.services.network
  */
 Singleton {
     id: root
+
+    // Force C locale so nmcli output is stable for parsing regardless of user locale
+    readonly property var cLocaleEnv: ({
+            LANG: "C",
+            LC_ALL: "C"
+        })
 
     property bool wifi: true
     property bool ethernet: false
@@ -39,7 +45,33 @@ Singleton {
 
     property string networkName: ""
     property int networkStrength
-    property string materialSymbol: root.ethernet ? "lan" : root.wifiEnabled ? (Network.networkStrength > 83 ? "signal_wifi_4_bar" : Network.networkStrength > 67 ? "network_wifi" : Network.networkStrength > 50 ? "network_wifi_3_bar" : Network.networkStrength > 33 ? "network_wifi_2_bar" : Network.networkStrength > 17 ? "network_wifi_1_bar" : "signal_wifi_0_bar") : (root.wifiStatus === "connecting") ? "signal_wifi_statusbar_not_connected" : (root.wifiStatus === "disconnected") ? "wifi_find" : (root.wifiStatus === "disabled") ? "signal_wifi_off" : "signal_wifi_bad"
+    property string materialSymbol: {
+        if (root.ethernet)
+            return "lan";
+        if (root.wifiEnabled) {
+            const s = Network.networkStrength;
+            if (s > 83)
+                return "signal_wifi_4_bar";
+            if (s > 67)
+                return "network_wifi";
+            if (s > 50)
+                return "network_wifi_3_bar";
+            if (s > 33)
+                return "network_wifi_2_bar";
+            if (s > 17)
+                return "network_wifi_1_bar";
+            return "signal_wifi_0_bar";
+        }
+        switch (root.wifiStatus) {
+        case "connecting":
+            return "signal_wifi_statusbar_not_connected";
+        case "disconnected":
+            return "wifi_find";
+        case "disabled":
+            return "signal_wifi_off";
+        }
+        return "signal_wifi_bad";
+    }
 
     function enableWifi(enabled = true): void {
         const cmd = enabled ? "on" : "off";
@@ -98,10 +130,7 @@ Singleton {
 
     Process {
         id: connectProc
-        environment: ({
-                LANG: "C",
-                LC_ALL: "C"
-            })
+        environment: root.cLocaleEnv
         stdout: SplitParser {
             onRead: line => {
                 getNetworks.running = true;
@@ -241,10 +270,7 @@ Singleton {
         id: wifiStatusProcess
         command: ["nmcli", "radio", "wifi"]
         Component.onCompleted: running = true
-        environment: ({
-                LANG: "C",
-                LC_ALL: "C"
-            })
+        environment: root.cLocaleEnv
         stdout: StdioCollector {
             onStreamFinished: {
                 root.wifiEnabled = text.trim() === "enabled";
@@ -256,10 +282,7 @@ Singleton {
         id: getNetworks
         running: true
         command: ["nmcli", "-g", "ACTIVE,SIGNAL,FREQ,SSID,BSSID,SECURITY", "d", "w"]
-        environment: ({
-                LANG: "C",
-                LC_ALL: "C"
-            })
+        environment: root.cLocaleEnv
         stdout: StdioCollector {
             onStreamFinished: {
                 const PLACEHOLDER = "STRINGWHICHHOPEFULLYWONTBEUSED";
@@ -278,28 +301,20 @@ Singleton {
                     };
                 }).filter(n => n.ssid && n.ssid.length > 0);
 
-                // Group networks by SSID and prioritize connected ones
+                // Group networks by SSID; prefer the active one, else the strongest
                 const networkMap = new Map();
                 for (const network of allNetworks) {
                     const existing = networkMap.get(network.ssid);
                     if (!existing) {
                         networkMap.set(network.ssid, network);
-                    } else {
-                        // Prioritize active/connected networks
-                        if (network.active && !existing.active) {
-                            networkMap.set(network.ssid, network);
-                        } else if (!network.active && !existing.active) {
-                            // If both are inactive, keep the one with better signal
-                            if (network.strength > existing.strength) {
-                                networkMap.set(network.ssid, network);
-                            }
-                        }
-                        // If existing is active and new is not, keep existing
+                    } else if (network.active && !existing.active) {
+                        networkMap.set(network.ssid, network);
+                    } else if (!existing.active && !network.active && network.strength > existing.strength) {
+                        networkMap.set(network.ssid, network);
                     }
                 }
 
                 const wifiNetworks = Array.from(networkMap.values());
-
                 const rNetworks = root.wifiNetworks;
 
                 const destroyed = rNetworks.filter(rn => !wifiNetworks.find(n => n.frequency === rn.frequency && n.ssid === rn.ssid && n.bssid === rn.bssid));
@@ -316,8 +331,6 @@ Singleton {
                         }));
                     }
                 }
-
-                // console.debug("WiFi scan results:", wifiNetworks.map(n => `${n.ssid} (${n.strength}% @ ${n.frequency}MHz, ${n.active ? 'active' : 'inactive'})`).join(", "));
             }
         }
     }
@@ -348,10 +361,7 @@ Singleton {
         id: updateEthernetInfo
         running: true
         command: ["sh", "-c", "nmcli -t -f DEVICE,TYPE,STATE device status | grep ':ethernet:' && nmcli -t -f GENERAL.DEVICE,WIRED-PROPERTIES.SPEED device show $(nmcli -t -f DEVICE,TYPE device status | grep ':ethernet$' | head -1 | cut -d: -f1) 2>/dev/null || true"]
-        environment: ({
-                LANG: "C",
-                LC_ALL: "C"
-            })
+        environment: root.cLocaleEnv
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.trim().split("\n");
@@ -384,10 +394,7 @@ Singleton {
         id: getKnownNetworks
         running: true
         command: ["nmcli", "-t", "-f", "NAME,TYPE", "connection", "show"]
-        environment: ({
-                LANG: "C",
-                LC_ALL: "C"
-            })
+        environment: root.cLocaleEnv
         stdout: StdioCollector {
             onStreamFinished: {
                 const connections = text.trim().split("\n");

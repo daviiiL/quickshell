@@ -6,7 +6,7 @@ Slider {
     id: root
 
     property color highlightColor: Colors.primary
-    property color trackColor: Colors.surface_container_high
+    property color trackColor: Colors.surfaceContainerHigh
     property color handleColor: Colors.primary
 
     from: 0

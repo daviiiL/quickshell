@@ -33,15 +33,11 @@ Singleton {
     }
 
     function setColorMode(value: int) {
-        root.darkMode = value === 0 ? true : false;
+        root.darkMode = value === 0;
         defaultAdapter.darkMode = root.darkMode;
 
         if (root.usePreferredScheme) {
-            if (root.darkMode)
-                root.setColorScheme("scheme-tonal-spot", true);
-            else
-                root.setColorScheme("scheme-neutral", true);
-
+            root.setColorScheme(root.darkMode ? "scheme-tonal-spot" : "scheme-neutral", true);
             applySelectedVisualPreferences();
         }
     }
@@ -51,11 +47,7 @@ Singleton {
         defaultAdapter.usePreferredScheme = root.usePreferredScheme;
 
         if (root.usePreferredScheme) {
-            if (root.darkMode)
-                root.setColorScheme("scheme-tonal-spot", true);
-            else
-                root.setColorScheme("scheme-neutral", true);
-
+            root.setColorScheme(root.darkMode ? "scheme-tonal-spot" : "scheme-neutral", true);
             applySelectedVisualPreferences();
         }
     }

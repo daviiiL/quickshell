@@ -13,9 +13,7 @@ Singleton {
     readonly property real percentage: UPower.displayDevice.percentage
     readonly property int state: UPower.displayDevice.state
     readonly property bool isCharging: state === UPowerDeviceState.Charging
-    readonly property real timeToGoal: {
-        return UPower.displayDevice.timeToEmpty !== 0 ? UPower.displayDevice.timeToEmpty : UPower.displayDevice.timeToFull;
-    }
+    readonly property real timeToGoal: UPower.displayDevice.timeToEmpty !== 0 ? UPower.displayDevice.timeToEmpty : UPower.displayDevice.timeToFull
 
     readonly property real healthPercentage: UPower.displayDevice.healthPercentage || 1.0
 
@@ -45,30 +43,17 @@ Singleton {
     }
 
     function formatTime(seconds) {
-        if (!Number.isFinite(seconds) || seconds <= 0) {
+        if (!Number.isFinite(seconds) || seconds <= 0)
             return "00:00";
-        }
 
-        const hrs = Math.floor(seconds / 3600);
-        const mins = Math.floor((seconds % 3600) / 60);
-        const hh = String(hrs).padStart(2, "0");
-        const mm = String(mins).padStart(2, "0");
+        const hh = String(Math.floor(seconds / 3600)).padStart(2, "0");
+        const mm = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
         return `${hh}:${mm}`;
     }
 
-    readonly property string batteryStatusText: {
-        if (percentage > 0.99) {
-            return "Fully charged";
-        }
-        return `EST ${formatTime(timeToGoal)} ${isCharging ? "till full" : "left"}`;
-    }
+    readonly property string batteryStatusText: percentage > 0.99 ? "Fully charged" : `EST ${formatTime(timeToGoal)} ${isCharging ? "till full" : "left"}`
 
-    readonly property string batteryChangeRateText: {
-        if (UPower.displayDevice.changeRate === 0) {
-            return "Battery not in use";
-        }
-        return `${isCharging ? "Charging at " : "Discharging at "}${Math.abs(UPower.displayDevice.changeRate).toFixed(2)} W`;
-    }
+    readonly property string batteryChangeRateText: UPower.displayDevice.changeRate === 0 ? "Battery not in use" : `${isCharging ? "Charging at " : "Discharging at "}${Math.abs(UPower.displayDevice.changeRate).toFixed(2)} W`
 
     function setPowerProfile(profileName: string) {
         switch (profileName) {

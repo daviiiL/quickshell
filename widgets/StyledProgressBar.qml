@@ -7,7 +7,7 @@ Item {
 
     property real value: 0
     property color highlightColor: Colors.primary
-    property color trackColor: Colors.surface_container_high
+    property color trackColor: Colors.surfaceContainerHigh
 
     implicitHeight: 4
 

@@ -4,13 +4,10 @@ import Quickshell.Io
 import qs.common
 import qs.widgets
 
-/**
- * Thumbnail image component that follows the FreeDesktop.org thumbnail specification
- * https://specifications.freedesktop.org/thumbnail-spec/thumbnail-spec-latest.html
- *
- * Automatically generates thumbnails on-demand using ImageMagick if they don't exist.
- * Thumbnails are cached in ~/.cache/thumbnails/<size>/<md5hash>.png
- */
+// Follows the FreeDesktop.org thumbnail spec:
+// https://specifications.freedesktop.org/thumbnail-spec/thumbnail-spec-latest.html
+// Thumbnails are cached at ~/.cache/thumbnails/<size>/<md5hash>.png and generated
+// on demand via ImageMagick when missing.
 StyledImage {
     id: root
 
@@ -27,19 +24,15 @@ StyledImage {
         return `${cacheDir}/thumbnails/${thumbnailSizeName}/${md5Hash}.png`;
     }
 
-    // Check if thumbnail exists before loading to avoid warnings
+    // Deferred: actual source is assigned only after the existence check below succeeds,
+    // so Image doesn't emit a load warning for a path that may not exist yet.
     source: ""
 
     smooth: true
     mipmap: false
 
-    Component.onCompleted: {
-        checkAndLoadThumbnail();
-    }
-
-    onThumbnailPathChanged: {
-        checkAndLoadThumbnail();
-    }
+    Component.onCompleted: checkAndLoadThumbnail()
+    onThumbnailPathChanged: checkAndLoadThumbnail()
 
     function checkAndLoadThumbnail() {
         thumbnailCheckProc.running = false;
@@ -50,14 +43,10 @@ StyledImage {
         id: thumbnailCheckProc
         command: ["test", "-f", FileUtils.trimFileProtocol(root.thumbnailPath)]
         onExited: exitCode => {
-            if (exitCode === 0) {
-                // Thumbnail exists, load it
+            if (exitCode === 0)
                 root.source = root.thumbnailPath;
-            } else if (root.generateThumbnail) {
-                // Thumbnail doesn't exist and we should generate it
+            else if (root.generateThumbnail)
                 thumbnailGeneration.running = true;
-            }
-        // If exitCode !== 0 and !generateThumbnail, do nothing (no warning)
         }
     }
 
@@ -70,8 +59,9 @@ StyledImage {
         }
         onExited: exitCode => {
             if (exitCode === 0) {
+                // Reset then reassign to force the Image to reload from disk.
                 root.source = "";
-                root.source = root.thumbnailPath; // Force reload
+                root.source = root.thumbnailPath;
             }
         }
     }

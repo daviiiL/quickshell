@@ -10,6 +10,10 @@ Item {
     property bool checked: false
     property string text: ""
 
+    property color indicatorColor: Colors.secondaryContainer
+    property color checkColor: Colors.onSecondaryContainer
+    property color textColor: Colors.onSurface
+
     signal clicked
 
     implicitWidth: indicator.width + (text.length > 0 ? label.width + 8 : 0)
@@ -21,17 +25,7 @@ Item {
         anchors.fill: parent
         hoverEnabled: false
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            parent.clicked();
-        }
-    }
-
-    Connections {
-        target: Colors.colorsChanged
-
-        function onColorsChanged() {
-            checkIndicator.requestPaint();
-        }
+        onClicked: parent.clicked()
     }
 
     Rectangle {
@@ -41,7 +35,7 @@ Item {
         anchors.left: parent.left
         implicitWidth: 20
         implicitHeight: 20
-        color: Colors.secondary_container
+        color: root.indicatorColor
         radius: Theme.ui.radius.lg
 
         Canvas {
@@ -50,16 +44,16 @@ Item {
             visible: root.checked
 
             onPaint: {
-                var ctx = getContext("2d");
+                const ctx = getContext("2d");
                 ctx.clearRect(0, 0, width, height);
 
-                var r = Math.min(width, height) * 0.3;
-                var cx = width / 2;
-                var cy = height / 2;
+                const r = Math.min(width, height) * 0.3;
+                const cx = width / 2;
+                const cy = height / 2;
 
                 ctx.beginPath();
                 ctx.arc(cx, cy, r, 0, 2 * Math.PI, false);
-                ctx.fillStyle = Colors.on_secondary_container;
+                ctx.fillStyle = root.checkColor;
                 ctx.fill();
             }
 
@@ -87,6 +81,6 @@ Item {
             pixelSize: Theme.font.size.lg
         }
 
-        color: Colors.on_surface
+        color: root.textColor
     }
 }

@@ -86,14 +86,13 @@ Singleton {
 
     onListChanged: {
         root.list.forEach(notif => {
-            if (!root.latestTimeForApp[notif.appName] || notif.time > root.latestTimeForApp[notif.appName]) {
-                root.latestTimeForApp[notif.appName] = Math.max(root.latestTimeForApp[notif.appName] || 0, notif.time);
-            }
+            const prev = root.latestTimeForApp[notif.appName];
+            if (!prev || notif.time > prev)
+                root.latestTimeForApp[notif.appName] = notif.time;
         });
         Object.keys(root.latestTimeForApp).forEach(appName => {
-            if (!root.list.some(notif => notif.appName === appName)) {
+            if (!root.list.some(notif => notif.appName === appName))
                 delete root.latestTimeForApp[appName];
-            }
         });
     }
 
@@ -258,12 +257,7 @@ Singleton {
                     "urgency": notif.urgency
                 });
             });
-            let maxId = 0;
-            root.list.forEach(notif => {
-                maxId = Math.max(maxId, notif.notificationId);
-            });
-
-            root.idOffset = maxId;
+            root.idOffset = root.list.reduce((max, notif) => Math.max(max, notif.notificationId), 0);
             root.initDone();
         }
         onLoadFailed: error => {

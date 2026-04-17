@@ -12,10 +12,18 @@ Item {
     property real value: 0
     property bool charging: false
 
+    property color trackColor: Colors.secondaryContainer
+    property color fillColor: Colors.primary
+    property color lowFillColor: Colors.error
+    property color chargingColor: Colors.success
+    property color accentColor: Colors.primary
+
+    readonly property real progressFraction: value / total
+
     Rectangle {
         id: background
         anchors.fill: parent
-        color: Preferences.focusedMode ? "transparent" : Colors.secondary_container
+        color: Preferences.focusedMode ? "transparent" : root.trackColor
         anchors.leftMargin: Theme.ui.padding.sm
         anchors.rightMargin: Theme.ui.padding.sm
         radius: Preferences.focusedMode ? 1 : (Theme.ui.radius.lg - 2)
@@ -24,7 +32,7 @@ Item {
 
         border {
             width: Preferences.focusedMode ? 1 : 0
-            color: Preferences.focusedMode ? Qt.alpha(Colors.primary, 0.4) : "transparent"
+            color: Preferences.focusedMode ? Qt.alpha(root.accentColor, 0.4) : "transparent"
         }
 
         Item {
@@ -46,10 +54,10 @@ Item {
                         top: parent.top
                         bottom: parent.bottom
                     }
-                    color: Preferences.darkMode ? "#4a9d4a" : "#2d7a2d"
+                    color: root.chargingColor
 
                     property real animProgress: 0
-                    width: parent.width * ((root.value / root.total) + animProgress * (1 - root.value / root.total))
+                    width: parent.width * (root.progressFraction + animProgress * (1 - root.progressFraction))
 
                     SequentialAnimation on animProgress {
                         running: root.charging
@@ -74,16 +82,19 @@ Item {
                 Rectangle {
                     id: progress
 
-                    readonly property color successColor: Preferences.darkMode ? "#4a9d4a" : "#2d7a2d"
-                    readonly property color warningColor: Preferences.darkMode ? "#ffd4ab" : "#d97706"
-
                     anchors {
                         left: parent.left
                         top: parent.top
                         bottom: parent.bottom
                     }
-                    width: parent.width * (root.value / root.total)
-                    color: root.charging ? successColor : root.value <= (root.total * 0.2) ? Colors.error : Colors.primary
+                    width: parent.width * root.progressFraction
+                    color: {
+                        if (root.charging)
+                            return root.chargingColor;
+                        if (root.value <= root.total * 0.2)
+                            return root.lowFillColor;
+                        return root.fillColor;
+                    }
                     Behavior on width {
                         NumberAnimation {
                             duration: Theme.anim.durations.sm

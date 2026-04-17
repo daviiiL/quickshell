@@ -1,7 +1,6 @@
 import QtQuick
 
 import qs.common
-import qs.services
 
 Rectangle {
     id: root
@@ -9,10 +8,15 @@ Rectangle {
     required property bool checked
     signal clicked
 
+    property color activeColor: Colors.primary
+    property color inactiveColor: Colors.surface
+    property color handleActiveColor: Colors.onPrimary
+    property color handleInactiveColor: Colors.onSecondary
+
     implicitWidth: 48
     implicitHeight: 28
     radius: 14
-    color: checked ? Colors.primary : Colors.surface
+    color: checked ? root.activeColor : root.inactiveColor
 
     Behavior on color {
         ColorAnimation {
@@ -28,7 +32,7 @@ Rectangle {
         radius: 12
         x: root.checked ? parent.width - width - 2 : 2
         y: 2
-        color: root.checked ? Colors.on_primary : (Preferences.darkMode ? Colors.on_secondary : Colors.outline_variant)
+        color: root.checked ? root.handleActiveColor : root.handleInactiveColor
 
         Behavior on x {
             NumberAnimation {

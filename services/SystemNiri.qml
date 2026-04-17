@@ -11,7 +11,6 @@ Singleton {
     readonly property Niri niri: Niri {
         Component.onCompleted: connect()
 
-        // onConnected: console.log("Connected to niri")
         onErrorOccurred: function (error) {
             console.error("Error:", error);
         }

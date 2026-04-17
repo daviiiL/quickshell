@@ -5,7 +5,7 @@ import qs.common
 Item {
     id: root
 
-    property color color: Colors.primary_container
+    property color color: Colors.primaryContainer
     property real irregularity: 0.08
     property real amplitude: 1.0
     property bool animate: true

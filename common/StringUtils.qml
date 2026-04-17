@@ -7,18 +7,20 @@ import Quickshell
 Singleton {
     id: root
 
+    // Strips leading bracketed annotations commonly seen in track titles
+    // (e.g. "(Official Video)", "[Lyrics]", "【MV】").
     function cleanMusicTitle(title) {
         if (!title)
             return "";
-        title = title.replace(/^ *\([^)]*\) */g, " ");
-        title = title.replace(/^ *\[[^\]]*\] */g, " ");
-        title = title.replace(/^ *\{[^\}]*\} */g, " ");
-        title = title.replace(/^ *【[^】]*】/, "");
-        title = title.replace(/^ *《[^》]*》/, "");
-        title = title.replace(/^ *「[^」]*」/, "");
-        title = title.replace(/^ *『[^』]*』/, "");
-
-        return title.trim();
+        return title
+            .replace(/^ *\([^)]*\) */g, " ")
+            .replace(/^ *\[[^\]]*\] */g, " ")
+            .replace(/^ *\{[^\}]*\} */g, " ")
+            .replace(/^ *【[^】]*】/, "")
+            .replace(/^ *《[^》]*》/, "")
+            .replace(/^ *「[^」]*」/, "")
+            .replace(/^ *『[^』]*』/, "")
+            .trim();
     }
 
     function friendlyTimeForSeconds(seconds) {
@@ -28,17 +30,19 @@ Singleton {
         const h = Math.floor(seconds / 3600);
         const m = Math.floor((seconds % 3600) / 60);
         const s = seconds % 60;
-        if (h > 0) {
-            return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        } else {
-            return `${m}:${s.toString().padStart(2, '0')}`;
-        }
+        const pad = n => n.toString().padStart(2, '0');
+        return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
     }
 
     function escapeHtml(str) {
         if (typeof str !== 'string')
             return str;
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     function shellSingleQuoteEscape(str) {

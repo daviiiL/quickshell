@@ -64,8 +64,6 @@ Singleton {
     function apply(path) {
         if (!path || path.length === 0)
             return;
-
-        // console.debug(`Applying wallpaper ${path}`);
         applyProc.exec([wallpaperSwitchScriptPath, path]);
         Preferences.setWallpaperPath(path);
         root.changed();
@@ -74,11 +72,8 @@ Singleton {
     function applyWithCurPreferences(path: string, isDarkMode: bool, scheme: string): void {
         if (!path || path.length === 0)
             return;
-
-        // console.debug(`Applying wallpaper ${path} with current preferences: darkMode=${isDarkMode}, scheme=${scheme}`);
         applyProc.exec([wallpaperSwitchScriptPath, "--scheme", scheme, "--mode", isDarkMode ? "dark" : "light", path]);
         Preferences.setWallpaperPath(path);
-
         root.changed();
     }
 

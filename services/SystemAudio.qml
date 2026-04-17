@@ -35,9 +35,7 @@ Singleton {
 
     readonly property real volume: Pipewire.defaultAudioSink?.audio.volume ?? 0
     readonly property real muted: Pipewire.defaultAudioSink?.audio.muted ?? false
-    readonly property bool isOverdrive: {
-        return Math.floor(volume * 100) > 100;
-    }
+    readonly property bool isOverdrive: Math.floor(volume * 100) > 100
 
     IpcHandler {
         target: "volume"

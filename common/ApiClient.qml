@@ -9,33 +9,33 @@ QtObject {
         })
 
     function _applyHeaders(xhr, headers) {
-        for (var k in defaultHeaders)
+        for (const k in defaultHeaders)
             xhr.setRequestHeader(k, defaultHeaders[k]);
-
-        if (headers)
-            for (var h in headers)
+        if (headers) {
+            for (const h in headers)
                 xhr.setRequestHeader(h, headers[h]);
+        }
     }
 
     function get(path, onSuccess, onError, headers) {
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open("GET", new URL(path, baseUrl).toString());
-
         root._applyHeaders(xhr, headers);
 
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== XMLHttpRequest.DONE)
                 return;
             if (xhr.status >= 200 && xhr.status < 300) {
-                var data = xhr.responseText;
+                let data = xhr.responseText;
                 try {
                     data = JSON.parse(xhr.responseText);
-                } catch (e) {}
+                } catch (e) {
+                    // Response wasn't JSON; pass through the raw text.
+                }
                 if (onSuccess)
                     onSuccess(data, xhr);
-            } else {
-                if (onError)
-                    onError(xhr.status, xhr.responseText, xhr);
+            } else if (onError) {
+                onError(xhr.status, xhr.responseText, xhr);
             }
         };
 

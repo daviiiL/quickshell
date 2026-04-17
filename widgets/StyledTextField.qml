@@ -5,26 +5,31 @@ import qs.common
 TextField {
     id: root
 
+    property color focusedBgColor: Colors.primaryContainer
+    property color unfocusedBgColor: Colors.secondaryContainer
+    property color focusedTextColor: Colors.onPrimaryContainer
+    property color unfocusedTextColor: Colors.onSecondaryContainer
+
     padding: 8
     leftPadding: 12
     rightPadding: 12
 
     background: Rectangle {
         radius: Theme.ui.radius.md
-        color: Qt.alpha(root.activeFocus ? Colors.primary_container : Colors.secondary_container, 0.4)
+        color: Qt.alpha(root.activeFocus ? root.focusedBgColor : root.unfocusedBgColor, 0.4)
 
         border {
-            color: root.activeFocus ? Colors.primary_container : Colors.secondary_container
+            color: root.activeFocus ? root.focusedBgColor : root.unfocusedBgColor
         }
     }
 
-    color: root.activeFocus ? Colors.on_primary_container : Colors.on_secondary_container
+    color: root.activeFocus ? root.focusedTextColor : root.unfocusedTextColor
 
     font {
         family: Theme.font.family.inter_thin
         pixelSize: Theme.font.size.xs
     }
 
-    selectionColor: Colors.primary_container
-    selectedTextColor: Colors.on_primary_container
+    selectionColor: root.focusedBgColor
+    selectedTextColor: root.focusedTextColor
 }

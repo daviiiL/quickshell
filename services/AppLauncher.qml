@@ -14,30 +14,26 @@ Singleton {
         if (root.query === "")
             return [];
 
-        const appList = AppSearch.fuzzyQuery(root.query);
-
-        return appList.map(entry => {
-            return resultComp.createObject(null, {
-                "type": "App",
-                "name": entry.name,
-                "iconName": entry.icon,
-                "iconType": "system",
-                "verb": "Launch",
-                "comment": entry.description || "",
-                "genericName": "",
-                "keywords": [],
-                "runInTerminal": entry.runInTerminal,
-                "execute": () => {
-                    if (!entry.runInTerminal) {
-                        entry.execute();
-                    } else {
-                        const terminalCmd = Quickshell.env("TERMINAL") || "kitty";
-                        Quickshell.execDetached(["bash", '-c', `${terminalCmd} -e '${StringUtils.shellSingleQuoteEscape(entry.command.join(' '))}'`]);
-                    }
-                },
-                "actions": []
-            });
-        });
+        return AppSearch.fuzzyQuery(root.query).map(entry => resultComp.createObject(null, {
+            "type": "App",
+            "name": entry.name,
+            "iconName": entry.icon,
+            "iconType": "system",
+            "verb": "Launch",
+            "comment": entry.description || "",
+            "genericName": "",
+            "keywords": [],
+            "runInTerminal": entry.runInTerminal,
+            "execute": () => {
+                if (!entry.runInTerminal) {
+                    entry.execute();
+                    return;
+                }
+                const terminalCmd = Quickshell.env("TERMINAL") || "kitty";
+                Quickshell.execDetached(["bash", '-c', `${terminalCmd} -e '${StringUtils.shellSingleQuoteEscape(entry.command.join(' '))}'`]);
+            },
+            "actions": []
+        }));
     }
 
     Component {
