@@ -13,7 +13,18 @@ MainBarButton {
                                     ? Notifications.unread
                                     : 3
 
-    onActivated: {}
+    readonly property string srcId: "notifications"
+    active: GlobalStates.rightPanelOpen && GlobalStates.rightPanelSource === srcId
+
+    onActivated: {
+        if (GlobalStates.rightPanelOpen && GlobalStates.rightPanelSource === srcId) {
+            GlobalStates.rightPanelOpen = false;
+            GlobalStates.rightPanelSource = "";
+        } else {
+            GlobalStates.rightPanelSource = srcId;
+            GlobalStates.rightPanelOpen = true;
+        }
+    }
 
     contentPadX: 9
 

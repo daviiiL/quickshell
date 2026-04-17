@@ -8,11 +8,24 @@ import qs.services
 MainBarButton {
     id: root
 
+    contentGap: 3
+
     readonly property real volume: (typeof SystemAudio !== "undefined" && SystemAudio.volume !== undefined)
                                      ? SystemAudio.volume
                                      : 0.42
 
-    onActivated: {}
+    readonly property string srcId: "volume"
+    active: GlobalStates.rightPanelOpen && GlobalStates.rightPanelSource === srcId
+
+    onActivated: {
+        if (GlobalStates.rightPanelOpen && GlobalStates.rightPanelSource === srcId) {
+            GlobalStates.rightPanelOpen = false;
+            GlobalStates.rightPanelSource = "";
+        } else {
+            GlobalStates.rightPanelSource = srcId;
+            GlobalStates.rightPanelOpen = true;
+        }
+    }
 
     Image {
         Layout.preferredWidth:  Theme.ui.mainBarIconSize

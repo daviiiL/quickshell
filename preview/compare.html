@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Panel bg compare</title>
+<style>
+  :root {
+    --surface: #141218;
+    --hair: #272727;
+    --ink: #e6e0e9;
+    --ink-dim: #8f8f8f;
+    --ink-dimmer: #6b6b6b;
+    --accent: #e3e3e3;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 20% 30%, #1a1820 0%, transparent 60%),
+      radial-gradient(900px 500px at 80% 80%, #121016 0%, transparent 60%),
+      #07070a;
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 24px;
+  }
+  .wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .label {
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .hex { color: var(--ink); font-family: "SF Mono", monospace; letter-spacing: 0.06em; }
+  .panel {
+    width: 320px;
+    height: calc(100vh - 96px);
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: 1px; width: 100%;
+    background: var(--hair);
+  }
+  .panel::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: 1px; width: 180px;
+    background: linear-gradient(90deg, rgba(227,227,227,0.55), transparent);
+  }
+  .content { padding: 14px; display: flex; flex-direction: column; gap: 18px; }
+  .sec-title {
+    font-size: 10px;
+    color: var(--ink-dimmer);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .swatch {
+    width: 26px; height: 26px; border-radius: 4px;
+    background: linear-gradient(135deg, #2b2930, #1d1b20);
+    border: 1px solid var(--hair);
+  }
+  .name { font-size: 13px; color: var(--ink); }
+  .sub { font-size: 10px; color: var(--ink-dimmer); text-transform: uppercase; letter-spacing: 0.14em; margin-top: 2px; }
+  .sep { height: 1px; background: var(--hair); }
+  .text { font-size: 12px; color: var(--ink-dim); line-height: 1.4; }
+  .value { font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .track { height: 2px; background: var(--hair); border-radius: 999px; position: relative; }
+  .track .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 72%; background: var(--accent); border-radius: 999px; }
+  .track .thumb { position: absolute; left: 72%; top: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(10,10,10,0.9); }
+
+  .panel-a { background: #0f0f13; }
+  .panel-b { background: #0f0f16; }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="label">A · <span class="hex">#0f0f13</span> (less blue)</div>
+    <div class="panel panel-a">
+      <div class="content">
+        <div class="row">
+          <div class="swatch"></div>
+          <div>
+            <div class="name">davidas</div>
+            <div class="sub">niri · arch</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div>
+          <div class="sec-title">display</div>
+          <div style="margin-top:12px;" class="row">
+            <span class="sub" style="width:18px;">☀</span>
+            <div class="track" style="flex:1;"><div class="fill"></div><div class="thumb"></div></div>
+            <div class="value">72%</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div>
+          <div class="sec-title">sound</div>
+          <div style="margin-top:12px;" class="row">
+            <span class="sub" style="width:18px;">♪</span>
+            <div class="track" style="flex:1;"><div class="fill" style="width:42%;"></div><div class="thumb" style="left:42%;"></div></div>
+            <div class="value">42%</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div>
+          <div class="sec-title">notifications <span style="color:var(--ink-dim); margin-left:6px;">3</span></div>
+          <div style="margin-top:10px;" class="text">slack · 3 new · mira: pushed the new icon spacing tokens</div>
+          <div style="margin-top:6px;" class="text">system · Battery low — 15% remaining</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="label">B · <span class="hex">#0f0f16</span> (more blue)</div>
+    <div class="panel panel-b">
+      <div class="content">
+        <div class="row">
+          <div class="swatch"></div>
+          <div>
+            <div class="name">davidas</div>
+            <div class="sub">niri · arch</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div>
+          <div class="sec-title">display</div>
+          <div style="margin-top:12px;" class="row">
+            <span class="sub" style="width:18px;">☀</span>
+            <div class="track" style="flex:1;"><div class="fill"></div><div class="thumb"></div></div>
+            <div class="value">72%</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div>
+          <div class="sec-title">sound</div>
+          <div style="margin-top:12px;" class="row">
+            <span class="sub" style="width:18px;">♪</span>
+            <div class="track" style="flex:1;"><div class="fill" style="width:42%;"></div><div class="thumb" style="left:42%;"></div></div>
+            <div class="value">42%</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div>
+          <div class="sec-title">notifications <span style="color:var(--ink-dim); margin-left:6px;">3</span></div>
+          <div style="margin-top:10px;" class="text">slack · 3 new · mira: pushed the new icon spacing tokens</div>
+          <div style="margin-top:6px;" class="text">system · Battery low — 15% remaining</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

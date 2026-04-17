@@ -177,6 +177,8 @@ Singleton {
             root.list.splice(index, 1);
             notifFileView.setText(stringifyList(root.list));
             triggerListChange();
+            if (root.unread > 0)
+                root.unread = Math.max(0, root.unread - 1);
         }
         if (notifServerIndex !== -1) {
             notifServer.trackedNotifications.values[notifServerIndex].dismiss();
@@ -186,6 +188,7 @@ Singleton {
 
     function discardAllNotifications() {
         root.list = [];
+        root.unread = 0;
         triggerListChange();
         notifFileView.setText(stringifyList(root.list));
         notifServer.trackedNotifications.values.forEach(notif => {

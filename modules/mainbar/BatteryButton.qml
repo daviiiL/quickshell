@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.common
 import qs.services
+import qs.widgets
 
 MainBarButton {
     id: root
@@ -73,13 +74,33 @@ MainBarButton {
         }
     }
 
-    Text {
-        text: Math.round(root.level * 100) + "%"
-        color: root.hovered ? Colors.fgSurface : Colors.inkDim
-        font.family: Theme.font.family.inter_medium
-        font.weight: Font.Medium
-        font.pixelSize: 15
-        Layout.preferredWidth: 40
-        horizontalAlignment: Text.AlignRight
+    RowLayout {
+        Layout.alignment: Qt.AlignVCenter
+        Layout.preferredWidth: 52
+        spacing: 2
+
+        Item { Layout.fillWidth: true }
+
+        Image {
+            Layout.alignment: Qt.AlignVCenter
+            Layout.preferredWidth: 10
+            Layout.preferredHeight: 10
+            source: "../../assets/icons/charging.svg"
+            sourceSize.width: 20
+            sourceSize.height: 20
+            smooth: true
+            opacity: root.charging ? (root.hovered ? 1.0 : 0.56) : 0
+            Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
+        }
+
+        Text {
+            text: Math.round(root.level * 100) + "%"
+            color: root.hovered ? Colors.fgSurface : Colors.inkDim
+            font.family: Theme.font.family.inter_medium
+            font.weight: Font.Medium
+            font.pixelSize: 15
+            horizontalAlignment: Text.AlignRight
+            Behavior on color { ColorAnimation { duration: 150 } }
+        }
     }
 }

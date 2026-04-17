@@ -58,6 +58,7 @@ Singleton {
     readonly property color success: "#4a9d4a"
     readonly property color warning: "#ffd4ab"
 
+    readonly property color panelBg:    "#0f0f13"
     readonly property color barBg:      "#0a0a0a"
     readonly property color hair:       "#272727"
     readonly property color hairHot:    "#3a3a3a"

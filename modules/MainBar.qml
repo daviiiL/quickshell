@@ -108,7 +108,15 @@ Scope {
                             NetworkButton     {}
                             BrightnessButton  {}
                             VolumeButton      {}
-                            BatteryButton     {}
+                        }
+
+                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+
+                        RowLayout {
+                            spacing: 0
+                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                            BatteryButton {}
                         }
 
                         Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }

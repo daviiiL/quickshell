@@ -8,6 +8,8 @@ import qs.services
 MainBarButton {
     id: root
 
+    contentGap: 3
+
     readonly property real level: (typeof Brightness !== "undefined" && Brightness.brightness !== undefined)
                                     ? Brightness.brightness / 100
                                     : 0.72
@@ -18,7 +20,18 @@ MainBarButton {
         return "brightness-3";
     }
 
-    onActivated: {}
+    readonly property string srcId: "brightness"
+    active: GlobalStates.rightPanelOpen && GlobalStates.rightPanelSource === srcId
+
+    onActivated: {
+        if (GlobalStates.rightPanelOpen && GlobalStates.rightPanelSource === srcId) {
+            GlobalStates.rightPanelOpen = false;
+            GlobalStates.rightPanelSource = "";
+        } else {
+            GlobalStates.rightPanelSource = srcId;
+            GlobalStates.rightPanelOpen = true;
+        }
+    }
 
     Image {
         Layout.preferredWidth:  Theme.ui.mainBarIconSize

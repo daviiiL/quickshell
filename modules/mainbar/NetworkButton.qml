@@ -29,7 +29,21 @@ MainBarButton {
         return "—";
     }
 
-    onActivated: {}
+    active: GlobalStates.networkOverlayOpen
+
+    onActivated: {
+        GlobalStates.networkOverlayOpen = !GlobalStates.networkOverlayOpen;
+    }
+
+    onXChanged:     Qt.callLater(_publishCenter)
+    onWidthChanged: Qt.callLater(_publishCenter)
+    Component.onCompleted: Qt.callLater(_publishCenter)
+
+    function _publishCenter() {
+        const g = root.mapToGlobal(root.width / 2, 0);
+        if (g && g.x !== undefined)
+            GlobalStates.networkButtonCenterX = g.x;
+    }
 
     Image {
         Layout.preferredWidth:  Theme.ui.mainBarIconSize
@@ -55,5 +69,18 @@ MainBarButton {
         Layout.preferredWidth: 80
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
+    }
+
+    Text {
+        visible: root.isWifiUp
+        text: root.strength + "%"
+        color: root.hovered ? Colors.fgSurface : Colors.inkDimmer
+        font.family: Theme.font.family.inter_regular
+        font.pixelSize: 11
+        font.letterSpacing: 0.2
+        Layout.preferredWidth: root.isWifiUp ? 26 : 0
+        Layout.alignment: Qt.AlignVCenter
+        horizontalAlignment: Text.AlignRight
+        Behavior on color { ColorAnimation { duration: 150 } }
     }
 }

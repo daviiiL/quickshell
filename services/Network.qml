@@ -255,10 +255,12 @@ Singleton {
     Process {
         id: updateNetworkStrength
         running: true
-        command: ["sh", "-c", "nmcli -f IN-USE,SIGNAL,SSID device wifi | awk '/^\*/{if (NR!=1) {print $2}}'"]
+        environment: root.cLocaleEnv
+        command: ["sh", "-c", "nmcli -t -f IN-USE,SIGNAL device wifi | awk -F: '$1==\"*\"{print $2; exit}'"]
         stdout: SplitParser {
             onRead: data => {
-                root.networkStrength = parseInt(data);
+                const n = parseInt(data);
+                root.networkStrength = isNaN(n) ? 0 : n;
             }
         }
     }

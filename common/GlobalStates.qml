@@ -17,6 +17,9 @@ Singleton {
     property bool appLauncherOpen: false
     property bool leftPanelOpen: false
     property bool rightPanelOpen: false
+    property string rightPanelSource: ""
+    property bool networkOverlayOpen: false
+    property real networkButtonCenterX: 0
 
     property bool mediaControlsOpen: false
     property real mediaControlsX: 0
