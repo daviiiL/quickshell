@@ -126,6 +126,7 @@ Scope {
                 radius: Theme.ui.radius.sm
                 border.width: 1
                 border.color: Colors.hair
+                clip: true
 
                 scale: panel.visible ? 1 : 0.92
                 opacity: panel.visible ? 1 : 0
