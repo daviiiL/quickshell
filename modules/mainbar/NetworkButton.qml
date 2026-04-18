@@ -15,6 +15,8 @@ MainBarButton {
     readonly property bool isWifiUp:    netOnline && !isEthernet && Network.wifiEnabled
     readonly property int  strength:    netOnline ? (Network.networkStrength ?? 0) : 0
     readonly property string wifiState: netOnline ? (Network.wifiStatus ?? "") : ""
+    readonly property bool notConnected: netOnline && !isEthernet && !Network.active
+    readonly property bool showScanDot:  notConnected && Network.wifiScanning
 
     readonly property string iconSrc: {
         if (isEthernet)                    return "../../assets/icons/ethernet.svg";
@@ -60,19 +62,30 @@ MainBarButton {
             GlobalStates.setNetworkButtonCenter(root.screen.name, g.x);
     }
 
-    Image {
+    Item {
         Layout.preferredWidth:  Theme.ui.mainBarIconSize
         Layout.preferredHeight: Theme.ui.mainBarIconSize
-        source: root.iconSrc
-        sourceSize.width: Theme.ui.mainBarIconSize * 2
-        sourceSize.height: Theme.ui.mainBarIconSize * 2
-        smooth: true
-        opacity: {
-            if (root.hovered) return 1.0;
-            if (!root.isEthernet && !root.isWifiUp) return 0.30;
-            return 0.56;
+
+        Image {
+            anchors.fill: parent
+            visible: !root.showScanDot
+            source: root.iconSrc
+            sourceSize.width: Theme.ui.mainBarIconSize * 2
+            sourceSize.height: Theme.ui.mainBarIconSize * 2
+            smooth: true
+            opacity: {
+                if (root.hovered) return 1.0;
+                if (!root.isEthernet && !root.isWifiUp) return 0.30;
+                return 0.56;
+            }
+            Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
         }
-        Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
+
+        LiveDot {
+            anchors.centerIn: parent
+            visible: root.showScanDot
+            pulseColor: Colors.scanning
+        }
     }
 
     Text {

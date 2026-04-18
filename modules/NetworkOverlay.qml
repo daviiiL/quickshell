@@ -23,6 +23,7 @@ Scope {
             if (GlobalStates.networkOverlayOpen) {
                 closeTimer.stop();
                 panelLoader.active = true;
+                if (Network.wifiEnabled) Network.rescanWifi();
             } else if (panelLoader.active) {
                 closeTimer.restart();
             }

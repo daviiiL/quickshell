@@ -67,4 +67,5 @@ Singleton {
     readonly property color inkFaint:   "#4d4d4d"
     readonly property color barAccent:  "#e3e3e3"
     readonly property color live:       "#5dc70a"
+    readonly property color scanning:   "#f59e0b"
 }

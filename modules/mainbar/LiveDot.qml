@@ -6,6 +6,8 @@ import qs.common
 Item {
     id: root
 
+    property color pulseColor: Colors.live
+
     implicitWidth: 6
     implicitHeight: 6
 
@@ -15,7 +17,7 @@ Item {
         width: 6
         height: 6
         radius: width / 2
-        color: Colors.live
+        color: root.pulseColor
     }
 
     Rectangle {
@@ -26,7 +28,7 @@ Item {
         radius: width / 2
         color: "transparent"
         border.width: 2
-        border.color: Qt.alpha(Colors.live, 0.55)
+        border.color: Qt.alpha(root.pulseColor, 0.55)
         opacity: 1
 
         SequentialAnimation on scale {
