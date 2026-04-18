@@ -12,10 +12,10 @@ RowLayout {
     spacing: 0
 
     property var toggles: [
-        { label: "wifi",   icon: "wifi",               on: true  },
-        { label: "bt",     icon: "bluetooth",          on: false },
-        { label: "dnd",    icon: "do_not_disturb_on",  on: true  },
-        { label: "night",  icon: "dark_mode",          on: false }
+        { label: "wifi",   icon: "wifi",               on: true,  kind: "local" },
+        { label: "bt",     icon: "bluetooth",          on: false, kind: "local" },
+        { label: "dnd",    icon: "do_not_disturb_on",  on: true,  kind: "local" },
+        { label: "night",  icon: "dark_mode",          on: false, kind: "theme" }
     ]
 
     Repeater {
@@ -26,7 +26,9 @@ RowLayout {
             required property var modelData
             required property int index
 
-            property bool on: cell.modelData.on
+            readonly property bool isTheme: cell.modelData.kind === "theme"
+            property bool localOn: cell.modelData.on
+            readonly property bool on: cell.isTheme ? GlobalStates.darkMode : cell.localOn
             property bool hovered: ma.containsMouse
 
             Layout.fillWidth: true
@@ -88,7 +90,13 @@ RowLayout {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: cell.on = !cell.on
+                onClicked: {
+                    if (cell.isTheme) {
+                        GlobalStates.toggleDarkMode();
+                    } else {
+                        cell.localOn = !cell.localOn;
+                    }
+                }
             }
         }
     }

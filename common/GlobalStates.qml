@@ -37,4 +37,10 @@ Singleton {
 
     property bool isLaptop: true
     property bool debugMode: false
+
+    property bool darkMode: true
+
+    function toggleDarkMode(): void {
+        darkMode = !darkMode;
+    }
 }

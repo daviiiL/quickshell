@@ -18,6 +18,14 @@ ShellRoot {
         }
     }
 
+    IpcHandler {
+        target: "theme"
+
+        function toggle(): void { GlobalStates.toggleDarkMode(); }
+        function dark():   void { GlobalStates.darkMode = true; }
+        function light():  void { GlobalStates.darkMode = false; }
+    }
+
     Loader {
         active: Preferences.isLoaded
 

@@ -35,7 +35,7 @@ MainBarButton {
 
         Image {
             anchors.fill: parent
-            source: "../../assets/icons/bell.svg"
+            source: Icons.bell
             sourceSize.width: Theme.ui.mainBarIconSize * 2
             sourceSize.height: Theme.ui.mainBarIconSize * 2
             smooth: true

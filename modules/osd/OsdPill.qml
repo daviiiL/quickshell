@@ -22,14 +22,14 @@ Rectangle {
 
     readonly property string iconSource: {
         if (isVolume) {
-            if (muted || rawValue <= 0) return "../../assets/icons/volume-muted.svg";
-            if (rawValue < 0.34) return "../../assets/icons/volume-low.svg";
-            if (rawValue < 0.67) return "../../assets/icons/volume-medium.svg";
-            return "../../assets/icons/volume.svg";
+            if (muted || rawValue <= 0) return Icons.volumeMuted;
+            if (rawValue < 0.34) return Icons.volumeLow;
+            if (rawValue < 0.67) return Icons.volumeMedium;
+            return Icons.volume;
         }
-        if (rawValue < 0.15) return "../../assets/icons/brightness-1.svg";
-        if (rawValue < 0.55) return "../../assets/icons/brightness-2.svg";
-        return "../../assets/icons/brightness-3.svg";
+        if (rawValue < 0.15) return Icons.brightness1;
+        if (rawValue < 0.55) return Icons.brightness2;
+        return Icons.brightness3;
     }
 
     readonly property string percentLabel: Math.round(rawValue * 100) + "%"

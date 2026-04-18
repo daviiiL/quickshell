@@ -19,11 +19,11 @@ MainBarButton {
     readonly property bool showScanDot:  notConnected
     readonly property color scanDotColor: (netOnline && Network.wifiScanning) ? Colors.live : Colors.scanning
 
-    readonly property string iconSrc: {
-        if (isEthernet)                    return "../../assets/icons/ethernet.svg";
-        if (isWifiUp && strength > 66)     return "../../assets/icons/wifi-3.svg";
-        if (isWifiUp && strength > 33)     return "../../assets/icons/wifi-2.svg";
-        return "../../assets/icons/wifi-1.svg";
+    readonly property string iconSource: {
+        if (isEthernet)                    return Icons.ethernet;
+        if (isWifiUp && strength > 66)     return Icons.wifi3;
+        if (isWifiUp && strength > 33)     return Icons.wifi2;
+        return Icons.wifi1;
     }
 
     readonly property string connectionLabel: {
@@ -37,8 +37,21 @@ MainBarButton {
 
     active: GlobalStates.networkOverlayOpen
 
-    color: (root.active || root.hovered) ? Colors.surfaceContainerLow : Colors.surfaceContainer
-    border.color: (root.active || root.hovered) ? Colors.hairHot : Colors.hair
+    property real selectionT: (root.active || root.hovered) ? 1.0 : 0.0
+    Behavior on selectionT { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
+
+    color: Qt.rgba(
+        Colors.surfaceContainer.r * (1 - selectionT) + Colors.surfaceContainerLow.r * selectionT,
+        Colors.surfaceContainer.g * (1 - selectionT) + Colors.surfaceContainerLow.g * selectionT,
+        Colors.surfaceContainer.b * (1 - selectionT) + Colors.surfaceContainerLow.b * selectionT,
+        1.0
+    )
+    border.color: Qt.rgba(
+        Colors.hair.r * (1 - selectionT) + Colors.hairHot.r * selectionT,
+        Colors.hair.g * (1 - selectionT) + Colors.hairHot.g * selectionT,
+        Colors.hair.b * (1 - selectionT) + Colors.hairHot.b * selectionT,
+        1.0
+    )
 
     onActivated: {
         const name = root.screen?.name ?? "";
@@ -56,9 +69,6 @@ MainBarButton {
 
     function _publishCenter() {
         const g = root.mapToGlobal(root.width / 2, 0);
-        console.log("[BTN]", Date.now(), "x=", root.x, "w=", root.width,
-            "parentW=", root.parent?.width, "globalCx=", g ? g.x : "(null)",
-            "screen=", root.screen?.name);
         if (g && g.x !== undefined && root.screen?.name)
             GlobalStates.setNetworkButtonCenter(root.screen.name, g.x);
     }
@@ -70,7 +80,7 @@ MainBarButton {
         Image {
             anchors.fill: parent
             visible: !root.showScanDot
-            source: root.iconSrc
+            source: root.iconSource
             sourceSize.width: Theme.ui.mainBarIconSize * 2
             sourceSize.height: Theme.ui.mainBarIconSize * 2
             smooth: true

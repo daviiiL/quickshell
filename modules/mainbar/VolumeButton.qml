@@ -30,11 +30,11 @@ MainBarButton {
         Layout.preferredWidth:  Theme.ui.mainBarIconSize
         Layout.preferredHeight: Theme.ui.mainBarIconSize
         source: {
-            if (!root.ready) return "../../assets/icons/volume.svg";
-            if (root.volume <= 0) return "../../assets/icons/volume-muted.svg";
-            if (root.volume < 0.34) return "../../assets/icons/volume-low.svg";
-            if (root.volume < 0.67) return "../../assets/icons/volume-medium.svg";
-            return "../../assets/icons/volume.svg";
+            if (!root.ready) return Icons.volume;
+            if (root.volume <= 0) return Icons.volumeMuted;
+            if (root.volume < 0.34) return Icons.volumeLow;
+            if (root.volume < 0.67) return Icons.volumeMedium;
+            return Icons.volume;
         }
         sourceSize.width: Theme.ui.mainBarIconSize * 2
         sourceSize.height: Theme.ui.mainBarIconSize * 2

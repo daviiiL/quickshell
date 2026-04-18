@@ -85,7 +85,7 @@ MainBarButton {
             Layout.alignment: Qt.AlignVCenter
             Layout.preferredWidth: 10
             Layout.preferredHeight: 10
-            source: "../../assets/icons/charging.svg"
+            source: Icons.charging
             sourceSize.width: 20
             sourceSize.height: 20
             smooth: true

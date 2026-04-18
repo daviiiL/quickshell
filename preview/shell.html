@@ -44,6 +44,40 @@
     --strip-h: 40px;
   }
 
+  :root[data-theme="light"] {
+    /* surfaces — off-white with subtle violet warmth */
+    --bar-bg: #e4e0e9;
+    --panel-bg: #f5f2f7;
+    --surface-container-lowest: #fbf9fc;
+    --surface-container-low: #eee9f0;
+    --surface-container: #e3dee6;
+    --surface-container-high: #d4cfd9;
+
+    /* text — inverted 4-step ramp, violet-black ink */
+    --ink: #1c1820;
+    --ink-dim: #5b5764;
+    --ink-dimmer: #827e8a;
+    --ink-faint: #a8a4b0;
+
+    /* lines — soft greys that still read as hair */
+    --hair: #d6d1dc;
+    --hair-hot: #bcb7c2;
+
+    /* accents — inverted: dark ink instead of near-white */
+    --accent: #1c1820;
+    --bar-accent: #1c1820;
+
+    /* status — darkened / desaturated for light-bg contrast */
+    --live: #3d8f0a;
+    --warn: #a65a1c;
+    --err: #b3261e;
+
+    /* desktop backdrop — neutral paper gradient */
+    --desktop-base: #dcd7e0;
+    --desktop-warm: #ebe6ee;
+    --desktop-cool: #d4d7dc;
+  }
+
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body {
@@ -124,6 +158,12 @@
     border-radius: 50%;
     background: currentColor;
     opacity: 0.55;
+  }
+  .strip .sep {
+    width: var(--hair-w);
+    align-self: stretch;
+    background: var(--hair);
+    margin: 0 4px;
   }
 
   /* === Bar === */
@@ -1008,6 +1048,8 @@
       <label class="toggle"><input type="checkbox" data-surface="network" checked><span class="dot"></span>network</label>
       <label class="toggle"><input type="checkbox" data-surface="right-panel" checked><span class="dot"></span>right-panel</label>
       <label class="toggle"><input type="checkbox" data-surface="launcher" checked><span class="dot"></span>launcher</label>
+      <span class="sep"></span>
+      <label class="toggle"><input type="checkbox" data-theme-toggle><span class="dot"></span>light</label>
     </div>
   </header>
   <div class="canvas">
@@ -1558,6 +1600,11 @@
     inputs.forEach(i => {
       i.addEventListener('change', () => sync(i));
       sync(i); // initial sync
+    });
+
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    themeToggle.addEventListener('change', e => {
+      document.documentElement.dataset.theme = e.target.checked ? 'light' : '';
     });
   </script>
 </body>

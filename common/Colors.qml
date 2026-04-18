@@ -2,6 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import qs.common
 
 Singleton {
     id: root
@@ -30,17 +31,24 @@ Singleton {
 
     readonly property color background: "#141218"
     readonly property color fgBackground: "#e6e0e9"
-    readonly property color surface: "#141218"
-    readonly property color fgSurface: "#e6e0e9"
+    property color surface:                 GlobalStates.darkMode ? "#141218" : "#f5f2f7"
+    property color fgSurface:               GlobalStates.darkMode ? "#e6e0e9" : "#1c1820"
     readonly property color surfaceVariant: "#49454f"
     readonly property color fgSurfaceVariant: "#cac4d0"
     readonly property color surfaceDim: "#141218"
     readonly property color surfaceBright: "#3b383e"
-    readonly property color surfaceContainerLowest: "#0f0d13"
-    readonly property color surfaceContainerLow: "#1d1b20"
-    readonly property color surfaceContainer: "#211f26"
-    readonly property color surfaceContainerHigh: "#2b2930"
+    property color surfaceContainerLowest:  GlobalStates.darkMode ? "#0f0d13" : "#fbf9fc"
+    property color surfaceContainerLow:     GlobalStates.darkMode ? "#1d1b20" : "#eee9f0"
+    property color surfaceContainer:        GlobalStates.darkMode ? "#211f26" : "#e3dee6"
+    property color surfaceContainerHigh:    GlobalStates.darkMode ? "#2b2930" : "#d4cfd9"
     readonly property color surfaceContainerHighest: "#36343b"
+
+    Behavior on surface                 { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on fgSurface               { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on surfaceContainerLowest  { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on surfaceContainerLow     { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on surfaceContainer        { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on surfaceContainerHigh    { ColorAnimation { duration: Theme.anim.durations.sm } }
 
     readonly property color outline: "#938f99"
     readonly property color outlineVariant: "#49454f"
@@ -56,16 +64,28 @@ Singleton {
     readonly property color surfaceTranslucent: Qt.rgba(surface.r, surface.g, surface.b, 0.96)
 
     readonly property color success: "#4a9d4a"
-    readonly property color warning: "#ffd4ab"
+    property color warning:    GlobalStates.darkMode ? "#ffd4ab" : "#a65a1c"
 
-    readonly property color panelBg:    "#0f0f13"
-    readonly property color barBg:      "#0a0a0a"
-    readonly property color hair:       "#272727"
-    readonly property color hairHot:    "#3a3a3a"
-    readonly property color inkDim:     "#8f8f8f"
-    readonly property color inkDimmer:  "#6b6b6b"
-    readonly property color inkFaint:   "#4d4d4d"
-    readonly property color barAccent:  "#e3e3e3"
-    readonly property color live:       "#5dc70a"
-    readonly property color scanning:   "#f59e0b"
+    property color panelBg:    GlobalStates.darkMode ? "#0f0f13" : "#f5f2f7"
+    property color barBg:      GlobalStates.darkMode ? "#0a0a0a" : "#e4e0e9"
+    property color hair:       GlobalStates.darkMode ? "#272727" : "#d6d1dc"
+    property color hairHot:    GlobalStates.darkMode ? "#3a3a3a" : "#bcb7c2"
+    property color inkDim:     GlobalStates.darkMode ? "#8f8f8f" : "#5b5764"
+    property color inkDimmer:  GlobalStates.darkMode ? "#6b6b6b" : "#827e8a"
+    property color inkFaint:   GlobalStates.darkMode ? "#4d4d4d" : "#a8a4b0"
+    property color barAccent:  GlobalStates.darkMode ? "#e3e3e3" : "#1c1820"
+    property color live:       GlobalStates.darkMode ? "#5dc70a" : "#3d8f0a"
+    property color scanning:   GlobalStates.darkMode ? "#f59e0b" : "#a85d0a"
+
+    Behavior on warning   { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on panelBg   { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on barBg     { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on hair      { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on hairHot   { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on inkDim    { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on inkDimmer { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on inkFaint  { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on barAccent { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on live      { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on scanning  { ColorAnimation { duration: Theme.anim.durations.sm } }
 }
