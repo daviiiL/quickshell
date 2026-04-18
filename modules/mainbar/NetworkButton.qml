@@ -16,7 +16,8 @@ MainBarButton {
     readonly property int  strength:    netOnline ? (Network.networkStrength ?? 0) : 0
     readonly property string wifiState: netOnline ? (Network.wifiStatus ?? "") : ""
     readonly property bool notConnected: netOnline && !isEthernet && !Network.active
-    readonly property bool showScanDot:  notConnected && Network.wifiScanning
+    readonly property bool showScanDot:  notConnected
+    readonly property color scanDotColor: (netOnline && Network.wifiScanning) ? Colors.live : Colors.scanning
 
     readonly property string iconSrc: {
         if (isEthernet)                    return "../../assets/icons/ethernet.svg";
@@ -84,7 +85,7 @@ MainBarButton {
         LiveDot {
             anchors.centerIn: parent
             visible: root.showScanDot
-            pulseColor: Colors.scanning
+            pulseColor: root.scanDotColor
         }
     }
 

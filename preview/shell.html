@@ -30,6 +30,11 @@
     --warn: #ffd4ab;
     --err: #f2b8b5;
 
+    /* desktop backdrop */
+    --desktop-base: #07070a;
+    --desktop-warm: #1a1820;
+    --desktop-cool: #121016;
+
     /* geometry */
     --panel-w: 320px;
     --bar-h: 48px;
@@ -43,9 +48,9 @@
   html, body { height: 100%; margin: 0; }
   body {
     background:
-      radial-gradient(1200px 600px at 20% 30%, #1a1820 0%, transparent 60%),
-      radial-gradient(900px 500px at 80% 80%, #121016 0%, transparent 60%),
-      #07070a;
+      radial-gradient(1200px 600px at 20% 30%, var(--desktop-warm) 0%, transparent 60%),
+      radial-gradient(900px 500px at 80% 80%, var(--desktop-cool) 0%, transparent 60%),
+      var(--desktop-base);
     font-family: "Inter", "Inter Nerd Font Propo", system-ui, -apple-system, sans-serif;
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
@@ -167,7 +172,7 @@
 
   /* Right panel */
   .panel {
-    background: #0f0f13;
+    background: var(--surface-container-lowest);
     border-left: var(--hair-w) solid var(--hair);
     display: flex;
     flex-direction: column;
@@ -226,7 +231,7 @@
   }
   .avatar {
     width: 26px; height: 26px; border-radius: var(--radius-md);
-    background: linear-gradient(135deg, #2b2930, #1d1b20);
+    background: linear-gradient(135deg, var(--surface-container-high), var(--surface-container-low));
     border: 1px solid var(--hair);
     display: grid; place-items: center;
     font-size: 11px; color: var(--accent);
@@ -589,6 +594,409 @@
     width: var(--panel-w);
     z-index: 40;
   }
+
+  /* === Copied from wifi-overlay.html — .pop overlay subtree === */
+
+  .pop {
+    width: 300px;
+    background: var(--panel-bg);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-md);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.55);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: calc(100vh - var(--bar-h) - var(--strip-h) - 24px);
+  }
+  .pop::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: 1px; width: 120px;
+    background: linear-gradient(90deg, rgba(227,227,227,0.55), transparent);
+  }
+  .pop::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    right: 22px;
+    width: 10px; height: 10px;
+    background: var(--panel-bg);
+    border-right: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+    transform: rotate(45deg);
+  }
+  .p-head {
+    padding: 14px 16px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--hair);
+  }
+  .p-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dimmer);
+  }
+  .p-title .state {
+    margin-left: 6px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+  }
+  .switch {
+    width: 30px; height: 16px; border-radius: 999px;
+    border: 1px solid var(--hair);
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease;
+  }
+  .switch .knob {
+    position: absolute;
+    top: 1px; left: 1px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--ink-dimmer);
+    transition: left 180ms cubic-bezier(.2,0,0,1), background 180ms ease;
+  }
+  .switch.on { background: rgba(227,227,227,0.12); border-color: var(--hair-hot); }
+  .switch.on .knob { left: 15px; background: var(--accent); }
+  .current {
+    padding: 16px 16px;
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    border-bottom: 1px solid var(--hair);
+    cursor: pointer;
+    transition: background 150ms ease;
+  }
+  .current:hover { background: var(--surface-container-low); }
+  .current .icon { color: var(--ink); display: grid; place-items: center; }
+  .current .ssid { font-size: 13px; color: var(--ink); font-weight: 500; letter-spacing: 0.02em; }
+  .current .meta {
+    font-size: 10px; color: var(--ink-dimmer);
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin-top: 2px;
+    display: flex; gap: 6px; align-items: center;
+  }
+  .current .meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 2px rgba(93,199,10,0.25); }
+  .current .acts {
+    display: flex; gap: 6px; align-items: center;
+    color: var(--ink-dimmer);
+  }
+  .current .acts span {
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    line-height: 1;
+  }
+  .current .acts span.more { font-size: 14px; letter-spacing: 0; padding: 0 4px 4px; }
+  .current .acts span:hover { color: var(--ink); }
+  .sec-head {
+    padding: 14px 16px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sec-title {
+    font-size: 11px;
+    color: var(--ink-dimmer);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .sec-meta { font-size: 12px; color: var(--ink-dim); }
+  .nets {}
+  .net {
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 22px 1fr 18px 34px;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    transition: background 150ms ease;
+    border-top: 1px solid var(--hair);
+  }
+  .net .sig svg  { width: 15px; height: 15px; }
+  .net .lock svg { width: 14px; height: 14px; }
+  .net:hover { background: var(--surface-container-low); }
+  .net .sig { color: var(--ink); opacity: 0.78; display: grid; place-items: center; }
+  .net .name { font-size: 14px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .net .sub { font-size: 11px; color: var(--ink-dimmer); text-transform: uppercase; letter-spacing: 0.14em; margin-top: 2px; }
+  .net .lock { color: var(--ink-dimmer); display: grid; place-items: center; }
+  .net .pct { font-size: 12px; color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; }
+  .net.saved .sub::before { content: "saved · "; color: var(--live); }
+  .net.weak .sig { opacity: 0.35; }
+  .net.weak .name { color: var(--ink-dim); }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-top: 1px solid var(--hair);
+    gap: 10px;
+  }
+  .footer .btn {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-dim);
+    padding: 4px 8px;
+    border: 1px solid var(--hair);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: color 150ms, border-color 150ms, background 150ms;
+  }
+  .footer .btn:hover { color: var(--ink); border-color: var(--hair-hot); background: var(--surface-container-low); }
+  svg { display: block; }
+
+  /* === Network overlay visibility + positioning === */
+  body[data-surface-network="on"] .pop { display: flex; }
+  .pop {
+    display: none;
+    position: absolute;
+    bottom: calc(var(--bar-h) + 8px);
+    right: 64px;
+    z-index: 60;
+  }
+
+  /* === Copied from launcher.html — scrim + .launcher subtree === */
+
+  .scrim {
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+  .launcher {
+    background: var(--panel-bg);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-md);
+    box-shadow:
+      0 40px 80px rgba(0,0,0,0.6),
+      0 2px 0 rgba(255,255,255,0.02) inset;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .launcher::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: 1px; width: 180px;
+    background: linear-gradient(90deg, rgba(227,227,227,0.55), transparent);
+    pointer-events: none;
+  }
+  .query {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 18px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .query .icon {
+    color: var(--ink-dim);
+    display: grid; place-items: center;
+  }
+  .query input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 20px;
+    letter-spacing: 0.01em;
+    padding: 2px 0;
+    caret-color: var(--accent);
+  }
+  .query .hint {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dimmer);
+  }
+  .query .hint .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border: 1px solid var(--hair);
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    background: transparent;
+  }
+  .results {
+    display: flex;
+    flex-direction: column;
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+  .results::-webkit-scrollbar { width: 6px; }
+  .results::-webkit-scrollbar-track { background: transparent; }
+  .results::-webkit-scrollbar-thumb { background: var(--hair); border-radius: 3px; }
+  .results::-webkit-scrollbar-thumb:hover { background: var(--hair-hot); }
+  .row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto 20px;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 18px;
+    cursor: pointer;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    transition: background 120ms ease;
+    position: relative;
+  }
+  .row + .row { border-top-color: var(--hair); }
+  .row:hover { background: var(--surface-container-low); }
+  .row.selected { background: var(--surface-container-low); }
+  .row.selected::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    width: 2px; height: 100%;
+    background: var(--accent);
+  }
+  .row .app-icon {
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    border-radius: 4px;
+    background: var(--surface-container-low);
+    border: 1px solid var(--hair);
+    color: var(--ink);
+  }
+  .row.selected .app-icon {
+    border-color: var(--hair-hot);
+    background: var(--surface-container-high);
+  }
+  .row .app-icon svg { width: 15px; height: 15px; opacity: 0.9; }
+  .row .meta { display: flex; flex-direction: column; min-width: 0; }
+  .row .name {
+    font-size: 14px;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row .name .match {
+    color: var(--ink);
+    background: rgba(227,227,227,0.10);
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+  .row .desc {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-dimmer);
+    margin-top: 3px;
+  }
+  .row .enter {
+    display: grid; place-items: center;
+    color: var(--ink-faint);
+    opacity: 0;
+    transition: opacity 120ms ease, color 120ms ease;
+  }
+  .row.selected .enter { opacity: 1; color: var(--ink-dim); }
+  .results-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    border-top: 1px solid var(--hair);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dimmer);
+  }
+  .results-foot .group { display: flex; gap: 14px; align-items: center; }
+  .results-foot .pair { display: flex; gap: 6px; align-items: center; }
+  .results-foot .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border: 1px solid var(--hair);
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    background: transparent;
+  }
+
+  /* === Launcher visibility + positioning === */
+  body[data-surface-launcher="on"] .scrim,
+  body[data-surface-launcher="on"] .launcher { display: block; }
+  body[data-surface-launcher="on"] .launcher { display: flex; }
+  .scrim, .launcher { display: none; }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 80;
+  }
+  .launcher {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 560px;
+    z-index: 90;
+  }
+
+  /* === OSD === */
+  body[data-surface-osd="on"] .osd { display: grid; }
+  .osd {
+    display: none;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    height: 36px;
+    padding: 10px 12px;
+    grid-template-columns: 16px 1fr 40px;
+    align-items: center;
+    gap: 12px;
+    background: var(--panel-bg);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: var(--radius-md);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+    z-index: 95;
+  }
+  .osd-icon {
+    color: var(--ink);
+    opacity: 0.9;
+    display: grid;
+    place-items: center;
+  }
+  .osd-track {
+    position: relative;
+    height: 2px;
+    background: var(--hair);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .osd-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 60%;
+    background: var(--bar-accent);
+    border-radius: 1px;
+  }
+  .osd-label {
+    text-align: right;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
 </style>
 </head>
 <body>
@@ -897,7 +1305,246 @@
       </section>
 
     </aside>
-    <!-- surfaces continue in Tasks 5–7 -->
+    <div class="pop" role="dialog" aria-label="Wi-Fi">
+
+      <!-- Head -->
+      <div class="p-head">
+        <div class="p-title">wifi <span class="state">· connected</span></div>
+        <div class="switch on"><div class="knob"></div></div>
+      </div>
+
+      <!-- Current connection -->
+      <div class="current" title="Active connection">
+        <div class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 8.5a17 17 0 0 1 20 0"/>
+            <path d="M5 12a13 13 0 0 1 14 0"/>
+            <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
+            <circle cx="12" cy="19" r="1"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ssid">home-wifi</div>
+          <div class="meta"><span class="dot"></span><span>84% · 5 GHz · WPA2</span></div>
+        </div>
+        <div class="acts">
+          <span title="forget">forget</span>
+          <span class="more" title="info">⋯</span>
+        </div>
+      </div>
+
+      <!-- Available networks -->
+      <div class="sec-head">
+        <div class="sec-title">other networks</div>
+        <div class="sec-meta">4 found</div>
+      </div>
+
+      <div class="nets">
+        <div class="net saved">
+          <div class="sig">
+            <span class="bars">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 8.5a17 17 0 0 1 20 0"/>
+                <path d="M5 12a13 13 0 0 1 14 0"/>
+                <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
+                <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+              </svg>
+            </span>
+          </div>
+          <div>
+            <div class="name">atlas-guest</div>
+            <div class="sub">WPA2</div>
+          </div>
+          <div class="lock">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2"/>
+              <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+            </svg>
+          </div>
+          <div class="pct">64%</div>
+        </div>
+
+        <div class="net">
+          <div class="sig">
+            <span class="bars">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.35"/>
+                <path d="M5 12a13 13 0 0 1 14 0"/>
+                <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
+                <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+              </svg>
+            </span>
+          </div>
+          <div>
+            <div class="name">BT Hub 6 — 4C</div>
+            <div class="sub">WPA3</div>
+          </div>
+          <div class="lock">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2"/>
+              <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+            </svg>
+          </div>
+          <div class="pct">52%</div>
+        </div>
+
+        <div class="net weak">
+          <div class="sig">
+            <span class="bars">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.2"/>
+                <path d="M5 12a13 13 0 0 1 14 0" opacity="0.35"/>
+                <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.7"/>
+                <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+              </svg>
+            </span>
+          </div>
+          <div>
+            <div class="name">CoffeeShop-Free</div>
+            <div class="sub">open</div>
+          </div>
+          <div class="lock"></div>
+          <div class="pct">28%</div>
+        </div>
+
+        <div class="net weak">
+          <div class="sig">
+            <span class="bars">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.15"/>
+                <path d="M5 12a13 13 0 0 1 14 0" opacity="0.25"/>
+                <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.4"/>
+                <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+              </svg>
+            </span>
+          </div>
+          <div>
+            <div class="name">DIRECT-3A-HP LaserJet</div>
+            <div class="sub">WPA2</div>
+          </div>
+          <div class="lock">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2"/>
+              <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+            </svg>
+          </div>
+          <div class="pct">18%</div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <span class="btn">refresh</span>
+        <span class="btn">settings</span>
+      </div>
+
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="launcher" role="dialog" aria-label="Launcher">
+      <div class="query">
+        <div class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="m20 20-3.5-3.5"/>
+          </svg>
+        </div>
+        <input type="text" value="fir" spellcheck="false" />
+        <div class="hint">
+          <span class="pair"><span class="kbd">esc</span><span>close</span></span>
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="row selected">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 3v18M3 12h18"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name"><span class="match">Fir</span>efox</div>
+            <div class="desc">web browser</div>
+          </div>
+          <div class="shortcut"></div>
+          <div class="enter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 10 4 15 9 20"/>
+              <path d="M20 4v7a4 4 0 0 1-4 4H4"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M8 12h8M12 8v8"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name"><span class="match">Fir</span>efox Nightly</div>
+            <div class="desc">web browser — nightly</div>
+          </div>
+          <div class="shortcut"></div>
+          <div class="enter"></div>
+        </div>
+
+        <div class="row">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6h16v14H4z"/>
+              <path d="M4 10h16"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name"><span class="match">Fi</span>les</div>
+            <div class="desc">file manager</div>
+          </div>
+          <div class="shortcut"></div>
+          <div class="enter"></div>
+        </div>
+
+        <div class="row">
+          <div class="app-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16v16H4z"/>
+              <path d="M4 9h16M9 4v16"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name"><span class="match">Fir</span>ewall Config</div>
+            <div class="desc">security</div>
+          </div>
+          <div class="shortcut"></div>
+          <div class="enter"></div>
+        </div>
+      </div>
+
+      <div class="results-foot">
+        <div class="group">
+          <span class="pair"><span>4 matches</span></span>
+        </div>
+        <div class="group">
+          <span class="pair"><span class="kbd">↑</span><span class="kbd">↓</span><span>navigate</span></span>
+          <span class="pair"><span class="kbd">↵</span><span>launch</span></span>
+          <span class="pair"><span class="kbd">esc</span><span>close</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="osd" role="status" aria-label="Volume 60%">
+      <span class="osd-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" fill-opacity="0.15"/>
+          <path d="M15.5 8.5a5 5 0 0 1 0 7"/>
+        </svg>
+      </span>
+      <span class="osd-track"><span class="osd-fill"></span></span>
+      <span class="osd-label">60%</span>
+    </div>
   </div>
   <script>
     // Mirror each strip checkbox to a data-attr on <body>.
