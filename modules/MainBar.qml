@@ -104,8 +104,16 @@ Scope {
                             spacing: 0
                             Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
                             Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                            NetworkButton { screen: root.screen }
+                        }
 
-                            NetworkButton     {}
+                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+
+                        RowLayout {
+                            spacing: 0
+                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+
                             BrightnessButton  {}
                             VolumeButton      {}
                         }

@@ -112,7 +112,7 @@
 
   /* Head */
   .p-head {
-    padding: 10px 12px 8px;
+    padding: 14px 16px 12px;
     display: flex; align-items: center; justify-content: space-between;
     border-bottom: 1px solid var(--hair);
   }
@@ -149,10 +149,10 @@
 
   /* Current connection card */
   .current {
-    padding: 12px 12px;
+    padding: 16px 16px;
     display: grid;
     grid-template-columns: 22px 1fr auto;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
     border-bottom: 1px solid var(--hair);
     cursor: pointer;
@@ -169,24 +169,32 @@
   }
   .current .meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 2px rgba(93,199,10,0.25); }
   .current .acts {
-    display: flex; gap: 6px;
+    display: flex; gap: 6px; align-items: center;
     color: var(--ink-dimmer);
   }
-  .current .acts span { cursor: pointer; padding: 2px 4px; }
+  .current .acts span {
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    line-height: 1;
+  }
+  .current .acts span.more { font-size: 14px; letter-spacing: 0; padding: 0 4px 4px; }
   .current .acts span:hover { color: var(--ink); }
 
   /* Section label */
   .sec-head {
-    padding: 10px 12px 6px;
+    padding: 14px 16px 8px;
     display: flex; align-items: center; justify-content: space-between;
   }
   .sec-title {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-dimmer);
     text-transform: uppercase;
     letter-spacing: 0.18em;
   }
-  .sec-meta { font-size: 11px; color: var(--ink-dim); }
+  .sec-meta { font-size: 12px; color: var(--ink-dim); }
   .sec-meta.scanning { color: var(--ink-dim); }
   .sec-meta.scanning::before {
     content: "";
@@ -199,42 +207,127 @@
   }
   @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: 0.25 } }
 
-  /* Networks list */
-  .nets {
-    overflow-y: auto;
-    max-height: 280px;
-  }
-  .nets::-webkit-scrollbar { width: 6px; }
-  .nets::-webkit-scrollbar-thumb { background: var(--hair); border-radius: 3px; }
-  .nets::-webkit-scrollbar-track { background: transparent; }
+  /* Networks list — no scroll; popup grows to fit content */
+  .nets {}
 
   .net {
-    padding: 9px 12px;
+    padding: 14px 16px;
     display: grid;
-    grid-template-columns: 22px 1fr 14px 34px;
-    gap: 10px;
+    grid-template-columns: 22px 1fr 18px 34px;
+    gap: 12px;
     align-items: center;
     cursor: pointer;
     transition: background 150ms ease;
     border-top: 1px solid var(--hair);
   }
+  .net .sig svg  { width: 15px; height: 15px; }
+  .net .lock svg { width: 14px; height: 14px; }
   .net:hover { background: var(--surface-container-low); }
   .net .sig { color: var(--ink); opacity: 0.78; display: grid; place-items: center; }
-  .net .name { font-size: 13px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .net .sub { font-size: 10px; color: var(--ink-dimmer); text-transform: uppercase; letter-spacing: 0.14em; margin-top: 2px; }
+  .net .name { font-size: 14px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .net .sub { font-size: 11px; color: var(--ink-dimmer); text-transform: uppercase; letter-spacing: 0.14em; margin-top: 2px; }
   .net .lock { color: var(--ink-dimmer); display: grid; place-items: center; }
-  .net .pct { font-size: 11px; color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; }
+  .net .pct { font-size: 12px; color: var(--ink-dim); text-align: right; font-variant-numeric: tabular-nums; }
   .net.saved .sub::before { content: "saved · "; color: var(--live); }
 
   .net.weak .sig { opacity: 0.35; }
   .net.weak .name { color: var(--ink-dim); }
+
+  /* Connecting state (row) */
+  .net.connecting .sig { opacity: 1; }
+  .net.connecting .sig .bars { display: none; }
+  .net.connecting .sig .pulse {
+    display: block;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.1s infinite;
+  }
+  .net .sig .pulse { display: none; }
+  .net.connecting .sub { color: var(--ink) !important; letter-spacing: 0.14em; }
+  .net.connecting .sub::before { content: none !important; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.78); }
+  }
+
+  /* Expansion area under an unknown row */
+  .net-expand {
+    display: none;
+    padding: 14px 16px 16px;
+    border-top: 1px solid var(--hair);
+    background: var(--panel-bg);
+  }
+  .net-expand.open { display: block; }
+  .expand-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 10px;
+    align-items: center;
+  }
+  .expand-row .lbl {
+    font-size: 10px;
+    color: var(--ink-dimmer);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .expand-row input[type="password"] {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--hair);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    padding: 3px 2px 4px;
+    outline: none;
+    transition: border-color 150ms ease;
+  }
+  .expand-row input[type="password"]:focus { border-bottom-color: var(--hair-hot); }
+  .expand-row input[type="password"]::placeholder { color: var(--ink-faint); letter-spacing: 0.02em; }
+  .expand-btn {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-dim);
+    padding: 4px 8px;
+    border: 1px solid var(--hair);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: color 150ms, border-color 150ms, background 150ms;
+    background: transparent;
+    font-family: inherit;
+  }
+  .expand-btn:not(:disabled):hover { color: var(--ink); border-color: var(--hair-hot); background: var(--surface-container-low); }
+  .expand-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .expand-btn.busy { color: var(--ink); border-color: var(--hair-hot); }
+  .expand-cancel {
+    color: var(--ink-dimmer);
+    font-size: 16px;
+    width: 18px; height: 18px;
+    display: grid; place-items: center;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    border-radius: 2px;
+    transition: color 150ms, background 150ms;
+  }
+  .expand-cancel:hover { color: var(--ink); background: var(--surface-container-low); }
+  .expand-err {
+    margin-top: 7px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--warn);
+    display: none;
+  }
+  .expand-err.show { display: block; }
 
   /* Footer */
   .footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 12px;
+    padding: 14px 16px;
     border-top: 1px solid var(--hair);
     gap: 10px;
   }
@@ -282,7 +375,7 @@
       </div>
       <div class="acts">
         <span title="forget">forget</span>
-        <span title="info">⋯</span>
+        <span class="more" title="info">⋯</span>
       </div>
     </div>
 
@@ -294,14 +387,17 @@
 
     <div class="nets">
 
-      <div class="net saved">
+      <div class="net saved" data-known="1" data-ssid="atlas-guest">
         <div class="sig">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 8.5a17 17 0 0 1 20 0"/>
-            <path d="M5 12a13 13 0 0 1 14 0"/>
-            <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
-            <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
-          </svg>
+          <span class="bars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 8.5a17 17 0 0 1 20 0"/>
+              <path d="M5 12a13 13 0 0 1 14 0"/>
+              <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
+              <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pulse"></span>
         </div>
         <div>
           <div class="name">atlas-guest</div>
@@ -316,14 +412,17 @@
         <div class="pct">64%</div>
       </div>
 
-      <div class="net">
+      <div class="net" data-ssid="BT Hub 6 — 4C">
         <div class="sig">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.35"/>
-            <path d="M5 12a13 13 0 0 1 14 0"/>
-            <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
-            <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
-          </svg>
+          <span class="bars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.35"/>
+              <path d="M5 12a13 13 0 0 1 14 0"/>
+              <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
+              <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pulse"></span>
         </div>
         <div>
           <div class="name">BT Hub 6 — 4C</div>
@@ -337,15 +436,19 @@
         </div>
         <div class="pct">52%</div>
       </div>
+      <div class="net-expand"></div>
 
-      <div class="net">
+      <div class="net" data-ssid="vodafone-home">
         <div class="sig">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.35"/>
-            <path d="M5 12a13 13 0 0 1 14 0" opacity="0.7"/>
-            <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
-            <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
-          </svg>
+          <span class="bars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.35"/>
+              <path d="M5 12a13 13 0 0 1 14 0" opacity="0.7"/>
+              <path d="M8.5 15.5a8 8 0 0 1 7 0"/>
+              <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pulse"></span>
         </div>
         <div>
           <div class="name">vodafone-home</div>
@@ -359,15 +462,19 @@
         </div>
         <div class="pct">41%</div>
       </div>
+      <div class="net-expand"></div>
 
-      <div class="net weak">
+      <div class="net weak" data-ssid="CoffeeShop-Free" data-open="1">
         <div class="sig">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.2"/>
-            <path d="M5 12a13 13 0 0 1 14 0" opacity="0.35"/>
-            <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.7"/>
-            <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
-          </svg>
+          <span class="bars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.2"/>
+              <path d="M5 12a13 13 0 0 1 14 0" opacity="0.35"/>
+              <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.7"/>
+              <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pulse"></span>
         </div>
         <div>
           <div class="name">CoffeeShop-Free</div>
@@ -377,14 +484,17 @@
         <div class="pct">28%</div>
       </div>
 
-      <div class="net weak">
+      <div class="net weak" data-ssid="DIRECT-3A-HP LaserJet">
         <div class="sig">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.15"/>
-            <path d="M5 12a13 13 0 0 1 14 0" opacity="0.25"/>
-            <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.4"/>
-            <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
-          </svg>
+          <span class="bars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.15"/>
+              <path d="M5 12a13 13 0 0 1 14 0" opacity="0.25"/>
+              <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.4"/>
+              <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pulse"></span>
         </div>
         <div>
           <div class="name">DIRECT-3A-HP LaserJet</div>
@@ -398,15 +508,19 @@
         </div>
         <div class="pct">18%</div>
       </div>
+      <div class="net-expand"></div>
 
-      <div class="net weak">
+      <div class="net weak" data-ssid="eduroam">
         <div class="sig">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.1"/>
-            <path d="M5 12a13 13 0 0 1 14 0" opacity="0.18"/>
-            <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.3"/>
-            <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
-          </svg>
+          <span class="bars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 8.5a17 17 0 0 1 20 0" opacity="0.1"/>
+              <path d="M5 12a13 13 0 0 1 14 0" opacity="0.18"/>
+              <path d="M8.5 15.5a8 8 0 0 1 7 0" opacity="0.3"/>
+              <circle cx="12" cy="19" r="0.5" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="pulse"></span>
         </div>
         <div>
           <div class="name">eduroam</div>
@@ -420,6 +534,7 @@
         </div>
         <div class="pct">11%</div>
       </div>
+      <div class="net-expand"></div>
 
     </div>
 
@@ -478,6 +593,157 @@
   document.getElementById('wifiSwitch').addEventListener('click', (e) => {
     e.currentTarget.classList.toggle('on');
   });
+
+  // ── Password expansion + connecting states ───────────────────────────
+  const DEMO_PASSWORD = 'correcthorse';
+
+  function buildExpand(expand) {
+    while (expand.firstChild) expand.removeChild(expand.firstChild);
+    const row = document.createElement('div');
+    row.className = 'expand-row';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'lbl';
+    lbl.textContent = 'password';
+
+    const input = document.createElement('input');
+    input.type = 'password';
+    input.placeholder = 'enter password';
+    input.autocomplete = 'off';
+
+    const btn = document.createElement('button');
+    btn.className = 'expand-btn';
+    btn.textContent = 'Connect';
+    btn.disabled = true;
+
+    const cancel = document.createElement('button');
+    cancel.className = 'expand-cancel';
+    cancel.title = 'cancel';
+    cancel.textContent = '×';
+
+    row.append(lbl, input, btn, cancel);
+
+    const err = document.createElement('div');
+    err.className = 'expand-err';
+    err.textContent = "couldn't connect — check password";
+
+    expand.append(row, err);
+    return { input, btn, cancel, err };
+  }
+
+  function clearExpand(expand) {
+    while (expand.firstChild) expand.removeChild(expand.firstChild);
+  }
+
+  function collapseAll() {
+    document.querySelectorAll('.net-expand.open').forEach(ex => {
+      ex.classList.remove('open');
+      clearExpand(ex);
+    });
+  }
+
+  function setConnecting(row, on) {
+    const sub = row.querySelector('.sub');
+    if (on) {
+      if (!row.dataset.subOriginal) row.dataset.subOriginal = sub.textContent;
+      sub.textContent = 'connecting…';
+      row.classList.add('connecting');
+    } else {
+      if (row.dataset.subOriginal) sub.textContent = row.dataset.subOriginal;
+      row.classList.remove('connecting');
+    }
+  }
+
+  function expandUnknown(row) {
+    const expand = row.nextElementSibling;
+    if (!expand || !expand.classList.contains('net-expand')) return;
+    collapseAll();
+    expand.classList.add('open');
+    const { input, btn, cancel, err } = buildExpand(expand);
+
+    const update = () => { btn.disabled = input.value.length < 8; };
+    input.addEventListener('input', () => {
+      err.classList.remove('show');
+      update();
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { cancel.click(); }
+      else if (e.key === 'Enter' && !btn.disabled) { btn.click(); }
+    });
+    cancel.addEventListener('click', (e) => {
+      e.stopPropagation();
+      expand.classList.remove('open');
+      clearExpand(expand);
+    });
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      btn.classList.add('busy');
+      btn.textContent = 'connecting…';
+      btn.disabled = true;
+      input.disabled = true;
+      setConnecting(row, true);
+
+      setTimeout(() => {
+        if (input.value === DEMO_PASSWORD || row.dataset.attempted === '1') {
+          setConnecting(row, false);
+          expand.classList.remove('open');
+          clearExpand(expand);
+          row.dataset.attempted = '';
+        } else {
+          setConnecting(row, false);
+          row.dataset.attempted = '1';
+          btn.classList.remove('busy');
+          btn.textContent = 'Connect';
+          input.disabled = false;
+          input.value = '';
+          update();
+          err.classList.add('show');
+          input.focus();
+        }
+      }, 900);
+    });
+
+    input.focus();
+  }
+
+  function connectKnown(row) {
+    collapseAll();
+    setConnecting(row, true);
+    setTimeout(() => { setConnecting(row, false); }, 1200);
+  }
+
+  document.querySelectorAll('.net').forEach(row => {
+    row.addEventListener('click', (e) => {
+      if (row.classList.contains('connecting')) return;
+      if (row.dataset.known === '1' || row.dataset.open === '1') {
+        connectKnown(row);
+      } else {
+        const expand = row.nextElementSibling;
+        if (expand && expand.classList.contains('open')) {
+          collapseAll();
+        } else {
+          expandUnknown(row);
+        }
+      }
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') collapseAll();
+  });
+
+  // ── Offline-state demo for the bar button (?offline=1) ───────────────
+  if (new URLSearchParams(location.search).get('offline') === '1') {
+    const btn = document.getElementById('wifiBtn');
+    if (btn) {
+      btn.classList.remove('active');
+      const last = btn.childNodes[btn.childNodes.length - 1];
+      if (last && last.nodeType === Node.TEXT_NODE) {
+        last.textContent = ' offline';
+      }
+    }
+  }
+
   // Auto-reload support (?reload=1)
   if (new URLSearchParams(location.search).get('reload') === '1') {
     let last = null;

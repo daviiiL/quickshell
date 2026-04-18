@@ -27,6 +27,8 @@ ShellRoot {
                 LeftPanel {}
                 RightPanel {}
                 NetworkOverlay {}
+                Osd {}
+                AppLauncherPanel {}
             }
         }
     }

@@ -48,10 +48,8 @@ Singleton {
         readonly property ThemeRadius radius: ThemeRadius {}
         readonly property ThemeElevation elevation: ThemeElevation {}
         readonly property ThemePadding padding: ThemePadding {}
-        readonly property int topBarHeight: 48
-        readonly property int leftBarWidth: 76
         readonly property int mainBarHeight: 48
-        readonly property int sidePanelWidth: 320
+        readonly property int sidePanelWidth: 400
         readonly property int borderWidth: 1
         readonly property int iconSize: 24
 
@@ -60,13 +58,13 @@ Singleton {
         readonly property int mainBarButtonPadX:     9
         readonly property int mainBarButtonGap:      7
         readonly property int mainBarButtonRadius:   3
-        readonly property int mainBarIconSize:       15
+        readonly property int mainBarIconSize:       18
         readonly property int mainBarDockIconSize:   18
         readonly property int mainBarDockItemSize:   34
         readonly property int mainBarDockItemGap:    3
         readonly property int mainBarDockItemRadius: 4
-        readonly property int mainBarWsSize:         32
-        readonly property int mainBarWsGap:          8
+        readonly property int mainBarWsSize:         21
+        readonly property int mainBarWsGap:          5
         readonly property int mainBarWsRadius:       3
         readonly property int mainBarHairWidth:      1
         readonly property int mainBarBatteryWidth:   44

@@ -11,12 +11,19 @@ Rectangle {
 
     required property var ap
 
+    signal expandRequested(var ap)
+
     readonly property int strength: root.ap?.strength ?? 0
     readonly property bool isSecure: root.ap?.isSecure ?? false
     readonly property bool isActive: root.ap?.active ?? false
     readonly property bool isWeak: root.strength < 35
     readonly property string ssid: root.ap?.ssid ?? ""
     readonly property string security: root.ap?.security ?? ""
+    readonly property bool isKnown: root.ap
+                                    && Network.knownNetworks
+                                    && Network.knownNetworks.indexOf(root.ssid) !== -1
+    readonly property bool isConnecting: Network.wifiConnecting
+                                          && Network.wifiConnectTarget === root.ap
 
     readonly property string wifiIcon: {
         if (root.strength > 83) return "signal_wifi_4_bar";
@@ -27,7 +34,7 @@ Rectangle {
         return "signal_wifi_0_bar";
     }
 
-    implicitHeight: row.implicitHeight + 18
+    implicitHeight: row.implicitHeight + 28
     color: ma.containsMouse ? Colors.surfaceContainerLow : "transparent"
     Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
 
@@ -42,20 +49,47 @@ Rectangle {
     RowLayout {
         id: row
         anchors.fill: parent
-        anchors.leftMargin: 12
-        anchors.rightMargin: 12
-        anchors.topMargin: 9
-        anchors.bottomMargin: 9
-        spacing: 10
+        anchors.leftMargin: 16
+        anchors.rightMargin: 16
+        anchors.topMargin: 14
+        anchors.bottomMargin: 14
+        spacing: 12
 
-        MaterialSymbol {
-            Layout.preferredWidth: 20
+        Item {
+            Layout.preferredWidth: 22
+            Layout.preferredHeight: 22
             Layout.alignment: Qt.AlignVCenter
-            icon: root.wifiIcon
-            iconSize: 16
-            fill: root.isActive ? 1 : 0
-            fontColor: root.isWeak ? Colors.inkDim : Colors.fgSurface
-            opacity: root.isWeak ? 0.5 : (root.isActive ? 1.0 : 0.78)
+
+            MaterialSymbol {
+                anchors.centerIn: parent
+                visible: !root.isConnecting
+                icon: root.wifiIcon
+                iconSize: 17
+                fill: root.isActive ? 1 : 0
+                fontColor: root.isWeak ? Colors.inkDim : Colors.fgSurface
+                opacity: root.isWeak ? 0.5 : (root.isActive ? 1.0 : 0.78)
+            }
+
+            Rectangle {
+                anchors.centerIn: parent
+                visible: root.isConnecting
+                width: 7
+                height: 7
+                radius: 3.5
+                color: Colors.barAccent
+                SequentialAnimation on opacity {
+                    running: root.isConnecting
+                    loops: Animation.Infinite
+                    NumberAnimation { from: 1;    to: 0.3; duration: 550 }
+                    NumberAnimation { from: 0.3;  to: 1;   duration: 550 }
+                }
+                SequentialAnimation on scale {
+                    running: root.isConnecting
+                    loops: Animation.Infinite
+                    NumberAnimation { from: 1;    to: 0.78; duration: 550 }
+                    NumberAnimation { from: 0.78; to: 1;    duration: 550 }
+                }
+            }
         }
 
         ColumnLayout {
@@ -67,18 +101,22 @@ Rectangle {
                 text: root.ssid
                 color: root.isWeak ? Colors.inkDim : Colors.fgSurface
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 13
+                font.pixelSize: 14
                 font.weight: root.isActive ? Font.Medium : Font.Normal
                 elide: Text.ElideRight
             }
 
             Text {
-                text: root.isActive
-                        ? "CONNECTED"
-                        : (root.security.length > 0 ? root.security.toUpperCase() : "OPEN")
-                color: root.isActive ? Colors.live : Colors.inkDimmer
+                text: root.isConnecting
+                        ? "CONNECTING…"
+                        : (root.isActive
+                            ? "CONNECTED"
+                            : (root.security.length > 0 ? root.security.toUpperCase() : "OPEN"))
+                color: root.isConnecting
+                        ? Colors.fgSurface
+                        : (root.isActive ? Colors.live : Colors.inkDimmer)
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 10
+                font.pixelSize: 11
                 font.letterSpacing: 1.4
             }
         }
@@ -87,7 +125,7 @@ Rectangle {
             visible: root.isSecure
             Layout.alignment: Qt.AlignVCenter
             icon: "lock"
-            iconSize: 11
+            iconSize: 14
             fontColor: Colors.inkDimmer
         }
 
@@ -98,7 +136,7 @@ Rectangle {
             text: root.strength + "%"
             color: Colors.inkDim
             font.family: Theme.font.family.inter_regular
-            font.pixelSize: 11
+            font.pixelSize: 12
             font.letterSpacing: 0.2
         }
     }
@@ -111,8 +149,12 @@ Rectangle {
         onClicked: {
             if (root.isActive) {
                 Network.disconnectWifiNetwork();
-            } else if (root.ap) {
+            } else if (!root.ap) {
+                return;
+            } else if (root.isKnown || !root.isSecure) {
                 Network.connectToWifiNetwork(root.ap);
+            } else {
+                root.expandRequested(root.ap);
             }
         }
     }

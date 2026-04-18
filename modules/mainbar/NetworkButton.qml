@@ -8,6 +8,8 @@ import qs.services
 MainBarButton {
     id: root
 
+    property var screen: null
+
     readonly property bool netOnline:   typeof Network !== "undefined" && Network !== null
     readonly property bool isEthernet:  netOnline && Network.ethernet && Network.ethernetConnected
     readonly property bool isWifiUp:    netOnline && !isEthernet && Network.wifiEnabled
@@ -24,6 +26,7 @@ MainBarButton {
     readonly property string connectionLabel: {
         if (isEthernet)                                return Network.ethernetDevice || "eth";
         if (isWifiUp && Network.networkName)           return Network.networkName;
+        if (isWifiUp)                                  return "offline";
         if (netOnline && wifiState === "disabled")     return "off";
         if (netOnline && wifiState === "connecting")   return "…";
         return "—";
@@ -31,8 +34,17 @@ MainBarButton {
 
     active: GlobalStates.networkOverlayOpen
 
+    color: (root.active || root.hovered) ? Colors.surfaceContainerLow : Colors.surfaceContainer
+    border.color: (root.active || root.hovered) ? Colors.hairHot : Colors.hair
+
     onActivated: {
-        GlobalStates.networkOverlayOpen = !GlobalStates.networkOverlayOpen;
+        const name = root.screen?.name ?? "";
+        if (GlobalStates.networkOverlayOpen && GlobalStates.networkOverlayScreen === name) {
+            GlobalStates.networkOverlayOpen = false;
+        } else {
+            GlobalStates.networkOverlayScreen = name;
+            GlobalStates.networkOverlayOpen = true;
+        }
     }
 
     onXChanged:     Qt.callLater(_publishCenter)
@@ -41,8 +53,11 @@ MainBarButton {
 
     function _publishCenter() {
         const g = root.mapToGlobal(root.width / 2, 0);
-        if (g && g.x !== undefined)
-            GlobalStates.networkButtonCenterX = g.x;
+        console.log("[BTN]", Date.now(), "x=", root.x, "w=", root.width,
+            "parentW=", root.parent?.width, "globalCx=", g ? g.x : "(null)",
+            "screen=", root.screen?.name);
+        if (g && g.x !== undefined && root.screen?.name)
+            GlobalStates.setNetworkButtonCenter(root.screen.name, g.x);
     }
 
     Image {
@@ -72,13 +87,14 @@ MainBarButton {
     }
 
     Text {
-        visible: root.isWifiUp
+        readonly property bool showPct: root.isWifiUp && Network.active
+        visible: showPct
         text: root.strength + "%"
         color: root.hovered ? Colors.fgSurface : Colors.inkDimmer
         font.family: Theme.font.family.inter_regular
         font.pixelSize: 11
         font.letterSpacing: 0.2
-        Layout.preferredWidth: root.isWifiUp ? 26 : 0
+        Layout.preferredWidth: showPct ? 26 : 0
         Layout.alignment: Qt.AlignVCenter
         horizontalAlignment: Text.AlignRight
         Behavior on color { ColorAnimation { duration: 150 } }

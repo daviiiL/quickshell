@@ -101,6 +101,22 @@ Singleton {
         connectProc.exec(["nmcli", "dev", "wifi", "connect", accessPoint.ssid]);
     }
 
+    function connectToWifiNetworkWithPassword(accessPoint: WifiAccessPoint, password: string): void {
+        accessPoint.askingPassword = false;
+        root.wifiConnectTarget = accessPoint;
+        // Password goes through env to keep it out of argv; SSID is passed as a
+        // bash positional arg so it isn't subject to shell expansion.
+        connectProc.exec({
+            "environment": Object.assign({}, root.cLocaleEnv, { "PASSWORD": password }),
+            "command": [
+                "bash", "-c",
+                'nmcli dev wifi connect "$1" password "$PASSWORD"',
+                "--",
+                accessPoint.ssid
+            ]
+        });
+    }
+
     function disconnectWifiNetwork(): void {
         if (active)
             disconnectProc.exec(["nmcli", "connection", "down", active.ssid]);
@@ -179,6 +195,7 @@ Singleton {
         updateNetworkStrength.running = true;
         getKnownNetworks.running = true;
         updateEthernetInfo.running = true;
+        getNetworks.running = true;
     }
 
     function forgetNetwork(ssid: string): void {
@@ -197,9 +214,14 @@ Singleton {
     Process {
         id: updateConnectionType
         property string buffer
+        property bool pending: false
         command: ["sh", "-c", "nmcli -t -f TYPE,STATE d status && nmcli -t -f CONNECTIVITY g"]
         running: true
         function startCheck() {
+            if (updateConnectionType.running) {
+                updateConnectionType.pending = true;
+                return;
+            }
             buffer = "";
             updateConnectionType.running = true;
         }
@@ -238,16 +260,25 @@ Singleton {
             root.wifiStatus = wifiStatus;
             root.ethernet = hasEthernet;
             root.wifi = hasWifi;
+
+            if (updateConnectionType.pending) {
+                updateConnectionType.pending = false;
+                updateConnectionType.startCheck();
+            }
         }
     }
 
     Process {
         id: updateNetworkName
-        command: ["sh", "-c", "nmcli -t -f NAME c show --active | head -1"]
+        command: ["sh", "-c", "nmcli -t -f NAME,TYPE c show --active | awk -F: '$2==\"802-11-wireless\"{print $1; exit}'"]
         running: true
-        stdout: SplitParser {
-            onRead: data => {
-                root.networkName = data;
+        environment: root.cLocaleEnv
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const name = text.trim();
+                root.networkName = name;
+                if (!name)
+                    root.networkStrength = 0;
             }
         }
     }
@@ -405,5 +436,59 @@ Singleton {
         id: apComp
 
         WifiAccessPoint {}
+    }
+
+    function _findAp(ssid: string): var {
+        return root.wifiNetworks.find(n => n.ssid === ssid) ?? null;
+    }
+
+    IpcHandler {
+        target: "wifi"
+
+        function toggle(): void { root.toggleWifi(); }
+        function on(): void     { root.enableWifi(true); }
+        function off(): void    { root.enableWifi(false); }
+        function scan(): void   { root.rescanWifi(); }
+        function disconnect(): void { root.disconnectWifiNetwork(); }
+
+        function connect(ssid: string): string {
+            const ap = root._findAp(ssid);
+            if (!ap) return "not-found: " + ssid;
+            root.connectToWifiNetwork(ap);
+            return "connecting: " + ssid;
+        }
+
+        function connectWithPassword(ssid: string, password: string): string {
+            const ap = root._findAp(ssid);
+            if (!ap) return "not-found: " + ssid;
+            root.connectToWifiNetworkWithPassword(ap, password);
+            return "connecting: " + ssid;
+        }
+
+        function forget(ssid: string): void { root.forgetNetwork(ssid); }
+
+        function status(): string {
+            const parts = [
+                "wifi=" + (root.wifiEnabled ? "on" : "off"),
+                "state=" + root.wifiStatus,
+                "ssid=" + (root.networkName || "-"),
+                "strength=" + root.networkStrength + "%",
+                "ethernet=" + (root.ethernetConnected ? root.ethernetDevice : "-"),
+                "connecting=" + (root.wifiConnecting
+                    ? (root.wifiConnectTarget?.ssid ?? "?")
+                    : "-"),
+                "known=[" + root.knownNetworks.join(",") + "]",
+                "visible=[" + root.wifiNetworks.map(n => n.ssid).join(",") + "]"
+            ];
+            return parts.join(" ");
+        }
+
+        function list(): string {
+            return root.wifiNetworks.map(n => {
+                const mark = n.active ? "*" : " ";
+                const sec = n.security || "open";
+                return `${mark} ${n.strength}% ${sec.padEnd(10)} ${n.ssid}`;
+            }).join("\n");
+        }
     }
 }

@@ -19,7 +19,17 @@ Singleton {
     property bool rightPanelOpen: false
     property string rightPanelSource: ""
     property bool networkOverlayOpen: false
-    property real networkButtonCenterX: 0
+    property string networkOverlayScreen: ""
+    property var networkButtonCenters: ({})
+
+    function setNetworkButtonCenter(screenName, x) {
+        if (!screenName) return;
+        const current = networkButtonCenters[screenName];
+        if (current === x) return;
+        const next = Object.assign({}, networkButtonCenters);
+        next[screenName] = x;
+        networkButtonCenters = next;
+    }
 
     property bool mediaControlsOpen: false
     property real mediaControlsX: 0

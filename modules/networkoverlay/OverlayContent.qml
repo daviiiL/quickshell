@@ -17,13 +17,9 @@ Item {
         return "off";
     }
 
-    implicitHeight: col.implicitHeight
-
     ColumnLayout {
         id: col
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
+        anchors.fill: parent
         spacing: 0
 
         OverlayHeader {
@@ -65,6 +61,9 @@ Item {
             color: Colors.hair
         }
 
-        WifiSection {}
+        WifiSection {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
     }
 }

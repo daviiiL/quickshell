@@ -9,21 +9,58 @@ import qs.services
 import qs.modules.networkoverlay
 
 Scope {
-    Variants {
-        model: Quickshell.screens
+    id: scope
 
-        PanelWindow {
+    Timer {
+        id: closeTimer
+        interval: Theme.anim.durations.sm + 50
+        onTriggered: panelLoader.active = false
+    }
+
+    Connections {
+        target: GlobalStates
+        function onNetworkOverlayOpenChanged() {
+            if (GlobalStates.networkOverlayOpen) {
+                closeTimer.stop();
+                panelLoader.active = true;
+            } else if (panelLoader.active) {
+                closeTimer.restart();
+            }
+        }
+    }
+
+    Loader {
+        id: panelLoader
+        active: false
+
+        sourceComponent: PanelWindow {
             id: root
-            required property var modelData
-            screen: modelData
+            visible: true
+
+            property bool shown: false
+            Component.onCompleted: {
+                console.log("[OVERLAY.created]", Date.now(), "screen=", root.screen?.name,
+                    "rootW=", root.width, "screenW=", root.screen?.width);
+                shown = Qt.binding(() => GlobalStates.networkOverlayOpen);
+            }
+            onWidthChanged: console.log("[OVERLAY.widthChanged]", Date.now(), "rootW=", width)
+
+            screen: {
+                const name = GlobalStates.networkOverlayScreen;
+                const screens = Quickshell.screens;
+                for (let i = 0; i < screens.length; i++) {
+                    if (screens[i].name === name) return screens[i];
+                }
+                return screens[0];
+            }
 
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.namespace: "quickshell:networkoverlay"
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
 
             anchors { top: true; bottom: true; left: true; right: true }
 
-            exclusiveZone: 0
-            visible: GlobalStates.networkOverlayOpen || slideAnim.running
+            exclusiveZone: -1
             color: "transparent"
 
             MouseArea {
@@ -34,24 +71,32 @@ Scope {
 
             FocusScope {
                 anchors.fill: parent
-                focus: GlobalStates.networkOverlayOpen
+                focus: root.shown
 
                 Keys.onEscapePressed: GlobalStates.networkOverlayOpen = false
 
                 Rectangle {
                     id: popup
                     width: 300
-                    height: Math.min(content.implicitHeight, root.height - Theme.ui.mainBarHeight - 24)
+                    height: Math.min(440, root.height - Theme.ui.mainBarHeight - 24)
 
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: Theme.ui.mainBarHeight + 6
+                    anchors.bottomMargin: Theme.ui.mainBarHeight
 
                     x: {
                         const screenX = root.screen?.x ?? 0;
-                        const desired = GlobalStates.networkButtonCenterX - screenX - width / 2;
+                        const sn = root.screen?.name;
+                        const dictVal = GlobalStates.networkButtonCenters[sn];
+                        const centerX = dictVal ?? (screenX + root.width / 2);
+                        const desired = centerX - screenX - width / 2;
                         const minX = 8;
                         const maxX = root.width - width - 8;
-                        return Math.max(minX, Math.min(maxX, desired));
+                        const result = Math.max(minX, Math.min(maxX, desired));
+                        console.log("[POPUP.x]", Date.now(), "rootW=", root.width,
+                            "screen=", sn, "screenX=", screenX,
+                            "dictVal=", dictVal, "centerX=", centerX,
+                            "desired=", desired, "maxX=", maxX, "result=", result);
+                        return result;
                     }
 
                     color: Colors.panelBg
@@ -59,7 +104,7 @@ Scope {
                     border.color: Colors.hair
                     border.width: Theme.ui.mainBarHairWidth
 
-                    opacity: GlobalStates.networkOverlayOpen ? 1 : 0
+                    opacity: root.shown ? 1 : 0
                     Behavior on opacity {
                         NumberAnimation {
                             duration: Theme.anim.durations.xs
@@ -70,7 +115,7 @@ Scope {
 
                     transform: Translate {
                         id: slideT
-                        y: GlobalStates.networkOverlayOpen ? 0 : 16
+                        y: root.shown ? 0 : 16
                         Behavior on y {
                             NumberAnimation {
                                 id: slideAnim
@@ -101,7 +146,6 @@ Scope {
                     }
 
                     OverlayContent {
-                        id: content
                         anchors.fill: parent
                     }
                 }
