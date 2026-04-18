@@ -12,13 +12,10 @@ Rectangle {
     required property string query
     required property int currentParentIndex
     required property int index
+    required property var item
 
-    property var item: modelData
-
-    property string itemType: item?.type ?? "App"
     property string itemName: item?.name ?? ""
     property string iconName: item?.iconName ?? ""
-    property string itemVerb: item?.verb ?? "Launch"
     property string itemComment: item?.comment ?? ""
 
     property bool isSelected: mouseArea.containsMouse || index === currentParentIndex

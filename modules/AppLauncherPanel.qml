@@ -358,11 +358,10 @@ Scope {
 
                         delegate: AppLauncherItem {
                             required property var modelData
-                            required property int index
 
                             width: resultsList.width
+                            item: modelData
                             query: AppLauncher.query
-                            index: index
                             currentParentIndex: resultsList.currentIndex
                         }
 
