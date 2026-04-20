@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Notification Popups — Preview</title>
+<style>
+  :root {
+    --bar-bg: #0a0a0a;
+    --panel-bg: #141218;
+    --surface-container-lowest: #0f0f13;
+    --surface-container-low: #1d1b20;
+    --surface-container: #211f26;
+    --surface-container-high: #2b2930;
+    --ink: #e6e0e9;
+    --ink-dim: #8f8f8f;
+    --ink-dimmer: #6b6b6b;
+    --ink-faint: #4d4d4d;
+    --hair: #272727;
+    --hair-hot: #3a3a3a;
+    --accent: #e3e3e3;
+    --bar-accent: #e3e3e3;
+    --live: #5dc70a;
+    --warn: #ffd4ab;
+    --err: #f2b8b5;
+    --desktop-base: #07070a;
+    --desktop-warm: #1a1820;
+    --desktop-cool: #121016;
+    --hair-catch: rgba(227,227,227,0.55);
+    --bar-h: 48px;
+    --radius-sm: 3px;
+    --radius-md: 4px;
+    --hair-w: 1px;
+    --strip-h: 40px;
+    --pop-w: 340px;
+    --ease: cubic-bezier(.2, 0, 0, 1);
+    --ease-in: cubic-bezier(.4, 0, 1, 1);
+  }
+
+  :root[data-theme="light"] {
+    --bar-bg: #e4e0e9;
+    --panel-bg: #f5f2f7;
+    --surface-container-lowest: #fbf9fc;
+    --surface-container-low: #eee9f0;
+    --surface-container: #e3dee6;
+    --surface-container-high: #d4cfd9;
+    --ink: #1c1820;
+    --ink-dim: #5b5764;
+    --ink-dimmer: #827e8a;
+    --ink-faint: #a8a4b0;
+    --hair: #d6d1dc;
+    --hair-hot: #bcb7c2;
+    --accent: #1c1820;
+    --bar-accent: #1c1820;
+    --live: #3d8f0a;
+    --warn: #a65a1c;
+    --err: #b3261e;
+    --desktop-base: #dcd7e0;
+    --desktop-warm: #ebe6ee;
+    --desktop-cool: #d4d7dc;
+    --hair-catch: rgba(28,24,32,0.42);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 20% 30%, var(--desktop-warm) 0%, transparent 60%),
+      radial-gradient(900px 500px at 80% 80%, var(--desktop-cool) 0%, transparent 60%),
+      var(--desktop-base);
+    font-family: "Inter", "Inter Nerd Font Propo", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  .strip {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--strip-h);
+    background: var(--bar-bg);
+    border-bottom: var(--hair-w) solid var(--hair);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 14px;
+    z-index: 1000;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .strip h1 {
+    margin: 0;
+    font-size: 10px; font-weight: 500;
+    color: var(--ink-dimmer);
+    letter-spacing: 0.18em;
+  }
+  .strip .pills { display: flex; gap: 6px; align-items: center; }
+  .btn {
+    height: 24px;
+    padding: 0 10px;
+    display: inline-flex; align-items: center; gap: 6px;
+    border: var(--hair-w) solid var(--hair);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-dimmer);
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+  }
+  .btn:hover { color: var(--ink); border-color: var(--hair-hot); background: var(--surface-container-low); }
+  .btn.primary { color: var(--ink); }
+  .btn.danger:hover { color: var(--err); border-color: rgba(242,184,181,0.4); }
+  .strip .sep { width: 1px; align-self: stretch; background: var(--hair); margin: 0 4px; }
+  .toggle {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; height: 24px;
+    border: 1px solid var(--hair); border-radius: var(--radius-sm);
+    color: var(--ink-dimmer); cursor: pointer; user-select: none;
+    background: transparent;
+  }
+  .toggle input { display: none; }
+  .toggle:has(input:checked) {
+    background: var(--surface-container-low);
+    color: var(--ink);
+    border-color: var(--hair-hot);
+  }
+  .toggle:has(input:checked)::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px; background: var(--accent);
+  }
+  .toggle .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; opacity: 0.55;
+  }
+
+  .canvas {
+    position: relative;
+    margin-top: var(--strip-h);
+    height: calc(100vh - var(--strip-h));
+    overflow: hidden;
+  }
+  .fake-bar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: var(--bar-h);
+    background: var(--bar-bg);
+    border-top: var(--hair-w) solid var(--hair);
+    display: flex; align-items: center; padding: 0 14px;
+    z-index: 1;
+    color: var(--ink-dimmer);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .fake-bar::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: 1px; width: 220px;
+    background: linear-gradient(90deg, var(--hair-catch), transparent);
+  }
+  .fake-bar .hint {
+    margin-left: auto;
+    color: var(--ink-faint);
+    letter-spacing: 0.14em;
+  }
+
+  .stack {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: var(--pop-w);
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  .pop {
+    position: absolute;
+    top: 0; right: 0;
+    width: var(--pop-w);
+    background: var(--panel-bg);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-md);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.55);
+    overflow: hidden;
+    pointer-events: auto;
+    transform: translateY(-80px) scale(1);
+    opacity: 0;
+    transition:
+      transform 280ms var(--ease),
+      opacity 220ms ease,
+      background-color 240ms ease,
+      border-color 240ms ease,
+      box-shadow 240ms ease;
+  }
+  .pop[data-role="active"]::before {
+    content: "";
+    position: absolute;
+    right: 0; bottom: 0;
+    width: 1px; height: 100px;
+    background: linear-gradient(to top, var(--hair-catch), transparent);
+    z-index: 4; pointer-events: none;
+  }
+  .pop[data-role="active"]::after {
+    content: "";
+    position: absolute;
+    right: 0; bottom: 0;
+    height: 1px; width: 110px;
+    background: linear-gradient(to left, var(--hair-catch), transparent);
+    z-index: 4; pointer-events: none;
+  }
+
+  .pop[data-state="entering"],
+  .pop[data-state="active"] {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  .pop[data-state="peek"] {
+    background: var(--surface-container-high);
+    border-color: var(--hair-hot);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    transform: translateY(14px) scale(0.96);
+    opacity: 1;
+  }
+  .pop[data-state="peek-2"] {
+    background: var(--surface-container);
+    border-color: var(--hair-hot);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    transform: translateY(28px) scale(0.92);
+    opacity: 1;
+  }
+  .pop[data-state="dismissing"] {
+    transform: translateY(-80px) scale(1);
+    opacity: 0;
+    transition:
+      transform 220ms var(--ease-in),
+      opacity 180ms ease;
+  }
+  .pop[data-state="arriving-peek"] {
+    transform: translateY(80px) scale(0.9);
+    opacity: 0;
+  }
+
+  .pop[data-urgency="critical"] {
+    border-color: rgba(242,184,181,0.35);
+  }
+  .pop[data-urgency="critical"] .chip {
+    color: var(--err);
+    border-color: rgba(242,184,181,0.35);
+    background: rgba(242,184,181,0.06);
+  }
+  .pop[data-urgency="critical"] .crit-strip {
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 2px;
+    background: var(--err);
+    border-radius: 0 1px 1px 0;
+    z-index: 2;
+  }
+  .pop[data-urgency="critical"] .head,
+  .pop[data-urgency="critical"] .body-wrap { padding-left: 14px; }
+
+  .pop[data-urgency="low"] { opacity: 0.78; }
+  .pop[data-urgency="low"] .summary { color: var(--ink-dim); font-weight: 400; }
+
+  .pop[data-state="active"]:hover .progress { animation-play-state: paused; }
+
+  .head {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 10px;
+    padding: 11px 12px 8px;
+    align-items: center;
+    position: relative; z-index: 1;
+  }
+  .chip {
+    width: 22px; height: 22px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-container-high);
+    border: 1px solid var(--hair);
+    display: grid; place-items: center;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0;
+  }
+  .app-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-dimmer);
+    display: flex; align-items: center; gap: 8px;
+    min-width: 0;
+  }
+  .app-label .name {
+    color: var(--ink); font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .app-label .count {
+    color: var(--ink-dim);
+    font-size: 10px;
+    padding: 1px 5px;
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+  .meta {
+    font-size: 10px;
+    color: var(--ink-dimmer);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dismiss {
+    color: var(--ink-faint);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+    transition: color 150ms ease;
+  }
+  .dismiss:hover { color: var(--ink); }
+
+  .body-wrap {
+    display: grid;
+    grid-template-columns: 1fr 56px;
+    gap: 12px;
+    padding: 0 12px 12px 12px;
+    align-items: start;
+    position: relative; z-index: 1;
+  }
+  .body-wrap.no-image { grid-template-columns: 1fr; }
+  .summary {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-bottom: 4px;
+  }
+  .body-text {
+    font-size: 11px;
+    color: var(--ink-dim);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pop[data-state="peek"] .summary,
+  .pop[data-state="peek-2"] .summary { color: var(--ink); }
+  .pop[data-state="peek"] .body-text,
+  .pop[data-state="peek-2"] .body-text { color: var(--ink-dimmer); }
+
+  .hero {
+    width: 56px; height: 56px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hair);
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-container);
+  }
+  .hero[data-art="spotify"]::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 35%, #d6b26a 0%, #7a4c1e 35%, #2a1a08 75%);
+  }
+  .hero[data-art="mail"]::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(135deg, #3a3540, #1f1d24);
+  }
+  .hero[data-art="photo"]::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 40%, #8ea6c4 0%, #3b4e6a 45%, #14202f 100%);
+  }
+  .hero[data-art="warn"]::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 40% 30%, #d9a65d 0%, #6e4515 55%, #231504 100%);
+  }
+
+  .progress {
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.9;
+    width: 100%;
+    transform-origin: left center;
+    z-index: 5;
+  }
+  .pop[data-state="active"] .progress {
+    animation: drain var(--timeout, 7s) linear forwards;
+  }
+  .pop[data-urgency="critical"] .progress { display: none; }
+  @keyframes drain { to { transform: scaleX(0); } }
+
+  .empty-hint {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--ink-faint);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    pointer-events: none;
+    text-align: center;
+    line-height: 1.8;
+  }
+  .empty-hint .large {
+    font-size: 28px;
+    letter-spacing: 0.06em;
+    text-transform: none;
+    color: var(--ink-dimmer);
+    font-weight: 300;
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+<body>
+
+  <header class="strip">
+    <h1>notification-popups.html · preview</h1>
+    <div class="pills">
+      <button class="btn primary" data-scenario="single">single</button>
+      <button class="btn" data-scenario="burst-same">burst · same app</button>
+      <button class="btn" data-scenario="burst-diff">burst · different apps</button>
+      <button class="btn" data-scenario="critical">critical</button>
+      <button class="btn" data-scenario="low">low</button>
+      <button class="btn" data-scenario="loop">full loop</button>
+      <span class="sep"></span>
+      <button class="btn danger" data-action="clear">clear</button>
+      <span class="sep"></span>
+      <label class="toggle"><input type="checkbox" data-theme-toggle><span class="dot"></span>light</label>
+    </div>
+  </header>
+
+  <div class="canvas">
+    <div class="empty-hint">
+      <div class="large">no popups</div>
+      click a scenario above
+    </div>
+    <div class="stack" id="stack" aria-live="polite"></div>
+    <div class="fake-bar">
+      main bar (reference)
+      <span class="hint">↑ popups anchored top-right</span>
+    </div>
+  </div>
+
+<script>
+  // ===== Theme toggle =====
+  document.querySelector('[data-theme-toggle]').addEventListener('change', e => {
+    document.documentElement.dataset.theme = e.target.checked ? 'light' : '';
+  });
+
+  // ===== Sample data =====
+  const samples = {
+    slack: {
+      app: 'slack', chip: 'S', art: 'photo',
+      summaries: ['#design-systems', '#general', 'outfoxxed · dm'],
+      bodies: [
+        "mira: pushed the new icon spacing tokens to main — want a review when you're back.",
+        "3 new messages · standup notes posted by Ravi",
+        "hey — have you seen the layer-shell stacking edge case on nested overlays?"
+      ]
+    },
+    telegram: {
+      app: 'telegram', chip: 'T', art: 'mail',
+      summaries: ['kasper', 'clara', 'mum'],
+      bodies: [
+        "landed in berlin, want to grab coffee tmrw?",
+        "sent you the new mix — ID the sample at 2:14 please",
+        "can you call when you get a moment?"
+      ]
+    },
+    spotify: {
+      app: 'spotify', chip: 'SP', art: 'spotify',
+      summaries: ['Black Country, New Road'],
+      bodies: ['Turbines / Pigs · from "Forever Howlong"']
+    },
+    github: {
+      app: 'github', chip: 'G', art: 'mail',
+      summaries: ['PR #482 merged'],
+      bodies: ['quickshell / feat(main-bar): live dot with halo']
+    },
+    system: {
+      app: 'system', chip: '!', art: 'warn',
+      summaries: ['Battery low — 15% remaining'],
+      bodies: ['Plug in soon. Power profile switched to conservative.']
+    }
+  };
+
+  // ===== State =====
+  const stackEl = document.getElementById('stack');
+  const emptyHint = document.querySelector('.empty-hint');
+  let nextId = 0;
+  let cards = [];
+  const DEFAULT_TIMEOUT = 7000;
+  const LOW_TIMEOUT = 4000;
+  let loopCancel = null;
+
+  function updateEmpty() {
+    emptyHint.style.display = cards.length === 0 ? 'block' : 'none';
+  }
+
+  // Safe DOM builder — no innerHTML
+  function el(tag, attrs = {}, children = []) {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'class') n.className = v;
+      else if (k === 'dataset') Object.assign(n.dataset, v);
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v);
+    }
+    for (const c of children) {
+      if (c == null) continue;
+      n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    }
+    return n;
+  }
+
+  function buildCard({ appKey, urgency, summary, body, withImage }) {
+    const s = samples[appKey];
+    const pop = el('div', {
+      class: 'pop',
+      dataset: { role: 'active', urgency: urgency, state: 'arriving-peek' }
+    });
+    pop.style.setProperty('--timeout',
+      (urgency === 'low' ? LOW_TIMEOUT : DEFAULT_TIMEOUT) + 'ms');
+
+    if (urgency === 'critical') {
+      pop.appendChild(el('span', { class: 'crit-strip' }));
+    }
+
+    // Head row
+    const nameSpan = el('span', { class: 'name' }, [s.app]);
+    const appLabel = el('div', { class: 'app-label' }, [nameSpan]);
+    const timeSpan = el('span', { class: 'time' }, ['now']);
+    const dismissSpan = el('span', {
+      class: 'dismiss',
+      title: 'dismiss',
+      onclick: (e) => { e.stopPropagation(); dismissById(pop.__id); }
+    }, ['×']);
+    const meta = el('div', { class: 'meta' }, [timeSpan, dismissSpan]);
+    const head = el('div', { class: 'head' }, [
+      el('div', { class: 'chip' }, [s.chip]),
+      appLabel,
+      meta
+    ]);
+    pop.appendChild(head);
+
+    // Body row
+    const summaryEl = el('div', { class: 'summary' }, [summary]);
+    const bodyEl = el('div', { class: 'body-text' }, [body]);
+    const textCol = el('div', {}, [summaryEl, bodyEl]);
+    const bodyChildren = [textCol];
+    if (withImage) {
+      bodyChildren.push(el('div', { class: 'hero', dataset: { art: s.art } }));
+    }
+    const bodyWrap = el('div', {
+      class: withImage ? 'body-wrap' : 'body-wrap no-image'
+    }, bodyChildren);
+    pop.appendChild(bodyWrap);
+
+    // Progress bar
+    pop.appendChild(el('div', { class: 'progress' }));
+
+    pop.addEventListener('click', () => dismissById(pop.__id));
+    return pop;
+  }
+
+  function restack() {
+    cards.forEach((c, i) => {
+      c.el.dataset.role = (i === 0) ? 'active' : 'behind';
+      if (i === 0) c.el.dataset.state = 'active';
+      else if (i === 1) c.el.dataset.state = 'peek';
+      else if (i === 2) c.el.dataset.state = 'peek-2';
+      else {
+        c.el.dataset.state = 'peek-2';
+        c.el.style.display = 'none';
+      }
+      c.el.style.zIndex = String(100 - i);
+    });
+    updateEmpty();
+  }
+
+  function push(notif) {
+    const { appKey, urgency = 'normal', withImage = true } = notif;
+    const s = samples[appKey];
+    const idx = nextId % s.summaries.length;
+    const sum = notif.summary ?? s.summaries[idx];
+    const bod = notif.body ?? s.bodies[idx];
+
+    // Same-app merge — update in place with +N
+    const top = cards[0];
+    if (top && top.appKey === appKey && top.urgency !== 'critical' && urgency !== 'critical') {
+      top.mergeCount = (top.mergeCount || 0) + 1;
+      let countEl = top.el.querySelector('.app-label .count');
+      const label = top.el.querySelector('.app-label');
+      if (!countEl) {
+        countEl = el('span', { class: 'count' });
+        label.appendChild(countEl);
+      }
+      countEl.textContent = '+' + (top.mergeCount + 1);
+      top.el.querySelector('.summary').textContent = sum;
+      top.el.querySelector('.body-text').textContent = bod;
+      restartTimer(top);
+      return top.id;
+    }
+
+    const id = ++nextId;
+    const popEl = buildCard({ appKey, urgency, summary: sum, body: bod, withImage });
+    popEl.__id = id;
+    stackEl.appendChild(popEl);
+    const card = { id, el: popEl, appKey, urgency, timeoutHandle: null };
+
+    const wasEmpty = cards.length === 0;
+    if (wasEmpty) {
+      cards.unshift(card);
+      popEl.dataset.state = 'entering';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        popEl.dataset.state = 'active';
+      }));
+    } else {
+      cards.push(card); // arrives as peek (below)
+      restack();
+    }
+    if (urgency !== 'critical') scheduleDismiss(card);
+    return id;
+  }
+
+  function scheduleDismiss(card) {
+    if (card.timeoutHandle) clearTimeout(card.timeoutHandle);
+    const dur = card.urgency === 'low' ? LOW_TIMEOUT : DEFAULT_TIMEOUT;
+    card.timeoutHandle = setTimeout(() => {
+      if (cards[0] && cards[0].id === card.id) dismissById(card.id);
+    }, dur);
+  }
+
+  function restartTimer(card) {
+    const prog = card.el.querySelector('.progress');
+    prog.style.animation = 'none';
+    void prog.offsetWidth;
+    prog.style.animation = '';
+    scheduleDismiss(card);
+  }
+
+  function dismissById(id) {
+    const idx = cards.findIndex(c => c.id === id);
+    if (idx === -1) return;
+    const card = cards[idx];
+    if (card.timeoutHandle) clearTimeout(card.timeoutHandle);
+
+    if (idx === 0) {
+      card.el.dataset.state = 'dismissing';
+      setTimeout(() => card.el.remove(), 280);
+    } else {
+      card.el.style.transition = 'opacity 180ms ease';
+      card.el.style.opacity = '0';
+      setTimeout(() => card.el.remove(), 200);
+    }
+
+    cards.splice(idx, 1);
+    setTimeout(() => {
+      restack();
+      const newTop = cards[0];
+      if (newTop && newTop.urgency !== 'critical') {
+        const prog = newTop.el.querySelector('.progress');
+        prog.style.animation = 'none';
+        void prog.offsetWidth;
+        prog.style.animation = '';
+        scheduleDismiss(newTop);
+      }
+    }, 120);
+  }
+
+  function clearAll() {
+    cards.slice().forEach(c => dismissById(c.id));
+    if (loopCancel) { loopCancel(); loopCancel = null; }
+  }
+
+  // ===== Scenarios =====
+  function runScenario(name) {
+    clearAll();
+    if (name === 'single') {
+      setTimeout(() => push({ appKey: 'slack' }), 200);
+    }
+    else if (name === 'burst-same') {
+      setTimeout(() => push({ appKey: 'slack' }), 200);
+      setTimeout(() => push({ appKey: 'slack' }), 900);
+      setTimeout(() => push({ appKey: 'slack' }), 1700);
+    }
+    else if (name === 'burst-diff') {
+      setTimeout(() => push({ appKey: 'spotify' }), 200);
+      setTimeout(() => push({ appKey: 'telegram' }), 1100);
+      setTimeout(() => push({ appKey: 'github' }), 2000);
+    }
+    else if (name === 'critical') {
+      setTimeout(() => push({ appKey: 'system', urgency: 'critical', withImage: false }), 200);
+    }
+    else if (name === 'low') {
+      setTimeout(() => push({ appKey: 'github', urgency: 'low' }), 200);
+    }
+    else if (name === 'loop') {
+      const seq = [
+        () => push({ appKey: 'slack' }),
+        () => push({ appKey: 'telegram' }),
+        () => push({ appKey: 'spotify' }),
+        () => push({ appKey: 'github' }),
+        () => push({ appKey: 'system', urgency: 'critical', withImage: false })
+      ];
+      let step = 0;
+      const tick = () => { seq[step % seq.length](); step++; };
+      tick();
+      const int = setInterval(tick, 2500);
+      loopCancel = () => clearInterval(int);
+    }
+  }
+
+  document.querySelectorAll('[data-scenario]').forEach(btn => {
+    btn.addEventListener('click', () => runScenario(btn.dataset.scenario));
+  });
+  document.querySelector('[data-action="clear"]').addEventListener('click', clearAll);
+
+  updateEmpty();
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import qs.common
 import qs.services
 import qs.modules.mainbar
@@ -69,8 +70,14 @@ Scope {
                             Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
                             Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
 
-                            LiveDot {}
-                            ClockView {}
+                            LiveDot {
+                                pulseColor: syncProc.running ? Colors.busy : Colors.live
+                            }
+
+                            ClockView {
+                                syncing: syncProc.running
+                                onActivated: syncProc.running = true
+                            }
                         }
 
                         Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
@@ -136,6 +143,14 @@ Scope {
                             NotificationButton {}
                         }
                     }
+                }
+            }
+
+            Process {
+                id: syncProc
+                command: ["sh", "-c", `tz=$(curl -s --max-time 5 https://ipapi.co/timezone) && [ -n "$tz" ] && timedatectl set-timezone "$tz"`]
+                onExited: exitCode => {
+                    if (exitCode === 0) DateTime.refresh();
                 }
             }
         }

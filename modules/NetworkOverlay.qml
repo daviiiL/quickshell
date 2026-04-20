@@ -39,12 +39,7 @@ Scope {
             visible: true
 
             property bool shown: false
-            Component.onCompleted: {
-                console.log("[OVERLAY.created]", Date.now(), "screen=", root.screen?.name,
-                    "rootW=", root.width, "screenW=", root.screen?.width);
-                shown = Qt.binding(() => GlobalStates.networkOverlayOpen);
-            }
-            onWidthChanged: console.log("[OVERLAY.widthChanged]", Date.now(), "rootW=", width)
+            Component.onCompleted: shown = Qt.binding(() => GlobalStates.networkOverlayOpen)
 
             screen: {
                 const name = GlobalStates.networkOverlayScreen;
@@ -86,18 +81,8 @@ Scope {
 
                     x: {
                         const screenX = root.screen?.x ?? 0;
-                        const sn = root.screen?.name;
-                        const dictVal = GlobalStates.networkButtonCenters[sn];
-                        const centerX = dictVal ?? (screenX + root.width / 2);
-                        const desired = centerX - screenX - width / 2;
-                        const minX = 8;
-                        const maxX = root.width - width - 8;
-                        const result = Math.max(minX, Math.min(maxX, desired));
-                        console.log("[POPUP.x]", Date.now(), "rootW=", root.width,
-                            "screen=", sn, "screenX=", screenX,
-                            "dictVal=", dictVal, "centerX=", centerX,
-                            "desired=", desired, "maxX=", maxX, "result=", result);
-                        return result;
+                        const centerX = GlobalStates.networkButtonCenters[root.screen?.name] ?? (screenX + root.width / 2);
+                        return Math.max(8, Math.min(root.width - width - 8, centerX - screenX - width / 2));
                     }
 
                     color: Colors.panelBg

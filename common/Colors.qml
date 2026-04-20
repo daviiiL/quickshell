@@ -75,7 +75,8 @@ Singleton {
     property color inkFaint:   GlobalStates.darkMode ? "#4d4d4d" : "#a8a4b0"
     property color barAccent:  GlobalStates.darkMode ? "#e3e3e3" : "#1c1820"
     property color live:       GlobalStates.darkMode ? "#5dc70a" : "#3d8f0a"
-    property color scanning:   GlobalStates.darkMode ? "#f59e0b" : "#a85d0a"
+    property color busy:       GlobalStates.darkMode ? "#fac028" : "#b8860b"
+    property color stale:      GlobalStates.darkMode ? "#f59e0b" : "#a85d0a"
 
     Behavior on warning   { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on panelBg   { ColorAnimation { duration: Theme.anim.durations.sm } }
@@ -87,5 +88,6 @@ Singleton {
     Behavior on inkFaint  { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on barAccent { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on live      { ColorAnimation { duration: Theme.anim.durations.sm } }
-    Behavior on scanning  { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on busy      { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on stale     { ColorAnimation { duration: Theme.anim.durations.sm } }
 }

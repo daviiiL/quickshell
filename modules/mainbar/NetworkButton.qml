@@ -17,7 +17,7 @@ MainBarButton {
     readonly property string wifiState: netOnline ? (Network.wifiStatus ?? "") : ""
     readonly property bool notConnected: netOnline && !isEthernet && !Network.active
     readonly property bool showScanDot:  notConnected
-    readonly property color scanDotColor: (netOnline && Network.wifiScanning) ? Colors.live : Colors.scanning
+    readonly property color scanDotColor: (netOnline && Network.wifiScanning) ? Colors.busy : Colors.stale
 
     readonly property string iconSource: {
         if (isEthernet)                    return Icons.ethernet;
