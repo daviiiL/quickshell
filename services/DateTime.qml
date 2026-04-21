@@ -37,6 +37,30 @@ Singleton {
 
     readonly property string time: hrs + ":" + mins
 
+    readonly property string longDate: {
+        clock.date;
+        const raw = new Date();
+        const d = root.currentTimezone
+            ? new Date(Date.now() + root.tzOffsetSeconds * 1000)
+            : new Date(Date.UTC(raw.getFullYear(), raw.getMonth(), raw.getDate()));
+        const dow = Qt.locale().dayName(d.getUTCDay(), Locale.ShortFormat).toUpperCase();
+        const mon = Qt.locale().monthName(d.getUTCMonth(), Locale.ShortFormat).toUpperCase();
+        return `${dow} ${d.getUTCDate()} ${mon}`;
+    }
+
+    readonly property int isoWeek: {
+        clock.date;
+        const raw = new Date();
+        const d = root.currentTimezone
+            ? new Date(Date.now() + root.tzOffsetSeconds * 1000)
+            : new Date(Date.UTC(raw.getFullYear(), raw.getMonth(), raw.getDate()));
+        const target = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+        const dayNr = (target.getUTCDay() + 6) % 7;
+        target.setUTCDate(target.getUTCDate() - dayNr + 3);
+        const firstThursday = new Date(Date.UTC(target.getUTCFullYear(), 0, 4));
+        return 1 + Math.round((target - firstThursday) / 604800000);
+    }
+
     function refresh(): void {
         readTzProc.running = false;
         readTzProc.running = true;

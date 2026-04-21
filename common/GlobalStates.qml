@@ -5,6 +5,8 @@ import QtQuick
 import Quickshell
 
 Singleton {
+    property bool screenLocked: false
+    property bool screenDismissing: false
     property bool screenUnlockFailed: false
     property bool screenLockContainsCharacters: false
 

@@ -171,13 +171,13 @@
     background: linear-gradient(90deg, rgba(28,24,32,0.55), transparent);
   }
 
-  /* Clock */
+  /* Clock — modest, not a hero */
   .clock {
     position: absolute;
     left: 5.5%;
     top: 14%;
     font-weight: 200;
-    font-size: clamp(64px, 14vw, 160px);
+    font-size: clamp(24px, 1.6vw, 40px);
     line-height: 0.88;
     letter-spacing: -0.035em;
     font-variant-numeric: tabular-nums;
@@ -185,45 +185,45 @@
     user-select: none;
   }
 
-  /* Date line */
+  /* Date line — scaled up for 4K */
   .date-line {
     position: absolute;
     left: 5.5%;
     top: 54%;
-    font-size: 12px;
+    font-size: clamp(12px, 0.8vw, 20px);
     text-transform: uppercase;
-    letter-spacing: 2.4px;
+    letter-spacing: 2.5px;
     color: var(--ink-dimmer);
     user-select: none;
   }
   .date-line b { color: var(--ink); font-weight: 500; }
   .date-line .sep { color: var(--hair-hot); margin: 0 0.6em; }
 
-  /* Chips row */
+  /* Chips row — scaled up for 4K */
   .chips {
     position: absolute;
     right: 4%;
     top: 7%;
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: center;
   }
   .chip {
-    font-size: 9px;
-    letter-spacing: 1.8px;
+    font-size: 13px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 3px 7px;
+    padding: 4px 10px;
     border: var(--hair-w) solid var(--hair);
-    border-radius: 2px;
+    border-radius: 3px;
     color: var(--ink-dim);
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     line-height: 1;
-    height: 20px;
+    height: 28px;
   }
   .chip .dot {
-    width: 5px; height: 5px; border-radius: 50%;
+    width: 7px; height: 7px; border-radius: 50%;
     background: var(--live);
     box-shadow: 0 0 0 2px rgba(93,199,10,0.22);
   }
@@ -232,78 +232,78 @@
   }
   .chip.warn { color: var(--warn); border-color: var(--hair-hot); }
 
-  /* Password field */
+  /* Password field — scaled up for 4K */
   .auth {
     position: absolute;
     left: 5.5%;
     bottom: 9%;
     width: 48%;
-    max-width: 560px;
-    padding-left: 10px;
+    max-width: 640px;
+    padding-left: 14px;
     border-left: 2px solid var(--accent);
   }
   .auth .label {
-    font-size: 10px;
-    letter-spacing: 2.2px;
+    font-size: 14px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--ink-dimmer);
-    margin: 0 0 8px;
+    margin: 0 0 10px;
   }
   .auth.failed .label {
     color: var(--err);
   }
   .auth .field {
-    height: 34px;
+    height: 46px;
     border: var(--hair-w) solid var(--hair-hot);
     background: var(--surface-container-low);
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 14px;
     gap: 6px;
-    font-size: 13px;
+    font-size: 16px;
     color: var(--ink);
   }
   .auth .dots {
     display: inline-flex;
-    gap: 4px;
+    gap: 5px;
   }
   .auth .dots span {
-    width: 6px; height: 6px;
+    width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--ink);
   }
   .auth .cursor {
-    width: 1.2px; height: 14px;
+    width: 1.2px; height: 18px;
     background: var(--accent);
     animation: blink 1s steps(2) infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* User badge */
+  /* User badge — scaled up for 4K */
   .user {
     position: absolute;
     right: 4%;
     bottom: 9%;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
   .user .avatar {
-    width: 26px; height: 26px;
+    width: 32px; height: 32px;
     border-radius: var(--radius-md);
     background: linear-gradient(135deg, var(--surface-container-high), var(--surface-container-low));
     border: 1px solid var(--hair);
     display: grid;
     place-items: center;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--accent);
     letter-spacing: 0.05em;
     font-weight: 500;
   }
   .user .who {
-    font-size: 11px;
-    letter-spacing: 2px;
+    font-size: 14px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--ink);
     font-weight: 500;

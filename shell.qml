@@ -39,6 +39,7 @@ ShellRoot {
                 Osd {}
                 AppLauncherPanel {}
                 PopupSurface {}
+                LockScreen {}
             }
         }
     }
