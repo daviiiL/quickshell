@@ -77,6 +77,9 @@ Singleton {
     property color live:       GlobalStates.darkMode ? "#5dc70a" : "#3d8f0a"
     property color busy:       GlobalStates.darkMode ? "#fac028" : "#b8860b"
     property color stale:      GlobalStates.darkMode ? "#f59e0b" : "#a85d0a"
+    property color hairCatch:  GlobalStates.darkMode ? Qt.rgba(0.89, 0.89, 0.89, 0.55) : Qt.rgba(0.11, 0.094, 0.125, 0.42)
+    readonly property color criticalHalo:     Qt.rgba(0.949, 0.722, 0.710, 0.35)
+    readonly property color criticalChipFill: Qt.rgba(0.949, 0.722, 0.710, 0.06)
 
     Behavior on warning   { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on panelBg   { ColorAnimation { duration: Theme.anim.durations.sm } }
@@ -90,4 +93,5 @@ Singleton {
     Behavior on live      { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on busy      { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on stale     { ColorAnimation { duration: Theme.anim.durations.sm } }
+    Behavior on hairCatch { ColorAnimation { duration: Theme.anim.durations.sm } }
 }

@@ -26,7 +26,12 @@ Singleton {
         property string image: notification?.image ?? ""
         property string summary: notification?.summary ?? ""
         property double time
-        property string urgency: notification?.urgency.toString() ?? "normal"
+        property string urgency: {
+            const u = notification?.urgency;
+            if (u === 0 || u === "Low" || u === "low")           return "low";
+            if (u === 2 || u === "Critical" || u === "critical") return "critical";
+            return "normal";
+        }
         property Timer timer
 
         onNotificationChanged: {
@@ -65,7 +70,7 @@ Singleton {
     property string filePath: notificationsPath
     property list<Notif> list: []
     property var popupList: list.filter(notif => notif.popup)
-    property bool popupInhibited: (GlobalStates?.sidebarOpen ?? false) || silent
+    property bool popupInhibited: GlobalStates.rightPanelOpen || GlobalStates.appLauncherOpen || silent
     property var latestTimeForApp: ({})
 
     readonly property string cacheDir: StandardPaths.standardLocations(StandardPaths.CacheLocation)[0].toString().replace("file://", "")
@@ -144,24 +149,25 @@ Singleton {
 
         onNotification: notification => {
             notification.tracked = true;
-            const newNotifObject = notifComponent.createObject(root, {
+            const notif = notifComponent.createObject(root, {
                 "notificationId": notification.id + root.idOffset,
                 "notification": notification,
                 "time": Date.now()
             });
-            root.list = [...root.list, newNotifObject];
+            root.list = [...root.list, notif];
 
             if (!root.popupInhibited) {
-                newNotifObject.popup = true;
-                if (notification.expireTimeout != 0) {
-                    newNotifObject.timer = notifTimerComponent.createObject(root, {
-                        "notificationId": newNotifObject.notificationId,
-                        "interval": notification.expireTimeout < 0 ? 7000 : notification.expireTimeout
+                // Timer is created BEFORE popup = true to avoid a race in cancelTimeout.
+                if (notification.expireTimeout !== 0) {
+                    notif.timer = notifTimerComponent.createObject(root, {
+                        "notificationId": notif.notificationId,
+                        "interval": notification.expireTimeout > 0 ? notification.expireTimeout : 7000
                     });
                 }
+                notif.popup = true;
                 root.unread++;
             }
-            root.notify(newNotifObject);
+            root.notify(notif);
             notifFileView.setText(stringifyList(root.list));
         }
     }
@@ -198,9 +204,8 @@ Singleton {
     }
 
     function cancelTimeout(id) {
-        const index = root.list.findIndex(notif => notif.notificationId === id);
-        if (root.list[index] != null)
-            root.list[index].timer.stop();
+        const notif = root.list.find(n => n.notificationId === id);
+        if (notif?.timer) notif.timer.stop();
     }
 
     function timeoutNotification(id) {
@@ -219,12 +224,11 @@ Singleton {
         });
     }
 
-    function attemptInvokeAction(id, notifIdentifier) {
-        const notifServerIndex = notifServer.trackedNotifications.values.findIndex(notif => notif.id + root.idOffset === id);
-        if (notifServerIndex !== -1) {
-            const notifServerNotif = notifServer.trackedNotifications.values[notifServerIndex];
-            const action = notifServerNotif.actions.find(action => action.identifier === notifIdentifier);
-            action.invoke();
+    function attemptInvokeAction(id, actionIdentifier) {
+        const tracked = notifServer.trackedNotifications.values.find(n => n.id + root.idOffset === id);
+        if (tracked) {
+            const action = tracked.actions.find(a => a.identifier === actionIdentifier);
+            if (action) action.invoke();
         }
         root.discardNotification(id);
     }

@@ -21,6 +21,7 @@ Singleton {
         readonly property list<real> expressiveFastSpatial: [0.42, 1.67, 0.21, 0.9, 1, 1]
         readonly property list<real> expressiveDefaultSpatial: [0.38, 1.21, 0.22, 1, 1, 1]
         readonly property list<real> expressiveEffects: [0.34, 0.8, 0.34, 1, 1, 1]
+        readonly property list<real> dismissEase: [0.4, 0, 1, 1, 1, 1]
     }
 
     component AnimDurations: QtObject {
@@ -32,6 +33,8 @@ Singleton {
         readonly property int expressiveFastSpatial: 350
         readonly property int expressiveDefaultSpatial: 500
         readonly property int expressiveEffects: 200
+        readonly property int dismissPopup: 400
+        readonly property int promote: 240
     }
 
     component ThemeAnimation: QtObject {

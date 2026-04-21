@@ -7,6 +7,7 @@ import QtQuick
 import qs.common
 import qs.services
 import qs.modules
+import qs.modules.notifications
 
 ShellRoot {
     Process {
@@ -37,6 +38,7 @@ ShellRoot {
                 NetworkOverlay {}
                 Osd {}
                 AppLauncherPanel {}
+                PopupSurface {}
             }
         }
     }

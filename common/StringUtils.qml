@@ -46,4 +46,15 @@ Singleton {
     function shellSingleQuoteEscape(str) {
         return String(str).replace(/'/g, "'\\''");
     }
+
+    function relativeTime(t) {
+        if (!t) return "";
+        const diff = Math.max(0, Date.now() - t);
+        const m = Math.floor(diff / 60000);
+        if (m < 1)  return "now";
+        if (m < 60) return m + "m";
+        const h = Math.floor(m / 60);
+        if (h < 24) return h + "h";
+        return Math.floor(h / 24) + "d";
+    }
 }
