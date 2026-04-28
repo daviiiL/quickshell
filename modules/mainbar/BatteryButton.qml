@@ -9,7 +9,9 @@ import qs.widgets
 MainBarButton {
     id: root
 
-    visible: (typeof Power !== "undefined" && Power.isLaptopBattery) || false
+    property var screen: null
+
+    readonly property bool hasBattery: (typeof Power !== "undefined" && Power.isLaptopBattery) || false
 
     readonly property real level:
         (typeof Power !== "undefined" && Power.percentage !== undefined)
@@ -17,7 +19,34 @@ MainBarButton {
     readonly property bool charging:
         (typeof Power !== "undefined" && Power.isCharging) || false
 
-    onActivated: {}
+    readonly property bool canShowProfiles:
+        typeof Power !== "undefined" && Power.currentProfile && Power.currentProfile.length > 0
+
+    active: GlobalStates.powerProfileOverlayOpen
+        && GlobalStates.powerProfileOverlayScreen === (root.screen?.name ?? "")
+
+    onActivated: {
+        if (!root.canShowProfiles) return;
+        const name = root.screen?.name ?? "";
+        _publishCenter();
+        if (GlobalStates.powerProfileOverlayOpen && GlobalStates.powerProfileOverlayScreen === name) {
+            GlobalStates.powerProfileOverlayOpen = false;
+        } else {
+            GlobalStates.powerProfileOverlayScreen = name;
+            GlobalStates.powerProfileOverlayOpen = true;
+        }
+    }
+
+    onXChanged:      Qt.callLater(_publishCenter)
+    onWidthChanged:  Qt.callLater(_publishCenter)
+    onScreenChanged: Qt.callLater(_publishCenter)
+    Component.onCompleted: Qt.callLater(_publishCenter)
+
+    function _publishCenter() {
+        const g = root.mapToGlobal(root.width / 2, 0);
+        if (g && g.x !== undefined && root.screen?.name)
+            GlobalStates.setPowerProfileButtonCenter(root.screen.name, g.x);
+    }
 
     Rectangle {
         id: capsule
@@ -39,8 +68,9 @@ MainBarButton {
                 id: fillCanvas
                 anchors.fill: parent
 
-                property real paintLevel: root.level
+                property real paintLevel: root.hasBattery ? root.level : 1.0
                 property color paintColor: {
+                    if (!root.hasBattery)  return Colors.inkDim;
                     if (root.charging)     return Colors.live;
                     if (root.level < 0.05) return "#ff5252";
                     if (root.level < 0.10) return "#ff9a3d";
@@ -89,16 +119,17 @@ MainBarButton {
             sourceSize.width: 20
             sourceSize.height: 20
             smooth: true
-            opacity: root.charging ? (root.hovered ? 1.0 : 0.56) : 0
+            opacity: (root.hasBattery && root.charging) ? (root.hovered ? 1.0 : 0.56) : 0
             Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.InOutQuad } }
         }
 
         Text {
-            text: Math.round(root.level * 100) + "%"
+            text: root.hasBattery ? (Math.round(root.level * 100) + "%") : "PSU"
             color: root.hovered ? Colors.fgSurface : Colors.inkDim
             font.family: Theme.font.family.inter_medium
             font.weight: Font.Medium
             font.pixelSize: 12
+            font.letterSpacing: root.hasBattery ? 0 : 0.6
             horizontalAlignment: Text.AlignRight
             Behavior on color { ColorAnimation { duration: 150 } }
         }

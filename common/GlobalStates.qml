@@ -11,6 +11,7 @@ Singleton {
     property bool screenLockContainsCharacters: false
 
     property bool appLauncherOpen: false
+    property bool cliphistOverlayOpen: false
     property bool leftPanelOpen: false
     property bool rightPanelOpen: false
     property string rightPanelSource: ""
@@ -25,6 +26,19 @@ Singleton {
         const next = Object.assign({}, networkButtonCenters);
         next[screenName] = x;
         networkButtonCenters = next;
+    }
+
+    property bool powerProfileOverlayOpen: false
+    property string powerProfileOverlayScreen: ""
+    property var powerProfileButtonCenters: ({})
+
+    function setPowerProfileButtonCenter(screenName, x) {
+        if (!screenName) return;
+        const current = powerProfileButtonCenters[screenName];
+        if (current === x) return;
+        const next = Object.assign({}, powerProfileButtonCenters);
+        next[screenName] = x;
+        powerProfileButtonCenters = next;
     }
 
     property bool isLaptop: true

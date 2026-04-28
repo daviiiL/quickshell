@@ -36,8 +36,10 @@ ShellRoot {
                 LeftPanel {}
                 RightPanel {}
                 NetworkOverlay {}
+                PowerProfileOverlay {}
                 Osd {}
                 AppLauncherPanel {}
+                CliphistOverlay {}
                 PopupSurface {}
                 LockScreen {}
             }

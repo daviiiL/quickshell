@@ -47,6 +47,22 @@ Singleton {
         return String(str).replace(/'/g, "'\\''");
     }
 
+    function highlightSubstring(text, query, color) {
+        if (!query || query.length === 0)
+            return root.escapeHtml(text);
+        const idx = text.toLowerCase().indexOf(query.toLowerCase());
+        if (idx < 0) return root.escapeHtml(text);
+        const hex = "#"
+            + Math.round(color.r * 255).toString(16).padStart(2, "0")
+            + Math.round(color.g * 255).toString(16).padStart(2, "0")
+            + Math.round(color.b * 255).toString(16).padStart(2, "0");
+        return root.escapeHtml(text.slice(0, idx))
+            + `<b><u><font color="${hex}">`
+            + root.escapeHtml(text.slice(idx, idx + query.length))
+            + `</font></u></b>`
+            + root.escapeHtml(text.slice(idx + query.length));
+    }
+
     function relativeTime(t) {
         if (!t) return "";
         const diff = Math.max(0, Date.now() - t);

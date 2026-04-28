@@ -18,7 +18,7 @@ Row {
         font.weight: 200
         font.italic: false
         font.pixelSize: root.clockSize
-        font.letterSpacing: -Math.round(font.pixelSize * 0.035)
+        font.letterSpacing: -Math.round(root.clockSize * 0.035)
         font.features: ({ "tnum": 1 })
     }
 
@@ -43,7 +43,7 @@ Row {
         font.weight: 200
         font.italic: false
         font.pixelSize: root.clockSize
-        font.letterSpacing: -Math.round(font.pixelSize * 0.035)
+        font.letterSpacing: -Math.round(root.clockSize * 0.035)
         font.features: ({ "tnum": 1 })
     }
 }

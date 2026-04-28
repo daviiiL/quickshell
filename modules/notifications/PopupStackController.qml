@@ -104,7 +104,6 @@ Singleton {
                     mergeTarget.timeoutMs = _computeTimeoutForCard(mergeTarget);
                     Notifications.cancelTimeout(id);
                     if (root.cards[0] === mergeTarget) _startTimer(mergeTarget);
-                    console.warn("[PopupStack] merge id=" + id + " app=" + notif.appName + " mergeCount=" + mergeTarget.mergeCount);
                     continue;
                 }
             }
@@ -114,7 +113,6 @@ Singleton {
                            activatedAt: now, createdAt: now, exiting: false };
             card.timeoutMs = _computeTimeoutForCard(card);
             root.cards = [...root.cards, card];
-            console.warn("[PopupStack] push id=" + id + " app=" + notif.appName + " urgency=" + urg);
             Notifications.cancelTimeout(id);
             if (root.cards[0] === card) _startTimer(card);
         }

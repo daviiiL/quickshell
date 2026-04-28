@@ -58,90 +58,96 @@ Scope {
                 }
 
                 RowLayout {
-                    anchors.fill: parent
+                    id: leftGroup
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
                     spacing: 0
 
                     RowLayout {
-                        spacing: 0
+                        spacing: 10
                         Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
 
-                        RowLayout {
-                            spacing: 10
-                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
-                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
-
-                            LiveDot {
-                                pulseColor: syncProc.running ? Colors.busy : Colors.live
-                            }
-
-                            ClockView {
-                                syncing: syncProc.running
-                                onActivated: syncProc.running = true
-                            }
+                        LiveDot {
+                            pulseColor: syncProc.running ? Colors.busy : Colors.live
                         }
 
-                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
-
-                        RowLayout {
-                            spacing: 0
-                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
-                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
-                            Workspaces { screen: root.screen }
-                        }
-
-                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
-
-                        RowLayout {
-                            spacing: 0
-                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
-                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
-                            Dock {}
+                        ClockView {
+                            syncing: syncProc.running
+                            onActivated: syncProc.running = true
                         }
                     }
 
-                    Item { Layout.fillWidth: true; Layout.fillHeight: true }
+                    Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
 
                     RowLayout {
                         spacing: 0
                         Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        Workspaces { screen: root.screen }
+                    }
 
-                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+                    Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
 
-                        RowLayout {
-                            spacing: 0
-                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
-                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
-                            NetworkButton { screen: root.screen }
-                        }
+                    RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        Dock {}
+                    }
+                }
 
-                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+                RowLayout {
+                    id: rightGroup
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    spacing: 0
 
-                        RowLayout {
-                            spacing: 0
-                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
-                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                    Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
 
-                            BrightnessButton  {}
-                            VolumeButton      {}
-                        }
+                    RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        NetworkButton { screen: root.screen }
+                    }
 
-                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+                    Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
 
-                        RowLayout {
-                            spacing: 0
-                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
-                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
-                            BatteryButton {}
-                        }
+                    RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
 
-                        Rectangle { width: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+                        BrightnessButton  {}
+                        VolumeButton      {}
+                    }
 
-                        RowLayout {
-                            spacing: 0
-                            Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
-                            Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
-                            NotificationButton {}
-                        }
+                    Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+
+                    RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        BatteryButton { screen: root.screen }
+                    }
+
+                    Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+
+                    RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        NotificationButton {}
                     }
                 }
             }

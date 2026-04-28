@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Clipboard History — Preview</title>
+<style>
+  :root {
+    --bar-bg: #0a0a0a;
+    --panel-bg: #0f0f13;
+    --surface-container-lowest: #0f0f13;
+    --surface-container-low: #1d1b20;
+    --surface-container: #211f26;
+    --surface-container-high: #2b2930;
+    --hair: #272727;
+    --hair-hot: #3a3a3a;
+    --ink: #e6e0e9;
+    --ink-dim: #8f8f8f;
+    --ink-dimmer: #6b6b6b;
+    --ink-faint: #4d4d4d;
+    --accent: #e3e3e3;
+    --bar-accent: #e3e3e3;
+    --live: #5dc70a;
+    --warn: #ffd4ab;
+    --err: #f2b8b5;
+    --hair-catch: rgba(227,227,227,0.55);
+
+    --desktop-base: #07070a;
+    --desktop-warm: #1a1820;
+    --desktop-cool: #121016;
+
+    --bar-h: 48px;
+    --strip-h: 40px;
+    --hair-w: 1px;
+    --radius-sm: 3px;
+    --radius-md: 4px;
+
+    --ease: cubic-bezier(.2, 0, 0, 1);
+  }
+
+  :root[data-theme="light"] {
+    --bar-bg: #e4e0e9;
+    --panel-bg: #f5f2f7;
+    --surface-container-lowest: #fbf9fc;
+    --surface-container-low: #eee9f0;
+    --surface-container: #e3dee6;
+    --surface-container-high: #d4cfd9;
+    --ink: #1c1820;
+    --ink-dim: #5b5764;
+    --ink-dimmer: #827e8a;
+    --ink-faint: #a8a4b0;
+    --hair: #d6d1dc;
+    --hair-hot: #bcb7c2;
+    --accent: #1c1820;
+    --bar-accent: #1c1820;
+    --live: #3d8f0a;
+    --warn: #a65a1c;
+    --err: #b3261e;
+    --desktop-base: #dcd7e0;
+    --desktop-warm: #ebe6ee;
+    --desktop-cool: #d4d7dc;
+    --hair-catch: rgba(28,24,32,0.42);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 20% 30%, var(--desktop-warm) 0%, transparent 60%),
+      radial-gradient(900px 500px at 80% 80%, var(--desktop-cool) 0%, transparent 60%),
+      var(--desktop-base);
+    font-family: "Inter", "Inter Nerd Font Propo", system-ui, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === Top strip === */
+  .strip {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--strip-h);
+    background: var(--bar-bg);
+    border-bottom: var(--hair-w) solid var(--hair);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 14px;
+    z-index: 1000;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .strip h1 { margin: 0; font-size: 10px; font-weight: 500; color: var(--ink-dimmer); }
+  .strip .pills { display: flex; gap: 6px; align-items: center; }
+  .btn {
+    height: 24px;
+    padding: 0 10px;
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-dimmer);
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+  }
+  .btn:hover { color: var(--ink); border-color: var(--hair-hot); background: var(--surface-container-low); }
+
+  /* === Stages === */
+  .stages {
+    padding-top: var(--strip-h);
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .stage {
+    position: relative;
+    height: calc(100vh - var(--strip-h));
+    min-height: 640px;
+    border-bottom: var(--hair-w) solid var(--hair);
+    overflow: hidden;
+  }
+
+  .stage-label {
+    position: absolute;
+    top: 18px; left: 22px;
+    z-index: 5;
+    color: var(--ink-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+  }
+  .stage-label .num {
+    display: inline-block;
+    width: 22px; height: 22px;
+    line-height: 22px;
+    text-align: center;
+    margin-right: 10px;
+    border: 1px solid var(--hair-hot);
+    border-radius: 50%;
+    color: var(--ink);
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+  .stage-blurb {
+    position: absolute;
+    top: 50px; left: 22px;
+    z-index: 5;
+    color: var(--ink-dimmer);
+    font-size: 12px;
+    max-width: 380px;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  /* === Fake main bar (anchor context) === */
+  .mainbar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: var(--bar-h);
+    background: var(--bar-bg);
+    border-top: var(--hair-w) solid var(--hair);
+    z-index: 4;
+  }
+  .mainbar::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: var(--hair-w); width: 220px;
+    background: linear-gradient(90deg, var(--hair-catch), transparent);
+  }
+
+  /* === Scrim === */
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 2;
+  }
+  :root[data-theme="light"] .scrim { background: rgba(28,24,32,0.18); }
+
+  /* === Card base === */
+  .card {
+    position: absolute;
+    background: var(--panel-bg);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: var(--radius-md);
+    box-shadow:
+      0 40px 80px rgba(0,0,0,0.6),
+      0 2px 0 rgba(255,255,255,0.02) inset;
+    z-index: 3;
+    overflow: hidden;
+    animation: cardIn 320ms var(--ease) both;
+  }
+  :root[data-theme="light"] .card {
+    box-shadow: 0 40px 80px rgba(28,24,32,0.18);
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: var(--hair-w); width: 180px;
+    background: linear-gradient(90deg, var(--hair-catch), transparent);
+    pointer-events: none;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* === Query row (shared) === */
+  .query {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 18px;
+    border-bottom: var(--hair-w) solid var(--hair);
+  }
+  .query .q-icon { color: var(--ink-dim); display: grid; place-items: center; }
+  .query input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 18px;
+    letter-spacing: 0.01em;
+    caret-color: var(--accent);
+  }
+  .query input::placeholder { color: var(--ink-faint); font-weight: 400; }
+  .query .hint {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dimmer);
+  }
+  .kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px;
+    padding: 0 5px;
+    border: 1px solid var(--hair);
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    background: transparent;
+  }
+
+  /* === Footer (shared) === */
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    border-top: var(--hair-w) solid var(--hair);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dimmer);
+    background: var(--surface-container-lowest);
+  }
+  .foot .group { display: flex; gap: 14px; align-items: center; }
+  .foot .pair  { display: flex; gap: 6px; align-items: center; }
+
+  /* ==========================================================
+     Variant A — Spotlight clone (single-column list)
+     ========================================================== */
+  .card-a {
+    width: 600px;
+    top: 22%;
+    left: 50%;
+    transform-origin: 50% 0;
+    transform: translateX(-50%);
+  }
+
+  .list {
+    max-height: 56vh;
+    overflow-y: auto;
+  }
+  .list::-webkit-scrollbar { width: 6px; }
+  .list::-webkit-scrollbar-thumb { background: var(--hair); border-radius: 3px; }
+  .list::-webkit-scrollbar-thumb:hover { background: var(--hair-hot); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto auto;
+    gap: 14px;
+    align-items: center;
+    padding: 12px 18px;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+    transition: background 120ms ease;
+    position: relative;
+  }
+  .row + .row { border-top-color: var(--hair); }
+  .row:hover { background: var(--surface-container-low); }
+  .row.selected { background: var(--surface-container-low); }
+  .row.selected::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+  }
+  .row .type {
+    width: 28px; height: 28px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hair);
+    background: var(--surface-container-lowest);
+    display: grid; place-items: center;
+    color: var(--ink-dim);
+  }
+  .row.selected .type { color: var(--ink); border-color: var(--hair-hot); }
+  .row .body { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+  .row .preview {
+    color: var(--ink);
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .row .preview.mono {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 12px;
+  }
+  .row .meta {
+    font-size: 10px;
+    color: var(--ink-dimmer);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+  .row .id {
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+  .row.selected .id { color: var(--ink-dim); }
+  .row .enter {
+    display: grid; place-items: center;
+    color: var(--ink-faint);
+    opacity: 0;
+    transition: opacity 120ms ease, color 120ms ease;
+  }
+  .row.selected .enter { opacity: 1; color: var(--ink-dim); }
+
+  /* Image preview row (thumbnail in the type cell) */
+  .row .thumb {
+    width: 28px; height: 28px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hair);
+    background: linear-gradient(135deg, #2b2930, #1d1b20);
+    overflow: hidden;
+    position: relative;
+  }
+  .row .thumb::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 6px, transparent 6px 12px);
+  }
+
+  /* Multi-line indicator chip */
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid var(--hair);
+    background: var(--surface-container-lowest);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-dimmer);
+  }
+  .chip.url { color: var(--live); border-color: rgba(93,199,10,0.30); }
+  .chip.cmd { color: var(--warn); border-color: rgba(255,212,171,0.30); }
+  .chip.txt { color: var(--ink-dim); }
+  .chip.img { color: var(--ink); border-color: var(--hair-hot); }
+  .chip.warn { color: var(--err); border-color: rgba(242,184,181,0.30); }
+
+  /* ==========================================================
+     Variant B — Two-pane (list left, preview right)
+     ========================================================== */
+  .card-b {
+    width: 880px;
+    height: 60vh;
+    min-height: 460px;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .b-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    min-height: 0;
+  }
+  .b-list {
+    border-right: var(--hair-w) solid var(--hair);
+    overflow-y: auto;
+    background: var(--panel-bg);
+  }
+  .b-list::-webkit-scrollbar { width: 6px; }
+  .b-list::-webkit-scrollbar-thumb { background: var(--hair); border-radius: 3px; }
+
+  .b-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-top: 1px solid transparent;
+    position: relative;
+  }
+  .b-row + .b-row { border-top-color: var(--hair); }
+  .b-row:hover { background: var(--surface-container-low); }
+  .b-row.selected { background: var(--surface-container-low); }
+  .b-row.selected::before {
+    content: ""; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 2px;
+    background: var(--accent);
+  }
+  .b-row .b-type { color: var(--ink-dim); display: grid; place-items: center; }
+  .b-row.selected .b-type { color: var(--ink); }
+  .b-row .b-prev {
+    color: var(--ink);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .b-row .b-prev.mono {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 11.5px;
+  }
+  .b-row .b-id {
+    font-size: 10px;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+  }
+
+  .b-preview {
+    display: flex; flex-direction: column;
+    min-width: 0;
+    background: var(--surface-container-lowest);
+  }
+  .b-preview .b-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 18px;
+    border-bottom: var(--hair-w) solid var(--hair);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dimmer);
+  }
+  .b-preview .b-meta .left { display: flex; align-items: center; gap: 10px; }
+  .b-preview .b-content {
+    flex: 1;
+    overflow: auto;
+    padding: 18px;
+    color: var(--ink);
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .b-preview .b-content.url { color: var(--live); }
+  .b-preview .b-image {
+    flex: 1;
+    display: grid; place-items: center;
+    background:
+      linear-gradient(135deg, #2b2930, #1d1b20);
+  }
+  .b-preview .b-image .pseudo {
+    width: 60%;
+    aspect-ratio: 16/10;
+    border-radius: 4px;
+    border: 1px solid var(--hair-hot);
+    position: relative;
+    overflow: hidden;
+  }
+  .b-preview .b-image .pseudo::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 10px, transparent 10px 20px),
+      radial-gradient(60% 60% at 30% 30%, rgba(227,227,227,0.18), transparent 70%);
+  }
+  .b-preview .b-image .label {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    z-index: 2;
+  }
+
+  /* ==========================================================
+     Variant C — Single column with inline expand
+     ========================================================== */
+  .card-c {
+    width: 580px;
+    top: 16%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .c-list {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .c-row {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 18px;
+    cursor: pointer;
+    border-top: 1px solid transparent;
+    position: relative;
+  }
+  .c-row + .c-row { border-top-color: var(--hair); }
+  .c-row:hover { background: var(--surface-container-low); }
+  .c-row.selected { background: var(--surface-container-low); }
+  .c-row.selected::before {
+    content: ""; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 2px;
+    background: var(--accent);
+  }
+  .c-row .c-type { color: var(--ink-dim); display: grid; place-items: center; }
+  .c-row.selected .c-type { color: var(--ink); }
+  .c-row .c-prev {
+    color: var(--ink);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .c-row .c-prev.mono {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 12px;
+  }
+  .c-row .c-id {
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+  }
+  .c-row.selected .c-id { color: var(--ink-dim); }
+
+  .c-expand {
+    background: var(--surface-container-lowest);
+    border-top: 1px solid var(--hair);
+    border-bottom: 1px solid var(--hair);
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 220ms var(--ease), padding 220ms var(--ease);
+    padding: 0 18px;
+  }
+  .c-row.selected + .c-expand {
+    max-height: 240px;
+    padding: 12px 18px 14px;
+  }
+  .c-expand .head {
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--ink-dimmer);
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-bottom: 8px;
+  }
+  .c-expand pre {
+    margin: 0;
+    color: var(--ink);
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 170px;
+    overflow: auto;
+  }
+  .c-expand .actions {
+    display: flex; gap: 8px; margin-top: 10px;
+  }
+  .c-expand .act {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 9px;
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    cursor: pointer;
+  }
+  .c-expand .act:hover { color: var(--ink); border-color: var(--hair-hot); background: var(--surface-container-low); }
+  .c-expand .act.danger:hover { color: var(--err); border-color: rgba(242,184,181,0.4); }
+
+  /* SVG sizing */
+  .icn {
+    width: 16px; height: 16px;
+    color: currentColor;
+    fill: none; stroke: currentColor;
+    stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .icn.sm { width: 13px; height: 13px; }
+  .icn.lg { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+
+<header class="strip">
+  <h1>Clipboard History — variants</h1>
+  <div class="pills">
+    <button class="btn" id="themeToggleBtn">Theme: dark</button>
+  </div>
+</header>
+
+<main class="stages">
+
+  <!-- ========================================================
+       Variant A — Spotlight clone
+       ======================================================== -->
+  <section class="stage">
+    <div class="stage-label"><span class="num">A</span> Spotlight clone · single column</div>
+    <div class="stage-blurb">
+      Same shape as the AppLauncher: full-screen scrim, centered card, search at top,
+      scrollable list. Each row carries a type glyph, a one-line preview, a small type
+      chip, and the cliphist entry id. ↵ to copy back, Del to delete.
+    </div>
+
+    <div class="mainbar"></div>
+    <div class="scrim"></div>
+
+    <div class="card card-a">
+      <div class="query">
+        <span class="q-icon">
+          <svg class="icn" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </span>
+        <input type="text" placeholder="search clipboard history…" />
+        <span class="hint"><span class="kbd">ESC</span>CLOSE</span>
+      </div>
+
+      <div class="list" data-list="A">
+        <div class="row selected" data-pid="7">
+          <span class="type">
+            <svg class="icn" viewBox="0 0 24 24"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </span>
+          <div class="body">
+            <span class="preview mono">/plugin install frontend-design@claude-plugins-official</span>
+          </div>
+          <span class="chip cmd">CMD</span>
+          <span class="enter">
+            <svg class="icn sm" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="row" data-pid="6">
+          <span class="type">
+            <svg class="icn" viewBox="0 0 24 24"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </span>
+          <div class="body">
+            <span class="preview mono">curl -f https://zed.dev/install.sh | sh</span>
+          </div>
+          <span class="chip cmd">CMD</span>
+          <span class="enter">
+            <svg class="icn sm" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="row" data-pid="5">
+          <span class="type">
+            <svg class="icn" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+          </span>
+          <div class="body">
+            <span class="preview">https://github.com/quickshell-mirror/quickshell</span>
+          </div>
+          <span class="chip url">URL</span>
+          <span class="enter">
+            <svg class="icn sm" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="row" data-pid="4">
+          <span class="thumb"></span>
+          <div class="body">
+            <span class="preview">Screenshot · 1920×1080 · PNG</span>
+          </div>
+          <span class="chip img">IMG</span>
+          <span class="enter">
+            <svg class="icn sm" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="row" data-pid="3">
+          <span class="type">
+            <svg class="icn" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          </span>
+          <div class="body">
+            <span class="preview">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor…</span>
+          </div>
+          <span class="chip txt">TXT · 8 LINES</span>
+          <span class="enter">
+            <svg class="icn sm" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="row" data-pid="2">
+          <span class="type">
+            <svg class="icn" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><line x1="12" y1="10" x2="12" y2="15"/><circle cx="12" cy="18" r="0.8" fill="currentColor"/></svg>
+          </span>
+          <div class="body">
+            <span class="preview mono">WARN scene: QML QQuickText at @modules/lockscreen/LockClock.qml[39:5]: Binding loop detected for property "text"</span>
+          </div>
+          <span class="chip warn">WARN</span>
+          <span class="enter">
+            <svg class="icn sm" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+
+        <div class="row" data-pid="1">
+          <span class="type">
+            <svg class="icn" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+          </span>
+          <div class="body">
+            <span class="preview">theme "oxocarbon" not found, tried path "/home/davidas/.config/ghostty/themes/oxocarbon"</span>
+          </div>
+          <span class="chip txt">TXT</span>
+          <span class="enter">
+            <svg class="icn sm" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="foot">
+        <span>7 ENTRIES · MOST RECENT FIRST</span>
+        <span class="group">
+          <span class="pair"><span class="kbd">↑</span><span class="kbd">↓</span> NAV</span>
+          <span class="pair"><span class="kbd">↵</span> COPY</span>
+          <span class="pair"><span class="kbd">DEL</span> DELETE</span>
+          <span class="pair"><span class="kbd">ESC</span> CLOSE</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       Variant B — Two-pane (list + preview)
+       ======================================================== -->
+  <section class="stage">
+    <div class="stage-label"><span class="num">B</span> Two-pane · list left, preview right</div>
+    <div class="stage-blurb">
+      Selected entry's full content rendered on the right in a scrollable monospace pane.
+      Image entries get a thumbnail. Wider footprint but no need to expand rows; great for
+      finding multi-line snippets without truncation.
+    </div>
+
+    <div class="mainbar"></div>
+    <div class="scrim"></div>
+
+    <div class="card card-b">
+      <div class="query">
+        <span class="q-icon">
+          <svg class="icn" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </span>
+        <input type="text" placeholder="search clipboard history…" />
+        <span class="hint"><span class="kbd">ESC</span>CLOSE</span>
+      </div>
+
+      <div class="b-body">
+        <div class="b-list" data-list="B">
+          <div class="b-row" data-pid="7" data-type="cmd"
+               data-content="/plugin install frontend-design@claude-plugins-official">
+            <span class="b-type"><svg class="icn sm" viewBox="0 0 24 24"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+            <span class="b-prev mono">/plugin install frontend-design@claude-plugins-official</span>
+            <span class="b-id">#7</span>
+          </div>
+          <div class="b-row" data-pid="6" data-type="cmd"
+               data-content="curl -f https://zed.dev/install.sh | sh">
+            <span class="b-type"><svg class="icn sm" viewBox="0 0 24 24"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+            <span class="b-prev mono">curl -f https://zed.dev/install.sh | sh</span>
+            <span class="b-id">#6</span>
+          </div>
+          <div class="b-row selected" data-pid="5" data-type="url"
+               data-content="https://github.com/quickshell-mirror/quickshell">
+            <span class="b-type"><svg class="icn sm" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span>
+            <span class="b-prev">https://github.com/quickshell-mirror/quickshell</span>
+            <span class="b-id">#5</span>
+          </div>
+          <div class="b-row" data-pid="4" data-type="img"
+               data-content="">
+            <span class="b-type"><svg class="icn sm" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="1.5"/><path d="M21 17l-6-6-9 8"/></svg></span>
+            <span class="b-prev">Screenshot · 1920×1080 · PNG</span>
+            <span class="b-id">#4</span>
+          </div>
+          <div class="b-row" data-pid="3" data-type="txt"
+               data-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&#10;Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.&#10;Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.">
+            <span class="b-type"><svg class="icn sm" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+            <span class="b-prev">Lorem ipsum dolor sit amet, consectetur…</span>
+            <span class="b-id">#3</span>
+          </div>
+          <div class="b-row" data-pid="2" data-type="warn"
+               data-content="WARN scene: QML QQuickText at @modules/lockscreen/LockClock.qml[39:5]: Binding loop detected for property &quot;text&quot;">
+            <span class="b-type"><svg class="icn sm" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><line x1="12" y1="10" x2="12" y2="15"/><circle cx="12" cy="18" r="0.8" fill="currentColor"/></svg></span>
+            <span class="b-prev mono">WARN scene: QML QQuickText at @modules…</span>
+            <span class="b-id">#2</span>
+          </div>
+          <div class="b-row" data-pid="1" data-type="txt"
+               data-content="theme &quot;oxocarbon&quot; not found, tried path &quot;/home/davidas/.config/ghostty/themes/oxocarbon&quot;">
+            <span class="b-type"><svg class="icn sm" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+            <span class="b-prev">theme "oxocarbon" not found, tried path…</span>
+            <span class="b-id">#1</span>
+          </div>
+        </div>
+
+        <div class="b-preview">
+          <div class="b-meta">
+            <span class="left">
+              <span class="chip url" data-meta-chip>URL</span>
+              <span data-meta-info>50 chars · added 3m ago</span>
+            </span>
+            <span data-meta-id>#5</span>
+          </div>
+          <div class="b-content url" data-content-text>https://github.com/quickshell-mirror/quickshell</div>
+        </div>
+      </div>
+
+      <div class="foot">
+        <span>7 ENTRIES</span>
+        <span class="group">
+          <span class="pair"><span class="kbd">↑</span><span class="kbd">↓</span> NAV</span>
+          <span class="pair"><span class="kbd">↵</span> COPY</span>
+          <span class="pair"><span class="kbd">DEL</span> DELETE</span>
+          <span class="pair"><span class="kbd">ESC</span> CLOSE</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       Variant C — Inline expand
+       ======================================================== -->
+  <section class="stage">
+    <div class="stage-label"><span class="num">C</span> Single column · inline expand</div>
+    <div class="stage-blurb">
+      Narrow card. Selected row expands inline below to reveal full content + per-row
+      actions (copy, pin, delete). Smaller footprint than B; less context-switching than A
+      because preview lives next to the selection.
+    </div>
+
+    <div class="mainbar"></div>
+    <div class="scrim"></div>
+
+    <div class="card card-c">
+      <div class="query">
+        <span class="q-icon">
+          <svg class="icn" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </span>
+        <input type="text" placeholder="search clipboard history…" />
+        <span class="hint"><span class="kbd">ESC</span>CLOSE</span>
+      </div>
+
+      <div class="c-list" data-list="C">
+        <div class="c-row" data-pid="7">
+          <span class="c-type"><svg class="icn sm" viewBox="0 0 24 24"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+          <span class="c-prev mono">/plugin install frontend-design@claude-plugins-official</span>
+          <span class="c-id">#7</span>
+        </div>
+        <div class="c-expand">
+          <div class="head">
+            <span>CMD · 56 chars</span>
+            <span>#7</span>
+          </div>
+          <pre>/plugin install frontend-design@claude-plugins-official</pre>
+          <div class="actions">
+            <button class="act"><svg class="icn sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg> COPY</button>
+            <button class="act"><svg class="icn sm" viewBox="0 0 24 24"><path d="M12 17l-1 4 4-2 4 2-1-4M5 10l3-7h8l3 7-7 5z"/></svg> PIN</button>
+            <button class="act danger"><svg class="icn sm" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> DELETE</button>
+          </div>
+        </div>
+
+        <div class="c-row selected" data-pid="6">
+          <span class="c-type"><svg class="icn sm" viewBox="0 0 24 24"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+          <span class="c-prev mono">curl -f https://zed.dev/install.sh | sh</span>
+          <span class="c-id">#6</span>
+        </div>
+        <div class="c-expand">
+          <div class="head">
+            <span>CMD · 39 chars</span>
+            <span>#6</span>
+          </div>
+          <pre>curl -f https://zed.dev/install.sh | sh</pre>
+          <div class="actions">
+            <button class="act"><svg class="icn sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg> COPY</button>
+            <button class="act"><svg class="icn sm" viewBox="0 0 24 24"><path d="M12 17l-1 4 4-2 4 2-1-4M5 10l3-7h8l3 7-7 5z"/></svg> PIN</button>
+            <button class="act danger"><svg class="icn sm" viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> DELETE</button>
+          </div>
+        </div>
+
+        <div class="c-row" data-pid="5">
+          <span class="c-type"><svg class="icn sm" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span>
+          <span class="c-prev">https://github.com/quickshell-mirror/quickshell</span>
+          <span class="c-id">#5</span>
+        </div>
+        <div class="c-expand">
+          <div class="head">
+            <span>URL · 50 chars</span>
+            <span>#5</span>
+          </div>
+          <pre>https://github.com/quickshell-mirror/quickshell</pre>
+          <div class="actions">
+            <button class="act">COPY</button>
+            <button class="act">PIN</button>
+            <button class="act danger">DELETE</button>
+          </div>
+        </div>
+
+        <div class="c-row" data-pid="4">
+          <span class="c-type"><svg class="icn sm" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="1.5"/><path d="M21 17l-6-6-9 8"/></svg></span>
+          <span class="c-prev">Screenshot · 1920×1080 · PNG</span>
+          <span class="c-id">#4</span>
+        </div>
+        <div class="c-expand"></div>
+
+        <div class="c-row" data-pid="2">
+          <span class="c-type"><svg class="icn sm" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><line x1="12" y1="10" x2="12" y2="15"/><circle cx="12" cy="18" r="0.8" fill="currentColor"/></svg></span>
+          <span class="c-prev mono">WARN scene: QML QQuickText at @modules/lockscreen/LockClock.qml[39:5]…</span>
+          <span class="c-id">#2</span>
+        </div>
+        <div class="c-expand"></div>
+
+        <div class="c-row" data-pid="1">
+          <span class="c-type"><svg class="icn sm" viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+          <span class="c-prev">theme "oxocarbon" not found, tried path…</span>
+          <span class="c-id">#1</span>
+        </div>
+        <div class="c-expand"></div>
+      </div>
+
+      <div class="foot">
+        <span>6 ENTRIES</span>
+        <span class="group">
+          <span class="pair"><span class="kbd">↑</span><span class="kbd">↓</span> NAV</span>
+          <span class="pair"><span class="kbd">↵</span> COPY</span>
+          <span class="pair"><span class="kbd">DEL</span> DELETE</span>
+          <span class="pair"><span class="kbd">ESC</span> CLOSE</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  const themeBtn = document.getElementById('themeToggleBtn');
+  themeBtn.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    if (next === 'light') root.setAttribute('data-theme', 'light');
+    else root.removeAttribute('data-theme');
+    themeBtn.textContent = 'Theme: ' + next;
+  });
+
+  document.querySelectorAll('[data-list="A"], [data-list="C"]').forEach(list => {
+    list.addEventListener('click', e => {
+      const row = e.target.closest('.row, .c-row');
+      if (!row) return;
+      list.querySelectorAll('.row, .c-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+    });
+  });
+
+  const bList = document.querySelector('[data-list="B"]');
+  if (bList) {
+    bList.addEventListener('click', e => {
+      const row = e.target.closest('.b-row');
+      if (!row) return;
+      bList.querySelectorAll('.b-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+
+      const card = bList.closest('.card-b');
+      const meta = card.querySelector('[data-meta-chip]');
+      const info = card.querySelector('[data-meta-info]');
+      const idEl = card.querySelector('[data-meta-id]');
+      const content = card.querySelector('[data-content-text]');
+
+      const type = row.dataset.type || 'txt';
+      const text = row.dataset.content || '';
+      const id = row.querySelector('.b-id')?.textContent || '';
+
+      meta.className = 'chip ' + type;
+      meta.textContent = type.toUpperCase();
+      info.textContent = text.length + ' chars';
+      idEl.textContent = id;
+
+      if (type === 'img') {
+        content.replaceChildren();
+        const img = document.createElement('div');
+        img.className = 'b-image';
+        const ps = document.createElement('div');
+        ps.className = 'pseudo';
+        const lbl = document.createElement('div');
+        lbl.className = 'label';
+        lbl.textContent = '1920 × 1080 · PNG';
+        ps.appendChild(lbl);
+        img.appendChild(ps);
+        content.replaceChildren(img);
+        content.style.padding = '0';
+      } else {
+        content.style.padding = '18px';
+        content.className = 'b-content' + (type === 'url' ? ' url' : '');
+        content.textContent = text;
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
