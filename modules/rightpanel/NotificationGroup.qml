@@ -209,13 +209,14 @@ Item {
                 font.letterSpacing: 0.4
             }
 
-            MaterialSymbol {
+            IconImage {
                 Layout.alignment: Qt.AlignTop
                 Layout.topMargin: 2
-                icon: "chevron_right"
-                iconSize: 12
-                fontColor: root.open ? Colors.fgSurface : Colors.inkDimmer
-                colorAnimated: true
+                Layout.preferredWidth: 12
+                Layout.preferredHeight: 12
+                source: Qt.resolvedUrl("../../assets/icons/symbols/chevron_right.svg")
+                color: root.open ? Colors.fgSurface : Colors.inkDimmer
+                Behavior on color { ColorAnimation { duration: Theme.anim.durations.md } }
 
                 rotation: root.open ? 90 : 0
                 Behavior on rotation {

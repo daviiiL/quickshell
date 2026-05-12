@@ -63,15 +63,30 @@ RowLayout {
                 anchors.centerIn: parent
                 spacing: 6
 
-                MaterialSymbol {
+                Item {
                     Layout.alignment: Qt.AlignHCenter
-                    icon: cell.modelData.icon
-                    iconSize: 16
-                    fontColor: cell.hovered || cell.on ? Colors.fgSurface : Colors.inkDim
+                    implicitWidth: 16
+                    implicitHeight: 16
                     opacity: cell.hovered || cell.on ? 1.0 : 0.72
-                    fill: cell.on ? 1 : 0
-                    colorAnimated: true
                     Behavior on opacity { NumberAnimation { duration: 150 } }
+
+                    IconImage {
+                        anchors.fill: parent
+                        source: Qt.resolvedUrl("../../assets/icons/symbols/" + cell.modelData.icon + ".svg")
+                        color: cell.hovered || cell.on ? Colors.fgSurface : Colors.inkDim
+                        opacity: cell.on ? 0 : 1
+                        Behavior on opacity { NumberAnimation { duration: Theme.anim.durations.md } }
+                        Behavior on color { ColorAnimation { duration: Theme.anim.durations.md } }
+                    }
+
+                    IconImage {
+                        anchors.fill: parent
+                        source: Qt.resolvedUrl("../../assets/icons/symbols/" + cell.modelData.icon + "-fill.svg")
+                        color: cell.hovered || cell.on ? Colors.fgSurface : Colors.inkDim
+                        opacity: cell.on ? 1 : 0
+                        Behavior on opacity { NumberAnimation { duration: Theme.anim.durations.md } }
+                        Behavior on color { ColorAnimation { duration: Theme.anim.durations.md } }
+                    }
                 }
 
                 Text {
