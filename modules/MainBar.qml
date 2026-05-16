@@ -118,6 +118,14 @@ Scope {
                     anchors.bottom: parent.bottom
                     spacing: 0
 
+                    RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        ControlCenterButton {}
+                    }
+
                     Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
 
                     RowLayout {

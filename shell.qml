@@ -39,6 +39,7 @@ ShellRoot {
                 PowerProfileOverlay {}
                 Osd {}
                 AppLauncherPanel {}
+                ControlCenter {}
                 CliphistOverlay {}
                 PopupSurface {}
                 LockScreen {}

@@ -28,6 +28,20 @@ Singleton {
         networkButtonCenters = next;
     }
 
+    property bool controlCenterOpen: false
+    property string controlCenterSource: ""
+    property string controlCenterPane: "quick"
+
+    function openControlCenter(source: string): void {
+        controlCenterSource = source;
+        controlCenterOpen = true;
+    }
+
+    function closeControlCenter(): void {
+        controlCenterOpen = false;
+        controlCenterSource = "";
+    }
+
     property bool powerProfileOverlayOpen: false
     property string powerProfileOverlayScreen: ""
     property var powerProfileButtonCenters: ({})

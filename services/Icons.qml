@@ -15,6 +15,7 @@ Singleton {
     }
 
     readonly property string bell:         root.url("bell")
+    readonly property string tune:         root.url("tune")
     readonly property string charging:     root.url("charging")
     readonly property string ethernet:     root.url("ethernet")
     readonly property string brightness1:  root.url("brightness-1")
