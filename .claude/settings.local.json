@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(command -v bluetoothctl power-profiles-daemon powerprofilesctl)"
+      "Bash(command -v bluetoothctl power-profiles-daemon powerprofilesctl)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "WebFetch(domain:quickshell.outfoxxed.me)",
+      "mcp__plugin_context7_context7__query-docs"
     ]
   }
 }

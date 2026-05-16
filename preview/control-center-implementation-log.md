@@ -60,6 +60,73 @@ Code review surfaced 4 issues. Resolutions:
 3. **Multi-monitor: focusedOutput change *while CC is open*** causes both old and new panel surfaces to briefly request exclusive keyboard during the transition (conf 80). **Deferred.** Needs a design call — latch the opening screen vs. follow focus. Not a blocker; revisit in Phase 2 once the panes are in.
 4. **`controlCenterPane` not reset on close** — flagged as a bug. **Not a bug — intentional.** Sticky pane state across opens is the design (macOS Settings behavior); also planned to persist via `Preferences.controlCenterPane` in Spec 0.
 
+## Phase 4 — Network pane
+
+### What landed
+
+- **Atoms** (4 new):
+  - `SettingsSwitch.qml` — 32×18 pill toggle with animated thumb. `available: bool` for stubbing.
+  - `Chip.qml` — small-caps status chip; `variant` selects color/dot (`default` / `live` / `warn` / `err`).
+  - `ToggleRow.qml` — grouped-list row: label + `SettingsSwitch`.
+  - `DeviceRow.qml` — workhorse grouped-list row. Icon-cell + name/meta stack + optional `secure` lock icon + optional `trailingText` + optional `Chip` + optional `chevron`. Has `showSeparator: bool` for hairline-between-rows. Click handler is gated by `clickable: bool`.
+- `panes/NetworkPane.qml` replacing the placeholder. Composes CURRENT / OTHER NETWORKS / ETHERNET groups using the new atoms.
+- `modules/ControlCenter.qml` — `networkPaneComp` swapped from `PlaceholderPane` to `NetworkPane`.
+
+### Wiring
+
+| Section | Behavior |
+| --- | --- |
+| CURRENT row | name = `Network.active?.ssid` or "Not connected" / "Wi-Fi off". meta = `${security} · ${strength}%`. chip = "Connected" (live) or "Connecting" (default). |
+| Wi-Fi toggle | `checked: Network.wifiEnabled` / `onToggled: Network.toggleWifi()` |
+| Other networks list | `Repeater { model: Network.friendlyWifiNetworks.filter(n => !n.active) }`. Each row clickable; click → `Network.connectToWifiNetwork(ap)` only if known or open. Secure-unknown APs intentionally no-op (Phase 4b adds the password prompt inline). |
+| Empty / scanning state | When the list is empty, a single DeviceRow shows "Scanning…" or "No networks found · Pull to refresh" (click → `Network.rescanWifi()`). |
+| Ethernet row | name = `Network.ethernetDevice`. meta = `Connected · ${speed}` or "Cable not connected". chip = "Connected" (live) or "Idle" (default). |
+
+### Non-obvious bits
+
+- **Row separators live on the row, not the GroupBox.** Each `DeviceRow` / `ToggleRow` has a bottom hairline that's `visible: root.showSeparator`. Consumer sets `false` on the last row in a group. `GroupBox` has 0 spacing between children so separators line up with content. The mockup's `:last-child { border-bottom: 0 }` pattern translated to QML.
+- **Repeater's last-row gate is computed at the delegate.** `showSeparator: index < root.otherWifiNetworks.length - 1` inside the delegate.
+- **The "trailing slot" pattern was deliberately not used.** Considered `default property alias trailing: ...` on DeviceRow but in QML the default-alias swallows ALL inline children (including the row's own background + content layout). Switched to explicit named properties on DeviceRow (`chipText`, `chipVariant`, `trailingText`, `showChevron`, `secure`) — covers every mockup pattern at the cost of "open extension"; OK at current pane count.
+- **Secure-unknown click is a deliberate no-op.** Mirrors the design-doc decision to defer password-prompt UI until a dedicated phase. NetworkOverlay still handles password entry for now; CC's Network pane can punt to NetworkOverlay later or grow its own inline prompt.
+
+### Known leftovers / non-goals for Phase 4
+
+- **Password prompt for secure unknown APs** — Phase 4b. Need `WifiPasswordEntry`-style inline modal or a popup atom.
+- **"Other…" (hidden SSID) row** — needs `Network.connectToHiddenNetwork()` extension (Spec 0 follow-up).
+- **Current AP additional details** (IP, frequency, dBm) — `WifiAccessPoint` doesn't expose these directly; would need to extend `Network.qml` to query `nmcli -t -f IP4.ADDRESS device show <device>`.
+- **Forget from row** — currently no forget UI; would be a chevron-tap → details popup. Disconnect now works (click the active row).
+
+### Phase 4 review pass (post-simplifier)
+
+Simplifier collapsed the atoms: `SettingsSwitch` got `thumbSize`/`thumbInset` extracted + `radius: height / 2`; `Chip`'s color tables switched to `switch` statements + `dotColor` default → real color (`Colors.inkFaint`, gated invisible by `hasDot`); `ToggleRow` lost the empty spacer Item; `DeviceRow` collapsed root Item + background Rectangle into one Rectangle and adopted the `animMs` token. NetworkPane untouched by the simplifier.
+
+Reviewer found 5 issues. Applied 3 inline; deferred 2 that need `Network.qml` changes (would affect NetworkOverlay too).
+
+**Applied:**
+- **`apMeta` open-AP label bug** — open networks with signal showed `"65%"` instead of `"Open"`. The `|| "Open"` fallback only fired when both `security` and `strength` were absent. Fixed by explicitly pushing `"Open"` when `security` is empty.
+- **Separator sort-thrash** — `showSeparator: index < Network.friendlyWifiNetworks.length - 1` re-materialized the sort+spread for every delegate on every model change. Switched to `index < networksRepeater.count - 1` — reads a cached integer off the Repeater QObject, no array access. Added `id: networksRepeater`.
+- **Secure-unknown silent-click** — row showed hover/press feedback then no-op'd, misleading. Made `clickable` conditional: `apRow.isActive || apRow.isKnown || apRow.isOpen`. Secure-unknown rows now render without pointer cursor or hover tint, signaling clearly that they're not actionable. Phase 4b lights them up via password prompt.
+
+**Deferred follow-ups (need broader decision; touch `services/Network.qml`):**
+
+1. **`disconnectWifiNetwork` uses SSID as connection-profile name** (`nmcli connection down <ssid>`). When the saved profile's name differs from the SSID (renamed by user, or auto-named by NetworkManager), the command silently fails. NetworkOverlay's disconnect path has the same bug. Fix: use `nmcli device disconnect <interface>` or `nmcli connection down id <ssid>`. Out of Phase 4 scope since it changes shared service behavior — Phase 4b or a separate Network.qml hardening pass.
+2. **`Network.friendlyWifiNetworks` recomputes `[...wifiNetworks].sort(...)` on every read** — **Fixed.** Converted from `readonly property list<var> ... = [...].sort(...)` (binding-derived, fresh array per read) to a regular `property list<var> friendlyWifiNetworks: []` with a `_rebuildFriendlyWifiNetworks()` helper. The helper runs **once** at the end of `getNetworks.onStreamFinished` — after the in-place `wifiNetworks` splice/push pass completes. The array is now stable between scans; consumers (NetworkPane's Repeater, NetworkOverlay's WifiSection) only re-evaluate when the property assignment happens, not on every read. Eliminates the ~N² delegate rebuild during scans.
+
+### Bug fix — shell freeze on Wi-Fi toggle off
+
+**Reproduced:** toggling Wi-Fi off from the Network pane froze the entire shell.
+
+**Cause:** the first draft had `readonly property var otherWifiNetworks: Network.friendlyWifiNetworks.filter(n => !n.active)`. `friendlyWifiNetworks` itself returns a new array on every read (`[...wifiNetworks].sort(...)`), and the extra `.filter()` layered on top returned yet another new array. During the toggle, `wifiNetworks` mutates rapidly (nmcli teardown), and the Repeater watching `otherWifiNetworks` got a fresh model on every binding evaluation while accessing stale `modelData` references from delegates being torn down — binding storm + null-property-access combo, hard freeze.
+
+**Fix applied:**
+1. Dropped the `otherWifiNetworks` derived property entirely. The Repeater now binds `model: Network.friendlyWifiNetworks` directly — same array reference per service-side change.
+2. Wrapped the NETWORKS list (group label + group box) in a `Loader` gated on `Network.wifiEnabled`. When Wi-Fi flips off, the Loader unloads atomically; all delegates destroyed cleanly before the wifiNetworks-empties cascade.
+3. The active AP now appears in the list (sorted first by `friendlyWifiNetworks`'s comparator) instead of being separated into a CURRENT group. Click the active row → disconnect. Renames the section from "OTHER NETWORKS" to "NETWORKS" since active is included.
+4. The first row of the WI-FI group is a read-only summary (active AP + chip + meta). The Wi-Fi toggle is the second row.
+5. Defensive null guards everywhere: `modelData?.ssid`, `typeof ap.strength === "number"`, etc.
+
+This mirrors NetworkOverlay's safer pattern (also uses `Network.friendlyWifiNetworks` directly, no extra filter).
+
 ## Phase 2+3 cleanup pass (simplifier + reviewer)
 
 ### Simplifier-driven

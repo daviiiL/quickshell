@@ -29,13 +29,16 @@ Singleton {
     property WifiAccessPoint wifiConnectTarget
     property list<WifiAccessPoint> wifiNetworks: []
     readonly property WifiAccessPoint active: wifiNetworks.find(n => n.active) ?? null
-    readonly property list<var> friendlyWifiNetworks: [...wifiNetworks].sort((a, b) => {
-        if (a.active && !b.active)
-            return -1;
-        if (!a.active && b.active)
-            return 1;
-        return b.strength - a.strength;
-    })
+
+    property list<var> friendlyWifiNetworks: []
+
+    function _rebuildFriendlyWifiNetworks(): void {
+        root.friendlyWifiNetworks = [...root.wifiNetworks].sort((a, b) => {
+            if (a.active && !b.active) return -1;
+            if (!a.active && b.active) return 1;
+            return b.strength - a.strength;
+        });
+    }
 
     property list<string> knownNetworks: []
     property string wifiStatus: "disconnected"
@@ -360,6 +363,8 @@ Singleton {
                         }));
                     }
                 }
+
+                root._rebuildFriendlyWifiNetworks();
             }
         }
     }
