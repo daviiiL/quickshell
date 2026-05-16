@@ -16,7 +16,7 @@ A settings-style window for the shell — sidebar-driven navigation, grouped row
    - Quick Settings — 4×2 toggle grid + brightness + volume sliders (the "control center" feel)
    - Network — Wi-Fi list, current connection details, Ethernet status
    - Bluetooth — on/off, paired devices with battery, nearby
-   - Sound — output/input device pickers, volumes, per-app mix
+   - Sound — output/input device pickers, volumes, per-app mix, **system-events toggle** (one checkbox controlling whether unlock + startup sounds play)
    - Display — brightness, scale (segmented), resolution, color appearance, night light, accent-from-wallpaper
    - Battery — donut + time remaining, power profile (segmented), auto-suspend timers, battery health
    - Power (session) — Lock / Suspend / Log Out / Restart / Shut Down / Hibernate as 3×2 button grid
@@ -44,7 +44,7 @@ All defined in the preview's `<style>` block — port these to QML widgets, idea
 | Pane         | Reuse                                                                                           |
 | ------------ | ----------------------------------------------------------------------------------------------- |
 | Network      | `modules/networkoverlay/OverlayContent.qml` (wifi list, scanning, password entry) + `services/Network.qml` |
-| Sound        | `modules/rightpanel/SoundSection.qml` + `services/SystemAudio.qml`. Per-app volume is new       |
+| Sound        | `modules/rightpanel/SoundSection.qml` + `services/SystemAudio.qml`. Per-app volume is new. **System-events toggle** needs: `Preferences.playSystemSounds` (bool, persisted) + `assets/sounds/unlock.ogg` + `assets/sounds/startup.ogg` (or distro-supplied equivalents) + a Process spawn wrapper (`paplay`/`pw-play`) wired into `LockScreen.qml`'s unlock handler and the shell's startup path. The pane row is just a `ToggleRow` binding to the Preference. |
 | Display      | `modules/rightpanel/BrightnessSection.qml` + `services/Brightness.qml`                          |
 | Battery      | `modules/mainbar/BatteryButton.qml` battery state. Power-profile picker can reuse `preview/power-profile-overlay.html`'s flow |
 | Bluetooth    | **No service exists.** Mocked in preview. Needs `services/Bluetooth.qml` (bluetoothctl / bluez) |
@@ -91,6 +91,7 @@ When picking this up:
 - **Per-app volume** — needs PipeWire/PulseAudio per-stream introspection (`pactl list sink-inputs`). Worth the work, or drop?
 - **Sidebar `meta` text** ("60%", "85%", "my-net") — these reactively follow service state. Easy in QML but verify it doesn't cause re-paint thrash with many bindings.
 - **Header search field width** — current 220px feels right at 880px window; revisit if window width changes.
+- **System-events sound (Sound pane)** — one combined checkbox or split into unlock-vs-startup? Default: combined (single `Preferences.playSystemSounds`). Sound asset source: shell-bundled (`assets/sounds/`) or freedesktop theme (`/usr/share/sounds/freedesktop/stereo/`)? Default: bundled, falling back to freedesktop if assets missing. Playback binary: `paplay` (PulseAudio compat layer, present on most distros) or `pw-play` (PipeWire native)? Default: `paplay` for compatibility; the wrapper can prefer `pw-play` if available.
 
 ## Files
 

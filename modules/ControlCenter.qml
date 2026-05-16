@@ -1,14 +1,39 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import qs.common
 import qs.services
+import qs.modules.controlcenter
+import qs.modules.controlcenter.panes
 
 Scope {
     id: root
+
+    readonly property var paneRegistry: [
+        { name: "quick",     label: "Quick Settings", icon: "tune",               section: "QUICK",   component: quickPaneComp },
+        { name: "network",   label: "Network",        icon: "wifi",               section: "SYSTEM",  component: networkPaneComp },
+        { name: "bluetooth", label: "Bluetooth",      icon: "bluetooth",          section: "SYSTEM",  component: bluetoothPaneComp },
+        { name: "sound",     label: "Sound",          icon: "volume_up",          section: "SYSTEM",  component: soundPaneComp },
+        { name: "display",   label: "Display",        icon: "brightness_high",    section: "SYSTEM",  component: displayPaneComp },
+        { name: "battery",   label: "Battery",        icon: "battery_full",       section: "SYSTEM",  component: batteryPaneComp },
+        { name: "session",   label: "Power",          icon: "power_settings_new", section: "SESSION", component: sessionPaneComp }
+    ]
+
+    function paneEntry(name: string): var {
+        return root.paneRegistry.find(p => p.name === name) || root.paneRegistry[0];
+    }
+
+    Component { id: quickPaneComp;     QuickPane {} }
+    Component { id: networkPaneComp;   PlaceholderPane { paneName: "Network" } }
+    Component { id: bluetoothPaneComp; PlaceholderPane { paneName: "Bluetooth" } }
+    Component { id: soundPaneComp;     PlaceholderPane { paneName: "Sound" } }
+    Component { id: displayPaneComp;   PlaceholderPane { paneName: "Display" } }
+    Component { id: batteryPaneComp;   PlaceholderPane { paneName: "Battery" } }
+    Component { id: sessionPaneComp;   SessionPane {} }
 
     IpcHandler {
         target: "controlcenter"
@@ -120,31 +145,43 @@ Scope {
                 Loader {
                     id: contentLoader
                     anchors.fill: parent
-                    active: panel.shouldShow || surface.opacity > 0
+                    active: panel.shouldShow
 
                     sourceComponent: Component {
-                        Column {
-                            anchors.centerIn: parent
-                            spacing: 12
+                        ColumnLayout {
+                            id: content
+                            anchors.fill: parent
+                            spacing: 0
+
+                            readonly property var activePane: root.paneEntry(GlobalStates.controlCenterPane)
 
                             Component.onCompleted: console.log("[ControlCenter.content] loaded")
                             Component.onDestruction: console.log("[ControlCenter.content] unloaded")
 
-                            Text {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: "Control Center"
-                                color: Colors.fgSurface
-                                font.family: Theme.font.family.inter_medium
-                                font.pixelSize: 22
+                            Header {
+                                Layout.fillWidth: true
+                                section: content.activePane.section
+                                label:   content.activePane.label
+                                onCloseRequested: GlobalStates.closeControlCenter()
                             }
 
-                            Text {
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                text: "Phase 1 — scaffold + IPC. Esc or click backdrop to close."
-                                color: Qt.alpha(Colors.fgSurface, 0.5)
-                                font.family: Theme.font.family.inter
-                                font.pixelSize: 12
-                                font.letterSpacing: 0.4
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                spacing: 0
+
+                                Sidebar {
+                                    Layout.fillHeight: true
+                                    panes: root.paneRegistry
+                                    currentPane: GlobalStates.controlCenterPane
+                                    onPaneSelected: name => GlobalStates.controlCenterPane = name
+                                }
+
+                                Loader {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    sourceComponent: content.activePane.component
+                                }
                             }
                         }
                     }

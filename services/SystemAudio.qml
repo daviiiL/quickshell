@@ -34,8 +34,18 @@ Singleton {
     readonly property var currentAudioSink: Pipewire.defaultAudioSink?.audio
 
     readonly property real volume: Pipewire.defaultAudioSink?.audio.volume ?? 0
-    readonly property real muted: Pipewire.defaultAudioSink?.audio.muted ?? false
+    readonly property bool muted: Pipewire.defaultAudioSink?.audio.muted ?? false
     readonly property bool isOverdrive: Math.floor(volume * 100) > 100
+
+    function setVolume(v: real): void {
+        if (!root.ready) return;
+        Pipewire.defaultAudioSink.audio.volume = Math.max(0, Math.min(1, v));
+    }
+
+    function toggleMuted(): void {
+        if (!root.ready) return;
+        Pipewire.defaultAudioSink.audio.muted = !Pipewire.defaultAudioSink.audio.muted;
+    }
 
     IpcHandler {
         target: "volume"
