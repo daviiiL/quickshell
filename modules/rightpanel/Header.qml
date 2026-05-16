@@ -50,7 +50,7 @@ RowLayout {
             text: root.userName
             color: Colors.fgSurface
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 13
+            font.pixelSize: 20
             font.weight: Font.Medium
             font.letterSpacing: 0.3
         }

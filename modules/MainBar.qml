@@ -101,6 +101,16 @@ Scope {
                     }
                 }
 
+                Text {
+                    anchors.centerIn: parent
+                    text: "PER ASPERA AD ASTRA"
+                    color: Colors.inkDimmer
+                    font.family: Theme.font.family.inter_medium
+                    font.pixelSize: 10
+                    font.weight: Font.Medium
+                    font.letterSpacing: 1.8
+                }
+
                 RowLayout {
                     id: rightGroup
                     anchors.right: parent.right

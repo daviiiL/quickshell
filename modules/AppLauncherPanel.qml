@@ -295,39 +295,7 @@ Scope {
                                 }
                             }
 
-                            RowLayout {
-                                Layout.alignment: Qt.AlignVCenter
-                                spacing: 6
-                                visible: AppLauncher.query.length === 0
 
-                                Rectangle {
-                                    Layout.preferredHeight: 18
-                                    Layout.minimumWidth: 18
-                                    Layout.preferredWidth: escKbd.implicitWidth + 10
-                                    radius: 3
-                                    color: "transparent"
-                                    border.width: 1
-                                    border.color: Colors.hair
-
-                                    Text {
-                                        id: escKbd
-                                        anchors.centerIn: parent
-                                        text: "ESC"
-                                        font.family: Theme.font.family.inter_medium
-                                        font.pixelSize: 10
-                                        font.letterSpacing: 1.0
-                                        color: Qt.alpha(Colors.fgSurface, 0.56)
-                                    }
-                                }
-
-                                Text {
-                                    text: "CLOSE"
-                                    font.family: Theme.font.family.inter_medium
-                                    font.pixelSize: 10
-                                    font.letterSpacing: 1.8
-                                    color: Qt.alpha(Colors.fgSurface, 0.42)
-                                }
-                            }
                         }
 
                         Rectangle {

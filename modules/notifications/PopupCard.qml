@@ -17,7 +17,7 @@ Rectangle {
     signal resumeRequested(int id)
 
     width: 340
-    implicitHeight: Math.max(72, layout.implicitHeight)
+    implicitHeight: Math.max(82, layout.implicitHeight)
     radius: 4
 
     readonly property real slotYOffset: role === "peek1" ? 14 : role === "peek2" ? 28 : 0
@@ -173,15 +173,15 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-            Layout.leftMargin: root.urgency === "critical" ? 26 : 12
-            Layout.rightMargin: 12
-            Layout.topMargin: 11
-            Layout.bottomMargin: 8
+            Layout.leftMargin: root.urgency === "critical" ? 28 : 14
+            Layout.rightMargin: 14
+            Layout.topMargin: 13
+            Layout.bottomMargin: 10
             spacing: 10
 
             Rectangle {
-                Layout.preferredWidth: 22
-                Layout.preferredHeight: 22
+                Layout.preferredWidth: 24
+                Layout.preferredHeight: 24
                 radius: 3
                 color: urgency === "critical" ? Colors.criticalChipFill : Colors.surfaceContainerHigh
                 border.color: urgency === "critical" ? Colors.criticalHalo : Colors.hair
@@ -190,7 +190,7 @@ Rectangle {
                     anchors.centerIn: parent
                     text: (root.appName.length > 0 ? root.appName[0] : "?").toUpperCase()
                     color: urgency === "critical" ? Colors.error : Colors.primary
-                    font.pixelSize: 10
+                    font.pixelSize: 11
                     font.family: Theme.font.family.inter_medium
                     font.weight: Font.Medium
                 }
@@ -201,7 +201,7 @@ Rectangle {
                 text: root.appName.toUpperCase()
                 elide: Text.ElideRight
                 color: Colors.inkDimmer
-                font.pixelSize: 10
+                font.pixelSize: 11
                 font.family: Theme.font.family.inter_medium
                 font.weight: Font.Medium
                 font.letterSpacing: 1.8
@@ -209,9 +209,9 @@ Rectangle {
 
             Rectangle {
                 visible: root.card.mergeCount > 0
-                Layout.preferredHeight: 16
+                Layout.preferredHeight: 18
                 Layout.preferredWidth: countText.implicitWidth + 10
-                radius: 8
+                radius: 9
                 color: Colors.surfaceContainerHigh
                 border.color: Colors.hair
                 border.width: 1
@@ -220,7 +220,7 @@ Rectangle {
                     anchors.centerIn: parent
                     text: "+" + (root.card.mergeCount + 1)
                     color: Colors.inkDim
-                    font.pixelSize: 9
+                    font.pixelSize: 10
                     font.family: Theme.font.family.inter_medium
                     font.weight: Font.Medium
                 }
@@ -229,14 +229,14 @@ Rectangle {
             Text {
                 text: StringUtils.relativeTime(_notif?.time ?? Date.now())
                 color: Colors.inkDimmer
-                font.pixelSize: 10
+                font.pixelSize: 11
                 font.family: Theme.font.family.inter_regular
             }
 
             Text {
                 text: "×"
                 color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
-                font.pixelSize: 14
+                font.pixelSize: 16
                 MouseArea {
                     id: dismissMa
                     anchors.fill: parent
@@ -250,20 +250,20 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-            Layout.leftMargin: root.urgency === "critical" ? 26 : 12
-            Layout.rightMargin: 12
-            Layout.bottomMargin: 12
+            Layout.leftMargin: root.urgency === "critical" ? 28 : 14
+            Layout.rightMargin: 14
+            Layout.bottomMargin: 14
             spacing: 12
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 4
+                spacing: 5
 
                 Text {
                     Layout.fillWidth: true
                     text: root.summary
                     color: Colors.fgSurface
-                    font.pixelSize: 13
+                    font.pixelSize: 15
                     font.family: urgency === "low" ? Theme.font.family.inter_regular : Theme.font.family.inter_medium
                     font.weight: urgency === "low" ? Font.Normal : Font.Medium
                     elide: Text.ElideRight
@@ -274,7 +274,7 @@ Rectangle {
                     visible: root.body.length > 0
                     text: root.body
                     color: root.role === "active" ? Colors.inkDim : Colors.inkDimmer
-                    font.pixelSize: 11
+                    font.pixelSize: 13
                     font.family: Theme.font.family.inter_regular
                     wrapMode: Text.Wrap
                     lineHeight: 1.4
@@ -286,8 +286,8 @@ Rectangle {
             Rectangle {
                 visible: root.imageSrc.length > 0
                       && (root.urgency !== "critical" || (_notif?.image ?? "").length > 0)
-                Layout.preferredWidth: 56
-                Layout.preferredHeight: 56
+                Layout.preferredWidth: 60
+                Layout.preferredHeight: 60
                 radius: 3
                 color: "transparent"
                 border.color: Colors.hair

@@ -65,7 +65,7 @@ Rectangle {
                     text: root.title
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 12
+                    font.pixelSize: 13
                     font.weight: Font.Medium
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -76,7 +76,7 @@ Rectangle {
                     text: root.subLabel.toUpperCase()
                     color: Colors.inkDimmer
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: 11
                     font.letterSpacing: 1.4
                 }
             }
@@ -87,7 +87,7 @@ Rectangle {
                 text: root.message
                 color: Colors.inkDim
                 font.family: Theme.font.family.inter_regular
-                font.pixelSize: 11
+                font.pixelSize: 12
                 lineHeight: 1.35
                 wrapMode: Text.Wrap
                 elide: Text.ElideRight
@@ -103,7 +103,7 @@ Rectangle {
                 text: StringUtils.relativeTime(root.notif.time)
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_regular
-                font.pixelSize: 10
+                font.pixelSize: 11
                 font.letterSpacing: 0.4
             }
 
@@ -111,7 +111,7 @@ Rectangle {
                 text: "×"
                 color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
                 opacity: ma.containsMouse ? 1 : 0
-                font.pixelSize: 14
+                font.pixelSize: 15
                 horizontalAlignment: Text.AlignRight
                 Layout.alignment: Qt.AlignRight
                 Behavior on opacity { NumberAnimation { duration: 150 } }
