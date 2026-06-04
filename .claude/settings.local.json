@@ -4,7 +4,9 @@
       "Bash(command -v bluetoothctl power-profiles-daemon powerprofilesctl)",
       "mcp__plugin_context7_context7__resolve-library-id",
       "WebFetch(domain:quickshell.outfoxxed.me)",
-      "mcp__plugin_context7_context7__query-docs"
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(qs --version)",
+      "Bash(find / -path /proc -prune -o -name \"Pipewire\" -type d -print)"
     ]
   }
 }

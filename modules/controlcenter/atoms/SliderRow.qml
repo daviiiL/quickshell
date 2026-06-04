@@ -8,10 +8,14 @@ import qs.widgets
 Item {
     id: root
 
-    required property string iconSymbol
+    property string iconSymbol: ""
+    property url iconImage: ""
     required property string label
+    property string sub: ""
     property real value: 0
     property bool available: true
+    property real trackWidth: 220
+    property bool showSeparator: false
 
     signal moved(real v)
 
@@ -39,27 +43,57 @@ Item {
             border.color: Colors.hair
             border.width: Theme.ui.mainBarHairWidth
 
+            Image {
+                id: appIcon
+                anchors.centerIn: parent
+                width: 18
+                height: 18
+                sourceSize.width: 18
+                sourceSize.height: 18
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                source: root.iconImage
+                visible: root.iconImage != "" && status === Image.Ready
+            }
+
             MaterialSymbol {
                 anchors.centerIn: parent
+                visible: !appIcon.visible
                 icon: root.iconSymbol
                 iconSize: 13
                 fontColor: Colors.inkDim
             }
         }
 
-        Text {
-            text: root.label
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter
-            font.pixelSize: 12
+        ColumnLayout {
+            Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-        }
+            spacing: 1
 
-        Item { Layout.fillWidth: true; Layout.preferredHeight: 1 }
+            Text {
+                Layout.fillWidth: true
+                text: root.label
+                color: Colors.fgSurface
+                font.family: Theme.font.family.inter
+                font.pixelSize: 12
+                elide: Text.ElideRight
+            }
+
+            Text {
+                visible: root.sub.length > 0
+                Layout.fillWidth: true
+                text: root.sub
+                color: Colors.inkDimmer
+                font.family: Theme.font.family.inter
+                font.pixelSize: 10
+                font.letterSpacing: 0.2
+                elide: Text.ElideRight
+            }
+        }
 
         Item {
             id: track
-            Layout.preferredWidth: 220
+            Layout.preferredWidth: root.trackWidth
             Layout.preferredHeight: 14
             Layout.alignment: Qt.AlignVCenter
 
@@ -112,6 +146,15 @@ Item {
             font.pixelSize: 11
             font.letterSpacing: 0.2
         }
+    }
+
+    Rectangle {
+        visible: root.showSeparator
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: Theme.ui.mainBarHairWidth
+        color: Colors.hair
     }
 
     function commit(x: real): void {

@@ -60,6 +60,42 @@ Code review surfaced 4 issues. Resolutions:
 3. **Multi-monitor: focusedOutput change *while CC is open*** causes both old and new panel surfaces to briefly request exclusive keyboard during the transition (conf 80). **Deferred.** Needs a design call — latch the opening screen vs. follow focus. Not a blocker; revisit in Phase 2 once the panes are in.
 4. **`controlCenterPane` not reset on close** — flagged as a bug. **Not a bug — intentional.** Sticky pane state across opens is the design (macOS Settings behavior); also planned to persist via `Preferences.controlCenterPane` in Spec 0.
 
+## Phase 6 — Sound pane
+
+### What landed
+
+- `modules/controlcenter/panes/SoundPane.qml` — replaces the placeholder. OUTPUT (device picker + volume + mute) / INPUT (device picker + input level) / PER-APP VOLUME groups, matching the mockup's full layout.
+- `modules/controlcenter/atoms/DevicePicker.qml` — **new atom.** Inline-expanding device selector.
+- `modules/controlcenter/atoms/SliderRow.qml` — extended with opt-in `iconImage` (image icon w/ MaterialSymbol fallback), `sub` (two-line meta), `trackWidth`, `showSeparator`. OUTPUT/INPUT sliders use it unchanged; per-app rows use the new props.
+- `services/SystemAudio.qml` — major extension: enumerates `outputDeviceOptions` / `inputDeviceOptions` / `playbackStreams`, mic accessors (`sourceVolume`/`sourceMuted`/`setSourceVolume`/`toggleSourceMuted`), default-device setters (`setDefaultSink`/`setDefaultSource` → `Pipewire.preferredDefaultAudioSink/Source`), `setStreamVolume`, label helpers.
+- `modules/ControlCenter.qml` — `soundPaneComp` swapped from `PlaceholderPane` to `SoundPane`.
+
+### Non-obvious bits
+
+- **`onNodeAdded` / `onNodeRemoved` on `Pipewire` are C++ methods, not QML signals.** Connecting to them silently never fires. Node add/remove is observed via the `Pipewire.nodes` ObjectModel's `valuesChanged` instead. (Verified against `quickshell-service-pipewire.qmltypes`.)
+- **Classify nodes on the constant `isStream`/`isSink` booleans, NOT `media.class`.** `properties`/`media.class` is *bound* data — empty for nodes that aren't currently tracked, which is a chicken-and-egg (classification decides what to track). Confirmed live: an untracked mic and an untracked Firefox playback stream both reported `media.class=(none)`. Also non-obvious: **a playback stream reports `isSink=true`.** So: output device = `!isStream && isSink`; input device = `!isStream && !isSink`; per-app playback stream = `isStream && isSink`. The first draft keyed inputs off `media.class === "Audio/Source"` and streams off `!isSink`, yielding `ins=0` and `streams=0` until this was found via debug instrumentation.
+- **Device/stream lists are stable arrays rebuilt only on node changes** (`rebuild()` driven by `valuesChanged` + `readyChanged`), never binding-derived-per-read — the same anti-binding-storm pattern as `Network.friendlyWifiNetworks` (the Wi-Fi-toggle freeze lesson). Per-app sliders read live volume because every shown node is held by one `PwObjectTracker` bound to a single `trackedNodes` list.
+- **DevicePicker expands inline, not as a floating popup.** `GroupBox` and the host `Flickable` are both `clip: true`, so a floating overlay would be clipped, and a separate Wayland popup surface would reintroduce the focus-grab / extra-click layer-shell issues from Phase 1. Inline expansion reflows the GroupBox/Flickable cleanly and needs no focus handling.
+- **Per-app icon resolution is best-effort.** `streamIconName` tries `application.icon-name` → `application.process.binary` → `application.name` (lowercased), fed to `Quickshell.iconPath(name, "")`; misses fall back to a `graphic_eq` glyph (the user accepted this is fiddly).
+
+### Phase 6 review pass (simplifier + reviewer)
+
+Simplifier stripped the verbose rationale comments to one-liners (per user request), removed redundant section dividers, and centralised the picker-option construction.
+
+Reviewer found 5 issues; applied 4, rejected 1:
+- **CRITICAL — tracker thrash.** The `PwObjectTracker.objects` binding used `outputDevices.concat(inputDevices, playbackStreams)`; the three assignments in `rebuild()` each re-evaluated it. **Fixed:** tracker binds to a single `trackedNodes` array assigned once per rebuild.
+- **IMPORTANT — picker churn on selection.** `deviceOptions(...)` rebuilt the option array on every default-device change, tearing down the whole Repeater for a checkmark change. **Fixed:** stable `{label,value}` option arrays + `currentValue` compared per-delegate, so selecting re-evaluates only the check icon.
+- **IMPORTANT — separator slid during the expand/collapse animation** (anchored to the animating `parent.bottom`). **Fixed:** anchored to `header.bottom`.
+- **MINOR — `setStreamVolume` lacked a `ready` guard.** **Fixed** for consistency with the setter family.
+- **REJECTED — "timer tracker captures defaults statically."** The binding inside the dynamically-created tracker is live, and `trackedNodes` already holds the default sink/source (they're in the device lists), so their `audio` stays live. Pre-existing init Timer left untouched (it also gates `ready`).
+
+### Known leftovers / non-goals for Phase 6
+
+- **Mic mute toggle** — `toggleSourceMuted()` exists in the service but the INPUT group has no mute row yet (mockup doesn't show one). Easy add if wanted.
+- **Per-app mute / per-app device routing** — sliders only; no mute button or move-to-sink per stream.
+- **`safeVolumeChanged` dead signal** — long-standing follow-up, still untouched (out of scope; warrants a deliberate OSD-behavior decision).
+- **Memoize per-app icon paths** — `Quickshell.iconPath` resolves per delegate binding; fine at current stream counts.
+
 ## Phase 5 — Bluetooth pane
 
 ### What landed
