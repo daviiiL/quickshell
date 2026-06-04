@@ -60,6 +60,48 @@ Code review surfaced 4 issues. Resolutions:
 3. **Multi-monitor: focusedOutput change *while CC is open*** causes both old and new panel surfaces to briefly request exclusive keyboard during the transition (conf 80). **Deferred.** Needs a design call — latch the opening screen vs. follow focus. Not a blocker; revisit in Phase 2 once the panes are in.
 4. **`controlCenterPane` not reset on close** — flagged as a bug. **Not a bug — intentional.** Sticky pane state across opens is the design (macOS Settings behavior); also planned to persist via `Preferences.controlCenterPane` in Spec 0.
 
+## Phase 5 — Bluetooth pane
+
+### What landed
+
+- `modules/controlcenter/panes/BluetoothPane.qml` — replaces the placeholder. **Zero new atoms** (DeviceRow / ToggleRow / Chip / GroupBox / GroupLabel all reused from Phase 4).
+- `modules/ControlCenter.qml` — `bluetoothPaneComp` swapped from `PlaceholderPane` to `BluetoothPane`.
+
+### Layout
+
+- First group: Bluetooth toggle (ToggleRow, gated on `SystemBluetooth.available`) + read-only Discoverable row (`Bluetooth.defaultAdapter?.name`).
+- **MY DEVICES** group (Loader-gated on `available && enabled`): repeater over `SystemBluetooth.friendlyDeviceList.filter(d => d?.paired)`. Each row shows the device-type icon (via `SystemBluetooth.bluetoothDeviceIconName(deviceType)`), name, type, and a chip — `Connected · 72%` (live, battery suffix when device exposes it) or `Not connected` (default). Click → connect if paired-but-not-connected, disconnect if connected.
+- **NEARBY** group (same Loader): repeater over `SystemBluetooth.unpairedDevices`. Click → `pairDevice()`. Chevron present (signals "tap to pair"). Empty state offers a "Tap to scan" trigger.
+- Auto-discovery: `Component.onCompleted` calls `startDiscovering()` (when BT enabled); `onDestruction` calls `stopDiscovering()`. The service has a 20-second auto-stop timer as a safety net.
+
+### Reused patterns (Phase 4 carry-overs)
+
+- **Loader-gated lists** on `SystemBluetooth.enabled` — atomic teardown when BT toggles off, avoiding the binding-storm class of bug that previously froze the shell during Wi-Fi toggle.
+- **Repeater.count for separator** instead of materializing the source list's `.length` per delegate.
+- **Defensive `modelData?` access** everywhere.
+- **`available: false` stubbing** on ToggleRow when no adapter is present.
+
+### Non-obvious bits
+
+- **Battery suffix is opportunistic.** `device.battery` is set by BlueZ only for devices that expose battery via HID++/HFP-AG/etc. — many keyboards and older mice don't. `batteryText()` guards on `typeof b === "number" && 0 ≤ b ≤ 100`; absent battery yields just `Connected` with no suffix.
+- **`deviceType` is a string in Quickshell.Bluetooth's wrapper.** The helper `bluetoothDeviceIconName` expects a string with substrings like `"audio"`, `"keyboard"`. We coerce defensively via `String(... ?? "")`.
+- **`SystemBluetooth.connectedDevices` / `pairedButNotConnectedDevices` / `unpairedDevices` / `friendlyDeviceList` are binding-derived** (`Bluetooth.devices.values.filter(...).sort(...)`) — same N² rebuild concern flagged for `Network.friendlyWifiNetworks`. Not memoized here yet. If scan-time churn becomes a problem, mirror the Phase-4b memoization pattern in `SystemBluetooth.qml`. Logged as follow-up.
+
+### Phase 5 review pass
+
+Simplifier inlined `adapterName` (single-use), folded `batteryText` into `connectedChip`, dropped a redundant `showChevron: false` default. No structural changes.
+
+Reviewer found two actionable items:
+- **`stopDiscovering()` called without guard on destruction.** When BT is disabled, the destruction path was still telling the adapter to stop discovering — a spurious D-Bus call to a disabled adapter. **Fixed:** mirrored the `onCompleted` guard (`if (available && enabled)`).
+- **Misleading empty-state copy.** When MY DEVICES is empty and NEARBY is also empty, the "Pair one from the list below" hint pointed at a list that itself says "No nearby devices". **Fixed:** the MY DEVICES empty row now reads "Scan for nearby devices" when NEARBY is also empty, and only says "Pair one from the list below" when NEARBY has items.
+
+### Known leftovers / non-goals for Phase 5
+
+- **"Discoverable as" rename** — read-only for now. Quickshell.Bluetooth's Adapter likely exposes a settable `alias`; the row would become a chevron-tap → inline rename. Phase 5b.
+- **Forget / unpair** — no UI. The service has `unpairDevice()`; a chevron-tap → context popup would land it.
+- **PIN-required pairing** — `pairDevice()` triggers BlueZ's agent; PIN entry happens through the system agent, not the CC. PIN-less devices (most accessories) pair automatically.
+- **Memoize `friendlyDeviceList`** — analogous to the Phase-4b friendlyWifiNetworks memoization. Defer until scan churn is observed.
+
 ## Phase 4 — Network pane
 
 ### What landed
