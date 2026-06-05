@@ -13,6 +13,8 @@ Singleton {
     property bool usePreferredScheme
     property bool openrazerInstalled
     property bool focusedMode
+    property var appUsage: ({})    // { [appId]: { count: int, last: epochMillis } }
+    property var pinnedApps: []     // ordered list of appId strings
     property string wallpaperPath
     property string matugenScheme
     readonly property string homeDir: Quickshell.env("HOME")
@@ -78,6 +80,37 @@ Singleton {
         Wallpapers.applyWithCurPreferences(root.wallpaperPath, root.darkMode, root.matugenScheme);
     }
 
+    function recordLaunch(appId: string): void {
+        if (!appId)
+            return;
+        const usage = Object.assign({}, root.appUsage);
+        const prev = usage[appId] || { "count": 0, "last": 0 };
+        usage[appId] = { "count": prev.count + 1, "last": Date.now() };
+        root.appUsage = usage;
+        defaultAdapter.appUsageJson = JSON.stringify(usage);
+    }
+
+    function isPinned(appId: string): bool {
+        if (!appId)
+            return false;
+        return root.pinnedApps.indexOf(appId) !== -1;
+    }
+
+    function setPinned(appId: string, pinned: bool): void {
+        if (!appId)
+            return;
+        const list = root.pinnedApps.slice();
+        const idx = list.indexOf(appId);
+        if (pinned && idx === -1)
+            list.push(appId);
+        else if (!pinned && idx !== -1)
+            list.splice(idx, 1);
+        else
+            return;
+        root.pinnedApps = list;
+        defaultAdapter.pinnedAppsJson = JSON.stringify(list);
+    }
+
     Io.JsonAdapter {
         id: defaultAdapter
 
@@ -87,6 +120,8 @@ Singleton {
         property bool usePreferredScheme
         property bool openrazerInstalled
         property bool focusedMode
+        property string appUsageJson: "{}"
+        property string pinnedAppsJson: "[]"
     }
 
     Io.FileView {
@@ -108,6 +143,18 @@ Singleton {
             root.usePreferredScheme = defaultAdapter.usePreferredScheme;
             root.openrazerInstalled = defaultAdapter.openrazerInstalled;
             root.focusedMode = defaultAdapter.focusedMode;
+            try {
+                const usage = JSON.parse(defaultAdapter.appUsageJson || "{}");
+                root.appUsage = (usage && typeof usage === "object" && !Array.isArray(usage)) ? usage : ({});
+            } catch (e) {
+                root.appUsage = ({});
+            }
+            try {
+                const pins = JSON.parse(defaultAdapter.pinnedAppsJson || "[]");
+                root.pinnedApps = Array.isArray(pins) ? pins : [];
+            } catch (e) {
+                root.pinnedApps = [];
+            }
             root.isLoaded = true;
         }
 
@@ -125,6 +172,11 @@ Singleton {
             root.usePreferredScheme = true;
             root.openrazerInstalled = false;
             root.focusedMode = false;
+
+            defaultAdapter.appUsageJson = "{}";
+            defaultAdapter.pinnedAppsJson = "[]";
+            root.appUsage = ({});
+            root.pinnedApps = [];
 
             root.isLoaded = true;
             prefFileView.writeAdapter();

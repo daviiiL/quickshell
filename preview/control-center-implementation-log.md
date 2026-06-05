@@ -60,6 +60,45 @@ Code review surfaced 4 issues. Resolutions:
 3. **Multi-monitor: focusedOutput change *while CC is open*** causes both old and new panel surfaces to briefly request exclusive keyboard during the transition (conf 80). **Deferred.** Needs a design call — latch the opening screen vs. follow focus. Not a blocker; revisit in Phase 2 once the panes are in.
 4. **`controlCenterPane` not reset on close** — flagged as a bug. **Not a bug — intentional.** Sticky pane state across opens is the design (macOS Settings behavior); also planned to persist via `Preferences.controlCenterPane` in Spec 0.
 
+## Phase 7 — Display pane
+
+### What landed
+
+- `modules/controlcenter/panes/DisplayPane.qml` — replaces the placeholder. BUILT-IN SCREEN (Brightness slider) / COLOR (Appearance) groups.
+- `modules/controlcenter/atoms/AppearancePreview.qml` — **new atom.** A selectable macOS-style "Appearance" thumbnail: renders a stylized mini-shell (top bar with pills + a floating window with header hairline & content-line bars) in a **fixed** light or dark palette, with an accent selection ring + check badge and a label underneath. Emits `clicked()`.
+- `modules/ControlCenter.qml` — `displayPaneComp` swapped from `PlaceholderPane` to `DisplayPane`.
+
+> **Appearance control redesign (user request).** The first cut used a text `Light | Dark` segmented control (new `SegmentedControl.qml` + `SegmentedRow.qml` atoms). The user then asked for the macOS System Settings treatment: "two buttons that are miniature previews of the desktop ui shell." Replaced the segmented row with two `AppearancePreview` cards (Light + Dark) sitting standalone under the COLOR label. **The two segmented atoms were deleted** (orphaned — nothing else used them). If Phase 8 Battery wants the power-profile segmented control from the mockup, restore them from this session's history or rebuild (they were small + reviewed).
+
+### Scope decision (user)
+
+Asked the user how to handle the mockup's unwired controls. **Chose "only wired controls":** drop Scale, Resolution, Auto-brightness, Night Light, and Accent-from-wallpaper entirely (no backing service — `SystemNiri` only tracks workspaces, not output modes; no night-light/wlsunset wrapper; no accent Preference). Pane ships with just the two controls that have real services. This diverges from the "render-everything-and-stub" convention used in earlier panes, by explicit request.
+
+### Wiring
+
+- **Brightness** → `Brightness.brightness / 100` slider, `Brightness.setBrightness(round(v*100))`, `available: Brightness.available` (false on desktops → self-dims). Dynamic `brightness_low/medium/high` icon by level (matches `rightpanel/BrightnessSection.qml`).
+- **Appearance** → two `AppearancePreview` cards wrapped in a `GroupBox` (full-width lighter container, matching the BUILT-IN SCREEN group), centered as a pair via flexible end-spacers + 28px gap; padding 30px top / 16px bottom (extra top to offset the labels that sit *below* the thumbnails). Light card `selected: !darkMode`, Dark card `selected: darkMode`; `onClicked: if (!selected) GlobalStates.toggleDarkMode()`. "Auto" omitted (no scheduler).
+
+### Non-obvious bits
+
+- **`AppearancePreview.pal` hardcodes the light/dark hex values** (mirrors `common/Colors.qml`). It MUST be a literal, not a binding to `Colors.*`, because both palettes render **simultaneously** — `Colors.*` only reflects the current mode. If the palette is retuned in `Colors.qml`, update this literal too.
+- **Badge/ring use the card's own `pal`, not `Colors.barAccent`/`panelBg`.** The selected card's palette always equals the current mode (Light card selected ⟺ light mode), so the mode-dependent `Colors.*` happened to align — but keying the check badge off `root.pal.accent`/`root.pal.bg` makes it contrast against *its own* thumbnail unconditionally, decoupled from that invariant. The selection **ring** is left on `Colors.barAccent` (matches the CC's selection-accent convention; equal to `pal.accent` in every visible-selected state anyway).
+- **Sizing: root `implicitWidth/Height` ← inner `ColumnLayout` (`col`), which is `anchors.centerIn: parent`.** The host `RowLayout` reads the implicit sizes directly to allocate space, so there's no zero-size/circular hazard despite `col` being anchor-centered rather than Layout-placed (verified; same shape as other atoms). The 138×86 thumb drives the width.
+- **Mini-shell is absolute-positioned pixel art** (bar pills, window header hairline, content-line bars at literal x/y). Intentional — do not tokenize or convert to a Layout.
+
+### Phase 7 review pass (simplifier + reviewer)
+
+Two passes (segmented-control draft, then the AppearancePreview redesign):
+
+- **Segmented draft** (atoms since deleted): reviewer caught an `anchors.fill`→`implicitWidth:0` zero-width collapse and a compounded `0.45 × 0.45` opacity double-dim. Both fixed before the redesign superseded the atoms.
+- **AppearancePreview**: simplifier hoisted `animMs` and unified the two cards' click guards to `if (!selected)`. Reviewer verified the implicit-size chain, `MaterialSymbol` API (`icon`/`iconSize`/`fontColor`), `Qt.lighter/darker` on hex-string colors (valid in Qt6), MouseArea capture, and idempotent toggle — the one applied fix was switching the check badge to the card's own `pal` (above).
+
+### Known leftovers / non-goals for Phase 7
+
+- Scale / Resolution would need a niri-IPC service (`niri msg output <name> scale|mode`) + mode enumeration. Deferred.
+- Night Light still pending a `wlsunset` wrapper (shared with the stubbed Quick Settings tile).
+- Auto-brightness needs an ambient-light-sensor source; none exists.
+
 ## Phase 6 — Sound pane
 
 ### What landed

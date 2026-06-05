@@ -31,7 +31,7 @@ Scope {
     Component { id: networkPaneComp;   NetworkPane {} }
     Component { id: bluetoothPaneComp; BluetoothPane {} }
     Component { id: soundPaneComp;     SoundPane {} }
-    Component { id: displayPaneComp;   PlaceholderPane { paneName: "Display" } }
+    Component { id: displayPaneComp;   DisplayPane {} }
     Component { id: batteryPaneComp;   PlaceholderPane { paneName: "Battery" } }
     Component { id: sessionPaneComp;   SessionPane {} }
 
