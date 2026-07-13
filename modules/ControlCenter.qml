@@ -84,8 +84,6 @@ Scope {
 
             visible: shouldShow
 
-            onVisibleChanged: console.log(`[ControlCenter.window on ${modelData.name}] ${visible ? "spawned" : "killed"}`)
-
             Rectangle {
                 id: backdrop
                 anchors.fill: parent
@@ -154,9 +152,6 @@ Scope {
                             spacing: 0
 
                             readonly property var activePane: root.paneEntry(GlobalStates.controlCenterPane)
-
-                            Component.onCompleted: console.log("[ControlCenter.content] loaded")
-                            Component.onDestruction: console.log("[ControlCenter.content] unloaded")
 
                             Header {
                                 Layout.fillWidth: true

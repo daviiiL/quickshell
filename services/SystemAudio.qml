@@ -10,8 +10,6 @@ Singleton {
 
     property var tracker: null
     property bool ready: false
-    signal initialized
-    signal safeVolumeChanged
 
     Timer {
         interval: 2000
@@ -21,7 +19,6 @@ Singleton {
             root.tracker = trackerComponent.createObject(root);
             root.ready = true;
             root.rebuild();
-            root.initialized();
         }
     }
 
@@ -33,11 +30,8 @@ Singleton {
     }
 
     // ── Default sink (speakers) ───────────────────────────────────────────
-    readonly property var currentAudioSink: Pipewire.defaultAudioSink?.audio
-
     readonly property real volume: Pipewire.defaultAudioSink?.audio.volume ?? 0
     readonly property bool muted: Pipewire.defaultAudioSink?.audio.muted ?? false
-    readonly property bool isOverdrive: Math.floor(volume * 100) > 100
 
     function setVolume(v: real): void {
         if (!root.ready) return;
@@ -152,13 +146,11 @@ Singleton {
         function increment(): void {
             if (root.ready && !root.muted)
                 Pipewire.defaultAudioSink.audio.volume = Math.min(1, Pipewire.defaultAudioSink.audio.volume + 0.05);
-            root.safeVolumeChanged();
         }
 
         function decrement(): void {
             if (root.ready && !root.muted)
                 Pipewire.defaultAudioSink.audio.volume = Math.max(0, Pipewire.defaultAudioSink.audio.volume - 0.05);
-            root.safeVolumeChanged();
         }
     }
 }

@@ -34,7 +34,6 @@ Item {
         spacing: 8
 
         Rectangle {
-            id: thumb
             Layout.alignment: Qt.AlignHCenter
             width: 138
             height: 86
@@ -86,7 +85,6 @@ Item {
             }
 
             Rectangle {
-                id: win
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: bar.bottom
                 anchors.topMargin: 12

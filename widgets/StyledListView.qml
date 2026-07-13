@@ -4,14 +4,6 @@ import qs.common
 ListView {
     id: root
 
-    property int dragIndex: -1
-    property real dragDistance: 0
-
-    function resetDrag() {
-        dragIndex = -1;
-        dragDistance = 0;
-    }
-
     spacing: 5
     clip: true
 
@@ -19,8 +11,6 @@ ListView {
     flickDeceleration: 1500
 
     add: Transition {
-        id: addTransition
-
         NumberAnimation {
             property: "opacity"
             from: 0
@@ -41,8 +31,6 @@ ListView {
     }
 
     remove: Transition {
-        id: removeTransition
-
         SequentialAnimation {
             PropertyAction {
                 property: "ListView.delayRemove"

@@ -55,6 +55,7 @@ MainBarButton {
 
     onActivated: {
         const name = root.screen?.name ?? "";
+        _publishCenter();
         if (GlobalStates.networkOverlayOpen && GlobalStates.networkOverlayScreen === name) {
             GlobalStates.networkOverlayOpen = false;
         } else {
@@ -63,8 +64,9 @@ MainBarButton {
         }
     }
 
-    onXChanged:     Qt.callLater(_publishCenter)
-    onWidthChanged: Qt.callLater(_publishCenter)
+    onXChanged:      Qt.callLater(_publishCenter)
+    onWidthChanged:  Qt.callLater(_publishCenter)
+    onScreenChanged: Qt.callLater(_publishCenter)
     Component.onCompleted: Qt.callLater(_publishCenter)
 
     function _publishCenter() {

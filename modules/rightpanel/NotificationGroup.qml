@@ -21,9 +21,7 @@ Item {
     property real slideX: 0
     property bool dismissing: false
 
-    implicitHeight: (dismissing ? collapseHeight : (head.implicitHeight + bodyWrap.height))
-    property real collapseHeight: head.implicitHeight + bodyWrap.height
-    Layout.fillWidth: true
+    implicitHeight: head.implicitHeight + bodyWrap.height
     clip: true
 
     Behavior on implicitHeight {
@@ -202,7 +200,7 @@ Item {
 
             Text {
                 Layout.alignment: Qt.AlignTop
-                text: head.formatRelativeTime(root.group.time)
+                text: StringUtils.relativeTime(root.group.time)
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_regular
                 font.pixelSize: 11
@@ -254,18 +252,6 @@ Item {
                 }
                 headDrag.resetDrag();
             }
-        }
-
-        function formatRelativeTime(t) {
-            if (!t) return "";
-            const diff = Math.max(0, Date.now() - t);
-            const m = Math.floor(diff / 60000);
-            if (m < 1)   return "now";
-            if (m < 60)  return m + "m";
-            const h = Math.floor(m / 60);
-            if (h < 24)  return h + "h";
-            const d = Math.floor(h / 24);
-            return d + "d";
         }
     }
 

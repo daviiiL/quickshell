@@ -101,25 +101,10 @@ Singleton {
 
     component FontFamily: QtObject {
         readonly property string inter: "Inter Nerd Font Propo"
-        readonly property string departureMono: "Inter Nerd Font Propo"
-        readonly property string inter_thin:              "Inter Nerd Font Propo"
-        readonly property string inter_extra_light:       "Inter Nerd Font Propo"
-        readonly property string inter_light:             "Inter Nerd Font Propo"
-        readonly property string inter_regular:           "Inter Nerd Font Propo"
-        readonly property string inter_medium:            "Inter Nerd Font Propo"
-        readonly property string inter_semi_bold:         "Inter Nerd Font Propo"
-        readonly property string inter_bold:              "Inter Nerd Font Propo"
-        readonly property string inter_extra_bold:        "Inter Nerd Font Propo"
-        readonly property string inter_black:             "Inter Nerd Font Propo"
-        readonly property string inter_thin_italic:        "Inter Nerd Font Propo"
-        readonly property string inter_extra_light_italic: "Inter Nerd Font Propo"
-        readonly property string inter_light_italic:      "Inter Nerd Font Propo"
-        readonly property string inter_italic:            "Inter Nerd Font Propo"
-        readonly property string inter_medium_italic:     "Inter Nerd Font Propo"
-        readonly property string inter_semi_bold_italic:  "Inter Nerd Font Propo"
-        readonly property string inter_bold_italic:       "Inter Nerd Font Propo"
-        readonly property string inter_extra_bold_italic: "Inter Nerd Font Propo"
-        readonly property string inter_black_italic:      "Inter Nerd Font Propo"
+        readonly property string inter_thin:    "Inter Nerd Font Propo"
+        readonly property string inter_regular: "Inter Nerd Font Propo"
+        readonly property string inter_medium:  "Inter Nerd Font Propo"
+        readonly property string inter_bold:    "Inter Nerd Font Propo"
     }
 
     component FontSize: QtObject {

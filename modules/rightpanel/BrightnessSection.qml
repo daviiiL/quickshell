@@ -12,12 +12,6 @@ ColumnLayout {
     spacing: 0
 
     readonly property real level: Brightness.available ? Brightness.brightness : 72
-    readonly property string iconKey: {
-        const frac = root.level / 100;
-        if (frac < 0.15) return "brightness_low";
-        if (frac < 0.55) return "brightness_medium";
-        return "brightness_high";
-    }
 
     SectionHead {
         title: "display"

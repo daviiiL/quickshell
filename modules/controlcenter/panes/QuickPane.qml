@@ -129,7 +129,7 @@ Flickable {
                 sub: "Now"
                 onActivated: {
                     GlobalStates.closeControlCenter();
-                    GlobalStates.screenLocked = true;
+                    SessionActions.lock();
                 }
             }
         }

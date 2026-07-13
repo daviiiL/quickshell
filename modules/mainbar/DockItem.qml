@@ -7,7 +7,6 @@ Rectangle {
     id: root
 
     property string iconSource: ""
-    property string label: ""
     property bool running: true
     property bool focused: false
     property int unreadCount: 0

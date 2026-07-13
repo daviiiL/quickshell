@@ -22,7 +22,6 @@ Item {
     signal picked()
     signal hovered()
 
-    implicitWidth: parent ? parent.width : 0
     implicitHeight: 22 + 2 * 11
 
     Rectangle {

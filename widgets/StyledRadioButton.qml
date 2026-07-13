@@ -20,8 +20,6 @@ Item {
     implicitHeight: 20
 
     MouseArea {
-        id: rootMouseArea
-
         anchors.fill: parent
         hoverEnabled: false
         cursorShape: Qt.PointingHandCursor
@@ -39,7 +37,6 @@ Item {
         radius: Theme.ui.radius.lg
 
         Canvas {
-            id: checkIndicator
             anchors.fill: parent
             visible: root.checked
 

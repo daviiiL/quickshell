@@ -3,9 +3,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
-import Quickshell.Io
 import Quickshell.Services.Pam
-
 import qs.common
 
 Singleton {
@@ -19,19 +17,11 @@ Singleton {
     property bool unlockInProgress: false
     property bool showFailure: false
 
-    function resetTargetAction() {
-    }
-
     function clearPassword() {
         root.currentPassword = "";
     }
 
-    function resetClearTimer() {
-        passwordClearTimer.restart();
-    }
-
     function reset() {
-        root.resetTargetAction();
         root.clearPassword();
         root.unlockInProgress = false;
     }
@@ -48,11 +38,8 @@ Singleton {
     }
 
     onCurrentPasswordChanged: {
-        if (currentPassword.length > 0) {
+        if (currentPassword.length > 0)
             showFailure = false;
-            GlobalStates.screenUnlockFailed = false;
-        }
-        GlobalStates.screenLockContainsCharacters = currentPassword.length > 0;
         passwordClearTimer.restart();
     }
 
@@ -71,7 +58,6 @@ Singleton {
             } else {
                 root.clearPassword();
                 root.unlockInProgress = false;
-                GlobalStates.screenUnlockFailed = true;
                 root.showFailure = true;
                 root.failed();
             }

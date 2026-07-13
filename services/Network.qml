@@ -17,7 +17,6 @@ Singleton {
             LC_ALL: "C"
         })
 
-    property bool wifi: true
     property bool ethernet: false
     property string ethernetDevice: ""
     property string ethernetSpeed: ""
@@ -237,7 +236,6 @@ Singleton {
             const lines = updateConnectionType.buffer.trim().split('\n');
             const connectivity = lines.pop(); // none, limited, full
             let hasEthernet = false;
-            let hasWifi = false;
             let wifiStatus = "disconnected";
             lines.forEach(line => {
                 if (line.includes("ethernet") && line.includes("connected"))
@@ -246,11 +244,9 @@ Singleton {
                     if (line.includes("disconnected")) {
                         wifiStatus = "disconnected";
                     } else if (line.includes("connected")) {
-                        hasWifi = true;
                         wifiStatus = "connected";
 
                         if (connectivity === "limited") {
-                            hasWifi = false;
                             wifiStatus = "limited";
                         }
                     } else if (line.includes("connecting")) {
@@ -262,7 +258,6 @@ Singleton {
             });
             root.wifiStatus = wifiStatus;
             root.ethernet = hasEthernet;
-            root.wifi = hasWifi;
 
             if (updateConnectionType.pending) {
                 updateConnectionType.pending = false;

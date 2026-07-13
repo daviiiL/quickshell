@@ -13,7 +13,6 @@ ColumnLayout {
     spacing: 0
 
     readonly property real volume: SystemAudio.volume
-    readonly property bool muted: SystemAudio.muted
     readonly property string sinkDesc: Pipewire.defaultAudioSink?.description ?? "output"
 
     SectionHead {

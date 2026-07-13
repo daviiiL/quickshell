@@ -125,16 +125,9 @@ Singleton {
     }
 
     property var groupsByAppName: groupsForList(root.list)
-    property var popupGroupsByAppName: groupsForList(root.popupList)
     property var appNameList: appNameListForGroups(root.groupsByAppName)
-    property var popupAppNameList: appNameListForGroups(root.popupGroupsByAppName)
 
     property int idOffset
-    signal initDone
-    signal notify(notification: var)
-    signal discard(id: int)
-    signal discardAll
-    signal timeout(id: var)
 
     NotificationServer {
         id: notifServer
@@ -167,13 +160,8 @@ Singleton {
                 notif.popup = true;
                 root.unread++;
             }
-            root.notify(notif);
             notifFileView.setText(stringifyList(root.list));
         }
-    }
-
-    function markAllRead() {
-        root.unread = 0;
     }
 
     function discardNotification(id) {
@@ -189,7 +177,6 @@ Singleton {
         if (notifServerIndex !== -1) {
             notifServer.trackedNotifications.values[notifServerIndex].dismiss();
         }
-        root.discard(id);
     }
 
     function discardAllNotifications() {
@@ -200,7 +187,6 @@ Singleton {
         notifServer.trackedNotifications.values.forEach(notif => {
             notif.dismiss();
         });
-        root.discardAll();
     }
 
     function cancelTimeout(id) {
@@ -212,16 +198,6 @@ Singleton {
         const index = root.list.findIndex(notif => notif.notificationId === id);
         if (root.list[index] != null)
             root.list[index].popup = false;
-        root.timeout(id);
-    }
-
-    function timeoutAll() {
-        root.popupList.forEach(notif => {
-            root.timeout(notif.notificationId);
-        });
-        root.popupList.forEach(notif => {
-            notif.popup = false;
-        });
     }
 
     function attemptInvokeAction(id, actionIdentifier) {
@@ -265,7 +241,6 @@ Singleton {
                 });
             });
             root.idOffset = root.list.reduce((max, notif) => Math.max(max, notif.notificationId), 0);
-            root.initDone();
         }
         onLoadFailed: error => {
             if (error == FileViewError.FileNotFound) {

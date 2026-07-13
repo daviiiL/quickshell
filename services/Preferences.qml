@@ -22,62 +22,14 @@ Singleton {
     readonly property string defaultWallpaperPath: `${homeDir}/.config/quickshell/assets/default_paper.jpg`
     property bool isLoaded: false
 
-    signal colorSchemeChanged
-
     function toggleFocusMode(): void {
         root.focusedMode = !root.focusedMode;
         defaultAdapter.focusedMode = root.focusedMode;
     }
 
-    function toggleOpenRazerInstalled(): void {
-        root.openrazerInstalled = !root.openrazerInstalled;
-        defaultAdapter.openrazerInstalled = root.openrazerInstalled;
-    }
-
-    function setColorMode(value: int) {
-        root.darkMode = value === 0;
-        defaultAdapter.darkMode = root.darkMode;
-
-        if (root.usePreferredScheme) {
-            root.setColorScheme(root.darkMode ? "scheme-tonal-spot" : "scheme-neutral", true);
-            applySelectedVisualPreferences();
-        }
-    }
-
-    function toggleUsePreferredScheme() {
-        root.usePreferredScheme = !root.usePreferredScheme;
-        defaultAdapter.usePreferredScheme = root.usePreferredScheme;
-
-        if (root.usePreferredScheme) {
-            root.setColorScheme(root.darkMode ? "scheme-tonal-spot" : "scheme-neutral", true);
-            applySelectedVisualPreferences();
-        }
-    }
-
-    function getUsePreferredScheme(): bool {
-        return root.usePreferredScheme;
-    }
-
     function setWallpaperPath(path: string) {
         root.wallpaperPath = path;
         defaultAdapter.storedWallpaperPath = path;
-    }
-
-    function getColorScheme(): string {
-        return isLoaded ? root.matugenScheme : "unknown";
-    }
-
-    function setColorScheme(scheme: string, internal: bool) {
-        if (root.usePreferredScheme && !internal)
-            console.warn("Preferences: Using preferred scheme... Shouldn't set custom color scheme");
-
-        root.matugenScheme = scheme;
-        defaultAdapter.storedMatugenScheme = scheme;
-        root.colorSchemeChanged();
-    }
-
-    function applySelectedVisualPreferences() {
-        Wallpapers.applyWithCurPreferences(root.wallpaperPath, root.darkMode, root.matugenScheme);
     }
 
     function recordLaunch(appId: string): void {

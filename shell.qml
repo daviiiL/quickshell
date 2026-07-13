@@ -1,5 +1,5 @@
 //@ pragma UseQApplication
-//@ pragma IconTheme breeze-dark
+//@ pragma IconTheme Adwaita
 
 import Quickshell
 import Quickshell.Io

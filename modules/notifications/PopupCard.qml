@@ -102,7 +102,7 @@ Rectangle {
     color: isActiveOrDismissing    ? Colors.panelBg
          : role === "peek1"        ? Colors.surfaceContainerHigh
          : Colors.surfaceContainer
-    border.color: urgency === "critical" ? Colors.criticalHalo
+    border.color: root.urgency === "critical" ? Colors.criticalHalo
                 : isActiveOrDismissing   ? Colors.hair
                 : Colors.hairHot
     border.width: 1
@@ -183,13 +183,13 @@ Rectangle {
                 Layout.preferredWidth: 24
                 Layout.preferredHeight: 24
                 radius: 3
-                color: urgency === "critical" ? Colors.criticalChipFill : Colors.surfaceContainerHigh
-                border.color: urgency === "critical" ? Colors.criticalHalo : Colors.hair
+                color: root.urgency === "critical" ? Colors.criticalChipFill : Colors.surfaceContainerHigh
+                border.color: root.urgency === "critical" ? Colors.criticalHalo : Colors.hair
                 border.width: 1
                 Text {
                     anchors.centerIn: parent
                     text: (root.appName.length > 0 ? root.appName[0] : "?").toUpperCase()
-                    color: urgency === "critical" ? Colors.error : Colors.primary
+                    color: root.urgency === "critical" ? Colors.error : Colors.primary
                     font.pixelSize: 11
                     font.family: Theme.font.family.inter_medium
                     font.weight: Font.Medium
@@ -227,7 +227,7 @@ Rectangle {
             }
 
             Text {
-                text: StringUtils.relativeTime(_notif?.time ?? Date.now())
+                text: StringUtils.relativeTime(root._notif?.time ?? Date.now())
                 color: Colors.inkDimmer
                 font.pixelSize: 11
                 font.family: Theme.font.family.inter_regular
@@ -264,8 +264,8 @@ Rectangle {
                     text: root.summary
                     color: Colors.fgSurface
                     font.pixelSize: 15
-                    font.family: urgency === "low" ? Theme.font.family.inter_regular : Theme.font.family.inter_medium
-                    font.weight: urgency === "low" ? Font.Normal : Font.Medium
+                    font.family: root.urgency === "low" ? Theme.font.family.inter_regular : Theme.font.family.inter_medium
+                    font.weight: root.urgency === "low" ? Font.Normal : Font.Medium
                     elide: Text.ElideRight
                 }
 
@@ -285,7 +285,7 @@ Rectangle {
 
             Rectangle {
                 visible: root.imageSrc.length > 0
-                      && (root.urgency !== "critical" || (_notif?.image ?? "").length > 0)
+                      && (root.urgency !== "critical" || (root._notif?.image ?? "").length > 0)
                 Layout.preferredWidth: 60
                 Layout.preferredHeight: 60
                 radius: 3

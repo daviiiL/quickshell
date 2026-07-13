@@ -66,7 +66,6 @@ Scope {
             }
 
             Rectangle {
-                id: scrim
                 anchors.fill: parent
                 color: "#00000059"
                 layer.enabled: true

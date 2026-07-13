@@ -90,7 +90,6 @@ Scope {
             color: "transparent"
 
             MouseArea {
-                id: backgroundMouseArea
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
                 onPressed: panel.closeAppLauncher()
@@ -99,7 +98,6 @@ Scope {
             // Scrim (dim + optional blur). Kept as a single Rectangle so
             // dropping blur later is a one-line change.
             Rectangle {
-                id: scrim
                 anchors.fill: parent
                 color: "#00000059"
                 layer.enabled: true
