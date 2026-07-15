@@ -47,12 +47,12 @@ Item {
             text: root.cooldown
                     ? ("RETRY IN " + root.cooldownRemaining)
                     : (Authentication.showFailure ? "INCORRECT" : "PASSWORD")
-            font.pixelSize: 14
+            font.pixelSize: Theme.font.size.md
             font.letterSpacing: 2.5
             font.family: Theme.font.family.inter_regular
             color: (root.cooldown || Authentication.showFailure)
-                     ? Colors.fgError
-                     : Colors.inkDimmer
+                      ? Colors.fgError
+                      : Colors.inkDimmer
         }
 
         Rectangle {
@@ -76,7 +76,7 @@ Item {
                 color: Colors.fgSurface
                 selectionColor: Colors.barAccent
                 selectedTextColor: Colors.surfaceContainerLowest
-                font.pixelSize: 16
+                font.pixelSize: Theme.font.size.lg
                 font.family: Theme.font.family.inter_regular
 
                 text: Authentication.currentPassword

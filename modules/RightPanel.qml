@@ -54,7 +54,7 @@ Scope {
 
             implicitWidth: Theme.ui.sidePanelWidth
             exclusiveZone: 0
-            visible: GlobalStates.rightPanelOpen || slideAnim.running
+            visible: GlobalStates.rightPanelOpen || slideAnim.running || fadeAnim.running
 
             color: "transparent"
 
@@ -63,6 +63,15 @@ Scope {
                 anchors.fill: parent
                 color: Colors.panelBg
                 focus: true
+
+                opacity: GlobalStates.rightPanelOpen ? 1 : 0
+                Behavior on opacity {
+                    NumberAnimation {
+                        id: fadeAnim
+                        duration: Theme.anim.durations.xs * 1.2
+                        easing.type: Easing.OutQuad
+                    }
+                }
 
                 Keys.onEscapePressed: {
                     GlobalStates.rightPanelOpen = false;
@@ -76,9 +85,8 @@ Scope {
                     Behavior on x {
                         NumberAnimation {
                             id: slideAnim
-                            duration: Theme.anim.durations.sm
-                            easing.type: Easing.BezierSpline
-                            easing.bezierCurve: Theme.anim.curves.standard
+                            duration: Theme.anim.durations.xs * 1.6
+                            easing.type: Easing.OutCubic
                         }
                     }
                 }

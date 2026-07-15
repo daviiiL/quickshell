@@ -24,7 +24,7 @@ ColumnLayout {
             text: "NOTIFICATIONS"
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.weight: Font.Medium
             font.letterSpacing: 1.8
         }
@@ -33,7 +33,7 @@ ColumnLayout {
             text: Notifications.list.length
             color: Colors.inkDim
             font.family: Theme.font.family.inter_regular
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.letterSpacing: 0.4
         }
 
@@ -55,7 +55,7 @@ ColumnLayout {
                 text: Notifications.silent ? "MUTED" : "MUTE"
                 color: Notifications.silent ? Colors.fgSurface : Colors.inkDim
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 10
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.4
             }
 
@@ -84,7 +84,7 @@ ColumnLayout {
                 text: "CLEAR"
                 color: clearMa.containsMouse ? Colors.fgSurface : Colors.inkDim
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 10
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.4
                 Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
             }
@@ -115,7 +115,7 @@ ColumnLayout {
             text: "NO NOTIFICATIONS"
             color: Colors.inkFaint
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 1.8
         }
     }

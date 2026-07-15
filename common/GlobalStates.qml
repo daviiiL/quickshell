@@ -1,7 +1,6 @@
 pragma Singleton
 pragma ComponentBehavior: Bound
 
-import QtQuick
 import Quickshell
 
 Singleton {
@@ -28,6 +27,17 @@ Singleton {
         networkButtonCenters = next;
     }
 
+    property bool controlCenterOpen: false
+    property string controlCenterPane: "quick"
+
+    function openControlCenter(source: string): void {
+        controlCenterOpen = true;
+    }
+
+    function closeControlCenter(): void {
+        controlCenterOpen = false;
+    }
+
     property bool powerProfileOverlayOpen: false
     property string powerProfileOverlayScreen: ""
     property var powerProfileButtonCenters: ({})
@@ -49,4 +59,6 @@ Singleton {
     function toggleDarkMode(): void {
         darkMode = !darkMode;
     }
+
+    property int fontOffset: 0
 }

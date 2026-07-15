@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Control Center — Preview</title>
+<style>
+  :root {
+    --bar-bg: #0a0a0a;
+    --backdrop: #07070a;
+    --surface: #141218;
+    --sc-low: #1d1b20;
+    --sc: #211f26;
+    --sc-hi: #2b2930;
+    --hair: #272727;
+    --hair-hot: #3a3a3a;
+    --ink: #e6e0e9;
+    --ink-dim: #8f8f8f;
+    --ink-dimmer: #6b6b6b;
+    --ink-faint: #4d4d4d;
+    --accent: #e3e3e3;
+    --live: #5dc70a;
+    --warn: #ffd4ab;
+    --err: #f2b8b5;
+
+    --bar-h: 48px;
+    --win-w: 880px;
+    --win-h: 600px;
+    --side-w: 224px;
+    --hair-w: 1px;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(1200px 600px at 20% 30%, #1a1820 0%, transparent 60%),
+      radial-gradient(900px 500px at 80% 80%, #121016 0%, transparent 60%),
+      var(--backdrop);
+    font-family: "Inter", "Inter Nerd Font Propo", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* Backdrop dim layer (the centered modal sits over this) */
+  .backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(3px);
+    z-index: 0;
+  }
+
+  /* Fake main bar at bottom */
+  .fake-bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: var(--bar-h);
+    background: var(--bar-bg);
+    border-top: var(--hair-w) solid var(--hair);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 13px;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+    z-index: 2;
+  }
+  .fake-bar::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    height: var(--hair-w);
+    width: 220px;
+    background: linear-gradient(90deg, rgba(227,227,227,0.55), transparent);
+  }
+  .fake-bar .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--live);
+    margin-right: 10px;
+    box-shadow: 0 0 0 2px rgba(93,199,10,0.25);
+  }
+  .fake-bar .time { color: var(--ink); font-weight: 500; letter-spacing: 0.03em; }
+  .fake-bar .sep { color: var(--accent); margin: 0 2px; animation: blink 2s infinite; }
+  .fake-bar .date { color: var(--ink-dim); margin-left: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px; }
+  .fake-bar .mid {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    color: var(--ink-dimmer); font-size: 10px; letter-spacing: 0.22em;
+    font-weight: 500;
+  }
+  .fake-bar .right {
+    margin-left: auto; display: flex; align-items: center; gap: 14px;
+    color: var(--ink-dim); font-size: 12px;
+  }
+  .fake-bar .right .chip {
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ink-dim);
+  }
+  @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: 0.35 } }
+
+  /* === Window === */
+  .win {
+    position: fixed;
+    top: calc(50% - var(--bar-h) / 2);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--win-w);
+    height: var(--win-h);
+    background: #0f0f13;
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    display: flex; flex-direction: column;
+    z-index: 3;
+  }
+  .win::before {
+    content: ""; position: absolute; left: 0; top: 0;
+    width: 260px; height: var(--hair-w);
+    background: linear-gradient(90deg, rgba(227,227,227,0.55), transparent);
+  }
+
+  /* Header */
+  .win-head {
+    height: 44px;
+    border-bottom: var(--hair-w) solid var(--hair);
+    display: flex; align-items: center;
+    padding: 0 14px;
+    gap: 10px;
+    background: #0c0c10;
+    flex: none;
+  }
+  .win-head .title {
+    font-size: 11px; letter-spacing: 0.28em;
+    color: var(--ink-dimmer);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .win-head .title .crumb { color: var(--ink); }
+  .win-head .search {
+    margin-left: auto;
+    background: var(--sc-low);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 3px;
+    height: 26px;
+    min-width: 220px;
+    padding: 0 10px;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--ink-faint);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .win-head .search .glass { color: var(--ink-dim); }
+  .win-head .close {
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-faint);
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  .win-head .close:hover { color: var(--ink); background: var(--sc-low); }
+
+  /* Body */
+  .win-body {
+    flex: 1; min-height: 0;
+    display: flex;
+  }
+
+  /* === Sidebar === */
+  .side {
+    width: var(--side-w);
+    background: #0c0c10;
+    border-right: var(--hair-w) solid var(--hair);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+  .side .signed-in {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 14px 12px;
+    border-bottom: var(--hair-w) solid var(--hair);
+  }
+  .side .signed-in .avatar {
+    width: 30px; height: 30px;
+    background: var(--sc-hi);
+    border: var(--hair-w) solid var(--hair-hot);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--ink);
+    font-weight: 500;
+  }
+  .side .signed-in .who { display: flex; flex-direction: column; min-width: 0; }
+  .side .signed-in .name { font-size: 12px; color: var(--ink); font-weight: 500; }
+  .side .signed-in .host {
+    font-size: 9px; letter-spacing: 0.18em; color: var(--ink-dimmer);
+    text-transform: uppercase;
+  }
+
+  .side .sec-label {
+    font-size: 9px; letter-spacing: 0.28em; color: var(--ink-faint);
+    padding: 14px 16px 6px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .side .item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 8px 14px 8px 16px;
+    font-size: 12px; color: var(--ink-dim);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    user-select: none;
+  }
+  .side .item:hover { background: rgba(255,255,255,0.025); color: var(--ink); }
+  .side .item.active {
+    color: var(--ink);
+    background: var(--sc-low);
+    border-left-color: var(--accent);
+  }
+  .side .item .icon {
+    width: 18px; height: 18px; flex: none;
+    background: var(--sc); border: var(--hair-w) solid var(--hair);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--ink-dim);
+  }
+  .side .item.active .icon {
+    background: var(--sc-hi); border-color: var(--hair-hot); color: var(--ink);
+  }
+  .side .item .meta {
+    margin-left: auto;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dimmer);
+    text-transform: uppercase;
+  }
+
+  /* === Pane === */
+  .pane {
+    flex: 1; min-width: 0; min-height: 0;
+    padding: 22px 26px 24px;
+    overflow-y: auto;
+    background: #0f0f13;
+  }
+  .pane-view { display: none; }
+  .pane-view.active { display: block; }
+
+  .pane .h1 {
+    font-size: 19px;
+    color: var(--ink);
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: 0.005em;
+  }
+  .pane .sub {
+    font-size: 10px;
+    color: var(--ink-dimmer);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin: 4px 0 18px;
+    font-weight: 500;
+  }
+  .pane .group-label {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin: 18px 4px 8px;
+    font-weight: 500;
+  }
+  .pane .group-label:first-child { margin-top: 0; }
+
+  /* Grouped rounded list (macOS-flavored) */
+  .group {
+    background: var(--sc-low);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .group .row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px;
+    border-bottom: var(--hair-w) solid var(--hair);
+    font-size: 12px;
+    color: var(--ink);
+    min-height: 44px;
+  }
+  .group .row:last-child { border-bottom: 0; }
+  .group .row.button { cursor: pointer; }
+  .group .row.button:hover { background: rgba(255,255,255,0.03); }
+  .group .row .lbl { color: var(--ink); }
+  .group .row .val {
+    margin-left: auto;
+    color: var(--ink-dim);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .group .row .val .chev { color: var(--ink-faint); font-size: 14px; }
+  .group .stack { display: flex; flex-direction: column; min-width: 0; }
+  .group .stack .name {
+    font-size: 12px; color: var(--ink); font-weight: 500;
+  }
+  .group .stack .meta {
+    font-size: 10px; color: var(--ink-dimmer);
+    letter-spacing: 0.04em;
+    margin-top: 1px;
+  }
+  .group .icon-cell {
+    width: 26px; height: 26px; flex: none;
+    background: var(--sc);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-dim);
+    font-size: 13px;
+  }
+
+  /* === Control atoms === */
+  .switch {
+    width: 32px; height: 18px; border-radius: 10px;
+    background: var(--sc); border: var(--hair-w) solid var(--hair);
+    position: relative; cursor: pointer; flex: none;
+    transition: background 120ms, border-color 120ms;
+  }
+  .switch::after {
+    content: ""; position: absolute; top: 1px; left: 1px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--ink-dim);
+    transition: left 140ms, background 140ms;
+  }
+  .switch.on { background: var(--sc-hi); border-color: var(--hair-hot); }
+  .switch.on::after { left: 16px; background: var(--accent); }
+
+  .slider-wrap {
+    display: flex; align-items: center; gap: 12px; flex: 1;
+  }
+  .slider {
+    flex: 1;
+    height: 4px;
+    background: var(--sc);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+  }
+  .slider .fill {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .slider .thumb {
+    position: absolute; top: 50%;
+    width: 12px; height: 12px;
+    background: var(--ink);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .slider-wrap .val-num {
+    font-size: 11px; color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+    min-width: 32px; text-align: right;
+  }
+
+  .seg {
+    display: inline-flex;
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 3px;
+    overflow: hidden;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .seg span {
+    padding: 5px 11px;
+    background: var(--sc-low);
+    color: var(--ink-dim);
+    cursor: pointer;
+    border-right: var(--hair-w) solid var(--hair);
+    font-weight: 500;
+  }
+  .seg span:last-child { border-right: 0; }
+  .seg span.on { background: var(--sc-hi); color: var(--ink); }
+
+  .select {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sc-low);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-size: 11px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .select .chev { color: var(--ink-dim); font-size: 10px; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--sc);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 2px;
+    padding: 3px 8px;
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .chip.live { color: var(--ink); border-color: var(--hair-hot); }
+  .chip.live::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--live);
+    box-shadow: 0 0 0 1.5px rgba(93,199,10,0.25);
+  }
+  .chip.warn { color: var(--warn); }
+  .chip.err { color: var(--err); }
+
+  /* Quick-toggles grid */
+  .qt-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .qt-tile {
+    background: var(--sc-low);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 4px;
+    padding: 14px 14px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+    cursor: pointer;
+    min-height: 78px;
+    position: relative;
+  }
+  .qt-tile:hover { background: rgba(255,255,255,0.03); }
+  .qt-tile.on {
+    background: var(--sc-hi);
+    border-color: var(--hair-hot);
+  }
+  .qt-tile.on::after {
+    content: ""; position: absolute; left: 14px; right: 14px; bottom: 8px;
+    height: 1px; background: var(--accent);
+  }
+  .qt-tile .qt-ic {
+    font-size: 16px; color: var(--ink-dim);
+  }
+  .qt-tile.on .qt-ic { color: var(--ink); }
+  .qt-tile .qt-lbl {
+    font-size: 10px; letter-spacing: 0.18em;
+    color: var(--ink-dim); text-transform: uppercase;
+    font-weight: 500;
+  }
+  .qt-tile.on .qt-lbl { color: var(--ink); }
+  .qt-tile .qt-sub {
+    font-size: 9px; color: var(--ink-dimmer);
+    letter-spacing: 0.04em;
+    margin-top: auto;
+  }
+
+  /* Per-app volume bars */
+  .meter {
+    flex: 1; height: 3px;
+    background: var(--sc);
+    border-radius: 2px;
+    position: relative;
+  }
+  .meter .level {
+    position: absolute; left: 0; top: 0; height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* Session button grid */
+  .session-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .session-btn {
+    background: var(--sc-low);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 4px;
+    padding: 18px 14px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    cursor: pointer;
+    color: var(--ink-dim);
+  }
+  .session-btn:hover { background: rgba(255,255,255,0.04); color: var(--ink); border-color: var(--hair-hot); }
+  .session-btn.danger:hover { color: var(--err); border-color: rgba(242,184,181,0.3); }
+  .session-btn .s-ic { font-size: 18px; color: var(--ink); }
+  .session-btn .s-lbl {
+    font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 500;
+  }
+  .session-btn .s-sub {
+    font-size: 9px; color: var(--ink-dimmer);
+    letter-spacing: 0.04em;
+  }
+
+  /* Battery donut */
+  .batt-display {
+    display: flex; gap: 18px; align-items: center;
+    padding: 18px 16px;
+    background: var(--sc-low);
+    border: var(--hair-w) solid var(--hair);
+    border-radius: 6px;
+  }
+  .donut {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: conic-gradient(var(--live) 0% 85%, var(--sc) 85% 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .donut::after {
+    content: ""; position: absolute; inset: 8px;
+    background: var(--sc-low);
+    border-radius: 50%;
+  }
+  .donut .pct {
+    position: relative; z-index: 1;
+    font-size: 14px; color: var(--ink); font-weight: 500;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .batt-display .batt-stats { display: flex; flex-direction: column; gap: 2px; }
+  .batt-display .batt-stats .big { font-size: 15px; color: var(--ink); font-weight: 500; }
+  .batt-display .batt-stats .sm { font-size: 10px; color: var(--ink-dimmer); letter-spacing: 0.18em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="backdrop"></div>
+
+<div class="win">
+  <!-- ========== Header ========== -->
+  <div class="win-head">
+    <span class="title"><span class="crumb" id="crumb">QUICK · SETTINGS</span></span>
+    <div class="search">
+      <span class="glass">⌕</span>
+      <span>Search…</span>
+    </div>
+    <div class="close">×</div>
+  </div>
+
+  <div class="win-body">
+    <!-- ========== Sidebar ========== -->
+    <div class="side">
+      <div class="signed-in">
+        <div class="avatar">D</div>
+        <div class="who">
+          <span class="name">davidas</span>
+          <span class="host">niri · arch</span>
+        </div>
+      </div>
+
+      <div class="sec-label">QUICK</div>
+      <div class="item active" data-tab="quick">
+        <span class="icon">◉</span>Quick Settings
+      </div>
+
+      <div class="sec-label">SYSTEM</div>
+      <div class="item" data-tab="network">
+        <span class="icon">≋</span>Network
+        <span class="meta">my-net</span>
+      </div>
+      <div class="item" data-tab="bluetooth">
+        <span class="icon">⌬</span>Bluetooth
+        <span class="meta">2</span>
+      </div>
+      <div class="item" data-tab="sound">
+        <span class="icon">♪</span>Sound
+        <span class="meta">60%</span>
+      </div>
+      <div class="item" data-tab="display">
+        <span class="icon">☀</span>Display
+        <span class="meta">80%</span>
+      </div>
+      <div class="item" data-tab="battery">
+        <span class="icon">⏻</span>Battery
+        <span class="meta">85%</span>
+      </div>
+
+      <div class="sec-label">SESSION</div>
+      <div class="item" data-tab="session">
+        <span class="icon">⏼</span>Power…
+      </div>
+    </div>
+
+    <!-- ========== Pane ========== -->
+    <div class="pane">
+
+      <!-- ========== Quick Settings ========== -->
+      <div class="pane-view active" data-view="quick">
+        <div class="h1">Quick Settings</div>
+        <div class="sub">Toggles · Brightness · Volume</div>
+
+        <div class="qt-grid">
+          <div class="qt-tile on">
+            <div class="qt-ic">≋</div>
+            <div class="qt-lbl">Wi-Fi</div>
+            <div class="qt-sub">my-network</div>
+          </div>
+          <div class="qt-tile on">
+            <div class="qt-ic">⌬</div>
+            <div class="qt-lbl">Bluetooth</div>
+            <div class="qt-sub">2 devices</div>
+          </div>
+          <div class="qt-tile">
+            <div class="qt-ic">✈</div>
+            <div class="qt-lbl">Airplane</div>
+            <div class="qt-sub">Off</div>
+          </div>
+          <div class="qt-tile">
+            <div class="qt-ic">☾</div>
+            <div class="qt-lbl">Do Not Disturb</div>
+            <div class="qt-sub">Off</div>
+          </div>
+          <div class="qt-tile on">
+            <div class="qt-ic">◐</div>
+            <div class="qt-lbl">Dark Mode</div>
+            <div class="qt-sub">Auto · night</div>
+          </div>
+          <div class="qt-tile">
+            <div class="qt-ic">◉</div>
+            <div class="qt-lbl">Night Light</div>
+            <div class="qt-sub">Sunset</div>
+          </div>
+          <div class="qt-tile">
+            <div class="qt-ic">⊙</div>
+            <div class="qt-lbl">Focused</div>
+            <div class="qt-sub">Hide bar</div>
+          </div>
+          <div class="qt-tile">
+            <div class="qt-ic">⌧</div>
+            <div class="qt-lbl">Lock</div>
+            <div class="qt-sub">Now</div>
+          </div>
+        </div>
+
+        <div class="group-label">BRIGHTNESS</div>
+        <div class="group">
+          <div class="row">
+            <span class="icon-cell">☀</span>
+            <span class="lbl">Display</span>
+            <div class="slider-wrap" style="max-width: 320px; margin-left: auto;">
+              <div class="slider">
+                <div class="fill" style="width: 80%"></div>
+                <div class="thumb" style="left: 80%"></div>
+              </div>
+              <span class="val-num">80%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-label">VOLUME</div>
+        <div class="group">
+          <div class="row">
+            <span class="icon-cell">♪</span>
+            <div class="stack">
+              <span class="name">Speakers</span>
+              <span class="meta">Built-in audio</span>
+            </div>
+            <div class="slider-wrap" style="max-width: 280px; margin-left: auto;">
+              <div class="slider">
+                <div class="fill" style="width: 60%"></div>
+                <div class="thumb" style="left: 60%"></div>
+              </div>
+              <span class="val-num">60%</span>
+            </div>
+          </div>
+          <div class="row">
+            <span class="icon-cell">⏵</span>
+            <div class="stack">
+              <span class="name">Microphone</span>
+              <span class="meta">Built-in mic</span>
+            </div>
+            <div class="slider-wrap" style="max-width: 280px; margin-left: auto;">
+              <div class="slider">
+                <div class="fill" style="width: 75%"></div>
+                <div class="thumb" style="left: 75%"></div>
+              </div>
+              <span class="val-num">75%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Network ========== -->
+      <div class="pane-view" data-view="network">
+        <div class="h1">Network</div>
+        <div class="sub">Wi-Fi · Ethernet · Connections</div>
+
+        <div class="group-label">CURRENT</div>
+        <div class="group">
+          <div class="row">
+            <span class="icon-cell">⩘</span>
+            <div class="stack">
+              <span class="name">my-network</span>
+              <span class="meta">WPA2 · 5 GHz · −52 dBm · 192.168.1.42</span>
+            </div>
+            <span class="val">
+              <span class="chip live">Connected</span>
+              <span class="chev">›</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="lbl">Wi-Fi</span>
+            <span class="val"><span class="switch on"></span></span>
+          </div>
+        </div>
+
+        <div class="group-label">OTHER NETWORKS</div>
+        <div class="group">
+          <div class="row button">
+            <span class="icon-cell">⩘</span>
+            <div class="stack"><span class="name">cafe-guest</span><span class="meta">Open · 2.4 GHz</span></div>
+            <span class="val">−61 <span class="chev">›</span></span>
+          </div>
+          <div class="row button">
+            <span class="icon-cell">⩘</span>
+            <div class="stack"><span class="name">linksys-2.4</span><span class="meta">WPA2 · 2.4 GHz</span></div>
+            <span class="val">−74 <span class="chev">›</span></span>
+          </div>
+          <div class="row button">
+            <span class="icon-cell">⩘</span>
+            <div class="stack"><span class="name">tp-link</span><span class="meta">WPA3 · 5 GHz</span></div>
+            <span class="val">−82 <span class="chev">›</span></span>
+          </div>
+          <div class="row button">
+            <span class="icon-cell">＋</span>
+            <span class="lbl">Other…</span>
+            <span class="val"><span class="chev">›</span></span>
+          </div>
+        </div>
+
+        <div class="group-label">ETHERNET</div>
+        <div class="group">
+          <div class="row">
+            <span class="icon-cell">⇄</span>
+            <div class="stack"><span class="name">enp4s0</span><span class="meta">Cable not connected</span></div>
+            <span class="val"><span class="chip">Idle</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Bluetooth ========== -->
+      <div class="pane-view" data-view="bluetooth">
+        <div class="h1">Bluetooth</div>
+        <div class="sub">Paired Devices · Discovery</div>
+
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Bluetooth</span>
+            <span class="val"><span class="switch on"></span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Discoverable as</span>
+            <span class="val">davidas-niri <span class="chev">›</span></span>
+          </div>
+        </div>
+
+        <div class="group-label">MY DEVICES</div>
+        <div class="group">
+          <div class="row">
+            <span class="icon-cell">♪</span>
+            <div class="stack">
+              <span class="name">WH-1000XM4</span>
+              <span class="meta">Headphones · Audio output</span>
+            </div>
+            <span class="val">
+              <span class="chip live">Connected · 72%</span>
+              <span class="chev">›</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="icon-cell">⌨</span>
+            <div class="stack">
+              <span class="name">Magic Keyboard</span>
+              <span class="meta">Keyboard</span>
+            </div>
+            <span class="val">
+              <span class="chip live">Connected · 41%</span>
+              <span class="chev">›</span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="icon-cell">⏵</span>
+            <div class="stack">
+              <span class="name">Logitech MX</span>
+              <span class="meta">Mouse</span>
+            </div>
+            <span class="val">
+              <span class="chip">Not connected</span>
+              <span class="chev">›</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="group-label">NEARBY</div>
+        <div class="group">
+          <div class="row button">
+            <span class="icon-cell">…</span>
+            <span class="lbl">JBL Flip 5</span>
+            <span class="val"><span class="chev">›</span></span>
+          </div>
+          <div class="row button">
+            <span class="icon-cell">…</span>
+            <span class="lbl">Pixel Buds Pro</span>
+            <span class="val"><span class="chev">›</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Sound ========== -->
+      <div class="pane-view" data-view="sound">
+        <div class="h1">Sound</div>
+        <div class="sub">Output · Input · App Mix</div>
+
+        <div class="group-label">OUTPUT</div>
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Device</span>
+            <span class="val">
+              <span class="select">Built-in Speakers <span class="chev">▾</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="icon-cell">♪</span>
+            <span class="lbl">Volume</span>
+            <div class="slider-wrap" style="max-width: 320px; margin-left: auto;">
+              <div class="slider">
+                <div class="fill" style="width: 60%"></div>
+                <div class="thumb" style="left: 60%"></div>
+              </div>
+              <span class="val-num">60%</span>
+            </div>
+          </div>
+          <div class="row">
+            <span class="lbl">Mute</span>
+            <span class="val"><span class="switch"></span></span>
+          </div>
+        </div>
+
+        <div class="group-label">INPUT</div>
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Device</span>
+            <span class="val">
+              <span class="select">Built-in Microphone <span class="chev">▾</span></span>
+            </span>
+          </div>
+          <div class="row">
+            <span class="icon-cell">⏵</span>
+            <span class="lbl">Input level</span>
+            <div class="slider-wrap" style="max-width: 320px; margin-left: auto;">
+              <div class="slider">
+                <div class="fill" style="width: 75%"></div>
+                <div class="thumb" style="left: 75%"></div>
+              </div>
+              <span class="val-num">75%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="group-label">PER-APP VOLUME</div>
+        <div class="group">
+          <div class="row">
+            <span class="icon-cell">♫</span>
+            <div class="stack"><span class="name">Spotify</span><span class="meta">music</span></div>
+            <div class="slider-wrap" style="max-width: 200px; margin-left: auto;">
+              <div class="slider"><div class="fill" style="width: 90%"></div><div class="thumb" style="left: 90%"></div></div>
+              <span class="val-num">90%</span>
+            </div>
+          </div>
+          <div class="row">
+            <span class="icon-cell">▶</span>
+            <div class="stack"><span class="name">Firefox</span><span class="meta">video · muted tab</span></div>
+            <div class="slider-wrap" style="max-width: 200px; margin-left: auto;">
+              <div class="slider"><div class="fill" style="width: 40%"></div><div class="thumb" style="left: 40%"></div></div>
+              <span class="val-num">40%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Display ========== -->
+      <div class="pane-view" data-view="display">
+        <div class="h1">Display</div>
+        <div class="sub">Brightness · Scale · Color</div>
+
+        <div class="group-label">BUILT-IN SCREEN</div>
+        <div class="group">
+          <div class="row">
+            <span class="icon-cell">☀</span>
+            <span class="lbl">Brightness</span>
+            <div class="slider-wrap" style="max-width: 340px; margin-left: auto;">
+              <div class="slider">
+                <div class="fill" style="width: 80%"></div>
+                <div class="thumb" style="left: 80%"></div>
+              </div>
+              <span class="val-num">80%</span>
+            </div>
+          </div>
+          <div class="row">
+            <span class="lbl">Auto-brightness</span>
+            <span class="val"><span class="switch on"></span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Scale</span>
+            <span class="val">
+              <div class="seg">
+                <span>100%</span>
+                <span class="on">125%</span>
+                <span>150%</span>
+                <span>200%</span>
+              </div>
+            </span>
+          </div>
+          <div class="row">
+            <span class="lbl">Resolution</span>
+            <span class="val"><span class="select">2880 × 1800 @ 60 Hz <span class="chev">▾</span></span></span>
+          </div>
+        </div>
+
+        <div class="group-label">COLOR</div>
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Appearance</span>
+            <span class="val">
+              <div class="seg">
+                <span>Light</span>
+                <span class="on">Dark</span>
+                <span>Auto</span>
+              </div>
+            </span>
+          </div>
+          <div class="row">
+            <span class="lbl">Night Light</span>
+            <span class="val"><span class="switch"></span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Accent from wallpaper</span>
+            <span class="val"><span class="switch on"></span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Battery ========== -->
+      <div class="pane-view" data-view="battery">
+        <div class="h1">Battery</div>
+        <div class="sub">Power Profile · Usage · Auto-Suspend</div>
+
+        <div class="batt-display">
+          <div class="donut"><span class="pct">85%</span></div>
+          <div class="batt-stats">
+            <div class="big">3 h 42 m remaining</div>
+            <div class="sm">Discharging · 12.4 W</div>
+          </div>
+        </div>
+
+        <div class="group-label">POWER PROFILE</div>
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Mode</span>
+            <span class="val">
+              <div class="seg">
+                <span>Saver</span>
+                <span class="on">Balanced</span>
+                <span>Performance</span>
+              </div>
+            </span>
+          </div>
+        </div>
+
+        <div class="group-label">AUTOMATIC</div>
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Screen off after</span>
+            <span class="val"><span class="select">5 minutes <span class="chev">▾</span></span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Suspend after</span>
+            <span class="val"><span class="select">15 minutes <span class="chev">▾</span></span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Show percentage in bar</span>
+            <span class="val"><span class="switch on"></span></span>
+          </div>
+        </div>
+
+        <div class="group-label">BATTERY HEALTH</div>
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Maximum capacity</span>
+            <span class="val">94%</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Cycle count</span>
+            <span class="val">312</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== Session ========== -->
+      <div class="pane-view" data-view="session">
+        <div class="h1">Power</div>
+        <div class="sub">End or Suspend Session</div>
+
+        <div class="session-grid">
+          <div class="session-btn">
+            <span class="s-ic">⌧</span>
+            <span class="s-lbl">Lock</span>
+            <span class="s-sub">Lock the screen now</span>
+          </div>
+          <div class="session-btn">
+            <span class="s-ic">☾</span>
+            <span class="s-lbl">Suspend</span>
+            <span class="s-sub">Save state to RAM</span>
+          </div>
+          <div class="session-btn">
+            <span class="s-ic">⤴</span>
+            <span class="s-lbl">Log Out</span>
+            <span class="s-sub">End the current session</span>
+          </div>
+          <div class="session-btn danger">
+            <span class="s-ic">⟲</span>
+            <span class="s-lbl">Restart</span>
+            <span class="s-sub">Reboot the system</span>
+          </div>
+          <div class="session-btn danger">
+            <span class="s-ic">⏻</span>
+            <span class="s-lbl">Shut Down</span>
+            <span class="s-sub">Power off</span>
+          </div>
+          <div class="session-btn">
+            <span class="s-ic">⌚</span>
+            <span class="s-lbl">Hibernate</span>
+            <span class="s-sub">Save state to disk</span>
+          </div>
+        </div>
+
+        <div class="group-label">CONFIRMATION</div>
+        <div class="group">
+          <div class="row">
+            <span class="lbl">Confirm before destructive actions</span>
+            <span class="val"><span class="switch on"></span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Auto-suspend delay after lock</span>
+            <span class="val"><span class="select">10 minutes <span class="chev">▾</span></span></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Fake main bar -->
+<div class="fake-bar">
+  <div class="dot"></div>
+  <span class="time">14<span class="sep">:</span>22</span>
+  <span class="date">Tue 13 May</span>
+  <span class="mid">PER ASPERA AD ASTRA</span>
+  <div class="right">
+    <span class="chip">WIFI · 60% · 85%</span>
+  </div>
+</div>
+
+<script>
+  const labels = {
+    quick:     "QUICK · SETTINGS",
+    network:   "SYSTEM · NETWORK",
+    bluetooth: "SYSTEM · BLUETOOTH",
+    sound:     "SYSTEM · SOUND",
+    display:   "SYSTEM · DISPLAY",
+    battery:   "SYSTEM · BATTERY",
+    session:   "SESSION · POWER",
+  };
+  document.querySelectorAll(".side .item").forEach(el => {
+    el.addEventListener("click", () => {
+      const tab = el.getAttribute("data-tab");
+      document.querySelectorAll(".side .item").forEach(i => i.classList.remove("active"));
+      document.querySelectorAll(".pane-view").forEach(v => v.classList.remove("active"));
+      el.classList.add("active");
+      const view = document.querySelector(`.pane-view[data-view="${tab}"]`);
+      if (view) view.classList.add("active");
+      const crumb = document.getElementById("crumb");
+      if (crumb) crumb.textContent = labels[tab] || "SETTINGS";
+      document.querySelector(".pane").scrollTop = 0;
+    });
+  });
+</script>
+</body>
+</html>

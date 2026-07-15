@@ -91,14 +91,6 @@ Item {
                 radius: Theme.ui.mainBarWsRadius
                 border.width: Theme.ui.mainBarHairWidth
 
-                Behavior on scale {
-                    NumberAnimation {
-                        duration: 180
-                        easing.type: Easing.OutBack
-                        easing.overshoot: 1.4
-                    }
-                }
-
                 color: focused ? Qt.alpha(Colors.barAccent, 0.05) : "transparent"
                 border.color: {
                     if (focused) return Colors.barAccent;
@@ -113,7 +105,7 @@ Item {
                     anchors.centerIn: parent
                     text: slot.slotIdx
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.font.size.xs
                     font.weight: Font.Medium
                     color: {
                         if (slot.focused) return Colors.barAccent;

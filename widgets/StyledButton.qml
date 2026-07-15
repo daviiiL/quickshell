@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.common
-import qs.widgets
 import qs.services
+import qs.widgets
 
 Rectangle {
     id: root
@@ -27,7 +27,7 @@ Rectangle {
     readonly property bool scaled: clickable && active
 
     function makeTranslucent(color) {
-        return Qt.rgba(color.r, color.g, color.b, 0.4);
+        return Qt.alpha(color, 0.4);
     }
 
     width: 70
@@ -110,7 +110,6 @@ Rectangle {
     }
 
     Canvas {
-        id: indicatorLine
         visible: root.clickable && root.active
         anchors.fill: parent
         antialiasing: true

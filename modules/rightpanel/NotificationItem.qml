@@ -65,7 +65,7 @@ Rectangle {
                     text: root.title
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 12
+                    font.pixelSize: Theme.font.size.md
                     font.weight: Font.Medium
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -76,7 +76,7 @@ Rectangle {
                     text: root.subLabel.toUpperCase()
                     color: Colors.inkDimmer
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.font.size.sm
                     font.letterSpacing: 1.4
                 }
             }
@@ -87,7 +87,7 @@ Rectangle {
                 text: root.message
                 color: Colors.inkDim
                 font.family: Theme.font.family.inter_regular
-                font.pixelSize: 11
+                font.pixelSize: Theme.font.size.sm
                 lineHeight: 1.35
                 wrapMode: Text.Wrap
                 elide: Text.ElideRight
@@ -99,33 +99,33 @@ Rectangle {
             Layout.alignment: Qt.AlignTop
             spacing: 2
 
-            Text {
-                text: StringUtils.relativeTime(root.notif.time)
-                color: Colors.inkDimmer
-                font.family: Theme.font.family.inter_regular
-                font.pixelSize: 10
-                font.letterSpacing: 0.4
-            }
-
-            Text {
-                text: "×"
-                color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
-                opacity: ma.containsMouse ? 1 : 0
-                font.pixelSize: 14
-                horizontalAlignment: Text.AlignRight
-                Layout.alignment: Qt.AlignRight
-                Behavior on opacity { NumberAnimation { duration: 150 } }
-                Behavior on color  { ColorAnimation  { duration: 150 } }
-
-                MouseArea {
-                    id: dismissMa
-                    anchors.fill: parent
-                    anchors.margins: -6
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: Notifications.discardNotification(root.notif.notificationId)
+                Text {
+                    text: StringUtils.relativeTime(root.notif.time)
+                    color: Colors.inkDimmer
+                    font.family: Theme.font.family.inter_regular
+                    font.pixelSize: Theme.font.size.sm
+                    font.letterSpacing: 0.4
                 }
-            }
+
+                Text {
+                    text: "×"
+                    color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
+                    opacity: ma.containsMouse ? 1 : 0
+                    font.pixelSize: Theme.font.size.lg
+                    horizontalAlignment: Text.AlignRight
+                    Layout.alignment: Qt.AlignRight
+                    Behavior on opacity { NumberAnimation { duration: 150 } }
+                    Behavior on color  { ColorAnimation  { duration: 150 } }
+
+                    MouseArea {
+                        id: dismissMa
+                        anchors.fill: parent
+                        anchors.margins: -6
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Notifications.discardNotification(root.notif.notificationId)
+                    }
+                }
         }
     }
 

@@ -57,7 +57,6 @@ Scope {
                 Keys.onEscapePressed: GlobalStates.leftPanelOpen = false
 
                 transform: Translate {
-                    id: slideT
                     x: GlobalStates.leftPanelOpen ? 0 : -Theme.ui.sidePanelWidth
 
                     Behavior on x {

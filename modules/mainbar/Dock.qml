@@ -69,9 +69,7 @@ RowLayout {
                 if (p.indexOf("://") !== -1) return p;
                 return "file://" + p;
             }
-            label:       modelData.title
             focused:     modelData.focused
-            running:     true
             unreadCount: modelData.urgent ? 1 : 0
 
             onActivated: SystemNiri.niri.focusWindow(modelData.firstWindowId)

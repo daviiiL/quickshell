@@ -108,21 +108,21 @@ Rectangle {
             }
         }
 
-        Text {
-            Layout.preferredWidth: 40
-            Layout.alignment: Qt.AlignVCenter
-            horizontalAlignment: Text.AlignRight
-            text: root.percentLabel
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: 12
-            font.weight: Font.Medium
-            font.letterSpacing: 0.2
-            color: {
-                if (root.isMuted) return Colors.inkDimmer;
-                if (root.isOverdrive) return Colors.warning;
-                return Colors.inkDim;
-            }
-            opacity: root.isMuted ? 0.55 : 1.0
-        }
+         Text {
+             Layout.preferredWidth: 40
+             Layout.alignment: Qt.AlignVCenter
+             horizontalAlignment: Text.AlignRight
+             text: root.percentLabel
+             font.family: Theme.font.family.inter_medium
+             font.pixelSize: Theme.font.size.sm
+             font.weight: Font.Medium
+             font.letterSpacing: 0.2
+             color: {
+                 if (root.isMuted) return Colors.inkDimmer;
+                 if (root.isOverdrive) return Colors.warning;
+                 return Colors.inkDim;
+             }
+             opacity: root.isMuted ? 0.55 : 1.0
+         }
     }
 }

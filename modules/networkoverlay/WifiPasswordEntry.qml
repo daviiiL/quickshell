@@ -46,7 +46,7 @@ Rectangle {
                 text: "PASSWORD"
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 10
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.8
                 Layout.alignment: Qt.AlignVCenter
             }
@@ -69,7 +69,7 @@ Rectangle {
                     selectionColor: Colors.hairHot
                     selectedTextColor: Colors.fgSurface
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: 13
+                    font.pixelSize: Theme.font.size.md
                     font.letterSpacing: 0.6
                     clip: true
                     verticalAlignment: TextInput.AlignVCenter
@@ -105,7 +105,7 @@ Rectangle {
             text: "COULDN'T CONNECT — CHECK PASSWORD"
             color: Colors.warning
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.letterSpacing: 1.4
         }
 
@@ -132,7 +132,7 @@ Rectangle {
                     text: "CANCEL"
                     color: cancelMa.containsMouse ? Colors.fgSurface : Colors.inkDim
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.font.size.xs
                     font.letterSpacing: 1.4
                     Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
                 }
@@ -178,7 +178,7 @@ Rectangle {
                             ? Colors.fgSurface
                             : Colors.inkDim
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.font.size.xs
                     font.letterSpacing: 1.4
                     Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
                 }

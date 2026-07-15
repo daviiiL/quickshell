@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import qs.common
-import qs.widgets
 import qs.services
+import qs.widgets
 
 Rectangle {
     id: root
@@ -33,7 +33,6 @@ Rectangle {
     }
 
     Canvas {
-        id: indicatorLine
         visible: root.checked
         anchors.fill: parent
         antialiasing: true
@@ -127,13 +126,6 @@ Rectangle {
 
     Behavior on border.color {
         ColorAnimation {
-            duration: Theme.anim.durations.xs
-            easing.type: Easing.OutCubic
-        }
-    }
-
-    Behavior on border.width {
-        NumberAnimation {
             duration: Theme.anim.durations.xs
             easing.type: Easing.OutCubic
         }

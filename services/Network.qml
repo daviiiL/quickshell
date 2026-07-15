@@ -17,7 +17,6 @@ Singleton {
             LC_ALL: "C"
         })
 
-    property bool wifi: true
     property bool ethernet: false
     property string ethernetDevice: ""
     property string ethernetSpeed: ""
@@ -29,13 +28,16 @@ Singleton {
     property WifiAccessPoint wifiConnectTarget
     property list<WifiAccessPoint> wifiNetworks: []
     readonly property WifiAccessPoint active: wifiNetworks.find(n => n.active) ?? null
-    readonly property list<var> friendlyWifiNetworks: [...wifiNetworks].sort((a, b) => {
-        if (a.active && !b.active)
-            return -1;
-        if (!a.active && b.active)
-            return 1;
-        return b.strength - a.strength;
-    })
+
+    property list<var> friendlyWifiNetworks: []
+
+    function _rebuildFriendlyWifiNetworks(): void {
+        root.friendlyWifiNetworks = [...root.wifiNetworks].sort((a, b) => {
+            if (a.active && !b.active) return -1;
+            if (!a.active && b.active) return 1;
+            return b.strength - a.strength;
+        });
+    }
 
     property list<string> knownNetworks: []
     property string wifiStatus: "disconnected"
@@ -234,7 +236,6 @@ Singleton {
             const lines = updateConnectionType.buffer.trim().split('\n');
             const connectivity = lines.pop(); // none, limited, full
             let hasEthernet = false;
-            let hasWifi = false;
             let wifiStatus = "disconnected";
             lines.forEach(line => {
                 if (line.includes("ethernet") && line.includes("connected"))
@@ -243,11 +244,9 @@ Singleton {
                     if (line.includes("disconnected")) {
                         wifiStatus = "disconnected";
                     } else if (line.includes("connected")) {
-                        hasWifi = true;
                         wifiStatus = "connected";
 
                         if (connectivity === "limited") {
-                            hasWifi = false;
                             wifiStatus = "limited";
                         }
                     } else if (line.includes("connecting")) {
@@ -259,7 +258,6 @@ Singleton {
             });
             root.wifiStatus = wifiStatus;
             root.ethernet = hasEthernet;
-            root.wifi = hasWifi;
 
             if (updateConnectionType.pending) {
                 updateConnectionType.pending = false;
@@ -360,6 +358,8 @@ Singleton {
                         }));
                     }
                 }
+
+                root._rebuildFriendlyWifiNetworks();
             }
         }
     }

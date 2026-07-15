@@ -1,5 +1,5 @@
 //@ pragma UseQApplication
-//@ pragma IconTheme breeze-dark
+//@ pragma IconTheme Adwaita
 
 import Quickshell
 import Quickshell.Io
@@ -39,6 +39,7 @@ ShellRoot {
                 PowerProfileOverlay {}
                 Osd {}
                 AppLauncherPanel {}
+                ControlCenter {}
                 CliphistOverlay {}
                 PopupSurface {}
                 LockScreen {}

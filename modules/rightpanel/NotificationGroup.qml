@@ -21,9 +21,7 @@ Item {
     property real slideX: 0
     property bool dismissing: false
 
-    implicitHeight: (dismissing ? collapseHeight : (head.implicitHeight + bodyWrap.height))
-    property real collapseHeight: head.implicitHeight + bodyWrap.height
-    Layout.fillWidth: true
+    implicitHeight: head.implicitHeight + bodyWrap.height
     clip: true
 
     Behavior on implicitHeight {
@@ -96,9 +94,9 @@ Item {
     Rectangle {
         visible: root.hasUnread && !root.dismissing
         anchors.left: parent.left
-        y: 12
+        y: 15
         width: 2
-        height: head.implicitHeight - 24
+        height: head.implicitHeight - 30
         color: Colors.barAccent
     }
 
@@ -115,7 +113,7 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        implicitHeight: headRow.implicitHeight + 24
+        implicitHeight: headRow.implicitHeight + 30
         color: headDrag.containsMouse && !headDrag.dragging ? Colors.surfaceContainerLow : "transparent"
         Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
 
@@ -124,8 +122,8 @@ Item {
             anchors.fill: parent
             anchors.leftMargin: 14
             anchors.rightMargin: 14
-            anchors.topMargin: 12
-            anchors.bottomMargin: 12
+            anchors.topMargin: 15
+            anchors.bottomMargin: 15
             spacing: 10
 
             Rectangle {
@@ -142,7 +140,7 @@ Item {
                     text: (root.group.appName || "?").substring(0, 1).toUpperCase()
                     color: Colors.barAccent
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 11
+                    font.pixelSize: Theme.font.size.sm
                     font.weight: Font.Medium
                 }
             }
@@ -159,14 +157,14 @@ Item {
                         text: (root.group.appName || "").toUpperCase()
                         color: Colors.fgSurface
                         font.family: Theme.font.family.inter_medium
-                        font.pixelSize: 10
+                        font.pixelSize: Theme.font.size.sm
                         font.letterSpacing: 1.4
                         font.weight: Font.Medium
                     }
 
                     Rectangle {
                         visible: root.count > 1 || root.hasUnread
-                        Layout.preferredHeight: 16
+                        Layout.preferredHeight: 18
                         implicitWidth: countText.implicitWidth + 10
                         radius: 2
                         color: "transparent"
@@ -179,7 +177,7 @@ Item {
                             text: root.count + (root.hasUnread ? " new" : "")
                             color: Colors.inkDim
                             font.family: Theme.font.family.inter_regular
-                            font.pixelSize: 10
+                            font.pixelSize: Theme.font.size.xs
                             font.letterSpacing: 0.4
                         }
                     }
@@ -194,20 +192,20 @@ Item {
                           (root.latest?.body ? (root.latest?.summary ? " — " : "") + root.latest.body : "")
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: 12
+                    font.pixelSize: Theme.font.size.md
                     elide: Text.ElideRight
                     maximumLineCount: 1
                 }
             }
 
-            Text {
-                Layout.alignment: Qt.AlignTop
-                text: head.formatRelativeTime(root.group.time)
-                color: Colors.inkDimmer
-                font.family: Theme.font.family.inter_regular
-                font.pixelSize: 10
-                font.letterSpacing: 0.4
-            }
+                Text {
+                    Layout.alignment: Qt.AlignTop
+                    text: StringUtils.relativeTime(root.group.time)
+                    color: Colors.inkDimmer
+                    font.family: Theme.font.family.inter_regular
+                    font.pixelSize: Theme.font.size.sm
+                    font.letterSpacing: 0.4
+                }
 
             IconImage {
                 Layout.alignment: Qt.AlignTop
@@ -254,18 +252,6 @@ Item {
                 }
                 headDrag.resetDrag();
             }
-        }
-
-        function formatRelativeTime(t) {
-            if (!t) return "";
-            const diff = Math.max(0, Date.now() - t);
-            const m = Math.floor(diff / 60000);
-            if (m < 1)   return "now";
-            if (m < 60)  return m + "m";
-            const h = Math.floor(m / 60);
-            if (h < 24)  return h + "h";
-            const d = Math.floor(h / 24);
-            return d + "d";
         }
     }
 

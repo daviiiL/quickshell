@@ -72,7 +72,7 @@ Rectangle {
                 text: root.name
                 color: Colors.fgSurface
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 13
+                font.pixelSize: Theme.font.size.md
                 font.weight: Font.Medium
                 font.letterSpacing: 0.2
             }
@@ -82,7 +82,7 @@ Rectangle {
                 text: root.description
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_regular
-                font.pixelSize: 11
+                font.pixelSize: Theme.font.size.sm
                 font.letterSpacing: 0.4
                 wrapMode: Text.NoWrap
                 elide: Text.ElideRight

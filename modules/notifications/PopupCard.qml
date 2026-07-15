@@ -17,7 +17,7 @@ Rectangle {
     signal resumeRequested(int id)
 
     width: 340
-    implicitHeight: Math.max(72, layout.implicitHeight)
+    implicitHeight: Math.max(82, layout.implicitHeight)
     radius: 4
 
     readonly property real slotYOffset: role === "peek1" ? 14 : role === "peek2" ? 28 : 0
@@ -102,7 +102,7 @@ Rectangle {
     color: isActiveOrDismissing    ? Colors.panelBg
          : role === "peek1"        ? Colors.surfaceContainerHigh
          : Colors.surfaceContainer
-    border.color: urgency === "critical" ? Colors.criticalHalo
+    border.color: root.urgency === "critical" ? Colors.criticalHalo
                 : isActiveOrDismissing   ? Colors.hair
                 : Colors.hairHot
     border.width: 1
@@ -173,121 +173,121 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-            Layout.leftMargin: root.urgency === "critical" ? 26 : 12
-            Layout.rightMargin: 12
-            Layout.topMargin: 11
-            Layout.bottomMargin: 8
+            Layout.leftMargin: root.urgency === "critical" ? 28 : 14
+            Layout.rightMargin: 14
+            Layout.topMargin: 13
+            Layout.bottomMargin: 10
             spacing: 10
 
             Rectangle {
-                Layout.preferredWidth: 22
-                Layout.preferredHeight: 22
+                Layout.preferredWidth: 24
+                Layout.preferredHeight: 24
                 radius: 3
-                color: urgency === "critical" ? Colors.criticalChipFill : Colors.surfaceContainerHigh
-                border.color: urgency === "critical" ? Colors.criticalHalo : Colors.hair
+                color: root.urgency === "critical" ? Colors.criticalChipFill : Colors.surfaceContainerHigh
+                border.color: root.urgency === "critical" ? Colors.criticalHalo : Colors.hair
                 border.width: 1
-                Text {
-                    anchors.centerIn: parent
-                    text: (root.appName.length > 0 ? root.appName[0] : "?").toUpperCase()
-                    color: urgency === "critical" ? Colors.error : Colors.primary
-                    font.pixelSize: 10
-                    font.family: Theme.font.family.inter_medium
-                    font.weight: Font.Medium
-                }
+                 Text {
+                     anchors.centerIn: parent
+                     text: (root.appName.length > 0 ? root.appName[0] : "?").toUpperCase()
+                     color: root.urgency === "critical" ? Colors.error : Colors.primary
+                     font.pixelSize: Theme.font.size.sm
+                     font.family: Theme.font.family.inter_medium
+                     font.weight: Font.Medium
+                 }
             }
 
-            Text {
-                Layout.fillWidth: true
-                text: root.appName.toUpperCase()
-                elide: Text.ElideRight
-                color: Colors.inkDimmer
-                font.pixelSize: 10
-                font.family: Theme.font.family.inter_medium
-                font.weight: Font.Medium
-                font.letterSpacing: 1.8
-            }
+             Text {
+                 Layout.fillWidth: true
+                 text: root.appName.toUpperCase()
+                 elide: Text.ElideRight
+                 color: Colors.inkDimmer
+                 font.pixelSize: Theme.font.size.sm
+                 font.family: Theme.font.family.inter_medium
+                 font.weight: Font.Medium
+                 font.letterSpacing: 1.8
+             }
 
             Rectangle {
                 visible: root.card.mergeCount > 0
-                Layout.preferredHeight: 16
+                Layout.preferredHeight: 18
                 Layout.preferredWidth: countText.implicitWidth + 10
-                radius: 8
+                radius: 9
                 color: Colors.surfaceContainerHigh
                 border.color: Colors.hair
                 border.width: 1
-                Text {
-                    id: countText
-                    anchors.centerIn: parent
-                    text: "+" + (root.card.mergeCount + 1)
-                    color: Colors.inkDim
-                    font.pixelSize: 9
-                    font.family: Theme.font.family.inter_medium
-                    font.weight: Font.Medium
-                }
+                 Text {
+                     id: countText
+                     anchors.centerIn: parent
+                     text: "+" + (root.card.mergeCount + 1)
+                     color: Colors.inkDim
+                     font.pixelSize: Theme.font.size.xs
+                     font.family: Theme.font.family.inter_medium
+                     font.weight: Font.Medium
+                 }
             }
 
-            Text {
-                text: StringUtils.relativeTime(_notif?.time ?? Date.now())
-                color: Colors.inkDimmer
-                font.pixelSize: 10
-                font.family: Theme.font.family.inter_regular
-            }
+             Text {
+                 text: StringUtils.relativeTime(root._notif?.time ?? Date.now())
+                 color: Colors.inkDimmer
+                 font.pixelSize: Theme.font.size.sm
+                 font.family: Theme.font.family.inter_regular
+             }
 
-            Text {
-                text: "×"
-                color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
-                font.pixelSize: 14
-                MouseArea {
-                    id: dismissMa
-                    anchors.fill: parent
-                    anchors.margins: -6
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.dismissRequested(root.card.id, "user-x")
-                }
-            }
+             Text {
+                 text: "×"
+                 color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
+                 font.pixelSize: Theme.font.size.lg
+                 MouseArea {
+                     id: dismissMa
+                     anchors.fill: parent
+                     anchors.margins: -6
+                     hoverEnabled: true
+                     cursorShape: Qt.PointingHandCursor
+                     onClicked: root.dismissRequested(root.card.id, "user-x")
+                 }
+             }
         }
 
         RowLayout {
             Layout.fillWidth: true
-            Layout.leftMargin: root.urgency === "critical" ? 26 : 12
-            Layout.rightMargin: 12
-            Layout.bottomMargin: 12
+            Layout.leftMargin: root.urgency === "critical" ? 28 : 14
+            Layout.rightMargin: 14
+            Layout.bottomMargin: 14
             spacing: 12
 
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 4
+                spacing: 5
 
-                Text {
-                    Layout.fillWidth: true
-                    text: root.summary
-                    color: Colors.fgSurface
-                    font.pixelSize: 13
-                    font.family: urgency === "low" ? Theme.font.family.inter_regular : Theme.font.family.inter_medium
-                    font.weight: urgency === "low" ? Font.Normal : Font.Medium
-                    elide: Text.ElideRight
-                }
+                 Text {
+                     Layout.fillWidth: true
+                     text: root.summary
+                     color: Colors.fgSurface
+                     font.pixelSize: Theme.font.size.md
+                     font.family: root.urgency === "low" ? Theme.font.family.inter_regular : Theme.font.family.inter_medium
+                     font.weight: root.urgency === "low" ? Font.Normal : Font.Medium
+                     elide: Text.ElideRight
+                 }
 
-                Text {
-                    Layout.fillWidth: true
-                    visible: root.body.length > 0
-                    text: root.body
-                    color: root.role === "active" ? Colors.inkDim : Colors.inkDimmer
-                    font.pixelSize: 11
-                    font.family: Theme.font.family.inter_regular
-                    wrapMode: Text.Wrap
-                    lineHeight: 1.4
-                    maximumLineCount: 2
-                    elide: Text.ElideRight
-                }
+                 Text {
+                     Layout.fillWidth: true
+                     visible: root.body.length > 0
+                     text: root.body
+                     color: root.role === "active" ? Colors.inkDim : Colors.inkDimmer
+                     font.pixelSize: Theme.font.size.sm
+                     font.family: Theme.font.family.inter_regular
+                     wrapMode: Text.Wrap
+                     lineHeight: 1.4
+                     maximumLineCount: 2
+                     elide: Text.ElideRight
+                 }
             }
 
             Rectangle {
                 visible: root.imageSrc.length > 0
-                      && (root.urgency !== "critical" || (_notif?.image ?? "").length > 0)
-                Layout.preferredWidth: 56
-                Layout.preferredHeight: 56
+                      && (root.urgency !== "critical" || (root._notif?.image ?? "").length > 0)
+                Layout.preferredWidth: 60
+                Layout.preferredHeight: 60
                 radius: 3
                 color: "transparent"
                 border.color: Colors.hair

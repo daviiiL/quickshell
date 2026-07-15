@@ -136,8 +136,7 @@ Singleton {
     property var _timers: ({})   // id -> Timer instance
 
     function _timeoutForUrgency(u) {
-        if (u === "critical") return -1;
-        if (u === "low")      return root.lowTimeout;
+        if (u === "low") return root.lowTimeout;
         return root.normalTimeout;
     }
 

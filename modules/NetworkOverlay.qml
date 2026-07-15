@@ -72,7 +72,6 @@ Scope {
                 Keys.onEscapePressed: GlobalStates.networkOverlayOpen = false
 
                 Rectangle {
-                    id: popup
                     width: 300
                     height: Math.min(440, root.height - Theme.ui.mainBarHeight - 24)
 
@@ -100,11 +99,9 @@ Scope {
                     }
 
                     transform: Translate {
-                        id: slideT
                         y: root.shown ? 0 : 16
                         Behavior on y {
                             NumberAnimation {
-                                id: slideAnim
                                 duration: Theme.anim.durations.sm
                                 easing.type: Easing.BezierSpline
                                 easing.bezierCurve: Theme.anim.curves.emphasizedDecel
@@ -115,8 +112,6 @@ Scope {
                     Rectangle {
                         anchors.left: parent.left
                         anchors.top: parent.top
-                        anchors.topMargin: 0
-                        anchors.leftMargin: 0
                         width: 120
                         height: Theme.ui.mainBarHairWidth
                         gradient: Gradient {

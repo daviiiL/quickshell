@@ -18,7 +18,6 @@ Singleton {
 
     readonly property var workspaces: niri.workspaces
     readonly property var windows: niri.windows
-    readonly property int workspacesShown: 10
 
     property string focusedOutput: ""
 

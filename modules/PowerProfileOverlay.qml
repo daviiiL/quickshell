@@ -69,7 +69,6 @@ Scope {
                 Keys.onEscapePressed: GlobalStates.powerProfileOverlayOpen = false
 
                 Rectangle {
-                    id: popup
                     width: 280
                     height: content.implicitHeight
 

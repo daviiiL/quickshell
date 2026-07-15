@@ -44,7 +44,7 @@ Item {
         }
 
         ConnectionCard {
-            visible: !root.onEthernet && root.onWifi
+            visible: root.onWifi
             Layout.fillWidth: true
             iconSymbol: Network.materialSymbol
             title: Network.networkName || "Wi-Fi"

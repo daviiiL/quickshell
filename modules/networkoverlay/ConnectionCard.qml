@@ -43,7 +43,7 @@ Rectangle {
                 text: root.title
                 color: Colors.fgSurface
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 13
+                font.pixelSize: Theme.font.size.md
                 font.weight: Font.Medium
                 font.letterSpacing: 0.2
                 elide: Text.ElideRight
@@ -60,13 +60,13 @@ Rectangle {
                     color: Colors.live
                 }
 
-                Text {
-                    text: root.meta
-                    color: Colors.inkDimmer
-                    font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
-                    font.letterSpacing: 1.4
-                }
+            Text {
+                text: root.meta
+                color: Colors.inkDimmer
+                font.family: Theme.font.family.inter_medium
+                font.pixelSize: Theme.font.size.xs
+                font.letterSpacing: 1.4
+            }
             }
         }
 

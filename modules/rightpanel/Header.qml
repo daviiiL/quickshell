@@ -36,7 +36,7 @@ RowLayout {
             text: root.initials
             color: Colors.barAccent
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.weight: Font.Medium
             font.letterSpacing: 0.6
         }
@@ -50,7 +50,7 @@ RowLayout {
             text: root.userName
             color: Colors.fgSurface
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 13
+            font.pixelSize: Theme.font.size.xxl
             font.weight: Font.Medium
             font.letterSpacing: 0.3
         }
@@ -60,7 +60,7 @@ RowLayout {
             text: root.hostLabel.toUpperCase()
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.letterSpacing: 1.4
         }
     }

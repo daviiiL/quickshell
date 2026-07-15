@@ -101,12 +101,30 @@ Scope {
                     }
                 }
 
+                    Text {
+                        anchors.centerIn: parent
+                        text: "PER ASPERA AD ASTRA"
+                        color: Colors.inkDimmer
+                        font.family: Theme.font.family.inter_medium
+                        font.pixelSize: Theme.font.size.xs
+                        font.weight: Font.Medium
+                        font.letterSpacing: 1.8
+                    }
+
                 RowLayout {
                     id: rightGroup
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     spacing: 0
+
+                    RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        ControlCenterButton {}
+                    }
 
                     Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
 

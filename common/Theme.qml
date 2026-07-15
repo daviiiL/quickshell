@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
+import qs.common
 
 Singleton {
     id: root
@@ -101,35 +102,20 @@ Singleton {
 
     component FontFamily: QtObject {
         readonly property string inter: "Inter Nerd Font Propo"
-        readonly property string departureMono: "Inter Nerd Font Propo"
-        readonly property string inter_thin:              "Inter Nerd Font Propo"
-        readonly property string inter_extra_light:       "Inter Nerd Font Propo"
-        readonly property string inter_light:             "Inter Nerd Font Propo"
-        readonly property string inter_regular:           "Inter Nerd Font Propo"
-        readonly property string inter_medium:            "Inter Nerd Font Propo"
-        readonly property string inter_semi_bold:         "Inter Nerd Font Propo"
-        readonly property string inter_bold:              "Inter Nerd Font Propo"
-        readonly property string inter_extra_bold:        "Inter Nerd Font Propo"
-        readonly property string inter_black:             "Inter Nerd Font Propo"
-        readonly property string inter_thin_italic:        "Inter Nerd Font Propo"
-        readonly property string inter_extra_light_italic: "Inter Nerd Font Propo"
-        readonly property string inter_light_italic:      "Inter Nerd Font Propo"
-        readonly property string inter_italic:            "Inter Nerd Font Propo"
-        readonly property string inter_medium_italic:     "Inter Nerd Font Propo"
-        readonly property string inter_semi_bold_italic:  "Inter Nerd Font Propo"
-        readonly property string inter_bold_italic:       "Inter Nerd Font Propo"
-        readonly property string inter_extra_bold_italic: "Inter Nerd Font Propo"
-        readonly property string inter_black_italic:      "Inter Nerd Font Propo"
+        readonly property string inter_thin:    "Inter Nerd Font Propo"
+        readonly property string inter_regular: "Inter Nerd Font Propo"
+        readonly property string inter_medium:  "Inter Nerd Font Propo"
+        readonly property string inter_bold:    "Inter Nerd Font Propo"
     }
 
     component FontSize: QtObject {
-        readonly property int xxs: 8
-        readonly property int xs: 10
-        readonly property int sm: 12
-        readonly property int md: 14
-        readonly property int lg: 16
-        readonly property int xl: 20
-        readonly property int xxl: 24
-        readonly property int xxxl: 32
+        readonly property int offset: GlobalStates.fontOffset
+        readonly property int xxs: 7 + offset
+        readonly property int xs: 10 + offset
+        readonly property int sm: 12 + offset
+        readonly property int md: 14 + offset
+        readonly property int lg: 16 + offset
+        readonly property int xl: 18 + offset
+        readonly property int xxl: 20 + offset
     }
 }

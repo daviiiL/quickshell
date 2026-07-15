@@ -7,7 +7,6 @@ Rectangle {
     id: root
 
     property string iconSource: ""
-    property string label: ""
     property bool running: true
     property bool focused: false
     property int unreadCount: 0
@@ -78,7 +77,7 @@ Rectangle {
             text: root.unreadCount
             font.family: Theme.font.family.inter_bold
             font.weight: Font.Bold
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             color: Colors.barBg
         }
     }
