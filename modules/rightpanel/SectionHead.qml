@@ -26,11 +26,12 @@ RowLayout {
         color: Colors.inkDimmer
     }
 
-    Item { Layout.fillWidth: true }
-
     Text {
+        Layout.fillWidth: true
         visible: root.meta.length > 0
         text: root.meta
+        horizontalAlignment: Text.AlignRight
+        elide: Text.ElideRight
         font.family: Theme.font.family.inter_regular
         font.pixelSize: 11
         font.letterSpacing: 0.4
