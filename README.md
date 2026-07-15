@@ -1,10 +1,6 @@
 # daviiiL's latest quickshell
 
-> Decided to rebase the repo to my new shell look [here](https://github.com/daviiiL/quickshell-new.git)
-
-```comment
-the colorscheme generation also applys a good color matching the desktop colorscheme to razer peripherals... turn it on via settings/ control center -> preferences... but you need to install openrazer and razer-cli beforehand
-```
+material-vertical uses razer-cli and openrazer to match the theme colorscheme with your device rgbs... so install both beforehand if you want that
 
 ## TODO
 
