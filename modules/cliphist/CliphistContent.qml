@@ -70,7 +70,7 @@ Item {
 
     component FooterLabel: Text {
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: 10
+        font.pixelSize: Theme.font.size.xs
         font.letterSpacing: 1.8
         color: Qt.alpha(Colors.fgSurface, 0.42)
     }
@@ -91,7 +91,7 @@ Item {
             anchors.centerIn: parent
             text: parent.label
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.letterSpacing: 1.0
             color: Qt.alpha(Colors.fgSurface, 0.56)
         }
@@ -136,7 +136,7 @@ Item {
                     selectionColor: Colors.hairHot
                     selectedTextColor: Colors.fgSurface
                     font.family: Theme.font.family.inter
-                    font.pixelSize: 18
+                    font.pixelSize: Theme.font.size.xl
 
                     padding: 0
                     leftPadding: 0
@@ -323,7 +323,7 @@ Item {
                     return "NO CLIPBOARD HISTORY YET";
                 }
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 11
+                font.pixelSize: Theme.font.size.sm
                 font.letterSpacing: 2.2
                 color: Colors.inkDimmer
                 horizontalAlignment: Text.AlignHCenter

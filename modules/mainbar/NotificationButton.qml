@@ -68,7 +68,7 @@ MainBarButton {
                 color: "#0a0a0a"
                 font.family: Theme.font.family.inter_bold
                 font.weight: Font.Bold
-                font.pixelSize: 7
+                font.pixelSize: Theme.font.size.xxs
             }
         }
     }

@@ -20,7 +20,7 @@ Item {
             text: root.paneName.toUpperCase()
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 2.8
         }
 
@@ -29,7 +29,7 @@ Item {
             text: "Coming in a later phase."
             color: Qt.alpha(Colors.fgSurface, 0.45)
             font.family: Theme.font.family.inter
-            font.pixelSize: 12
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 0.3
         }
     }

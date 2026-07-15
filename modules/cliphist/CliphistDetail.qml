@@ -20,12 +20,12 @@ Item {
         color: Colors.surfaceContainerLowest
     }
 
-    ColumnLayout {
+     ColumnLayout {
         anchors.fill: parent
         anchors.leftMargin: 18
         anchors.rightMargin: 18
-        anchors.topMargin: 12
-        anchors.bottomMargin: 14
+        anchors.topMargin: Theme.font.size.sm
+        anchors.bottomMargin: Theme.font.size.md
         spacing: 8
         visible: !!root.entry
 
@@ -44,7 +44,7 @@ Item {
                 }
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 9
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.71
             }
 
@@ -55,7 +55,7 @@ Item {
                 text: root.entry ? "#" + root.entry.id : ""
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 9
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.71
             }
         }
@@ -80,7 +80,7 @@ Item {
                 textFormat: Text.StyledText
                 color: Colors.fgSurface
                 font.family: "JetBrains Mono"
-                font.pixelSize: 12
+                font.pixelSize: Theme.font.size.sm
                 lineHeight: 1.5
                 wrapMode: Text.WrapAnywhere
             }
@@ -146,7 +146,7 @@ Item {
                     ? Colors.error
                     : (chipMouse.containsMouse ? Colors.fgSurface : Colors.inkDim)
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 10
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.6
             }
         }

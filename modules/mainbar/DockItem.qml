@@ -77,7 +77,7 @@ Rectangle {
             text: root.unreadCount
             font.family: Theme.font.family.inter_bold
             font.weight: Font.Bold
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             color: Colors.barBg
         }
     }

@@ -49,7 +49,7 @@ MainBarButton {
         color: root.hovered ? Colors.fgSurface : Colors.inkDim
         font.family: Theme.font.family.inter_medium
         font.weight: Font.Medium
-        font.pixelSize: 12
+        font.pixelSize: Theme.font.size.sm
         Layout.preferredWidth: 40
         horizontalAlignment: Text.AlignRight
     }

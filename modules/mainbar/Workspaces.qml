@@ -105,7 +105,7 @@ Item {
                     anchors.centerIn: parent
                     text: slot.slotIdx
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.font.size.xs
                     font.weight: Font.Medium
                     color: {
                         if (slot.focused) return Colors.barAccent;

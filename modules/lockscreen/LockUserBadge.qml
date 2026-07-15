@@ -2,8 +2,8 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import qs.common
+import Quickshell
 
 RowLayout {
     id: root
@@ -33,7 +33,7 @@ RowLayout {
         Text {
             anchors.centerIn: parent
             text: root.initials
-            font.pixelSize: 13
+            font.pixelSize: Theme.font.size.md
             font.letterSpacing: 0.5
             font.family: Theme.font.family.inter_regular
             color: Colors.barAccent
@@ -42,7 +42,7 @@ RowLayout {
 
     Text {
         text: root.username
-        font.pixelSize: 14
+        font.pixelSize: Theme.font.size.md
         font.weight: Font.Medium
         font.letterSpacing: 2.5
         font.family: Theme.font.family.inter_medium

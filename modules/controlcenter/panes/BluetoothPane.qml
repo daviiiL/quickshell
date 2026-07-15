@@ -69,7 +69,7 @@ Flickable {
             text: "Bluetooth"
             color: Colors.fgSurface
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 19
+            font.pixelSize: Theme.font.size.xxl
             font.weight: Font.Medium
         }
 
@@ -79,7 +79,7 @@ Flickable {
             text: "PAIRED DEVICES · DISCOVERY"
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.letterSpacing: 2.4
         }
 

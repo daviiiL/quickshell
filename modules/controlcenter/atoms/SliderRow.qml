@@ -72,23 +72,23 @@ Item {
 
             Text {
                 Layout.fillWidth: true
-                text: root.label
-                color: Colors.fgSurface
-                font.family: Theme.font.family.inter
-                font.pixelSize: 12
-                elide: Text.ElideRight
-            }
+            text: root.label
+            color: Colors.fgSurface
+            font.family: Theme.font.family.inter
+            font.pixelSize: Theme.font.size.sm
+            elide: Text.ElideRight
+        }
 
-            Text {
-                visible: root.sub.length > 0
-                Layout.fillWidth: true
-                text: root.sub
-                color: Colors.inkDimmer
-                font.family: Theme.font.family.inter
-                font.pixelSize: 10
-                font.letterSpacing: 0.2
-                elide: Text.ElideRight
-            }
+        Text {
+            visible: root.sub.length > 0
+            Layout.fillWidth: true
+            text: root.sub
+            color: Colors.inkDimmer
+            font.family: Theme.font.family.inter
+            font.pixelSize: Theme.font.size.xs
+            font.letterSpacing: 0.2
+            elide: Text.ElideRight
+        }
         }
 
         Item {
@@ -143,7 +143,7 @@ Item {
             text: Math.round(root.progress * 100) + "%"
             color: Colors.inkDim
             font.family: Theme.font.family.inter
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 0.2
         }
     }

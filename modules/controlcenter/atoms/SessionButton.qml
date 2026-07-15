@@ -57,7 +57,7 @@ Rectangle {
                 return Colors.inkDim;
             }
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.weight: Font.Medium
             font.letterSpacing: 2.0
             Behavior on color { ColorAnimation { duration: root.animMs } }
@@ -67,7 +67,7 @@ Rectangle {
             text: root.sub
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
-            font.pixelSize: 9
+            font.pixelSize: Theme.font.size.xs
             font.letterSpacing: 0.2
         }
     }

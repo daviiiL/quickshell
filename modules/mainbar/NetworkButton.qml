@@ -106,7 +106,7 @@ MainBarButton {
         color: root.hovered ? Colors.fgSurface : Colors.inkDim
         font.family: Theme.font.family.inter_medium
         font.weight: Font.Medium
-        font.pixelSize: 15
+        font.pixelSize: Theme.font.size.lg
         Layout.preferredWidth: 80
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
@@ -118,7 +118,7 @@ MainBarButton {
         text: root.strength + "%"
         color: root.hovered ? Colors.fgSurface : Colors.inkDimmer
         font.family: Theme.font.family.inter_regular
-        font.pixelSize: 11
+        font.pixelSize: Theme.font.size.sm
         font.letterSpacing: 0.2
         Layout.preferredWidth: showPct ? 26 : 0
         Layout.alignment: Qt.AlignVCenter

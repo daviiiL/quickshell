@@ -39,30 +39,30 @@ Rectangle {
             spacing: 6
 
             Text {
-                text: root.section
-                color: Colors.inkDimmer
-                font.family: Theme.font.family.inter_medium
-                font.pixelSize: 11
-                font.weight: Font.Medium
-                font.letterSpacing: 3.0
-            }
+            text: root.section
+            color: Colors.inkDimmer
+            font.family: Theme.font.family.inter_medium
+            font.pixelSize: Theme.font.size.sm
+            font.weight: Font.Medium
+            font.letterSpacing: 3.0
+        }
 
-            Text {
-                text: "·"
-                color: Colors.inkFaint
-                font.family: Theme.font.family.inter_medium
-                font.pixelSize: 11
-                font.letterSpacing: 3.0
-            }
+        Text {
+            text: "·"
+            color: Colors.inkFaint
+            font.family: Theme.font.family.inter_medium
+            font.pixelSize: Theme.font.size.sm
+            font.letterSpacing: 3.0
+        }
 
-            Text {
-                text: root.label.toUpperCase()
-                color: Colors.fgSurface
-                font.family: Theme.font.family.inter_medium
-                font.pixelSize: 11
-                font.weight: Font.Medium
-                font.letterSpacing: 3.0
-            }
+        Text {
+            text: root.label.toUpperCase()
+            color: Colors.fgSurface
+            font.family: Theme.font.family.inter_medium
+            font.pixelSize: Theme.font.size.sm
+            font.weight: Font.Medium
+            font.letterSpacing: 3.0
+        }
         }
 
         Item { Layout.fillWidth: true }
@@ -91,12 +91,12 @@ Rectangle {
                 Text {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
-                    text: "Search…"
-                    color: Colors.inkFaint
-                    font.family: Theme.font.family.inter
-                    font.pixelSize: 11
-                    font.letterSpacing: 0.6
-                }
+                text: "Search…"
+                color: Colors.inkFaint
+                font.family: Theme.font.family.inter
+                font.pixelSize: Theme.font.size.sm
+                font.letterSpacing: 0.6
+            }
             }
         }
 

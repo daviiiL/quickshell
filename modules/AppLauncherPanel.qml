@@ -61,7 +61,7 @@ Scope {
                     anchors.centerIn: parent
                     text: parent.label
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.font.size.xs
                     font.letterSpacing: 1.0
                     color: Qt.alpha(Colors.fgSurface, 0.56)
                 }
@@ -250,7 +250,7 @@ Scope {
                                 selectionColor: Colors.hairHot
                                 selectedTextColor: Colors.fgSurface
                                 font.family: Theme.font.family.inter
-                                font.pixelSize: 20
+                                font.pixelSize: Theme.font.size.xxl
 
                                 padding: 0
                                 leftPadding: 0
@@ -385,7 +385,7 @@ Scope {
                             anchors.centerIn: parent
                             text: `NO RESULTS FOR "${(AppLauncher.query || "").toUpperCase()}"`
                             font.family: Theme.font.family.inter_medium
-                            font.pixelSize: 11
+                            font.pixelSize: Theme.font.size.sm
                             font.letterSpacing: 2.2
                             color: Qt.alpha(Colors.fgSurface, 0.42)
                             horizontalAlignment: Text.AlignHCenter
@@ -416,16 +416,16 @@ Scope {
                             anchors.bottomMargin: 10
                             spacing: 0
 
-                            Text {
-                                Layout.alignment: Qt.AlignVCenter
-                                text: AppLauncher.query.length >= 1 && resultsList.count > 0
-                                    ? `${resultsList.count} ${resultsList.count === 1 ? "MATCH" : "MATCHES"}`
-                                    : "TYPE TO SEARCH"
-                                font.family: Theme.font.family.inter_medium
-                                font.pixelSize: 10
-                                font.letterSpacing: 1.8
-                                color: Qt.alpha(Colors.fgSurface, 0.42)
-                            }
+                             Text {
+                                 Layout.alignment: Qt.AlignVCenter
+                                 text: AppLauncher.query.length >= 1 && resultsList.count > 0
+                                     ? `${resultsList.count} ${resultsList.count === 1 ? "MATCH" : "MATCHES"}`
+                                     : "TYPE TO SEARCH"
+                                 font.family: Theme.font.family.inter_medium
+                                 font.pixelSize: Theme.font.size.xs
+                                 font.letterSpacing: 1.8
+                                 color: Qt.alpha(Colors.fgSurface, 0.42)
+                             }
 
                             Item { Layout.fillWidth: true; Layout.preferredHeight: 1 }
 
@@ -438,46 +438,46 @@ Scope {
                                     spacing: 6
                                     visible: AppLauncher.query.length >= 1 && resultsList.count > 0
 
-                                    FooterKbd { label: "↑" }
-                                    FooterKbd { label: "↓" }
-                                    Text {
-                                        Layout.alignment: Qt.AlignVCenter
-                                        text: "NAVIGATE"
-                                        font.family: Theme.font.family.inter_medium
-                                        font.pixelSize: 10
-                                        font.letterSpacing: 1.8
-                                        color: Qt.alpha(Colors.fgSurface, 0.42)
-                                    }
+                                     FooterKbd { label: "↑" }
+                                     FooterKbd { label: "↓" }
+                                     Text {
+                                         Layout.alignment: Qt.AlignVCenter
+                                         text: "NAVIGATE"
+                                         font.family: Theme.font.family.inter_medium
+                                         font.pixelSize: Theme.font.size.xs
+                                         font.letterSpacing: 1.8
+                                         color: Qt.alpha(Colors.fgSurface, 0.42)
+                                     }
                                 }
 
                                 RowLayout {
                                     Layout.alignment: Qt.AlignVCenter
                                     spacing: 6
 
-                                    FooterKbd { label: "↵" }
-                                    Text {
-                                        Layout.alignment: Qt.AlignVCenter
-                                        text: "LAUNCH"
-                                        font.family: Theme.font.family.inter_medium
-                                        font.pixelSize: 10
-                                        font.letterSpacing: 1.8
-                                        color: Qt.alpha(Colors.fgSurface, 0.42)
-                                    }
+                                     FooterKbd { label: "↵" }
+                                     Text {
+                                         Layout.alignment: Qt.AlignVCenter
+                                         text: "LAUNCH"
+                                         font.family: Theme.font.family.inter_medium
+                                         font.pixelSize: Theme.font.size.xs
+                                         font.letterSpacing: 1.8
+                                         color: Qt.alpha(Colors.fgSurface, 0.42)
+                                     }
                                 }
 
                                 RowLayout {
                                     Layout.alignment: Qt.AlignVCenter
                                     spacing: 6
 
-                                    FooterKbd { label: "ESC" }
-                                    Text {
-                                        Layout.alignment: Qt.AlignVCenter
-                                        text: "CLOSE"
-                                        font.family: Theme.font.family.inter_medium
-                                        font.pixelSize: 10
-                                        font.letterSpacing: 1.8
-                                        color: Qt.alpha(Colors.fgSurface, 0.42)
-                                    }
+                                     FooterKbd { label: "ESC" }
+                                     Text {
+                                         Layout.alignment: Qt.AlignVCenter
+                                         text: "CLOSE"
+                                         font.family: Theme.font.family.inter_medium
+                                         font.pixelSize: Theme.font.size.xs
+                                         font.letterSpacing: 1.8
+                                         color: Qt.alpha(Colors.fgSurface, 0.42)
+                                     }
                                 }
                             }
                         }

@@ -128,7 +128,7 @@ MainBarButton {
             color: root.hovered ? Colors.fgSurface : Colors.inkDim
             font.family: Theme.font.family.inter_medium
             font.weight: Font.Medium
-            font.pixelSize: 12
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: root.hasBattery ? 0 : 0.6
             horizontalAlignment: Text.AlignRight
             Behavior on color { ColorAnimation { duration: 150 } }

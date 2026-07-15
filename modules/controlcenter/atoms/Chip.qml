@@ -53,7 +53,7 @@ Rectangle {
             text: root.text.toUpperCase()
             color: root.textColor
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 9
+            font.pixelSize: Theme.font.size.xs
             font.weight: Font.Medium
             font.letterSpacing: 1.6
         }

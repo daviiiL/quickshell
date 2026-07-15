@@ -38,7 +38,7 @@ MainBarButton {
         color: root.highlighted ? Colors.fgSurface : Colors.inkDim
         font.family: Theme.font.family.inter_medium
         font.weight: Font.Medium
-        font.pixelSize: 15
+        font.pixelSize: Theme.font.size.lg
         Layout.alignment: Qt.AlignVCenter
         Behavior on color { ColorAnimation { duration: 150 } }
     }

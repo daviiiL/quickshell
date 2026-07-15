@@ -127,7 +127,7 @@ Item {
             text: root.label
             color: root.selected ? Colors.fgSurface : Colors.inkDim
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.weight: root.selected ? Font.Medium : Font.Normal
         }
     }

@@ -94,7 +94,7 @@ RowLayout {
                     text: cell.modelData.label.toUpperCase()
                     color: cell.hovered || cell.on ? Colors.fgSurface : Colors.inkDim
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 10
+                    font.pixelSize: Theme.font.size.xs
                     font.letterSpacing: 1.4
                     Behavior on color { ColorAnimation { duration: 150 } }
                 }

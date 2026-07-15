@@ -22,7 +22,7 @@ Item {
     signal picked()
     signal hovered()
 
-    implicitHeight: 22 + 2 * 11
+    implicitHeight: 22 + 2 * Theme.font.size.sm
 
     Rectangle {
         id: rowBg
@@ -59,7 +59,7 @@ Item {
         anchors.leftMargin: 18
         anchors.rightMargin: 18
         anchors.topMargin: 11
-        anchors.bottomMargin: 11
+        anchors.bottomMargin: Theme.font.size.sm
         spacing: 12
 
         MaterialSymbol {
@@ -90,7 +90,7 @@ Item {
             elide: Text.ElideRight
             wrapMode: Text.NoWrap
             font.family: root.isMono ? "JetBrains Mono" : Theme.font.family.inter
-            font.pixelSize: root.isMono ? 12 : 13
+            font.pixelSize: root.isMono ? Theme.font.size.sm : Theme.font.size.md
             font.letterSpacing: 0.13
         }
 
@@ -99,7 +99,7 @@ Item {
             text: root.entry ? "#" + root.entry.id : ""
             color: root.selected ? Colors.inkDim : Colors.inkFaint
             font.family: Theme.font.family.inter
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 0.44
         }
     }

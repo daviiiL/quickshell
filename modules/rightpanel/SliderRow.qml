@@ -96,7 +96,7 @@ RowLayout {
         text: root.valueLabel
         color: Colors.fgSurface
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: 13
+        font.pixelSize: Theme.font.size.md
         font.weight: Font.Medium
         font.letterSpacing: 0.2
     }

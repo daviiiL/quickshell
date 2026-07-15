@@ -42,12 +42,12 @@ Item {
             spacing: 12
 
             Text {
-                text: root.title
-                color: Colors.fgSurface
-                font.family: Theme.font.family.inter
-                font.pixelSize: 12
-                Layout.alignment: Qt.AlignVCenter
-            }
+            text: root.title
+            color: Colors.fgSurface
+            font.family: Theme.font.family.inter
+            font.pixelSize: Theme.font.size.sm
+            Layout.alignment: Qt.AlignVCenter
+        }
 
             Item { Layout.fillWidth: true; Layout.preferredHeight: 1 }
 
@@ -58,7 +58,7 @@ Item {
                 text: root.currentLabel
                 color: Colors.inkDim
                 font.family: Theme.font.family.inter
-                font.pixelSize: 12
+                font.pixelSize: Theme.font.size.sm
                 elide: Text.ElideRight
             }
 
@@ -118,7 +118,7 @@ Item {
                         text: opt.modelData?.label ?? ""
                         color: Colors.fgSurface
                         font.family: Theme.font.family.inter
-                        font.pixelSize: 12
+                        font.pixelSize: Theme.font.size.sm
                         elide: Text.ElideRight
                     }
 

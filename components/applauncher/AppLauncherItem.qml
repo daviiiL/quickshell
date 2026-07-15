@@ -109,26 +109,26 @@ Rectangle {
             Layout.alignment: Qt.AlignVCenter
             spacing: 3
 
-            Text {
-                Layout.fillWidth: true
-                text: root.highlightContent(root.itemName, root.query)
-                textFormat: Text.StyledText
-                font.family: Theme.font.family.inter
-                font.pixelSize: 14
-                color: Colors.fgSurface
-                elide: Text.ElideRight
-            }
+             Text {
+                 Layout.fillWidth: true
+                 text: root.highlightContent(root.itemName, root.query)
+                 textFormat: Text.StyledText
+                 font.family: Theme.font.family.inter
+                 font.pixelSize: Theme.font.size.md
+                 color: Colors.fgSurface
+                 elide: Text.ElideRight
+             }
 
-            Text {
-                Layout.fillWidth: true
-                text: root.itemComment.toUpperCase()
-                font.family: Theme.font.family.inter_medium
-                font.pixelSize: 10
-                font.letterSpacing: 1.6
-                color: Qt.alpha(Colors.fgSurface, 0.42)
-                elide: Text.ElideRight
-                visible: root.itemComment !== ""
-            }
+             Text {
+                 Layout.fillWidth: true
+                 text: root.itemComment.toUpperCase()
+                 font.family: Theme.font.family.inter_medium
+                 font.pixelSize: Theme.font.size.xs
+                 font.letterSpacing: 1.6
+                 color: Qt.alpha(Colors.fgSurface, 0.42)
+                 elide: Text.ElideRight
+                 visible: root.itemComment !== ""
+             }
         }
 
         MaterialSymbol {

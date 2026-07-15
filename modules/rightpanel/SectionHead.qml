@@ -20,7 +20,7 @@ RowLayout {
     Text {
         text: root.title.toUpperCase()
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: 10
+        font.pixelSize: Theme.font.size.xs
         font.weight: Font.Medium
         font.letterSpacing: 1.8
         color: Colors.inkDimmer
@@ -33,7 +33,7 @@ RowLayout {
         horizontalAlignment: Text.AlignRight
         elide: Text.ElideRight
         font.family: Theme.font.family.inter_regular
-        font.pixelSize: 11
+        font.pixelSize: Theme.font.size.sm
         font.letterSpacing: 0.4
         color: Colors.inkDim
     }

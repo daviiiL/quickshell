@@ -53,7 +53,7 @@ Rectangle {
             text: root.label.toUpperCase()
             color: root.on ? Colors.fgSurface : Colors.inkDim
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 10
+            font.pixelSize: Theme.font.size.xs
             font.weight: Font.Medium
             font.letterSpacing: 1.8
             Behavior on color { ColorAnimation { duration: root.animMs } }
@@ -66,7 +66,7 @@ Rectangle {
             text: root.sub
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 0.3
             elide: Text.ElideRight
             Layout.fillWidth: true

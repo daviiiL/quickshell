@@ -140,7 +140,7 @@ Item {
                     text: (root.group.appName || "?").substring(0, 1).toUpperCase()
                     color: Colors.barAccent
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: 12
+                    font.pixelSize: Theme.font.size.sm
                     font.weight: Font.Medium
                 }
             }
@@ -157,7 +157,7 @@ Item {
                         text: (root.group.appName || "").toUpperCase()
                         color: Colors.fgSurface
                         font.family: Theme.font.family.inter_medium
-                        font.pixelSize: 11
+                        font.pixelSize: Theme.font.size.sm
                         font.letterSpacing: 1.4
                         font.weight: Font.Medium
                     }
@@ -177,7 +177,7 @@ Item {
                             text: root.count + (root.hasUnread ? " new" : "")
                             color: Colors.inkDim
                             font.family: Theme.font.family.inter_regular
-                            font.pixelSize: 11
+                            font.pixelSize: Theme.font.size.sm
                             font.letterSpacing: 0.4
                         }
                     }
@@ -189,23 +189,23 @@ Item {
                     Layout.fillWidth: true
                     visible: root.latest !== null
                     text: (root.latest?.summary || "") +
-                          (root.latest?.body ? (root.latest?.summary ? " — " : "") + root.latest.body : "")
+                          (root.latest?.body ? (rootlatest?.summary ? " — " : "") + root.latest.body : "")
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: 13
+                    font.pixelSize: Theme.font.size.md
                     elide: Text.ElideRight
                     maximumLineCount: 1
                 }
             }
 
-            Text {
-                Layout.alignment: Qt.AlignTop
-                text: StringUtils.relativeTime(root.group.time)
-                color: Colors.inkDimmer
-                font.family: Theme.font.family.inter_regular
-                font.pixelSize: 11
-                font.letterSpacing: 0.4
-            }
+                Text {
+                    Layout.alignment: Qt.AlignTop
+                    text: StringUtils.relativeTime(root.group.time)
+                    color: Colors.inkDimmer
+                    font.family: Theme.font.family.inter_regular
+                    font.pixelSize: Theme.font.size.sm
+                    font.letterSpacing: 0.4
+                }
 
             IconImage {
                 Layout.alignment: Qt.AlignTop

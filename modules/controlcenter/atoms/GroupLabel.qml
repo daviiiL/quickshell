@@ -12,7 +12,7 @@ Text {
 
     color: Colors.inkFaint
     font.family: Theme.font.family.inter_medium
-    font.pixelSize: 9
+    font.pixelSize: Theme.font.size.xs
     font.weight: Font.Medium
     font.letterSpacing: 2.5
 }

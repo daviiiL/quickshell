@@ -28,14 +28,14 @@ ColumnLayout {
         Layout.bottomMargin: 10
         spacing: 10
 
-        Text {
-            text: "WI-FI"
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: 11
-            font.weight: Font.Medium
-            font.letterSpacing: 1.98
-        }
+            Text {
+                text: "WI-FI"
+                color: Colors.inkDimmer
+                font.family: Theme.font.family.inter_medium
+                font.pixelSize: Theme.font.size.sm
+                font.weight: Font.Medium
+                font.letterSpacing: 1.98
+            }
 
         Rectangle {
             visible: root.wifiOn && root.scanning
@@ -56,7 +56,7 @@ ColumnLayout {
             text: "SCANNING"
             color: Colors.inkDim
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: 12
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 1.4
         }
 
@@ -97,7 +97,7 @@ ColumnLayout {
                 text: "Wi-Fi off"
                 color: Colors.inkFaint
                 font.family: Theme.font.family.inter_regular
-                font.pixelSize: 12
+                font.pixelSize: Theme.font.size.sm
             }
 
             Text {
@@ -105,7 +105,7 @@ ColumnLayout {
                 text: "TURN ON TO SCAN FOR NETWORKS"
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 9
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.4
             }
         }
@@ -119,7 +119,7 @@ ColumnLayout {
                 text: root.scanning ? "SCANNING…" : "NO NETWORKS"
                 color: Colors.inkFaint
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 10
+                font.pixelSize: Theme.font.size.xs
                 font.letterSpacing: 1.4
             }
         }

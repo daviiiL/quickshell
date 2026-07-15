@@ -60,24 +60,24 @@ Rectangle {
 
             Text {
                 Layout.fillWidth: true
-                text: root.name
-                color: Colors.fgSurface
-                font.family: Theme.font.family.inter_medium
-                font.pixelSize: 12
-                font.weight: Font.Medium
-                elide: Text.ElideRight
-            }
+            text: root.name
+            color: Colors.fgSurface
+            font.family: Theme.font.family.inter_medium
+            font.pixelSize: Theme.font.size.sm
+            font.weight: Font.Medium
+            elide: Text.ElideRight
+        }
 
-            Text {
-                visible: root.meta.length > 0
-                Layout.fillWidth: true
-                text: root.meta
-                color: Colors.inkDimmer
-                font.family: Theme.font.family.inter
-                font.pixelSize: 10
-                font.letterSpacing: 0.2
-                elide: Text.ElideRight
-            }
+        Text {
+            visible: root.meta.length > 0
+            Layout.fillWidth: true
+            text: root.meta
+            color: Colors.inkDimmer
+            font.family: Theme.font.family.inter
+            font.pixelSize: Theme.font.size.xs
+            font.letterSpacing: 0.2
+            elide: Text.ElideRight
+        }
         }
 
         MaterialSymbol {
@@ -94,7 +94,7 @@ Rectangle {
             text: root.trailingText
             color: Colors.inkDim
             font.family: Theme.font.family.inter
-            font.pixelSize: 11
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 0.2
         }
 

@@ -101,7 +101,7 @@ Rectangle {
                 text: root.ssid
                 color: root.isWeak ? Colors.inkDim : Colors.fgSurface
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 14
+                font.pixelSize: Theme.font.size.md
                 font.weight: root.isActive ? Font.Medium : Font.Normal
                 elide: Text.ElideRight
             }
@@ -116,7 +116,7 @@ Rectangle {
                         ? Colors.fgSurface
                         : (root.isActive ? Colors.live : Colors.inkDimmer)
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: 11
+                font.pixelSize: Theme.font.size.sm
                 font.letterSpacing: 1.4
             }
         }
@@ -136,7 +136,7 @@ Rectangle {
             text: root.strength + "%"
             color: Colors.inkDim
             font.family: Theme.font.family.inter_regular
-            font.pixelSize: 12
+            font.pixelSize: Theme.font.size.sm
             font.letterSpacing: 0.2
         }
     }
