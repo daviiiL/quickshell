@@ -263,7 +263,7 @@ Rectangle {
                      Layout.fillWidth: true
                      text: root.summary
                      color: Colors.fgSurface
-                     font.pixelSize: Theme.font.size.lg
+                     font.pixelSize: Theme.font.size.md
                      font.family: root.urgency === "low" ? Theme.font.family.inter_regular : Theme.font.family.inter_medium
                      font.weight: root.urgency === "low" ? Font.Normal : Font.Medium
                      elide: Text.ElideRight
@@ -274,7 +274,7 @@ Rectangle {
                      visible: root.body.length > 0
                      text: root.body
                      color: root.role === "active" ? Colors.inkDim : Colors.inkDimmer
-                     font.pixelSize: Theme.font.size.md
+                     font.pixelSize: Theme.font.size.sm
                      font.family: Theme.font.family.inter_regular
                      wrapMode: Text.Wrap
                      lineHeight: 1.4

@@ -4,6 +4,7 @@ pragma Singleton
 import Quickshell
 import Quickshell.Io as Io
 import QtQuick
+import qs.common
 import qs.services
 
 Singleton {
@@ -17,6 +18,9 @@ Singleton {
     property var pinnedApps: []     // ordered list of appId strings
     property string wallpaperPath
     property string matugenScheme
+    property int fontOffset: 0
+    readonly property int minFontOffset: -2
+    readonly property int maxFontOffset: 5
     readonly property string homeDir: Quickshell.env("HOME")
     readonly property string preferenceCacheFile: root.homeDir + "/.cache/quickshell_preferences.json"
     readonly property string defaultWallpaperPath: `${homeDir}/.config/quickshell/assets/default_paper.jpg`
@@ -30,6 +34,17 @@ Singleton {
     function setWallpaperPath(path: string) {
         root.wallpaperPath = path;
         defaultAdapter.storedWallpaperPath = path;
+    }
+
+    function clampFontOffset(offset: real): int {
+        return Math.max(root.minFontOffset, Math.min(root.maxFontOffset, Math.round(offset)));
+    }
+
+    function setFontOffset(offset: real): void {
+        const clamped = root.clampFontOffset(offset);
+        root.fontOffset = clamped;
+        GlobalStates.fontOffset = clamped;
+        defaultAdapter.fontOffset = clamped;
     }
 
     function recordLaunch(appId: string): void {
@@ -72,6 +87,7 @@ Singleton {
         property bool usePreferredScheme
         property bool openrazerInstalled
         property bool focusedMode
+        property int fontOffset: 0
         property string appUsageJson: "{}"
         property string pinnedAppsJson: "[]"
     }
@@ -95,6 +111,8 @@ Singleton {
             root.usePreferredScheme = defaultAdapter.usePreferredScheme;
             root.openrazerInstalled = defaultAdapter.openrazerInstalled;
             root.focusedMode = defaultAdapter.focusedMode;
+            root.fontOffset = root.clampFontOffset(defaultAdapter.fontOffset);
+            GlobalStates.fontOffset = root.fontOffset;
             try {
                 const usage = JSON.parse(defaultAdapter.appUsageJson || "{}");
                 root.appUsage = (usage && typeof usage === "object" && !Array.isArray(usage)) ? usage : ({});
@@ -117,6 +135,7 @@ Singleton {
             defaultAdapter.usePreferredScheme = true;
             defaultAdapter.openrazerInstalled = false;
             defaultAdapter.focusedMode = false;
+            defaultAdapter.fontOffset = 0;
 
             root.darkMode = true;
             root.wallpaperPath = root.defaultWallpaperPath;
@@ -124,6 +143,8 @@ Singleton {
             root.usePreferredScheme = true;
             root.openrazerInstalled = false;
             root.focusedMode = false;
+            root.fontOffset = 0;
+            GlobalStates.fontOffset = 0;
 
             defaultAdapter.appUsageJson = "{}";
             defaultAdapter.pinnedAppsJson = "[]";

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
+import qs.common
 
 Singleton {
     id: root
@@ -108,12 +109,13 @@ Singleton {
     }
 
     component FontSize: QtObject {
-        readonly property int xxs: 7
-        readonly property int xs: 10
-        readonly property int sm: 12
-        readonly property int md: 14
-        readonly property int lg: 16
-        readonly property int xl: 18
-        readonly property int xxl: 20
+        readonly property int offset: GlobalStates.fontOffset
+        readonly property int xxs: 7 + offset
+        readonly property int xs: 10 + offset
+        readonly property int sm: 12 + offset
+        readonly property int md: 14 + offset
+        readonly property int lg: 16 + offset
+        readonly property int xl: 18 + offset
+        readonly property int xxl: 20 + offset
     }
 }

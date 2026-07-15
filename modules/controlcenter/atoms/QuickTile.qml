@@ -66,7 +66,7 @@ Rectangle {
             text: root.sub
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.xs
             font.letterSpacing: 0.3
             elide: Text.ElideRight
             Layout.fillWidth: true

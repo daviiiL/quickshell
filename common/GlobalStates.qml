@@ -59,4 +59,6 @@ Singleton {
     function toggleDarkMode(): void {
         darkMode = !darkMode;
     }
+
+    property int fontOffset: 0
 }

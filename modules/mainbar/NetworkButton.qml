@@ -106,7 +106,7 @@ MainBarButton {
         color: root.hovered ? Colors.fgSurface : Colors.inkDim
         font.family: Theme.font.family.inter_medium
         font.weight: Font.Medium
-        font.pixelSize: Theme.font.size.lg
+        font.pixelSize: Theme.font.size.sm
         Layout.preferredWidth: 80
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight

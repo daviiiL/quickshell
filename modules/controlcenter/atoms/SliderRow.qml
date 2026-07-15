@@ -23,6 +23,7 @@ Item {
     implicitHeight: 44
 
     readonly property real progress: Math.max(0, Math.min(1, root.value))
+    property string valueText: Math.round(root.progress * 100) + "%"
     readonly property bool hot: drag.containsMouse || drag.pressed
 
     opacity: root.available ? 1.0 : 0.45
@@ -140,7 +141,7 @@ Item {
             Layout.preferredWidth: 32
             Layout.alignment: Qt.AlignVCenter
             horizontalAlignment: Text.AlignRight
-            text: Math.round(root.progress * 100) + "%"
+            text: root.valueText
             color: Colors.inkDim
             font.family: Theme.font.family.inter
             font.pixelSize: Theme.font.size.sm

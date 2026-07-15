@@ -35,7 +35,7 @@ Rectangle {
             Text {
                 text: DateTime.hrs
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.lg
+                font.pixelSize: Theme.font.size.xl
                 font.weight: Font.Medium
                 color: Colors.fgSurface
                 font.letterSpacing: 0.4
@@ -44,7 +44,7 @@ Rectangle {
             Text {
                 text: ":"
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.lg
+                font.pixelSize: Theme.font.size.xl
                 font.weight: Font.Medium
                 color: Colors.barAccent
 
@@ -58,7 +58,7 @@ Rectangle {
             Text {
                 text: DateTime.mins
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.lg
+                font.pixelSize: Theme.font.size.xl
                 font.weight: Font.Medium
                 color: Colors.fgSurface
                 font.letterSpacing: 0.4
@@ -74,7 +74,7 @@ Rectangle {
         Text {
             text: DateTime.date.toUpperCase()
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.md
+            font.pixelSize: Theme.font.size.sm
             color: Colors.inkDim
             font.letterSpacing: 1.0
             Layout.preferredWidth: 62

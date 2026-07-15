@@ -177,7 +177,7 @@ Item {
                             text: root.count + (root.hasUnread ? " new" : "")
                             color: Colors.inkDim
                             font.family: Theme.font.family.inter_regular
-                            font.pixelSize: Theme.font.size.sm
+                            font.pixelSize: Theme.font.size.xs
                             font.letterSpacing: 0.4
                         }
                     }
@@ -189,7 +189,7 @@ Item {
                     Layout.fillWidth: true
                     visible: root.latest !== null
                     text: (root.latest?.summary || "") +
-                          (root.latest?.body ? (rootlatest?.summary ? " — " : "") + root.latest.body : "")
+                          (root.latest?.body ? (root.latest?.summary ? " — " : "") + root.latest.body : "")
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_regular
                     font.pixelSize: Theme.font.size.md

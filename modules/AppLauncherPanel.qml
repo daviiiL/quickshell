@@ -250,7 +250,7 @@ Scope {
                                 selectionColor: Colors.hairHot
                                 selectedTextColor: Colors.fgSurface
                                 font.family: Theme.font.family.inter
-                                font.pixelSize: Theme.font.size.xxl
+                                font.pixelSize: Theme.font.size.xl
 
                                 padding: 0
                                 leftPadding: 0

@@ -46,7 +46,7 @@ Flickable {
         Text {
             Layout.topMargin: 4
             Layout.bottomMargin: 18
-            text: "BRIGHTNESS · COLOR"
+            text: "BRIGHTNESS · COLOR · TEXT"
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter_medium
             font.pixelSize: Theme.font.size.xs
@@ -91,6 +91,19 @@ Flickable {
                 }
 
                 Item { Layout.fillWidth: true }
+            }
+        }
+
+        GroupLabel { text: "TEXT" }
+
+        GroupBox {
+            SliderRow {
+                readonly property int span: Preferences.maxFontOffset - Preferences.minFontOffset
+                iconSymbol: "format_size"
+                label: "Font size"
+                value: (Preferences.fontOffset - Preferences.minFontOffset) / span
+                valueText: (Preferences.fontOffset > 0 ? "+" : "") + Preferences.fontOffset
+                onMoved: v => Preferences.setFontOffset(Preferences.minFontOffset + v * span)
             }
         }
     }
