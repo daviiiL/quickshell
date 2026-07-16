@@ -27,6 +27,25 @@ ShellRoot {
         function light():  void { GlobalStates.darkMode = false; }
     }
 
+    IpcHandler {
+        target: "fcitx"
+
+        // the interceptor entry point: niri binds Ctrl+Space to this call
+        function toggle(): void { Fcitx.toggle(); }
+
+        function status(): string {
+            return JSON.stringify({
+                ready: Fcitx.ready,
+                im: Fcitx.currentIm,
+                code: Fcitx.currentCode,
+                display: Fcitx.currentDisplay,
+                index: Fcitx.groupIndex,
+                total: Fcitx.groupTotal,
+                announcing: Fcitx.announcing
+            });
+        }
+    }
+
     Loader {
         active: Preferences.isLoaded
 

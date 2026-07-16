@@ -120,6 +120,22 @@ Scope {
 
                     RowLayout {
                         spacing: 0
+                        visible: Fcitx.ready
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        LangButton {}
+                    }
+
+                    Rectangle {
+                        visible: Fcitx.ready
+                        Layout.preferredWidth: Theme.ui.mainBarHairWidth
+                        Layout.fillHeight: true
+                        color: Colors.hair
+                    }
+
+                    RowLayout {
+                        spacing: 0
                         Layout.fillHeight: true
                         Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
                         Layout.rightMargin: Theme.ui.mainBarSubGroupPadX

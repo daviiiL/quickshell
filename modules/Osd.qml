@@ -33,20 +33,21 @@ Scope {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
             anchors { top: true; left: true; right: true }
-            implicitHeight: 36 + 24
+            implicitHeight: 56 + 24
             exclusiveZone: 0
             color: "transparent"
 
             Item {
                 anchors.fill: parent
 
-                OsdPill {
+                Loader {
                     id: pill
-                    channel: controller.channel
 
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.top: parent.top
                     anchors.topMargin: 24
+
+                    sourceComponent: controller.channel === "lang" ? langPill : valuePill
 
                     readonly property bool shown: controller.state === "SHOWN"
                     readonly property var activeCurve: shown
@@ -71,6 +72,15 @@ Scope {
                                 easing.bezierCurve: pill.activeCurve
                             }
                         }
+                    }
+
+                    Component {
+                        id: valuePill
+                        OsdPill { channel: controller.channel }
+                    }
+                    Component {
+                        id: langPill
+                        LangOsdPill {}
                     }
                 }
             }

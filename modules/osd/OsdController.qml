@@ -62,4 +62,9 @@ Item {
         enabled: Brightness._pathsReady
         function onBrightnessChanged() { root.trigger("brightness"); }
     }
+
+    Connections {
+        target: Fcitx
+        function onSwitched() { root.trigger("lang"); }
+    }
 }
