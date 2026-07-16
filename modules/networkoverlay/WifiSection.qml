@@ -60,6 +60,23 @@ ColumnLayout {
             font.letterSpacing: 1.4
         }
 
+        Rectangle {
+            visible: !root.wifiOn
+            Layout.preferredWidth: 5
+            Layout.preferredHeight: 5
+            radius: 2.5
+            color: Colors.inkFaint
+        }
+
+        Text {
+            visible: !root.wifiOn
+            text: "OFF"
+            color: Colors.inkDim
+            font.family: Theme.font.family.inter_medium
+            font.pixelSize: Theme.font.size.sm
+            font.letterSpacing: 1.4
+        }
+
         Item { Layout.fillWidth: true }
 
         Switch {
@@ -82,26 +99,12 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        ColumnLayout {
-            id: offState
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
+        Item {
+            anchors.fill: parent
             visible: !root.wifiOn
-            spacing: 4
-
-            Item { Layout.preferredHeight: 14 }
 
             Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: "Wi-Fi off"
-                color: Colors.inkFaint
-                font.family: Theme.font.family.inter_regular
-                font.pixelSize: Theme.font.size.sm
-            }
-
-            Text {
-                Layout.alignment: Qt.AlignHCenter
+                anchors.centerIn: parent
                 text: "TURN ON TO SCAN FOR NETWORKS"
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
