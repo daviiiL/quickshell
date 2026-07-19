@@ -2,6 +2,8 @@
 
 material-vertical uses razer-cli and openrazer to match the theme colorscheme with your device rgbs... so install both beforehand if you want that
 
+some UI modules and service singletons need extra system pacakges to function; without them, the shell might not display some UI modules
+
 ## TODO
 
 - [ ] Polish services
