@@ -21,6 +21,14 @@ Singleton {
     property int fontOffset: 0
     readonly property int minFontOffset: -2
     readonly property int maxFontOffset: 5
+
+    property string geminiApiKey: ""
+    property string geminiModel: "gemini-2.5-flash"
+    property real geminiTemperature: 1.0
+    property int geminiMaxTokens: 0
+    property string geminiSystemPrompt: ""
+    property bool geminiWebSearch: true
+    readonly property bool geminiConfigured: geminiApiKey.length > 0
     readonly property string homeDir: Quickshell.env("HOME")
     readonly property string preferenceCacheFile: root.homeDir + "/.cache/quickshell_preferences.json"
     readonly property string defaultWallpaperPath: `${homeDir}/.config/quickshell/assets/default_paper.jpg`
@@ -45,6 +53,38 @@ Singleton {
         root.fontOffset = clamped;
         GlobalStates.fontOffset = clamped;
         defaultAdapter.fontOffset = clamped;
+    }
+
+    function setGeminiApiKey(key: string): void {
+        const k = (key || "").trim();
+        root.geminiApiKey = k;
+        defaultAdapter.geminiApiKey = k;
+    }
+
+    function setGeminiModel(model: string): void {
+        const m = model && model.length > 0 ? model : "gemini-2.5-flash";
+        root.geminiModel = m;
+        defaultAdapter.geminiModel = m;
+    }
+
+    function setGeminiTemperature(v: real): void {
+        root.geminiTemperature = Math.max(0, Math.min(2, v));
+        defaultAdapter.geminiTemperature = root.geminiTemperature;
+    }
+
+    function setGeminiMaxTokens(n: int): void {
+        root.geminiMaxTokens = Math.max(0, n);
+        defaultAdapter.geminiMaxTokens = root.geminiMaxTokens;
+    }
+
+    function setGeminiSystemPrompt(s: string): void {
+        root.geminiSystemPrompt = s;
+        defaultAdapter.geminiSystemPrompt = s;
+    }
+
+    function setGeminiWebSearch(on: bool): void {
+        root.geminiWebSearch = on;
+        defaultAdapter.geminiWebSearch = on;
     }
 
     function recordLaunch(appId: string): void {
@@ -90,6 +130,13 @@ Singleton {
         property int fontOffset: 0
         property string appUsageJson: "{}"
         property string pinnedAppsJson: "[]"
+
+        property string geminiApiKey: ""
+        property string geminiModel: "gemini-2.5-flash"
+        property real geminiTemperature: 1.0
+        property int geminiMaxTokens: 0
+        property string geminiSystemPrompt: ""
+        property bool geminiWebSearch: true
     }
 
     Io.FileView {
@@ -125,6 +172,14 @@ Singleton {
             } catch (e) {
                 root.pinnedApps = [];
             }
+
+            root.geminiApiKey = defaultAdapter.geminiApiKey;
+            root.geminiModel = defaultAdapter.geminiModel || "gemini-2.5-flash";
+            root.geminiTemperature = defaultAdapter.geminiTemperature;
+            root.geminiMaxTokens = defaultAdapter.geminiMaxTokens;
+            root.geminiSystemPrompt = defaultAdapter.geminiSystemPrompt;
+            root.geminiWebSearch = defaultAdapter.geminiWebSearch;
+
             root.isLoaded = true;
         }
 
@@ -150,6 +205,19 @@ Singleton {
             defaultAdapter.pinnedAppsJson = "[]";
             root.appUsage = ({});
             root.pinnedApps = [];
+
+            defaultAdapter.geminiApiKey = "";
+            defaultAdapter.geminiModel = "gemini-2.5-flash";
+            defaultAdapter.geminiTemperature = 1.0;
+            defaultAdapter.geminiMaxTokens = 0;
+            defaultAdapter.geminiSystemPrompt = "";
+            defaultAdapter.geminiWebSearch = true;
+            root.geminiApiKey = "";
+            root.geminiModel = "gemini-2.5-flash";
+            root.geminiTemperature = 1.0;
+            root.geminiMaxTokens = 0;
+            root.geminiSystemPrompt = "";
+            root.geminiWebSearch = true;
 
             root.isLoaded = true;
             prefFileView.writeAdapter();

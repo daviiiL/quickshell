@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Gemini Avatar — Design Lab</title>
+<style>
+  :root {
+    --bar-bg: #0a0a0a;
+    --panel-bg: #0f0f13;
+    --tile-bg: #141218;
+    --tile-bg2: #0f0d13;
+    --ink: #e6e0e9;
+    --ink-dim: #8f8f8f;
+    --ink-dimmer: #6b6b6b;
+    --ink-faint: #4d4d4d;
+    --hair: #232323;
+    --hair-hot: #3a3a3a;
+    --accent: #c4bae0;
+    --desktop-base: #07070a;
+    --desktop-warm: #16141c;
+    --desktop-cool: #101016;
+    --font-xxs: 10px;
+    --font-xs: 11px;
+    --font-sm: 13px;
+    --font-md: 15px;
+    --font-lg: 18px;
+    --radius: 6px;
+  }
+  :root[data-theme="light"] {
+    --bar-bg: #e4e0e9;
+    --panel-bg: #f0ecf3;
+    --tile-bg: #faf8fc;
+    --tile-bg2: #f2eef6;
+    --ink: #1c1820;
+    --ink-dim: #5b5764;
+    --ink-dimmer: #827e8a;
+    --ink-faint: #a8a4b0;
+    --hair: #dcd7e0;
+    --hair-hot: #c3bece;
+    --accent: #7462a4;
+    --desktop-base: #dcd7e0;
+    --desktop-warm: #ebe6ee;
+    --desktop-cool: #d7d3dd;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background:
+      radial-gradient(1100px 620px at 70% 15%, var(--desktop-warm) 0%, transparent 62%),
+      radial-gradient(900px 520px at 15% 90%, var(--desktop-cool) 0%, transparent 60%),
+      var(--desktop-base);
+    font-family: "Inter", "Inter Nerd Font Propo", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100%;
+    padding-bottom: 60px;
+  }
+
+  /* ── top-central controller ─────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bar-bg) 90%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--hair);
+    padding: 14px 18px 15px;
+    display: flex; flex-direction: column; align-items: center; gap: 11px;
+  }
+  .titlerow { display: flex; align-items: baseline; gap: 10px; }
+  .titlerow h1 {
+    margin: 0; font-size: var(--font-sm); font-weight: 600;
+    letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink);
+  }
+  .titlerow .sub {
+    font-size: var(--font-xxs); letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .states { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .sbtn {
+    appearance: none; font-family: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 7px 14px; height: 32px;
+    background: var(--tile-bg2); color: var(--ink-dim);
+    border: 1px solid var(--hair); border-radius: var(--radius);
+    font-size: var(--font-xxs); letter-spacing: 0.18em; text-transform: uppercase;
+    transition: color .18s, border-color .18s, background .18s;
+  }
+  .sbtn .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-faint); transition: background .3s, box-shadow .3s; }
+  .sbtn:hover { color: var(--ink); border-color: var(--hair-hot); }
+  .sbtn.active { color: var(--ink); border-color: color-mix(in srgb, var(--sc, var(--accent)) 60%, var(--hair)); background: color-mix(in srgb, var(--sc, var(--accent)) 10%, var(--tile-bg2)); }
+  .sbtn.active .dot { background: var(--sc, var(--accent)); box-shadow: 0 0 9px var(--sc, var(--accent)); }
+
+  .aux { display: flex; gap: 6px; align-items: center; }
+  .tbtn {
+    appearance: none; font-family: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 11px; height: 26px;
+    background: transparent; color: var(--ink-dimmer);
+    border: 1px solid var(--hair); border-radius: var(--radius);
+    font-size: var(--font-xxs); letter-spacing: 0.18em; text-transform: uppercase;
+    transition: color .18s, border-color .18s;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--hair-hot); }
+  .tbtn.on { color: var(--ink); border-color: var(--hair-hot); }
+  .tbtn .dot { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--ink-faint); }
+  .tbtn.on .dot { background: var(--accent); border-color: var(--accent); }
+
+  /* ── the gallery ────────────────────────────────────────────────────── */
+  .grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    padding: 22px; max-width: 1180px; margin: 0 auto;
+  }
+  .tile {
+    background: var(--tile-bg);
+    border: 1px solid var(--hair); border-radius: 10px;
+    overflow: hidden; position: relative;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.28);
+  }
+  :root[data-theme="light"] .tile { box-shadow: 0 8px 26px rgba(0,0,0,0.08); }
+  .tile .stage {
+    height: 188px;
+    background:
+      radial-gradient(120% 90% at 50% 34%, color-mix(in srgb, var(--ink) 3%, transparent), transparent 72%),
+      var(--tile-bg2);
+  }
+  .tile canvas { display: block; width: 100%; height: 100%; }
+  .tile .cap {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 10px 14px; border-top: 1px solid var(--hair);
+  }
+  .tile .cap .n { font-size: var(--font-xs); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+  .tile .cap .s { font-size: var(--font-xxs); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-faint); margin-left: auto; }
+  .tile .idx {
+    position: absolute; top: 9px; left: 12px;
+    font-size: var(--font-xxs); letter-spacing: 0.2em; color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .foot { text-align: center; color: var(--ink-faint); font-size: var(--font-xxs); letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 0 24px; }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="titlerow">
+      <h1>◆ Gemini Avatar</h1>
+      <span class="sub">design lab · pick a direction</span>
+    </div>
+    <div class="states" id="states"></div>
+    <div class="aux">
+      <button class="tbtn" id="cycle"><span class="dot"></span>auto-cycle</button>
+      <button class="tbtn" id="theme"><span class="dot"></span>light</button>
+    </div>
+  </header>
+
+  <main class="grid" id="grid"></main>
+  <div class="foot" id="foot">every tile shares the state above — compare how each expresses it</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+//  Shared state model
+// ═══════════════════════════════════════════════════════════════════════
+const STATE_LIST = ['boot', 'connecting', 'thinking', 'responding', 'idle', 'offline'];
+const ENERGY = { boot: 0.35, connecting: 0.55, thinking: 0.95, responding: 0.6, idle: 0.18, offline: 0 };
+
+const PAL = {
+  dark:  { ink:[228,226,232], dim:[120,120,134],
+           boot:[196,220,244], connecting:[221,193,150], thinking:[196,186,224],
+           responding:[196,186,224], idle:[126,178,142], offline:[214,156,150] },
+  light: { ink:[38,34,46], dim:[150,146,162],
+           boot:[70,96,134], connecting:[150,116,58], thinking:[116,98,164],
+           responding:[116,98,164], idle:[74,128,92], offline:[168,86,80] },
+};
+let P = PAL.dark;
+
+let state = 'thinking';
+let stateStart = 0;
+let since = 0;
+let accent = [160, 160, 175];
+let energy = 0.5;
+
+// ── colour helpers ────────────────────────────────────────────────────
+const col  = (c, a) => 'rgba(' + (c[0]|0) + ',' + (c[1]|0) + ',' + (c[2]|0) + ',' + a + ')';
+const AC   = a => col(accent, a);
+const DIM  = a => col(P.dim, a);
+const mixv = (x, y, k) => [x[0]+(y[0]-x[0])*k, x[1]+(y[1]-x[1])*k, x[2]+(y[2]-x[2])*k];
+const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+const TAU = Math.PI * 2;
+
+// ═══════════════════════════════════════════════════════════════════════
+//  Pattern drawers — each reads the shared `state`, `accent`, `energy`
+// ═══════════════════════════════════════════════════════════════════════
+
+// 1 · LED dot matrix
+function dotMatrix(ctx, w, h, t) {
+  const gap = 13, cs = 6;
+  const cols = Math.floor(w / gap), rows = Math.floor(h / gap);
+  const ox = (w - cols*gap)/2 + gap/2, oy = (h - rows*gap)/2 + gap/2;
+  const cx = w/2, cy = h/2, maxR = Math.hypot(cx, cy);
+  const boot = state === 'boot' ? clamp01(since/1200) : 1;
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+    const x = ox+i*gap, y = oy+j*gap, r = Math.hypot(x-cx, y-cy);
+    let b = 0.05 + 0.05*(0.5+0.5*Math.sin(r*0.11 - t*0.0018));
+    if (state === 'thinking')   b += energy*0.55*Math.abs(Math.sin(t*0.004 + i*0.9 + j*0.7));
+    if (state === 'responding') { const pr = ((t)%1300)/1300*maxR; b += 0.6*Math.exp(-((r-pr)**2)/200); }
+    if (state === 'connecting') { const sx = ((t)%1100)/1100*w;   b += 0.5*Math.exp(-((x-sx)**2)/288); }
+    if (state === 'idle')       b += 0.07*(0.5+0.5*Math.sin(t*0.0015 - r*0.05));
+    if (state === 'offline')    b *= 0.22;
+    if (state === 'boot')       b *= (r < boot*maxR ? 1 : 0);
+    b = clamp01(b);
+    const cc = mixv(P.dim, accent, clamp01(b*1.3));
+    ctx.fillStyle = col(cc, (0.10 + 0.9*b).toFixed(3));
+    ctx.fillRect(x-cs/2, y-cs/2, cs, cs);
+  }
+}
+
+// 2 · orbital particles
+function orbital(ctx, w, h, t, tile) {
+  if (!tile.p) { tile.p = []; for (let k = 0; k < 21; k++) tile.p.push({ ring: 0.4 + (k%3)*0.22, spd: 0.5 + (k%5)*0.14, ph: (k*2.399)%TAU }); }
+  const cx = w/2, cy = h/2, R = Math.min(w, h)*0.42;
+  ctx.fillStyle = AC(0.55 + 0.3*Math.sin(t*0.003));
+  ctx.beginPath(); ctx.arc(cx, cy, 3, 0, TAU); ctx.fill();
+  const spin = state==='thinking'?3 : state==='idle'?0.55 : state==='connecting'?1.6 : 1.1;
+  for (const p of tile.p) {
+    let rad = R*p.ring, alpha = 1;
+    let a = p.ph + t*0.001*p.spd*spin;
+    if (state === 'connecting') { const pr = ((t + p.ph*260)%1600)/1600; rad = R*p.ring + (1-pr)*R*1.5; a += (1-pr)*5; alpha = Math.min(1, pr*1.4); }
+    else if (state === 'responding') { rad = R*p.ring*(0.72 + 0.5*(0.5+0.5*Math.sin(t*0.006 - p.ring*3))); }
+    else if (state === 'thinking') { rad += Math.sin(t*0.01 + p.ph)*6; }
+    else if (state === 'offline') { const pr = clamp01(since/1300); rad = R*p.ring + pr*R*1.6; alpha = 1-pr; }
+    else if (state === 'boot') { alpha = clamp01(since/900); rad *= alpha; }
+    const x = cx+Math.cos(a)*rad, y = cy+Math.sin(a)*rad;
+    ctx.fillStyle = AC(alpha*(0.45 + 0.4*Math.sin(t*0.004 + p.ph)));
+    ctx.beginPath(); ctx.arc(x, y, 2.2, 0, TAU); ctx.fill();
+  }
+}
+
+// 3 · concentric rings / halo
+function rings(ctx, w, h, t) {
+  const cx = w/2, cy = h/2, R = Math.min(w, h)*0.44;
+  ctx.lineWidth = 1.4;
+  for (let k = 1; k <= 4; k++) {
+    let rr = R*k/4;
+    if (state === 'idle')     rr *= 1 + 0.045*Math.sin(t*0.0016 - k);
+    if (state === 'thinking') rr *= 1 + 0.06*Math.sin(t*0.006 - k*1.4);
+    if (state === 'boot')     rr *= clamp01(since/1000);
+    ctx.strokeStyle = AC((0.5 - k*0.08) * (state==='offline'?0.28:1));
+    ctx.beginPath(); ctx.arc(cx, cy, rr, 0, TAU); ctx.stroke();
+  }
+  if (state === 'responding' || state === 'connecting') {
+    const per = state==='connecting'?1100:1500, n = state==='connecting'?1:2;
+    for (let s = 0; s < n; s++) { const pr = ((t + s*per/n)%per)/per; ctx.strokeStyle = AC(0.7*(1-pr)); ctx.beginPath(); ctx.arc(cx, cy, pr*R*1.25, 0, TAU); ctx.stroke(); }
+  }
+  ctx.fillStyle = AC(state==='offline'?0.3:0.65); ctx.beginPath(); ctx.arc(cx, cy, 3, 0, TAU); ctx.fill();
+}
+
+// 4 · equalizer bars
+function equalizer(ctx, w, h, t) {
+  const n = 13, bw = Math.min(9, w/(n*1.9)), gap = (w - n*bw)/(n+1), midY = h/2, maxH = h*0.66;
+  for (let i = 0; i < n; i++) {
+    const x = gap + i*(bw+gap) + bw/2, nrm = i/(n-1);
+    let v = 0.12;
+    if (state === 'idle')       v = 0.14 + 0.12*(0.5+0.5*Math.sin(t*0.002 - i*0.5));
+    else if (state === 'thinking')   v = 0.2 + 0.75*energy*Math.abs(Math.sin(t*0.005 + i*1.3));
+    else if (state === 'responding') { const wv = ((t)%1400)/1400; v = 0.15 + 0.8*Math.exp(-((nrm-wv)**2)/0.06); }
+    else if (state === 'connecting') { const sc = ((t)%1000)/1000; v = 0.12 + 0.8*Math.exp(-((nrm-sc)**2)/0.012); }
+    else if (state === 'offline')    v = 0.07;
+    else if (state === 'boot')       v = clamp01(since/1000) * (0.12 + 0.1*Math.sin(t*0.004 + i));
+    const bh = maxH*clamp01(v);
+    const cc = mixv(P.dim, accent, clamp01(v*1.2));
+    ctx.fillStyle = col(cc, 0.9);
+    ctx.beginPath(); ctx.roundRect(x-bw/2, midY-bh/2, bw, bh, bw/2); ctx.fill();
+  }
+}
+
+// 5 · liquid orb / metaball
+function liquid(ctx, w, h, t) {
+  const cx = w/2, cy = h/2, R = Math.min(w, h)*0.32;
+  const turb = state==='thinking'?1 : state==='responding'?0.6 : state==='connecting'?0.85 : state==='offline'?0.15 : 0.25;
+  const scale = state==='responding' ? 1 + 0.11*Math.sin(t*0.006)
+              : state==='offline' ? Math.max(0.25, 1-since/1400)
+              : state==='boot' ? clamp01(since/1000) : 1;
+  ctx.beginPath();
+  const steps = 54;
+  for (let i = 0; i <= steps; i++) {
+    const a = i/steps*TAU;
+    const rr = R*scale*(1 + turb*(0.10*Math.sin(a*3 + t*0.002) + 0.06*Math.sin(a*5 - t*0.0033) + 0.04*Math.sin(a*2 + t*0.004)));
+    const x = cx+Math.cos(a)*rr, y = cy+Math.sin(a)*rr;
+    i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+  }
+  ctx.closePath();
+  const g = ctx.createRadialGradient(cx, cy-R*0.25, 2, cx, cy, R*1.4);
+  g.addColorStop(0, AC(0.85)); g.addColorStop(1, AC(0.05));
+  ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = AC(0.35); ctx.lineWidth = 1; ctx.stroke();
+}
+
+// 6 · constellation / network
+function constellation(ctx, w, h, t, tile) {
+  if (!tile.p) { tile.p = []; for (let k = 0; k < 11; k++) tile.p.push({ x: 0.16 + ((k*0.618)%1)*0.68, y: 0.18 + ((k*0.415+0.2)%1)*0.64, ph: (k*1.7)%TAU }); }
+  const N = tile.p.length;
+  const pts = tile.p.map((p, k) => ({ x: (p.x + 0.02*Math.sin(t*0.0007 + p.ph))*w, y: (p.y + 0.02*Math.cos(t*0.0009 + p.ph))*h, k }));
+  const lim = Math.min(w, h)*0.42, cx = w/2, cy = h/2;
+  ctx.lineWidth = 0.8;
+  for (let a = 0; a < N; a++) for (let b = a+1; b < N; b++) {
+    const d = Math.hypot(pts[a].x-pts[b].x, pts[a].y-pts[b].y);
+    if (d < lim) {
+      let al = (1 - d/lim)*0.45;
+      if (state === 'connecting') al *= ((a+b)/(2*N) < clamp01(since/1600)) ? 1 : 0;
+      if (state === 'thinking')   al *= 0.4 + 0.6*Math.abs(Math.sin(t*0.004 + a + b));
+      if (state === 'offline')    al *= 0.18;
+      ctx.strokeStyle = AC(al); ctx.beginPath(); ctx.moveTo(pts[a].x, pts[a].y); ctx.lineTo(pts[b].x, pts[b].y); ctx.stroke();
+    }
+  }
+  for (const p of pts) {
+    let b = 0.5;
+    if (state === 'responding') { const r = Math.hypot(p.x-cx, p.y-cy); const pr = ((t)%1400)/1400*Math.max(w, h)*0.55; b = 0.3 + 0.7*Math.exp(-((r-pr)**2)/650); }
+    else if (state === 'idle')     b = 0.4 + 0.2*Math.sin(t*0.002 + p.k);
+    else if (state === 'offline')  b = 0.2;
+    else if (state === 'connecting') b = (p.k/N < clamp01(since/1600)) ? 0.7 : 0.2;
+    ctx.fillStyle = AC(b); ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, TAU); ctx.fill();
+  }
+}
+
+// 7 · sonar waveform
+function waveform(ctx, w, h, t) {
+  const midY = h/2, amp = h*0.28;
+  const env = state==='thinking'?1 : state==='responding'?(0.4+0.6*Math.abs(Math.sin(t*0.005))) : state==='idle'?0.25 : state==='offline'?0.03 : state==='boot'?clamp01(since/1000)*0.5 : 0.4;
+  const freq = state==='thinking'?1.3 : 1;
+  ctx.lineWidth = 1.7; ctx.strokeStyle = AC(0.85); ctx.beginPath();
+  for (let x = 0; x <= w; x += 3) {
+    const nx = x/w;
+    let y = midY + Math.sin(nx*18*freq + t*0.006)*amp*env*0.5 + Math.sin(nx*7 - t*0.003)*amp*env*0.32;
+    if (state === 'connecting') { const px = ((t)%1100)/1100; y -= Math.exp(-((nx-px)**2)/0.008)*amp*0.9; }
+    x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+  }
+  ctx.stroke();
+}
+
+// 8 · pulse core / orb
+function pulseCore(ctx, w, h, t) {
+  const cx = w/2, cy = h/2, R = Math.min(w, h)*0.3;
+  const br = state==='thinking' ? 1+0.06*Math.sin(t*0.008)
+           : state==='idle' ? 1+0.05*Math.sin(t*0.0016)
+           : state==='offline' ? 0.6
+           : state==='boot' ? clamp01(since/900) : 1;
+  const rad = R*br;
+  const g = ctx.createRadialGradient(cx, cy, 1, cx, cy, rad*1.7);
+  g.addColorStop(0, AC(0.9)); g.addColorStop(0.5, AC(0.28)); g.addColorStop(1, AC(0));
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, rad*1.7, 0, TAU); ctx.fill();
+  if (state === 'responding' || state === 'connecting') {
+    const per = state==='connecting'?1000:1400, pr = ((t)%per)/per;
+    ctx.strokeStyle = AC(0.6*(1-pr)); ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(cx, cy, rad + pr*R*1.6, 0, TAU); ctx.stroke();
+  }
+  ctx.fillStyle = AC(state==='offline'?0.4:1); ctx.beginPath(); ctx.arc(cx, cy, 3.2, 0, TAU); ctx.fill();
+}
+
+const TILES = [
+  { name: 'Dot Matrix',    sub: 'LED field',  draw: dotMatrix },
+  { name: 'Orbital',       sub: 'particles',  draw: orbital },
+  { name: 'Halo',          sub: 'rings',      draw: rings },
+  { name: 'Equalizer',     sub: 'bars',       draw: equalizer },
+  { name: 'Liquid',        sub: 'metaball',   draw: liquid },
+  { name: 'Constellation', sub: 'network',    draw: constellation },
+  { name: 'Waveform',      sub: 'sonar',      draw: waveform },
+  { name: 'Pulse Core',    sub: 'orb',        draw: pulseCore },
+];
+
+// ═══════════════════════════════════════════════════════════════════════
+//  Wiring
+// ═══════════════════════════════════════════════════════════════════════
+function refreshPalette() { P = document.documentElement.getAttribute('data-theme') === 'light' ? PAL.light : PAL.dark; }
+
+// build tiles
+const grid = document.getElementById('grid');
+TILES.forEach((tile, i) => {
+  const el = document.createElement('div');
+  el.className = 'tile';
+  el.innerHTML = `<span class="idx">${String(i+1).padStart(2,'0')}</span>
+    <div class="stage"><canvas></canvas></div>
+    <div class="cap"><span class="n">${tile.name}</span><span class="s">${tile.sub}</span></div>`;
+  grid.appendChild(el);
+  tile.cv = el.querySelector('canvas');
+});
+
+// build state buttons
+const statesEl = document.getElementById('states');
+const btns = {};
+STATE_LIST.forEach(s => {
+  const b = document.createElement('button');
+  b.className = 'sbtn'; b.dataset.state = s;
+  b.innerHTML = `<span class="dot"></span>${s}`;
+  b.addEventListener('click', () => setState(s));
+  statesEl.appendChild(b); btns[s] = b;
+});
+function setState(s) {
+  state = s; stateStart = perf();
+  for (const k in btns) {
+    btns[k].classList.toggle('active', k === s);
+    const c = P[k]; btns[k].style.setProperty('--sc', `rgb(${c[0]},${c[1]},${c[2]})`);
+  }
+}
+
+// aux toggles
+let cycling = false, cycleTimer = null;
+const cycleBtn = document.getElementById('cycle');
+cycleBtn.addEventListener('click', () => {
+  cycling = !cycling; cycleBtn.classList.toggle('on', cycling);
+  if (cycling) cycleTimer = setInterval(() => setState(STATE_LIST[(STATE_LIST.indexOf(state)+1) % STATE_LIST.length]), 2600);
+  else clearInterval(cycleTimer);
+});
+const themeBtn = document.getElementById('theme');
+themeBtn.addEventListener('click', () => {
+  const light = document.documentElement.getAttribute('data-theme') !== 'light';
+  document.documentElement.setAttribute('data-theme', light ? 'light' : 'dark');
+  themeBtn.classList.toggle('on', light);
+  refreshPalette(); setState(state);
+});
+
+// ── loop ──────────────────────────────────────────────────────────────
+let last = 0, T0 = 0;
+function perf() { return T0; }   // resolve-safe: we stamp T0 each frame
+function fit(cv) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)) { cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+function loop(now) {
+  T0 = now;
+  const dt = last ? now - last : 16; last = now;
+  accent = mixv(accent, P[state], Math.min(1, dt*0.006));
+  energy += (ENERGY[state] - energy) * Math.min(1, dt*0.004);
+  since = now - stateStart;
+  for (const tile of TILES) {
+    const { ctx, w, h } = fit(tile.cv);
+    ctx.clearRect(0, 0, w, h);
+    tile.draw(ctx, w, h, now, tile);
+  }
+  requestAnimationFrame(loop);
+}
+
+// go
+refreshPalette();
+setState(state);
+requestAnimationFrame(loop);
+
+// dev livereload (http only)
+if (location.protocol.startsWith('http')) {
+  let lastMod = null;
+  setInterval(async () => {
+    try { const r = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+      const m = r.headers.get('Last-Modified');
+      if (lastMod && m && m !== lastMod) location.reload(); lastMod = m; } catch (e) {}
+  }, 1000);
+}
+</script>
+</body>
+</html>

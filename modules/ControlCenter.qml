@@ -20,6 +20,7 @@ Scope {
         { name: "sound",     label: "Sound",          icon: "volume_up",          section: "SYSTEM",  component: soundPaneComp },
         { name: "display",   label: "Display",        icon: "brightness_high",    section: "SYSTEM",  component: displayPaneComp },
         { name: "battery",   label: "Battery",        icon: "battery_full",       section: "SYSTEM",  component: batteryPaneComp },
+        { name: "ai",        label: "AI Assistant",   icon: "auto_awesome",       section: "SYSTEM",  component: aiPaneComp },
         { name: "session",   label: "Power",          icon: "power_settings_new", section: "SESSION", component: sessionPaneComp }
     ]
 
@@ -33,6 +34,7 @@ Scope {
     Component { id: soundPaneComp;     SoundPane {} }
     Component { id: displayPaneComp;   DisplayPane {} }
     Component { id: batteryPaneComp;   PlaceholderPane { paneName: "Battery" } }
+    Component { id: aiPaneComp;        AiPane {} }
     Component { id: sessionPaneComp;   SessionPane {} }
 
     IpcHandler {

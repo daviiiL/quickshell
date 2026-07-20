@@ -7,6 +7,7 @@ import Quickshell.Wayland
 import qs.common
 import qs.services
 import qs.widgets
+import qs.modules.leftpanel
 
 Scope {
     IpcHandler {
@@ -35,6 +36,7 @@ Scope {
 
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.namespace: "quickshell:leftpanel"
+            WlrLayershell.keyboardFocus: GlobalStates.leftPanelOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
             anchors {
                 top: true
@@ -51,7 +53,7 @@ Scope {
             Rectangle {
                 id: panelSurface
                 anchors.fill: parent
-                color: Colors.surface
+                color: Colors.panelBg
                 focus: true
 
                 Keys.onEscapePressed: GlobalStates.leftPanelOpen = false
@@ -69,9 +71,34 @@ Scope {
                     }
                 }
 
-                StyledText {
-                    anchors.centerIn: parent
-                    text: "Left Panel"
+                GeminiChat {
+                    anchors.fill: parent
+                }
+
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height: Theme.ui.mainBarHairWidth
+                    color: Colors.hair
+                }
+                Rectangle {
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    width: 180
+                    height: Theme.ui.mainBarHairWidth
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop { position: 0.0; color: "transparent" }
+                        GradientStop { position: 1.0; color: Qt.alpha(Colors.barAccent, 0.55) }
+                    }
+                }
+                Rectangle {
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    width: Theme.ui.mainBarHairWidth
+                    color: Colors.hair
                 }
             }
         }

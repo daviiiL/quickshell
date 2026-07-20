@@ -5,10 +5,10 @@ import qs.common
 TextField {
     id: root
 
-    property color focusedBgColor: Colors.primaryContainer
-    property color unfocusedBgColor: Colors.secondaryContainer
-    property color focusedTextColor: Colors.fgPrimaryContainer
-    property color unfocusedTextColor: Colors.fgSecondaryContainer
+    property color focusedBgColor: Colors.surfaceContainer
+    property color unfocusedBgColor: Colors.surfaceContainerLow
+    property color focusedTextColor: Colors.fgSurface
+    property color unfocusedTextColor: Colors.fgSurface
 
     padding: 8
     leftPadding: 12
@@ -27,7 +27,7 @@ TextField {
 
     font {
         family: Theme.font.family.inter_thin
-        pixelSize: Theme.font.size.xs
+        pixelSize: Theme.font.size.sm
     }
 
     selectionColor: root.focusedBgColor

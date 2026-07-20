@@ -65,6 +65,16 @@ Scope {
                     spacing: 0
 
                     RowLayout {
+                        spacing: 0
+                        Layout.fillHeight: true
+                        Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
+                        Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+                        AiButton {}
+                    }
+
+                    Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
+
+                    RowLayout {
                         spacing: 10
                         Layout.fillHeight: true
                         Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
