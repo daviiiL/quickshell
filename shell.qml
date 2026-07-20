@@ -8,6 +8,7 @@ import qs.common
 import qs.services
 import qs.modules
 import qs.modules.notifications
+import qs.modules.keybindhints
 
 ShellRoot {
     Process {
@@ -60,6 +61,7 @@ ShellRoot {
                 AppLauncherPanel {}
                 ControlCenter {}
                 CliphistOverlay {}
+                KeybindHintsOverlay {}
                 PopupSurface {}
                 LockScreen {}
             }

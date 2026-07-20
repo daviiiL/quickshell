@@ -11,6 +11,7 @@ Singleton {
 
     property bool appLauncherOpen: false
     property bool cliphistOverlayOpen: false
+    property bool keybindHintsOpen: false
     property bool leftPanelOpen: false
     property bool rightPanelOpen: false
     property string rightPanelSource: ""
