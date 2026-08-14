@@ -1,0 +1,14 @@
+/* Quickshell — GTK3 entry point, DARK
+ *
+ * GTK3 loads this file when gtk-application-prefer-dark-theme=1, which is
+ * what ~/.config/gtk-3.0/settings.ini sets. This is the active file.
+ *
+ * Import order matters: Adwaita first, then tokens, then the mapping that
+ * redefines Adwaita's color names, then widget geometry. Last write wins.
+ * @import must precede every other statement, so this file is imports only.
+ */
+
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
+@import url("../tokens-dark.css");
+@import url("map.css");
+@import url("widgets.css");

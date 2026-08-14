@@ -1,0 +1,528 @@
+/* Quickshell → GTK3 widget geometry
+ *
+ * Colors come from map.css. This layer carries the shell's *shape* language:
+ *
+ *   radius   3px on controls        (Theme.ui.mainBarButtonRadius / --radius-sm)
+ *            4px on containers      (Theme.ui.mainBarDockItemRadius / --radius-md)
+ *            8px on windows         (Theme.ui.radius.md)
+ *   border   1px hairline           (Theme.ui.borderWidth / --hair-w)
+ *   flat     no gradients, no bevels — the shell has none
+ */
+
+/* ── Kill Adwaita's gradients and bevels; the shell is flat ─────────── */
+window,
+headerbar,
+button,
+entry,
+notebook,
+notebook > header,
+notebook > header > tabs > tab,
+list,
+popover,
+popover.background,
+menu,
+.menu,
+toolbar,
+.toolbar,
+switch,
+progressbar,
+scale {
+  background-image: none;
+  box-shadow: none;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+}
+
+/* ── Window ─────────────────────────────────────────────────────────── */
+window,
+window.background,
+.background {
+  background-color: @qs_surface;
+  color: @qs_ink;
+  border-radius: 8px;
+}
+
+/* ── Window decoration (CSD) ────────────────────────────────────────
+ *
+ * The shadow MUST be identical in every state, including :backdrop.
+ *
+ * GTK3 derives a CSD toplevel's invisible border from the decoration node's
+ * box-shadow extents, recomputed per state. A backdrop shadow with different
+ * offset/blur therefore moves the Wayland surface origin on every focus
+ * change — and Adwaita puts `transition: 200ms ease-out` on
+ * decoration:backdrop, so it moves continuously across that 200ms. Firefox
+ * repaints its whole surface at each step, which reads as a flash on focus
+ * in/out. Measured here: set_window_geometry origin swept 34,30 → 68,60
+ * through ~19 intermediate values per focus toggle.
+ *
+ * Adwaita dodges this by leading its backdrop shadow with a fully transparent
+ * copy of the active one, pinning the extents. We drop the blurred shadow
+ * instead: niri already frames windows with gaps + focus-ring, so a
+ * client-side drop shadow is redundant. The 1px hairline stays — it is a
+ * constant 1px in both states and part of the shell's look.
+ */
+decoration,
+decoration:backdrop,
+.tiled decoration,
+.tiled decoration:backdrop,
+.tiled-top decoration,
+.tiled-top decoration:backdrop,
+.tiled-right decoration,
+.tiled-right decoration:backdrop,
+.tiled-bottom decoration,
+.tiled-bottom decoration:backdrop,
+.tiled-left decoration,
+.tiled-left decoration:backdrop {
+  box-shadow: 0 0 0 1px @qs_hair;
+  transition: none;
+}
+
+decoration {
+  border-radius: 8px 8px 0 0;
+}
+
+.tiled decoration,
+.tiled-top decoration,
+.tiled-right decoration,
+.tiled-bottom decoration,
+.tiled-left decoration,
+.maximized decoration,
+.fullscreen decoration {
+  border-radius: 0;
+}
+
+/* ── Header bar — the shell's bar: near-black, hairline underline ───── */
+headerbar,
+headerbar.titlebar,
+.titlebar {
+  background-color: @qs_bar_bg;
+  color: @qs_ink;
+  border: none;
+  border-bottom: 1px solid @qs_hair;
+  border-radius: 8px 8px 0 0;
+  min-height: 40px;
+  padding: 0 6px;
+}
+
+headerbar:backdrop {
+  background-color: @qs_bar_bg;
+  color: @qs_ink_dim;
+  border-bottom-color: @qs_hair;
+}
+
+headerbar .title {
+  color: @qs_ink;
+  font-weight: 500;
+}
+
+headerbar .subtitle,
+headerbar:backdrop .title {
+  color: @qs_ink_dim;
+}
+
+/* ── Buttons — 3px, hairline, fill only on hover ────────────────────── */
+button {
+  background-color: transparent;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 3px;
+  padding: 5px 10px;
+  min-height: 22px;
+  transition: background-color 150ms ease-out,
+              border-color 150ms ease-out;
+}
+
+button:hover {
+  background-color: @qs_surface_low;
+  border-color: @qs_hair_hot;
+  color: @qs_ink;
+}
+
+button:active,
+button:checked {
+  background-color: @qs_surface_container;
+  border-color: @qs_hair_hot;
+  color: @qs_ink;
+}
+
+button:disabled {
+  background-color: transparent;
+  border-color: @qs_hair;
+  color: @qs_ink_faint;
+}
+
+button.flat,
+button.titlebutton,
+headerbar button {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+button.flat:hover,
+button.titlebutton:hover,
+headerbar button:hover {
+  background-color: @qs_surface_low;
+  border-color: @qs_hair;
+}
+
+/* Suggested action — the one place accent fills a surface */
+button.suggested-action {
+  background-color: @qs_accent;
+  color: @qs_accent_fg;
+  border-color: @qs_accent;
+}
+
+button.suggested-action:hover {
+  background-color: @qs_accent_dim;
+  border-color: @qs_accent_dim;
+}
+
+button.destructive-action {
+  background-color: transparent;
+  color: @qs_error;
+  border-color: @qs_error;
+}
+
+button.destructive-action:hover {
+  background-color: @qs_error_container;
+  color: @qs_error_container_fg;
+}
+
+/* ── Entries ────────────────────────────────────────────────────────── */
+entry,
+spinbutton:not(.vertical) {
+  background-color: @qs_surface_lowest;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 3px;
+  padding: 5px 8px;
+  min-height: 22px;
+  caret-color: @qs_accent;
+}
+
+entry:hover {
+  border-color: @qs_hair_hot;
+}
+
+entry:focus,
+entry:focus-within {
+  border-color: @qs_accent;
+  box-shadow: none;
+}
+
+entry:disabled {
+  background-color: @qs_surface;
+  color: @qs_ink_faint;
+}
+
+entry selection,
+selection {
+  background-color: @qs_accent;
+  color: @qs_accent_fg;
+}
+
+entry placeholder,
+entry image {
+  color: @qs_ink_dimmer;
+}
+
+/* ── Focus ring — 1px accent, no dotted Adwaita outline ─────────────── */
+* {
+  outline: none;
+  -gtk-outline-radius: 3px;
+}
+
+*:focus-visible {
+  outline: 1px solid @qs_accent;
+  outline-offset: -1px;
+}
+
+/* ── Lists & rows — selection is a fill + hairline, not a block ─────── */
+list,
+list row {
+  background-color: transparent;
+  color: @qs_ink;
+}
+
+list row:hover {
+  background-color: @qs_surface_low;
+}
+
+list row:selected,
+list row:selected:focus {
+  background-color: @qs_surface_low;
+  color: @qs_ink;
+  box-shadow: inset 2px 0 0 @qs_accent;
+}
+
+treeview.view {
+  background-color: @qs_surface_lowest;
+  color: @qs_ink;
+  border-color: @qs_hair;
+}
+
+treeview.view:hover {
+  background-color: @qs_surface_low;
+}
+
+treeview.view:selected {
+  background-color: @qs_accent;
+  color: @qs_accent_fg;
+}
+
+treeview.view header button {
+  background-color: @qs_surface;
+  border-color: @qs_hair;
+  border-radius: 0;
+  color: @qs_ink_dim;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────── */
+.sidebar,
+placessidebar,
+stacksidebar {
+  background-color: @qs_panel_bg;
+  color: @qs_ink;
+  border-right: 1px solid @qs_hair;
+}
+
+.sidebar list row:selected {
+  background-color: @qs_surface_low;
+  box-shadow: inset 2px 0 0 @qs_accent;
+}
+
+/* ── Popovers & menus — 4px, hairline, flat ─────────────────────────── */
+popover,
+popover.background,
+popover > contents,
+menu,
+.menu,
+.context-menu {
+  background-color: @qs_surface_container;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 4px 16px @qs_shadow;
+}
+
+popover > arrow {
+  background-color: @qs_surface_container;
+  border: 1px solid @qs_hair;
+}
+
+menuitem,
+popover modelbutton {
+  border-radius: 3px;
+  padding: 5px 8px;
+  min-height: 22px;
+  color: @qs_ink;
+}
+
+menuitem:hover,
+popover modelbutton:hover {
+  background-color: @qs_surface_high;
+  color: @qs_ink;
+}
+
+menuitem:disabled {
+  color: @qs_ink_faint;
+}
+
+/* ── Scrollbars — slim, monochrome ──────────────────────────────────── */
+scrollbar {
+  background-color: transparent;
+  border: none;
+}
+
+scrollbar trough {
+  background-color: transparent;
+  border: none;
+  margin: 2px;
+}
+
+scrollbar slider {
+  background-color: @qs_ink_faint;
+  border: none;
+  border-radius: 3px;
+  min-width: 6px;
+  min-height: 6px;
+  margin: 0;
+  transition: background-color 150ms ease-out;
+}
+
+scrollbar slider:hover {
+  background-color: @qs_ink_dimmer;
+}
+
+scrollbar slider:active {
+  background-color: @qs_accent;
+}
+
+/* ── Switch ─────────────────────────────────────────────────────────── */
+switch {
+  background-color: @qs_surface_container;
+  border: 1px solid @qs_hair;
+  border-radius: 10px;
+  min-width: 40px;
+  min-height: 20px;
+}
+
+switch:checked {
+  background-color: @qs_accent;
+  border-color: @qs_accent;
+}
+
+switch slider {
+  background-color: @qs_ink_dim;
+  border: none;
+  border-radius: 50%;
+  min-width: 14px;
+  min-height: 14px;
+  margin: 2px;
+}
+
+switch:checked slider {
+  background-color: @qs_accent_fg;
+}
+
+switch:disabled {
+  background-color: @qs_surface;
+  border-color: @qs_hair;
+}
+
+/* ── Check & radio ──────────────────────────────────────────────────── */
+check,
+radio {
+  background-color: @qs_surface_lowest;
+  border: 1px solid @qs_hair_hot;
+  color: @qs_ink;
+  min-width: 14px;
+  min-height: 14px;
+}
+
+check {
+  border-radius: 3px;
+}
+
+radio {
+  border-radius: 50%;
+}
+
+check:hover,
+radio:hover {
+  border-color: @qs_accent;
+}
+
+check:checked,
+check:indeterminate,
+radio:checked {
+  background-color: @qs_accent;
+  border-color: @qs_accent;
+  color: @qs_accent_fg;
+}
+
+/* ── Notebook tabs — hairline underline, accent on active ───────────── */
+notebook > header {
+  background-color: @qs_surface;
+  border-color: @qs_hair;
+}
+
+notebook > header > tabs > tab {
+  background-color: transparent;
+  color: @qs_ink_dim;
+  border: none;
+  border-radius: 0;
+  padding: 6px 12px;
+  min-height: 26px;
+}
+
+notebook > header > tabs > tab:hover {
+  color: @qs_ink;
+  background-color: @qs_surface_low;
+}
+
+notebook > header > tabs > tab:checked {
+  color: @qs_ink;
+  background-color: transparent;
+  box-shadow: inset 0 -2px 0 @qs_accent;
+}
+
+/* ── Progress & scale ───────────────────────────────────────────────── */
+/* Adwaita pulls the scale slider over the trough with a negative margin.
+ * Any min-size smaller than 2x that margin computes negative and GTK warns
+ * "reported min width -N". Keep slider size and margin in step: 18 - 2*7 = 4. */
+progressbar > trough,
+scale > trough {
+  background-color: @qs_surface_container;
+  border: none;
+  border-radius: 3px;
+  min-height: 4px;
+}
+
+progressbar > trough > progress,
+scale > trough > highlight {
+  background-color: @qs_accent;
+  border: none;
+  border-radius: 3px;
+  min-height: 4px;
+  margin: 0;
+}
+
+scale > trough > slider {
+  background-color: @qs_accent;
+  border: 1px solid @qs_bar_bg;
+  border-radius: 50%;
+  min-width: 18px;
+  min-height: 18px;
+  margin: -7px;
+}
+
+/* ── Tooltip ────────────────────────────────────────────────────────── */
+tooltip,
+tooltip.background {
+  background-color: @qs_surface_high;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 4px;
+}
+
+tooltip label {
+  color: @qs_ink;
+  padding: 2px 4px;
+}
+
+/* ── Separators ─────────────────────────────────────────────────────── */
+separator,
+.separator {
+  background-color: @qs_hair;
+  min-width: 1px;
+  min-height: 1px;
+  border: none;
+}
+
+/* ── Toolbars, action bars, search bars ─────────────────────────────── */
+toolbar,
+.toolbar,
+actionbar > revealer > box,
+searchbar > revealer > box,
+infobar {
+  background-color: @qs_surface;
+  border-color: @qs_hair;
+  color: @qs_ink;
+}
+
+/* ── Status colors on labels ────────────────────────────────────────── */
+label.error,      .error      { color: @qs_error; }
+label.warning,    .warning    { color: @qs_warn;  }
+label.success,    .success    { color: @qs_live;  }
+label.dim-label,  .dim-label  { color: @qs_ink_dim; }
+
+/* ── WebKitGTK web view — keep the chrome dark behind web content ───── */
+/* The page itself is styled by its own CSS via prefers-color-scheme;    */
+/* this just stops a white widget background flashing behind it.         */
+webkitwebview,
+GtkScrolledWindow > webkitwebview {
+  background-color: @qs_surface_lowest;
+  color: @qs_ink;
+}

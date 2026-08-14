@@ -1,0 +1,484 @@
+/* Quickshell → GTK4 / libadwaita widget geometry
+ *
+ * Colors come from map.css. This layer carries the shell's *shape* language:
+ *
+ *   radius   3px on controls        (Theme.ui.mainBarButtonRadius / --radius-sm)
+ *            4px on containers      (Theme.ui.mainBarDockItemRadius / --radius-md)
+ *            8px on windows         (Theme.ui.radius.md)
+ *   border   1px hairline           (Theme.ui.borderWidth / --hair-w)
+ *   flat     no gradients, no bevels — the shell has none
+ *
+ * libadwaita's default radii are 12px+; every override below is deliberate.
+ */
+
+/* ── Flatten ────────────────────────────────────────────────────────── */
+window,
+headerbar,
+button,
+entry,
+popover > contents,
+.card,
+.toolbar,
+switch,
+progressbar,
+scale {
+  background-image: none;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+}
+
+/* ── Window ─────────────────────────────────────────────────────────── */
+window.background {
+  background-color: @qs_surface;
+  color: @qs_ink;
+}
+
+/* Shadow identical in every state — see the long note in gtk-3.0/widgets.css.
+ * GTK4 computes the CSD toplevel's shadow width from this node's box-shadow
+ * extents too, so a differing :backdrop shadow resizes the surface on every
+ * focus change. Keep the constant 1px hairline, drop the blurred shadow. */
+window.csd,
+window.csd:backdrop {
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px @qs_hair;
+  transition: none;
+}
+
+/* ── Header bar ─────────────────────────────────────────────────────── */
+headerbar {
+  background-color: @qs_bar_bg;
+  color: @qs_ink;
+  box-shadow: inset 0 -1px 0 @qs_hair;
+  min-height: 40px;
+  padding: 0 6px;
+}
+
+headerbar:backdrop {
+  background-color: @qs_bar_bg;
+  color: @qs_ink_dim;
+}
+
+headerbar .title {
+  color: @qs_ink;
+  font-weight: 500;
+}
+
+headerbar .subtitle {
+  color: @qs_ink_dim;
+}
+
+/* ── Buttons — 3px, hairline, fill only on hover ────────────────────── */
+button {
+  background-color: transparent;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 3px;
+  padding: 4px 10px;
+  min-height: 24px;
+  box-shadow: none;
+  transition: background-color 150ms ease-out,
+              border-color 150ms ease-out;
+}
+
+button:hover {
+  background-color: @qs_surface_low;
+  border-color: @qs_hair_hot;
+}
+
+button:active,
+button:checked {
+  background-color: @qs_surface_container;
+  border-color: @qs_hair_hot;
+}
+
+button:disabled {
+  background-color: transparent;
+  border-color: @qs_hair;
+  color: @qs_ink_faint;
+}
+
+button.flat,
+button.image-button.flat,
+headerbar button,
+.toolbar button {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+button.flat:hover,
+headerbar button:hover,
+.toolbar button:hover {
+  background-color: @qs_surface_low;
+  border-color: @qs_hair;
+}
+
+button.suggested-action {
+  background-color: @qs_accent;
+  color: @qs_accent_fg;
+  border-color: @qs_accent;
+}
+
+button.suggested-action:hover {
+  background-color: @qs_accent_dim;
+  border-color: @qs_accent_dim;
+}
+
+button.destructive-action {
+  background-color: transparent;
+  color: @qs_error;
+  border-color: @qs_error;
+}
+
+button.destructive-action:hover {
+  background-color: @qs_error_container;
+  color: @qs_error_container_fg;
+}
+
+/* Pill buttons stay pills, just retinted */
+button.pill {
+  border-radius: 9999px;
+}
+
+/* ── Entries ────────────────────────────────────────────────────────── */
+entry,
+spinbutton:not(.vertical) {
+  background-color: @qs_surface_lowest;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 3px;
+  padding: 4px 8px;
+  min-height: 24px;
+  box-shadow: none;
+  caret-color: @qs_accent;
+  outline: none;
+}
+
+entry:hover {
+  border-color: @qs_hair_hot;
+}
+
+entry:focus-within {
+  border-color: @qs_accent;
+  box-shadow: none;
+  outline: none;
+}
+
+entry:disabled {
+  background-color: @qs_surface;
+  color: @qs_ink_faint;
+}
+
+entry > text > placeholder {
+  color: @qs_ink_dimmer;
+}
+
+selection,
+entry > text > selection {
+  background-color: @qs_accent;
+  color: @qs_accent_fg;
+}
+
+/* ── Focus ring — 1px accent ────────────────────────────────────────── */
+:focus-visible {
+  outline: 1px solid @qs_accent;
+  outline-offset: -1px;
+}
+
+/* ── Lists & rows — fill + accent hairline, not a solid block ───────── */
+listview,
+listview > row,
+list,
+list > row {
+  background-color: transparent;
+  color: @qs_ink;
+}
+
+row.activatable:hover,
+listview > row:hover {
+  background-color: @qs_surface_low;
+}
+
+row.activatable:selected,
+listview > row:selected,
+list > row:selected {
+  background-color: @qs_surface_low;
+  color: @qs_ink;
+  box-shadow: inset 2px 0 0 @qs_accent;
+}
+
+columnview > listview > row:selected,
+gridview > child:selected {
+  background-color: @qs_surface_low;
+  color: @qs_ink;
+  box-shadow: inset 2px 0 0 @qs_accent;
+}
+
+/* ── libadwaita cards & boxed lists — 4px, hairline ─────────────────── */
+.card,
+.boxed-list,
+preferencesgroup > box > box {
+  background-color: @qs_surface_container;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.boxed-list > row {
+  border-bottom: 1px solid @qs_hair;
+}
+
+.boxed-list > row:last-child {
+  border-bottom: none;
+}
+
+/* ── Sidebars ───────────────────────────────────────────────────────── */
+.navigation-sidebar,
+.sidebar-pane {
+  background-color: @qs_panel_bg;
+  color: @qs_ink;
+}
+
+.navigation-sidebar > row:selected {
+  background-color: @qs_surface_low;
+  box-shadow: inset 2px 0 0 @qs_accent;
+}
+
+/* ── Popovers & menus — 4px, hairline ───────────────────────────────── */
+popover > contents,
+popover.menu > contents {
+  background-color: @qs_surface_container;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 4px;
+  padding: 4px;
+  box-shadow: 0 4px 16px @qs_shadow;
+}
+
+popover > arrow {
+  background-color: @qs_surface_container;
+  border: 1px solid @qs_hair;
+}
+
+popover.menu modelbutton,
+modelbutton {
+  border-radius: 3px;
+  padding: 4px 8px;
+  min-height: 24px;
+  color: @qs_ink;
+}
+
+popover.menu modelbutton:hover,
+modelbutton:hover {
+  background-color: @qs_surface_high;
+}
+
+modelbutton:disabled {
+  color: @qs_ink_faint;
+}
+
+/* ── Scrollbars — slim, monochrome ──────────────────────────────────── */
+scrollbar {
+  background-color: transparent;
+  border: none;
+}
+
+scrollbar > range > trough {
+  background-color: transparent;
+  border: none;
+  margin: 2px;
+}
+
+scrollbar > range > trough > slider {
+  background-color: @qs_ink_faint;
+  border: none;
+  border-radius: 3px;
+  min-width: 6px;
+  min-height: 6px;
+  margin: 0;
+  transition: background-color 150ms ease-out;
+}
+
+scrollbar > range > trough > slider:hover {
+  background-color: @qs_ink_dimmer;
+}
+
+scrollbar > range > trough > slider:active {
+  background-color: @qs_accent;
+}
+
+/* ── Switch ─────────────────────────────────────────────────────────── */
+switch {
+  background-color: @qs_surface_container;
+  border: 1px solid @qs_hair;
+  border-radius: 10px;
+  min-width: 40px;
+  min-height: 20px;
+  box-shadow: none;
+}
+
+switch:checked {
+  background-color: @qs_accent;
+  border-color: @qs_accent;
+}
+
+switch > slider {
+  background-color: @qs_ink_dim;
+  border: none;
+  border-radius: 50%;
+  min-width: 14px;
+  min-height: 14px;
+  margin: 2px;
+  box-shadow: none;
+}
+
+switch:checked > slider {
+  background-color: @qs_accent_fg;
+}
+
+switch:disabled {
+  background-color: @qs_surface;
+  border-color: @qs_hair;
+}
+
+/* ── Check & radio ──────────────────────────────────────────────────── */
+check,
+radio {
+  background-color: @qs_surface_lowest;
+  border: 1px solid @qs_hair_hot;
+  color: @qs_ink;
+  min-width: 14px;
+  min-height: 14px;
+  box-shadow: none;
+}
+
+check   { border-radius: 3px; }
+radio   { border-radius: 50%; }
+
+check:hover,
+radio:hover {
+  border-color: @qs_accent;
+}
+
+check:checked,
+check:indeterminate,
+radio:checked {
+  background-color: @qs_accent;
+  border-color: @qs_accent;
+  color: @qs_accent_fg;
+}
+
+/* ── Tabs ───────────────────────────────────────────────────────────── */
+notebook > header {
+  background-color: @qs_surface;
+  border-color: @qs_hair;
+}
+
+notebook > header > tabs > tab {
+  background-color: transparent;
+  color: @qs_ink_dim;
+  border: none;
+  border-radius: 0;
+  padding: 6px 12px;
+  min-height: 26px;
+}
+
+notebook > header > tabs > tab:hover {
+  color: @qs_ink;
+  background-color: @qs_surface_low;
+}
+
+notebook > header > tabs > tab:checked {
+  color: @qs_ink;
+  box-shadow: inset 0 -2px 0 @qs_accent;
+}
+
+taboverview,
+tabbar {
+  background-color: @qs_bar_bg;
+  color: @qs_ink;
+}
+
+/* ── Progress & scale ───────────────────────────────────────────────── */
+/* Adwaita pulls the scale slider over the trough with a negative margin.
+ * Any min-size smaller than 2x that margin computes negative and GTK warns
+ * "reported min width -N". Keep slider size and margin in step: 18 - 2*7 = 4. */
+progressbar > trough,
+scale > trough {
+  background-color: @qs_surface_container;
+  border: none;
+  border-radius: 3px;
+  min-height: 4px;
+}
+
+progressbar > trough > progress,
+scale > trough > highlight {
+  background-color: @qs_accent;
+  border: none;
+  border-radius: 3px;
+  min-height: 4px;
+  margin: 0;
+}
+
+scale > trough > slider {
+  background-color: @qs_accent;
+  border: 1px solid @qs_bar_bg;
+  border-radius: 50%;
+  min-width: 18px;
+  min-height: 18px;
+  margin: -7px;
+  box-shadow: none;
+}
+
+/* ── Tooltip ────────────────────────────────────────────────────────── */
+tooltip {
+  background-color: @qs_surface_high;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px @qs_shadow;
+}
+
+tooltip > label {
+  color: @qs_ink;
+  padding: 2px 4px;
+}
+
+/* ── Toolbars, banners, OSD ─────────────────────────────────────────── */
+.toolbar,
+banner > revealer > widget,
+searchbar > revealer > box,
+actionbar > revealer > box {
+  background-color: @qs_surface;
+  color: @qs_ink;
+  box-shadow: inset 0 -1px 0 @qs_hair;
+}
+
+.osd {
+  background-color: @qs_surface_high;
+  color: @qs_ink;
+  border: 1px solid @qs_hair;
+  border-radius: 4px;
+}
+
+/* ── Separators ─────────────────────────────────────────────────────── */
+separator {
+  background-color: @qs_hair;
+  min-width: 1px;
+  min-height: 1px;
+  border: none;
+}
+
+/* ── Status colors on labels ────────────────────────────────────────── */
+label.error,     .error     { color: @qs_error; }
+label.warning,   .warning   { color: @qs_warn;  }
+label.success,   .success   { color: @qs_live;  }
+label.dim-label, .dim-label { color: @qs_ink_dim; }
+
+/* ── WebKitGTK 6.0 web view — dark chrome behind web content ────────── */
+/* Page CSS reacts to prefers-color-scheme, which follows the GTK dark    */
+/* setting; this only prevents a white widget background flashing behind. */
+webkitwebview {
+  background-color: @qs_surface_lowest;
+  color: @qs_ink;
+}

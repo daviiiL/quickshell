@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Quickshell
+Comment=GTK3/GTK4 override matching the Quickshell desktop shell
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=Quickshell
+IconTheme=Adwaita
+CursorTheme=Adwaita
+ButtonLayout=:

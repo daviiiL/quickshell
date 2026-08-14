@@ -1,0 +1,62 @@
+/* Quickshell design tokens — DARK
+ *
+ * Mirrors ~/.config/quickshell/common/Colors.qml (GlobalStates.darkMode == true)
+ * and the CSS custom properties in the ~/.config/quickshell/preview HTML files.
+ *
+ * This file defines RAW tokens only. It never touches a GTK widget name.
+ * gtk-3.0/map.css and gtk-4.0/map.css translate these into toolkit colors.
+ *
+ * Keep in sync with Colors.qml. Names here match the QML properties.
+ */
+
+/* ── Surfaces ───────────────────────────────────────────────────────── */
+@define-color qs_bar_bg                  #0a0a0a;  /* barBg      — top bar        */
+@define-color qs_panel_bg                #0f0f13;  /* panelBg    — side panels    */
+@define-color qs_backdrop                #07070a;  /* desktop-base — behind all   */
+@define-color qs_surface                 #141218;  /* surface                     */
+@define-color qs_surface_lowest          #0f0d13;  /* surfaceContainerLowest      */
+@define-color qs_surface_low             #1d1b20;  /* surfaceContainerLow         */
+@define-color qs_surface_container       #211f26;  /* surfaceContainer            */
+@define-color qs_surface_high            #2b2930;  /* surfaceContainerHigh        */
+@define-color qs_surface_variant         #49454f;  /* surfaceVariant              */
+
+/* ── Ink ramp ───────────────────────────────────────────────────────── */
+@define-color qs_ink                     #e6e0e9;  /* fgSurface — primary text    */
+@define-color qs_ink_variant             #cac4d0;  /* fgSurfaceVariant            */
+@define-color qs_ink_dim                 #8f8f8f;  /* inkDim    — secondary text  */
+@define-color qs_ink_dimmer              #6b6b6b;  /* inkDimmer — tertiary text   */
+@define-color qs_ink_faint               #4d4d4d;  /* inkFaint  — disabled text   */
+
+/* ── Hairlines ──────────────────────────────────────────────────────── */
+@define-color qs_hair                    #272727;  /* hair    — 1px idle border   */
+@define-color qs_hair_hot                #3a3a3a;  /* hairHot — 1px hover border  */
+@define-color qs_outline                 #938f99;  /* outline                     */
+@define-color qs_outline_variant         #49454f;  /* outlineVariant              */
+
+/* ── Accent (monochrome — see README) ───────────────────────────────── */
+@define-color qs_accent                  #e3e3e3;  /* barAccent                   */
+@define-color qs_accent_fg               #141218;  /* ink ON accent               */
+@define-color qs_accent_dim              #b8b8b8;  /* accent, pressed             */
+
+/* ── Status ─────────────────────────────────────────────────────────── */
+@define-color qs_live                    #5dc70a;  /* live    — success/online    */
+@define-color qs_live_fg                 #0f2000;
+@define-color qs_busy                    #fac028;  /* busy                        */
+@define-color qs_stale                   #f59e0b;  /* stale                       */
+@define-color qs_warn                    #ffd4ab;  /* warning                     */
+@define-color qs_warn_fg                 #3d2410;
+@define-color qs_error                   #f2b8b5;  /* error                       */
+@define-color qs_error_fg                #601410;  /* fgError                     */
+@define-color qs_error_container         #8c1d18;  /* errorContainer              */
+@define-color qs_error_container_fg      #f9dedc;  /* fgErrorContainer            */
+
+/* ── Material You primaries (defined in Colors.qml, used sparingly) ─── */
+@define-color qs_primary                 #d0bcff;
+@define-color qs_primary_fg              #381e72;
+@define-color qs_primary_container       #4f378b;
+@define-color qs_primary_container_fg    #eaddff;
+
+/* ── Shadow / scrim ─────────────────────────────────────────────────── */
+@define-color qs_shadow                  rgba(0, 0, 0, 0.55);
+@define-color qs_shadow_strong           rgba(0, 0, 0, 0.75);
+@define-color qs_scrim                   rgba(0, 0, 0, 0.60);

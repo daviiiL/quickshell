@@ -1,0 +1,14 @@
+/* Quickshell — GTK4 entry point, DARK
+ *
+ * Loaded via ~/.config/gtk-4.0/gtk.css, which is the only theming hook
+ * libadwaita 1.9 honours. libadwaita's own stylesheet is already applied
+ * before this file, so these @define-color overrides win.
+ *
+ * @import must precede every other statement, so this file is imports only.
+ * Switch schemes with ./set-scheme.sh light — GTK 4.22's CSS parser has no
+ * light-dark(), so one file cannot serve both.
+ */
+
+@import url("../tokens-dark.css");
+@import url("map.css");
+@import url("widgets.css");

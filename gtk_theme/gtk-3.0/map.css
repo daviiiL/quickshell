@@ -1,0 +1,71 @@
+/* Quickshell → GTK3 (Adwaita) color mapping
+ *
+ * Redefines the @define-color names that Adwaita's stylesheet reads, pointing
+ * each at a Quickshell token. Must be imported AFTER the Adwaita resource and
+ * AFTER a tokens-*.css file — in GTK CSS the last @define-color wins.
+ *
+ * Scheme-agnostic: both tokens-dark.css and tokens-light.css define the same
+ * token names, so this file is shared by gtk.css and gtk-dark.css.
+ */
+
+/* ── Core surfaces & text ───────────────────────────────────────────── */
+@define-color theme_bg_color                    @qs_surface;
+@define-color theme_fg_color                    @qs_ink;
+@define-color theme_base_color                  @qs_surface_lowest;
+@define-color theme_text_color                  @qs_ink;
+@define-color content_view_bg                   @qs_surface_lowest;
+@define-color text_view_bg                      @qs_surface_lowest;
+
+/* ── Selection — monochrome accent ──────────────────────────────────── */
+@define-color theme_selected_bg_color           @qs_accent;
+@define-color theme_selected_fg_color           @qs_accent_fg;
+
+/* ── Insensitive / disabled ─────────────────────────────────────────── */
+@define-color insensitive_bg_color              @qs_surface;
+@define-color insensitive_fg_color              @qs_ink_faint;
+@define-color insensitive_base_color            @qs_surface_lowest;
+
+/* ── Backdrop (unfocused window) ────────────────────────────────────── */
+@define-color theme_unfocused_bg_color          @qs_surface;
+@define-color theme_unfocused_fg_color          @qs_ink_dim;
+@define-color theme_unfocused_base_color        @qs_surface_lowest;
+@define-color theme_unfocused_text_color        @qs_ink_dim;
+@define-color theme_unfocused_selected_bg_color @qs_surface_high;
+@define-color theme_unfocused_selected_fg_color @qs_ink;
+
+/* ── Hairline borders ───────────────────────────────────────────────── */
+@define-color borders                           @qs_hair;
+@define-color unfocused_borders                 @qs_hair;
+
+/* ── Status ─────────────────────────────────────────────────────────── */
+@define-color success_color                     @qs_live;
+@define-color warning_color                     @qs_warn;
+@define-color error_color                       @qs_error;
+@define-color destructive_color                 @qs_error;
+
+/* ── Links — monochrome, differentiated by underline not hue ────────── */
+@define-color link_color                        @qs_ink;
+@define-color link_visited_color                @qs_ink_dim;
+
+/* ── Window manager decorations ─────────────────────────────────────── */
+@define-color wm_title                          @qs_ink;
+@define-color wm_unfocused_title                @qs_ink_dim;
+@define-color wm_bg                             @qs_bar_bg;
+@define-color wm_bg_a                           @qs_bar_bg;
+@define-color wm_bg_b                           @qs_bar_bg;
+@define-color wm_border                         @qs_hair;
+@define-color wm_border_unfocused               @qs_hair;
+@define-color wm_highlight                      @qs_hair;
+@define-color wm_borders_edge                   @qs_hair;
+@define-color wm_shadow                         @qs_shadow;
+@define-color wm_icon_bg                        @qs_bar_bg;
+@define-color wm_icon_fg                        @qs_ink_dim;
+@define-color wm_icon_unfocused_fg              @qs_ink_faint;
+@define-color wm_icon_hover_fg                  @qs_ink;
+@define-color wm_icon_active_fg                 @qs_accent;
+
+/* ── Scrollbars ─────────────────────────────────────────────────────── */
+@define-color scrollbar_bg_color                @qs_surface;
+@define-color scrollbar_slider_color            @qs_ink_faint;
+@define-color scrollbar_slider_hover_color      @qs_ink_dimmer;
+@define-color scrollbar_slider_active_color     @qs_accent;

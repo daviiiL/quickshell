@@ -1,0 +1,14 @@
+/* Quickshell — GTK3 entry point, LIGHT
+ *
+ * GTK3 loads this file when gtk-application-prefer-dark-theme=0.
+ * When that setting is 1, GTK3 loads gtk-dark.css instead.
+ *
+ * Import order matters: Adwaita first, then tokens, then the mapping that
+ * redefines Adwaita's color names, then widget geometry. Last write wins.
+ * @import must precede every other statement, so this file is imports only.
+ */
+
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained.css");
+@import url("../tokens-light.css");
+@import url("map.css");
+@import url("widgets.css");
