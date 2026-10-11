@@ -37,6 +37,11 @@ Singleton {
     readonly property string defaultWallpaperPath: `${homeDir}/.config/quickshell/assets/default_paper.jpg`
     property bool isLoaded: false
 
+    function setDarkMode(on: bool): void {
+        root.darkMode = on;
+        defaultAdapter.darkMode = on;
+    }
+
     function toggleFocusMode(): void {
         root.focusedMode = !root.focusedMode;
         defaultAdapter.focusedMode = root.focusedMode;
@@ -202,6 +207,7 @@ Singleton {
 
         onLoaded: {
             root.darkMode = defaultAdapter.darkMode;
+            GlobalStates.darkMode = root.darkMode;
             root.matugenScheme = defaultAdapter.storedMatugenScheme;
             root.wallpaperPath = defaultAdapter.storedWallpaperPath;
             root.usePreferredScheme = defaultAdapter.usePreferredScheme;
@@ -247,6 +253,7 @@ Singleton {
             defaultAdapter.fontOffset = 0;
 
             root.darkMode = true;
+            GlobalStates.darkMode = true;
             root.wallpaperPath = root.defaultWallpaperPath;
             root.matugenScheme = "scheme-tonal-spot";
             root.usePreferredScheme = true;

@@ -12,7 +12,6 @@ THEME_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=lib.sh
 . "$THEME_DIR/lib.sh"
 
-THEME_NAME="Quickshell"
 FONT_NAME="Inter Nerd Font Propo 11"
 
 GTK3_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0"

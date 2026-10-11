@@ -54,6 +54,7 @@ ShellRoot {
             Item {
                 Component.onCompleted: {
                     IdleManager.start();
+                    ColorScheme.start();
                     Gemini.bootstrap();
                 }
 

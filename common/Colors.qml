@@ -7,30 +7,30 @@ import qs.common
 Singleton {
     id: root
 
-    readonly property color primary: "#d0bcff"
-    readonly property color fgPrimary: "#381e72"
-    readonly property color primaryContainer: "#4f378b"
-    readonly property color fgPrimaryContainer: "#eaddff"
+    readonly property color primary:            GlobalStates.darkMode ? "#d0bcff" : "#6750a4"
+    readonly property color fgPrimary:          GlobalStates.darkMode ? "#381e72" : "#ffffff"
+    readonly property color primaryContainer:   GlobalStates.darkMode ? "#4f378b" : "#eaddff"
+    readonly property color fgPrimaryContainer: GlobalStates.darkMode ? "#eaddff" : "#21005d"
 
-    readonly property color secondary: "#ccc2dc"
-    readonly property color fgSecondary: "#332d41"
-    readonly property color secondaryContainer: "#4a4458"
-    readonly property color fgSecondaryContainer: "#e8def8"
+    readonly property color secondary:            GlobalStates.darkMode ? "#ccc2dc" : "#625b71"
+    readonly property color fgSecondary:          GlobalStates.darkMode ? "#332d41" : "#ffffff"
+    readonly property color secondaryContainer:   GlobalStates.darkMode ? "#4a4458" : "#e8def8"
+    readonly property color fgSecondaryContainer: GlobalStates.darkMode ? "#e8def8" : "#1d192b"
 
-    readonly property color tertiary: "#efb8c8"
-    readonly property color fgTertiary: "#492532"
-    readonly property color tertiaryContainer: "#633b48"
-    readonly property color fgTertiaryContainer: "#ffd8e4"
+    readonly property color tertiary:            GlobalStates.darkMode ? "#efb8c8" : "#7d5260"
+    readonly property color fgTertiary:          GlobalStates.darkMode ? "#492532" : "#ffffff"
+    readonly property color tertiaryContainer:   GlobalStates.darkMode ? "#633b48" : "#ffd8e4"
+    readonly property color fgTertiaryContainer: GlobalStates.darkMode ? "#ffd8e4" : "#31111d"
 
-    readonly property color error: "#f2b8b5"
-    readonly property color fgError: "#601410"
-    readonly property color errorContainer: "#8c1d18"
-    readonly property color fgErrorContainer: "#f9dedc"
+    readonly property color error:            GlobalStates.darkMode ? "#f2b8b5" : "#b3261e"
+    readonly property color fgError:          GlobalStates.darkMode ? "#601410" : "#ffffff"
+    readonly property color errorContainer:   GlobalStates.darkMode ? "#8c1d18" : "#f9dedc"
+    readonly property color fgErrorContainer: GlobalStates.darkMode ? "#f9dedc" : "#410e0b"
 
     property color surface:                 GlobalStates.darkMode ? "#141218" : "#f5f2f7"
     property color fgSurface:               GlobalStates.darkMode ? "#e6e0e9" : "#1c1820"
-    readonly property color surfaceVariant: "#49454f"
-    readonly property color fgSurfaceVariant: "#cac4d0"
+    readonly property color surfaceVariant:   GlobalStates.darkMode ? "#49454f" : "#e7e0ec"
+    readonly property color fgSurfaceVariant: GlobalStates.darkMode ? "#cac4d0" : "#49454f"
     property color surfaceContainerLowest:  GlobalStates.darkMode ? "#0f0d13" : "#fbf9fc"
     property color surfaceContainerLow:     GlobalStates.darkMode ? "#1d1b20" : "#eee9f0"
     property color surfaceContainer:        GlobalStates.darkMode ? "#211f26" : "#e3dee6"
@@ -43,8 +43,8 @@ Singleton {
     Behavior on surfaceContainer        { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on surfaceContainerHigh    { ColorAnimation { duration: Theme.anim.durations.sm } }
 
-    readonly property color outline: "#938f99"
-    readonly property color outlineVariant: "#49454f"
+    readonly property color outline:        GlobalStates.darkMode ? "#938f99" : "#79747e"
+    readonly property color outlineVariant: GlobalStates.darkMode ? "#49454f" : "#cac4d0"
     readonly property color scrim: "#000000"
     readonly property color shadow: "#000000"
 
@@ -53,18 +53,18 @@ Singleton {
 
     property color panelBg:    GlobalStates.darkMode ? "#0f0f13" : "#f5f2f7"
     property color barBg:      GlobalStates.darkMode ? "#0a0a0a" : "#e4e0e9"
-    property color hair:       GlobalStates.darkMode ? "#272727" : "#d6d1dc"
-    property color hairHot:    GlobalStates.darkMode ? "#3a3a3a" : "#bcb7c2"
+    property color hair:       GlobalStates.darkMode ? "#272727" : "#c5bfcc"
+    property color hairHot:    GlobalStates.darkMode ? "#3a3a3a" : "#a59fad"
     property color inkDim:     GlobalStates.darkMode ? "#8f8f8f" : "#5b5764"
-    property color inkDimmer:  GlobalStates.darkMode ? "#6b6b6b" : "#827e8a"
-    property color inkFaint:   GlobalStates.darkMode ? "#4d4d4d" : "#a8a4b0"
+    property color inkDimmer:  GlobalStates.darkMode ? "#6b6b6b" : "#6e6977"
+    property color inkFaint:   GlobalStates.darkMode ? "#4d4d4d" : "#8d8896"
     property color barAccent:  GlobalStates.darkMode ? "#e3e3e3" : "#1c1820"
     property color live:       GlobalStates.darkMode ? "#5dc70a" : "#3d8f0a"
     property color busy:       GlobalStates.darkMode ? "#fac028" : "#b8860b"
     property color stale:      GlobalStates.darkMode ? "#f59e0b" : "#a85d0a"
     property color hairCatch:  GlobalStates.darkMode ? Qt.rgba(0.89, 0.89, 0.89, 0.55) : Qt.rgba(0.11, 0.094, 0.125, 0.42)
-    readonly property color criticalHalo:     Qt.rgba(0.949, 0.722, 0.710, 0.35)
-    readonly property color criticalChipFill: Qt.rgba(0.949, 0.722, 0.710, 0.06)
+    readonly property color criticalHalo:     GlobalStates.darkMode ? Qt.rgba(0.949, 0.722, 0.710, 0.35) : Qt.rgba(0.702, 0.149, 0.118, 0.30)
+    readonly property color criticalChipFill: GlobalStates.darkMode ? Qt.rgba(0.949, 0.722, 0.710, 0.06) : Qt.rgba(0.702, 0.149, 0.118, 0.06)
 
     Behavior on warning   { ColorAnimation { duration: Theme.anim.durations.sm } }
     Behavior on panelBg   { ColorAnimation { duration: Theme.anim.durations.sm } }
