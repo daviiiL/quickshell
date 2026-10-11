@@ -7,6 +7,8 @@ import qs.services
 Item {
     id: root
 
+    readonly property bool blocked: Gemini.state === "needs-key" || Gemini.state === "keyring-locked" || Gemini.state === "no-keyring"
+
     Item {
         id: hero
         anchors {
@@ -72,7 +74,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        visible: Gemini.state !== "needs-key"
+        visible: !root.blocked
     }
 
     NeedsKeyPrompt {
@@ -82,6 +84,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        visible: Gemini.state === "needs-key"
+        visible: root.blocked
+        state: Gemini.state
     }
 }

@@ -18,11 +18,11 @@ RowLayout {
     spacing: 8
 
     Text {
-        text: root.title.toUpperCase()
+        text: root.title
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: Theme.font.size.xs
+        font.pixelSize: Theme.font.size.caption
         font.weight: Font.Medium
-        font.letterSpacing: 1.8
+        font.letterSpacing: Theme.font.tracking.none
         color: Colors.inkDimmer
     }
 
@@ -33,8 +33,7 @@ RowLayout {
         horizontalAlignment: Text.AlignRight
         elide: Text.ElideRight
         font.family: Theme.font.family.inter_regular
-        font.pixelSize: Theme.font.size.sm
-        font.letterSpacing: 0.4
+        font.pixelSize: Theme.font.size.body
         color: Colors.inkDim
     }
 }

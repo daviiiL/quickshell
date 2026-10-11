@@ -29,12 +29,12 @@ ColumnLayout {
         spacing: 10
 
             Text {
-                text: "WI-FI"
+                text: "Wi-Fi"
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.sm
+                font.pixelSize: Theme.font.size.caption
                 font.weight: Font.Medium
-                font.letterSpacing: 1.98
+                font.letterSpacing: Theme.font.tracking.none
             }
 
         Rectangle {
@@ -53,11 +53,11 @@ ColumnLayout {
 
         Text {
             visible: root.wifiOn && root.scanning
-            text: "SCANNING"
+            text: "Scanning"
             color: Colors.inkDim
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
-            font.letterSpacing: 1.4
+            font.pixelSize: Theme.font.size.caption
+            font.letterSpacing: Theme.font.tracking.none
         }
 
         Rectangle {
@@ -70,11 +70,11 @@ ColumnLayout {
 
         Text {
             visible: !root.wifiOn
-            text: "OFF"
+            text: "Off"
             color: Colors.inkDim
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
-            font.letterSpacing: 1.4
+            font.pixelSize: Theme.font.size.caption
+            font.letterSpacing: Theme.font.tracking.none
         }
 
         Item { Layout.fillWidth: true }
@@ -105,11 +105,11 @@ ColumnLayout {
 
             Text {
                 anchors.centerIn: parent
-                text: "TURN ON TO SCAN FOR NETWORKS"
+                text: "Turn on to scan for networks"
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.4
+                font.pixelSize: Theme.font.size.body
+                font.letterSpacing: Theme.font.tracking.none
             }
         }
 
@@ -119,11 +119,11 @@ ColumnLayout {
 
             Text {
                 anchors.centerIn: parent
-                text: root.scanning ? "SCANNING…" : "NO NETWORKS"
+                text: root.scanning ? "Scanning…" : "No networks"
                 color: Colors.inkFaint
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.4
+                font.pixelSize: Theme.font.size.body
+                font.letterSpacing: Theme.font.tracking.none
             }
         }
 

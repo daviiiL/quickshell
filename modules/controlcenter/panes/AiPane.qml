@@ -16,6 +16,19 @@ Flickable {
     boundsBehavior: Flickable.StopAtBounds
     clip: true
 
+    function saveKey(text: string): void {
+        if (text.trim() === Gemini.apiKey)
+            return;
+        keyError.text = "";
+        Gemini.setApiKey(text, (ok, err) => {
+            if (!ok)
+                keyError.text = "Could not save the key: " + (err || "keyring error");
+            keyField.text = Gemini.apiKey;
+        });
+    }
+
+    Component.onCompleted: Secrets.refresh()
+
     component IconBtn: Rectangle {
         id: ib
         property string sym: ""
@@ -54,28 +67,25 @@ Flickable {
         anchors.bottomMargin: 24
         spacing: 0
 
-        Text {
-            text: "AI Assistant"
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xxl
-            font.weight: Font.Medium
-        }
-
-        Text {
-            Layout.topMargin: 4
-            Layout.bottomMargin: 18
-            text: "GEMINI · KEY · MODEL · GENERATION"
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 2.4
-        }
-
-        GroupLabel { text: "API KEY" }
+        GroupLabel { Layout.topMargin: 0; text: "API key" }
 
         GroupBox {
+            NoteRow {
+                visible: !Secrets.probing && !Secrets.available
+                iconSymbol: "key_off"
+                label: "No keyring available"
+                sub: "Install and start gnome-keyring to store the API key"
+            }
+
+            NoteRow {
+                visible: !Secrets.probing && Secrets.available && Secrets.locked
+                iconSymbol: "lock"
+                label: "Keyring locked"
+                sub: "Unlock the login keyring to use your API key"
+            }
+
             RowLayout {
+                visible: Secrets.ready
                 Layout.fillWidth: true
                 Layout.margins: 12
                 spacing: 8
@@ -85,12 +95,10 @@ Flickable {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
                     echoMode: revealBtn.on ? TextInput.Normal : TextInput.Password
-                    text: Preferences.geminiApiKey
+                    text: Gemini.apiKey
+                    enabled: !Gemini.keyLoading
                     placeholderText: "AIza…"
-                    onEditingFinished: {
-                        Preferences.setGeminiApiKey(text);
-                        text = Preferences.geminiApiKey;
-                    }
+                    onEditingFinished: root.saveKey(text)
                 }
 
                 IconBtn {
@@ -99,8 +107,7 @@ Flickable {
                         keyField.forceActiveFocus();
                         keyField.selectAll();
                         keyField.paste();
-                        Preferences.setGeminiApiKey(keyField.text);
-                        keyField.text = Preferences.geminiApiKey;
+                        root.saveKey(keyField.text);
                     }
                 }
 
@@ -110,9 +117,23 @@ Flickable {
                     onClicked: on = !on
                 }
             }
+
+            Text {
+                id: keyError
+                visible: text.length > 0
+                Layout.fillWidth: true
+                Layout.leftMargin: 14
+                Layout.rightMargin: 14
+                Layout.bottomMargin: 10
+                text: ""
+                color: Colors.error
+                font.family: Theme.font.family.inter
+                font.pixelSize: Theme.font.size.caption
+                wrapMode: Text.WordWrap
+            }
         }
 
-        GroupLabel { text: "MODEL" }
+        GroupLabel { text: "Model" }
 
         GroupBox {
             StyledTextField {
@@ -124,7 +145,7 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "GENERATION" }
+        GroupLabel { text: "Generation" }
 
         GroupBox {
             SliderRow {
@@ -150,7 +171,7 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "TOOLS" }
+        GroupLabel { text: "Tools" }
 
         GroupBox {
             ToggleRow {
@@ -160,7 +181,7 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "SYSTEM PROMPT" }
+        GroupLabel { text: "System prompt" }
 
         GroupBox {
             StyledTextField {

@@ -124,7 +124,6 @@ Scope {
 
                     Header {
                         userName: "davidas"
-                        hostLabel: "niri · arch"
                     }
 
                     Rectangle { Layout.fillWidth: true; Layout.preferredHeight: Theme.ui.mainBarHairWidth; color: Colors.hair }

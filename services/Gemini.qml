@@ -29,16 +29,88 @@ Singleton {
 
     onActiveChanged: active ? enter() : teardown()
 
+    property string apiKey: ""
+    property bool keyLoading: false
+    property bool _bootstrapped: false
+    readonly property bool configured: apiKey.length > 0
+
     Connections {
         target: Preferences
-        function onGeminiApiKeyChanged() {
-            root.validatedThisSession = false;
-            if (root.active)
-                root.enter();
-        }
         function onGeminiModelChanged() {
             root.validatedThisSession = false;
         }
+    }
+
+    Connections {
+        target: Secrets
+        function onReadyChanged() {
+            if (Secrets.ready)
+                root._loadKey();
+            else if (root.active)
+                root.enter();
+        }
+        function onProbingChanged() {
+            if (!Secrets.probing && !Secrets.ready && root.active)
+                root.enter();
+        }
+    }
+
+    function bootstrap(): void {
+        if (_bootstrapped)
+            return;
+        _bootstrapped = true;
+        if (Secrets.ready)
+            _loadKey();
+    }
+
+    function _loadKey(): void {
+        if (Preferences.legacyGeminiApiKey.length > 0) {
+            _migrateLegacyKey();
+            return;
+        }
+        keyLoading = true;
+        Secrets.get("geminiApiKey", (ok, value) => {
+            root.keyLoading = false;
+            root._applyKey(ok ? value : "");
+        });
+    }
+
+    function _migrateLegacyKey(): void {
+        const legacy = Preferences.legacyGeminiApiKey;
+        keyLoading = true;
+        Secrets.set("geminiApiKey", legacy, (ok, _v, err) => {
+            root.keyLoading = false;
+            if (ok) {
+                Preferences.clearLegacyGeminiApiKey();
+                console.log("[Gemini] migrated api key into the keyring");
+            } else {
+                console.warn("[Gemini] key migration failed, keeping json copy: " + err);
+            }
+            root._applyKey(legacy);
+        });
+    }
+
+    function _applyKey(k: string): void {
+        const changed = k !== root.apiKey;
+        root.apiKey = k;
+        if (changed)
+            root.validatedThisSession = false;
+        if (root.active)
+            root.enter();
+    }
+
+    function setApiKey(key: string, cb: var): void {
+        const k = (key || "").trim();
+        const done = (ok, _v, err) => {
+            if (ok)
+                root._applyKey(k);
+            if (cb)
+                cb(ok, err);
+        };
+        if (k.length === 0)
+            Secrets.clear("geminiApiKey", done);
+        else
+            Secrets.set("geminiApiKey", k, done);
     }
 
     Timer {
@@ -51,7 +123,19 @@ Singleton {
 
     function enter(): void {
         errorText = "";
-        if (!Preferences.geminiConfigured) {
+        if (!Secrets.probing && !Secrets.available) {
+            state = "no-keyring";
+            return;
+        }
+        if (!Secrets.probing && Secrets.locked) {
+            state = "keyring-locked";
+            return;
+        }
+        if (keyLoading || Secrets.probing) {
+            state = "connecting";
+            return;
+        }
+        if (!configured) {
             state = "needs-key";
             return;
         }
@@ -98,7 +182,8 @@ Singleton {
         state = "connecting";
         _reqStart = Date.now();
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", root.baseUrl + "/models?key=" + encodeURIComponent(Preferences.geminiApiKey));
+        xhr.open("GET", root.baseUrl + "/models");
+        xhr.setRequestHeader("x-goog-api-key", root.apiKey);
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== XMLHttpRequest.DONE)
                 return;
@@ -186,7 +271,7 @@ Singleton {
     function send(text: string): void {
         if (!text || text.length === 0)
             return;
-        if (state === "needs-key" || state === "offline" || state === "connecting" || state === "dormant")
+        if (state === "needs-key" || state === "keyring-locked" || state === "no-keyring" || state === "offline" || state === "connecting" || state === "dormant")
             return;
         _pushMessage({
             "role": "user",
@@ -240,11 +325,12 @@ Singleton {
                     "google_search": {}
                 }];
 
-        const url = root.baseUrl + "/models/" + encodeURIComponent(Preferences.geminiModel) + ":streamGenerateContent?alt=sse&key=" + encodeURIComponent(Preferences.geminiApiKey);
+        const url = root.baseUrl + "/models/" + encodeURIComponent(Preferences.geminiModel) + ":streamGenerateContent?alt=sse";
         const xhr = new XMLHttpRequest();
         root._xhr = xhr;
         xhr.open("POST", url);
         xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("x-goog-api-key", root.apiKey);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.LOADING || xhr.readyState === XMLHttpRequest.DONE)
                 root._consumeStream(xhr.responseText);

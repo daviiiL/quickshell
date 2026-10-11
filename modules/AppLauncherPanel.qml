@@ -61,8 +61,7 @@ Scope {
                     anchors.centerIn: parent
                     text: parent.label
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.xs
-                    font.letterSpacing: 1.0
+                    font.pixelSize: Theme.font.size.caption
                     color: Qt.alpha(Colors.fgSurface, 0.56)
                 }
             }
@@ -383,10 +382,10 @@ Scope {
                         Text {
                             id: noMatchText
                             anchors.centerIn: parent
-                            text: `NO RESULTS FOR "${(AppLauncher.query || "").toUpperCase()}"`
+                            text: `No results for "${AppLauncher.query || ""}"`
                             font.family: Theme.font.family.inter_medium
-                            font.pixelSize: Theme.font.size.sm
-                            font.letterSpacing: 2.2
+                            font.pixelSize: Theme.font.size.body
+                            font.letterSpacing: Theme.font.tracking.none
                             color: Qt.alpha(Colors.fgSurface, 0.42)
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -419,11 +418,11 @@ Scope {
                              Text {
                                  Layout.alignment: Qt.AlignVCenter
                                  text: AppLauncher.query.length >= 1 && resultsList.count > 0
-                                     ? `${resultsList.count} ${resultsList.count === 1 ? "MATCH" : "MATCHES"}`
-                                     : "TYPE TO SEARCH"
+                                     ? `${resultsList.count} ${resultsList.count === 1 ? "match" : "matches"}`
+                                     : "Type to search"
                                  font.family: Theme.font.family.inter_medium
-                                 font.pixelSize: Theme.font.size.xs
-                                 font.letterSpacing: 1.8
+                                 font.pixelSize: Theme.font.size.caption
+                                 font.letterSpacing: Theme.font.tracking.none
                                  color: Qt.alpha(Colors.fgSurface, 0.42)
                              }
 
@@ -442,10 +441,10 @@ Scope {
                                      FooterKbd { label: "↓" }
                                      Text {
                                          Layout.alignment: Qt.AlignVCenter
-                                         text: "NAVIGATE"
+                                         text: "Navigate"
                                          font.family: Theme.font.family.inter_medium
-                                         font.pixelSize: Theme.font.size.xs
-                                         font.letterSpacing: 1.8
+                                         font.pixelSize: Theme.font.size.caption
+                                         font.letterSpacing: Theme.font.tracking.none
                                          color: Qt.alpha(Colors.fgSurface, 0.42)
                                      }
                                 }
@@ -457,10 +456,10 @@ Scope {
                                      FooterKbd { label: "↵" }
                                      Text {
                                          Layout.alignment: Qt.AlignVCenter
-                                         text: "LAUNCH"
+                                         text: "Launch"
                                          font.family: Theme.font.family.inter_medium
-                                         font.pixelSize: Theme.font.size.xs
-                                         font.letterSpacing: 1.8
+                                         font.pixelSize: Theme.font.size.caption
+                                         font.letterSpacing: Theme.font.tracking.none
                                          color: Qt.alpha(Colors.fgSurface, 0.42)
                                      }
                                 }
@@ -472,10 +471,10 @@ Scope {
                                      FooterKbd { label: "ESC" }
                                      Text {
                                          Layout.alignment: Qt.AlignVCenter
-                                         text: "CLOSE"
+                                         text: "Close"
                                          font.family: Theme.font.family.inter_medium
-                                         font.pixelSize: Theme.font.size.xs
-                                         font.letterSpacing: 1.8
+                                         font.pixelSize: Theme.font.size.caption
+                                         font.letterSpacing: Theme.font.tracking.none
                                          color: Qt.alpha(Colors.fgSurface, 0.42)
                                      }
                                 }

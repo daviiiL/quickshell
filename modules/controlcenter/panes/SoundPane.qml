@@ -29,25 +29,7 @@ Flickable {
         anchors.bottomMargin: 24
         spacing: 0
 
-        Text {
-            text: "Sound"
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xxl
-            font.weight: Font.Medium
-        }
-
-        Text {
-            Layout.topMargin: 4
-            Layout.bottomMargin: 18
-            text: "OUTPUT · INPUT · APP MIX"
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 2.4
-        }
-
-        GroupLabel { text: "OUTPUT" }
+        GroupLabel { Layout.topMargin: 0; text: "Output" }
 
         GroupBox {
             DevicePicker {
@@ -76,7 +58,7 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "INPUT" }
+        GroupLabel { text: "Input" }
 
         GroupBox {
             DevicePicker {
@@ -97,7 +79,7 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "PER-APP VOLUME" }
+        GroupLabel { text: "Per-app volume" }
 
         GroupBox {
             Repeater {

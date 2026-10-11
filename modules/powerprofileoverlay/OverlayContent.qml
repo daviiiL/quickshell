@@ -33,12 +33,12 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 14
-                text: "POWER PROFILE"
+                text: "Power profile"
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
+                font.pixelSize: Theme.font.size.caption
                 font.weight: Font.Medium
-                font.letterSpacing: 1.8
+                font.letterSpacing: Theme.font.tracking.none
             }
         }
 
@@ -101,7 +101,7 @@ Item {
                     text: Math.round(Power.percentage * 100) + "% · " + Power.batteryStatusText
                     color: Colors.inkDim
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: Theme.font.size.sm
+                    font.pixelSize: Theme.font.size.body
                     font.letterSpacing: 0.2
                     elide: Text.ElideRight
                 }

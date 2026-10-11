@@ -11,10 +11,10 @@ Item {
     readonly property bool onEthernet: Network.ethernet && Network.ethernetConnected
     readonly property bool onWifi: !onEthernet && Network.wifiEnabled && Network.active !== null
     readonly property string overlayState: {
-        if (root.onEthernet) return "ethernet";
-        if (root.onWifi)     return "connected";
-        if (Network.wifiEnabled) return "disconnected";
-        return "off";
+        if (root.onEthernet) return "Ethernet";
+        if (root.onWifi)     return "Connected";
+        if (Network.wifiEnabled) return "Disconnected";
+        return "Off";
     }
 
     ColumnLayout {
@@ -23,7 +23,7 @@ Item {
         spacing: 0
 
         OverlayHeader {
-            title: "network"
+            title: "Network"
             state: root.overlayState
         }
 
@@ -40,7 +40,7 @@ Item {
             title: "Wired — " + (Network.ethernetDevice || "ethernet")
             meta: Network.ethernetSpeed && Network.ethernetSpeed.length > 0
                     ? Network.ethernetSpeed
-                    : "CONNECTED"
+                    : "Connected"
         }
 
         ConnectionCard {

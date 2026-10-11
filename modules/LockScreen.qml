@@ -14,6 +14,19 @@ Scope {
 
     Process {
         id: unlockKeyringProc
+        property string pending: ""
+        command: ["bash", Quickshell.shellPath("scripts/keyring/unlock.sh")]
+        onStarted: {
+            if (pending.length > 0) {
+                write(pending + "\n");
+                pending = "";
+            }
+            stdinEnabled = false;
+        }
+        onExited: code => {
+            console.log("[LockScreen] keyring unlock exit " + code);
+            Secrets.refresh();
+        }
     }
 
     Process {
@@ -21,9 +34,10 @@ Scope {
     }
 
     function unlockKeyring(password: string): void {
-        unlockKeyringProc.running = false;
-        unlockKeyringProc.environment = { "UNLOCK_PASSWORD": password };
-        unlockKeyringProc.command = ["bash", "-c", Quickshell.shellPath("scripts/keyring/unlock.sh")];
+        if (unlockKeyringProc.running)
+            return;
+        unlockKeyringProc.pending = password;
+        unlockKeyringProc.stdinEnabled = true;
         unlockKeyringProc.running = true;
     }
 
@@ -35,8 +49,9 @@ Scope {
         const user = Quickshell.env("USER") ?? "unknown";
         const line = `[${utc} | ${local} ${tz}] ${event} user=${user}`;
         authLogProc.running = false;
-        authLogProc.environment = { "LOG_LINE": line };
-        authLogProc.command = ["bash", "-c", "mkdir -p ~/.local/share/quickshell && echo \"$LOG_LINE\" >> ~/.local/share/quickshell/auth.log"];
+        authLogProc.command = ["bash", "-c",
+            "umask 077; mkdir -p ~/.local/share/quickshell; f=~/.local/share/quickshell/auth.log; printf '%s\\n' \"$1\" >> \"$f\"; chmod 600 \"$f\"",
+            "--", line];
         authLogProc.running = true;
     }
 
@@ -45,6 +60,7 @@ Scope {
         function lock():   void { GlobalStates.screenLocked = true }
         function unlock(): void { GlobalStates.screenLocked = false }
         function toggle(): void { GlobalStates.screenLocked = !GlobalStates.screenLocked }
+        function status(): string { return JSON.stringify({ locked: sessionLock.locked, secure: sessionLock.secure, state: GlobalStates.screenLocked }) }
     }
 
     WlSessionLock {

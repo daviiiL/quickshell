@@ -76,7 +76,7 @@ Scope {
                     anchors.centerIn: parent
                     color: Colors.inkDim
                     font.family: Theme.font.family.inter
-                    font.pixelSize: Theme.font.size.xs
+                    font.pixelSize: Theme.font.size.caption
                     font.letterSpacing: 0.1
                 }
             }
@@ -297,11 +297,11 @@ Scope {
                             Text {
                                 id: noMatchText
                                 anchors.centerIn: parent
-                                text: `NO MATCHES FOR "${card.query.toUpperCase()}"`
+                                text: `No matches for "${card.query}"`
                                 color: Qt.alpha(Colors.fgSurface, 0.42)
                                 font.family: Theme.font.family.inter
-                                font.pixelSize: Theme.font.size.sm
-                                font.letterSpacing: 2.2
+                                font.pixelSize: Theme.font.size.body
+                                font.letterSpacing: Theme.font.tracking.none
                                 horizontalAlignment: Text.AlignHCenter
                             }
                         }
@@ -330,19 +330,19 @@ Scope {
                             spacing: 10
 
                             Text {
-                                text: "IMPORTANT HOTKEYS"
+                                text: "Important hotkeys"
                                 color: Colors.inkDimmer
                                 font.family: Theme.font.family.inter
-                                font.pixelSize: Theme.font.size.xs
+                                font.pixelSize: Theme.font.size.caption
                                 font.weight: Font.Medium
-                                font.letterSpacing: 1.8
+                                font.letterSpacing: Theme.font.tracking.none
                             }
 
                             Text {
-                                text: "· niri"
+                                text: "niri"
                                 color: Colors.inkDim
                                 font.family: Theme.font.family.inter
-                                font.pixelSize: Theme.font.size.xs
+                                font.pixelSize: Theme.font.size.caption
                                 font.letterSpacing: 0.1
                             }
                         }
@@ -361,11 +361,11 @@ Scope {
                                 KeyChip { text: "/" }
 
                                 Text {
-                                    text: "TOGGLE"
+                                    text: "Toggle"
                                     color: Colors.inkDimmer
                                     font.family: Theme.font.family.inter
-                                    font.pixelSize: Theme.font.size.xs
-                                    font.letterSpacing: 1.8
+                                    font.pixelSize: Theme.font.size.caption
+                                    font.letterSpacing: Theme.font.tracking.none
                                 }
                             }
 
@@ -375,11 +375,11 @@ Scope {
                                 KeyChip { text: "esc" }
 
                                 Text {
-                                    text: "CLOSE"
+                                    text: "Close"
                                     color: Colors.inkDimmer
                                     font.family: Theme.font.family.inter
-                                    font.pixelSize: Theme.font.size.xs
-                                    font.letterSpacing: 1.8
+                                    font.pixelSize: Theme.font.size.caption
+                                    font.letterSpacing: Theme.font.tracking.none
                                 }
                             }
                         }

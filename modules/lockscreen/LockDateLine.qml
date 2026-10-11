@@ -9,7 +9,7 @@ Row {
     spacing: 0
 
     readonly property int textSize: Math.max(25, Math.min(36, Math.round((parent?.width ?? 1920) * 0.0175)))
-    readonly property var parts: DateTime.longDate.split(" ")
+    readonly property var parts: DateTime.longDate.toUpperCase().split(" ")
     readonly property string weekday: parts[0] ?? ""
     readonly property string dayMonth: (parts[1] ?? "") + " " + (parts[2] ?? "")
     readonly property string week: "W" + DateTime.isoWeek

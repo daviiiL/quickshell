@@ -39,14 +39,14 @@ Rectangle {
     TextMetrics {
         id: enMetrics
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: Theme.font.size.sm
+        font.pixelSize: Theme.font.size.body
         font.weight: Font.Medium
         font.letterSpacing: 0.7
         text: "EN"
     }
     TextMetrics {
         id: cjkMetrics
-        font.pixelSize: Theme.font.size.md
+        font.pixelSize: Theme.font.size.bodyLarge
         text: "拼"
     }
 
@@ -74,7 +74,7 @@ Rectangle {
         text: Fcitx.currentCode
         color: root.announcing ? Colors.fgSurface : Colors.inkDim
         font.family: Fcitx.isCjk ? Theme.font.family.inter : Theme.font.family.inter_medium
-        font.pixelSize: Fcitx.isCjk ? Theme.font.size.md : Theme.font.size.sm
+        font.pixelSize: Fcitx.isCjk ? Theme.font.size.bodyLarge : Theme.font.size.body
         font.weight: Fcitx.isCjk ? Font.Normal : Font.Medium
         font.letterSpacing: Fcitx.isCjk ? 0 : 0.7
         Behavior on color { ColorAnimation { duration: 150 } }
@@ -87,9 +87,9 @@ Rectangle {
         text: Fcitx.currentDisplay
         color: Fcitx.isCjk ? Colors.inkDim : Colors.inkDimmer
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: Fcitx.isCjk ? Theme.font.size.sm : Theme.font.size.xs
+        font.pixelSize: Fcitx.isCjk ? Theme.font.size.body : Theme.font.size.caption
         font.weight: Font.Medium
-        font.letterSpacing: Fcitx.isCjk ? 1.2 : 1.6
+        font.letterSpacing: Fcitx.isCjk ? Theme.font.tracking.none : Theme.font.tracking.caps
         opacity: root.announcing ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 200 } }
     }

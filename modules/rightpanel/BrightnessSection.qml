@@ -14,7 +14,7 @@ ColumnLayout {
     readonly property real level: Brightness.available ? Brightness.brightness : 72
 
     SectionHead {
-        title: "display"
+        title: "Display"
         meta: Brightness.available ? Brightness._backlightDevice : "primary"
     }
 

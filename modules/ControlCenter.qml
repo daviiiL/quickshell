@@ -14,14 +14,17 @@ Scope {
     id: root
 
     readonly property var paneRegistry: [
-        { name: "quick",     label: "Quick Settings", icon: "tune",               section: "QUICK",   component: quickPaneComp },
-        { name: "network",   label: "Network",        icon: "wifi",               section: "SYSTEM",  component: networkPaneComp },
-        { name: "bluetooth", label: "Bluetooth",      icon: "bluetooth",          section: "SYSTEM",  component: bluetoothPaneComp },
-        { name: "sound",     label: "Sound",          icon: "volume_up",          section: "SYSTEM",  component: soundPaneComp },
-        { name: "display",   label: "Display",        icon: "brightness_high",    section: "SYSTEM",  component: displayPaneComp },
-        { name: "battery",   label: "Battery",        icon: "battery_full",       section: "SYSTEM",  component: batteryPaneComp },
-        { name: "ai",        label: "AI Assistant",   icon: "auto_awesome",       section: "SYSTEM",  component: aiPaneComp },
-        { name: "session",   label: "Power",          icon: "power_settings_new", section: "SESSION", component: sessionPaneComp }
+        { name: "quick",     label: "Quick Settings", icon: "tune",            section: "QUICK",  component: quickPaneComp },
+        { name: "network",   label: "Network",        icon: "wifi",            section: "SYSTEM", component: networkPaneComp },
+        { name: "bluetooth", label: "Bluetooth",      icon: "bluetooth",       section: "SYSTEM", component: bluetoothPaneComp },
+        { name: "sound",     label: "Sound",          icon: "volume_up",       section: "SYSTEM", component: soundPaneComp },
+        { name: "display",   label: "Display",        icon: "brightness_high", section: "SYSTEM", component: displayPaneComp },
+        { name: "power",
+          label: Power.isLaptopBattery ? "Battery" : "Power",
+          icon:  Power.isLaptopBattery ? "battery_full" : "bolt",
+          meta:  Power.isLaptopBattery ? Math.round(Power.percentage * 100) + "%" : "",
+          section: "SYSTEM", component: powerPaneComp },
+        { name: "ai",        label: "AI Assistant",   icon: "auto_awesome",    section: "SYSTEM", component: aiPaneComp }
     ]
 
     function paneEntry(name: string): var {
@@ -33,9 +36,8 @@ Scope {
     Component { id: bluetoothPaneComp; BluetoothPane {} }
     Component { id: soundPaneComp;     SoundPane {} }
     Component { id: displayPaneComp;   DisplayPane {} }
-    Component { id: batteryPaneComp;   PlaceholderPane { paneName: "Battery" } }
+    Component { id: powerPaneComp;     PowerPane {} }
     Component { id: aiPaneComp;        AiPane {} }
-    Component { id: sessionPaneComp;   SessionPane {} }
 
     IpcHandler {
         target: "controlcenter"
@@ -157,7 +159,6 @@ Scope {
 
                             Header {
                                 Layout.fillWidth: true
-                                section: content.activePane.section
                                 label:   content.activePane.label
                                 onCloseRequested: GlobalStates.closeControlCenter()
                             }

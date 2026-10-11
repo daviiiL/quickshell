@@ -78,7 +78,7 @@ Item {
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignRight
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.md
+            font.pixelSize: Theme.font.size.bodyLarge
             font.letterSpacing: 0.01
             wrapMode: Text.NoWrap
         }

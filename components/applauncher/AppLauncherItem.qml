@@ -114,17 +114,17 @@ Rectangle {
                  text: root.highlightContent(root.itemName, root.query)
                  textFormat: Text.StyledText
                  font.family: Theme.font.family.inter
-                 font.pixelSize: Theme.font.size.md
+                 font.pixelSize: Theme.font.size.bodyLarge
                  color: Colors.fgSurface
                  elide: Text.ElideRight
              }
 
              Text {
                  Layout.fillWidth: true
-                 text: root.itemComment.toUpperCase()
+                 text: root.itemComment
                  font.family: Theme.font.family.inter_medium
-                 font.pixelSize: Theme.font.size.xs
-                 font.letterSpacing: 1.6
+                 font.pixelSize: Theme.font.size.caption
+                 font.letterSpacing: Theme.font.tracking.none
                  color: Qt.alpha(Colors.fgSurface, 0.42)
                  elide: Text.ElideRight
                  visible: root.itemComment !== ""

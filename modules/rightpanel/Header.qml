@@ -8,7 +8,6 @@ RowLayout {
     id: root
 
     property string userName: Qt.application.organization || "user"
-    property string hostLabel: ""
     property string initials: root.userName.substring(0, 2).toUpperCase()
 
     Layout.fillWidth: true
@@ -36,33 +35,19 @@ RowLayout {
             text: root.initials
             color: Colors.barAccent
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
             font.weight: Font.Medium
-            font.letterSpacing: 0.6
         }
     }
 
-    ColumnLayout {
-        spacing: 2
+    Text {
         Layout.alignment: Qt.AlignVCenter
-
-        Text {
-            text: root.userName
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xxl
-            font.weight: Font.Medium
-            font.letterSpacing: 0.3
-        }
-
-        Text {
-            visible: root.hostLabel.length > 0
-            text: root.hostLabel.toUpperCase()
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 1.4
-        }
+        text: root.userName
+        color: Colors.fgSurface
+        font.family: Theme.font.family.inter_medium
+        font.pixelSize: Theme.font.size.title
+        font.weight: Font.Medium
+        font.letterSpacing: 0.3
     }
 
     Item { Layout.fillWidth: true }

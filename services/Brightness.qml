@@ -7,8 +7,21 @@ import Quickshell.Io
 Singleton {
     id: root
 
+    readonly property string toolName: "brightnessctl"
     readonly property real brightness: _brightness
-    readonly property bool available: Power.isLaptopBattery
+
+    readonly property bool toolAvailable: _toolAvailable
+    readonly property bool deviceAvailable: _pathsReady
+    readonly property bool probing: !_toolProbed || !_deviceProbed
+    readonly property bool available: toolAvailable && deviceAvailable
+
+    readonly property string unavailableReason: probing ? "" : _reasonFor(toolAvailable, deviceAvailable)
+
+    function _reasonFor(tool, device) {
+        if (tool && device) return "";
+        if (!device) return "No backlight device found";
+        return toolName + " is not installed";
+    }
 
     property real _brightness: 0
     property int _current: 0
@@ -18,11 +31,22 @@ Singleton {
     property string _brightnessPath: ""
     property string _maxBrightnessPath: ""
     property bool _pathsReady: false
+    property bool _toolAvailable: false
+    property bool _toolProbed: false
+    property bool _deviceProbed: false
 
-    onAvailableChanged: {
-        if (available && !_pathsReady) {
-            getBacklightDir.running = true;
-        }
+    // Probed once; restart the shell to re-detect.
+    Component.onCompleted: {
+        checkToolProc.running = true;
+        getBacklightDir.running = true;
+    }
+
+    onProbingChanged: {
+        if (probing) return;
+        const reason = _reasonFor(toolAvailable, deviceAvailable);
+        console.log("[Brightness] probe finished: tool=" + toolAvailable
+            + " device=" + deviceAvailable + " available=" + (toolAvailable && deviceAvailable)
+            + (reason ? " reason='" + reason + "'" : ""));
     }
 
     function increaseBrightness() {
@@ -37,8 +61,21 @@ Singleton {
         if (!available)
             return;
         value = Math.max(1, Math.min(100, value));
-        setProc.command = ["brightnessctl", "--class", "backlight", "s", value + "%", "--quiet", "-d", root._backlightDevice];
+        setProc.command = [root.toolName, "--class", "backlight", "s", value + "%", "--quiet", "-d", root._backlightDevice];
         setProc.running = true;
+    }
+
+    Process {
+        id: checkToolProc
+
+        command: ["sh", "-c", "command -v " + root.toolName + " >/dev/null 2>&1 && echo ok || echo missing"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root._toolAvailable = this.text.trim() === "ok";
+                root._toolProbed = true;
+            }
+        }
     }
 
     Process {
@@ -53,6 +90,8 @@ Singleton {
                     root._backlightPath = "/sys/class/backlight/" + device;
                     root._backlightDevice = device;
                     checkPathsProc.running = true;
+                } else {
+                    root._deviceProbed = true;
                 }
             }
         }
@@ -70,6 +109,7 @@ Singleton {
                     root._maxBrightnessPath = root._backlightPath + "/max_brightness";
                     root._pathsReady = true;
                 }
+                root._deviceProbed = true;
             }
         }
     }

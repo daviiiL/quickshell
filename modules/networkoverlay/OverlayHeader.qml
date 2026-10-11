@@ -17,23 +17,23 @@ RowLayout {
     Layout.bottomMargin: 8
     spacing: 6
 
-            Text {
-                text: root.title.toUpperCase()
-                color: Colors.inkDimmer
-                font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.weight: Font.Medium
-                font.letterSpacing: 1.8
-            }
+    Text {
+        text: root.title
+        color: Colors.inkDimmer
+        font.family: Theme.font.family.inter_medium
+        font.pixelSize: Theme.font.size.caption
+        font.weight: Font.Medium
+        font.letterSpacing: Theme.font.tracking.none
+    }
 
-        Text {
-            visible: root.state.length > 0
-            text: "· " + root.state
-            color: Colors.inkDim
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 1.0
-        }
-
-    Item { Layout.fillWidth: true }
+    Text {
+        Layout.fillWidth: true
+        visible: root.state.length > 0
+        text: root.state
+        horizontalAlignment: Text.AlignRight
+        color: Colors.inkDim
+        font.family: Theme.font.family.inter_medium
+        font.pixelSize: Theme.font.size.caption
+        font.letterSpacing: Theme.font.tracking.none
+    }
 }

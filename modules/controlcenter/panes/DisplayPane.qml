@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import qs.common
 import qs.services
 import qs.modules.controlcenter.atoms
@@ -16,6 +17,17 @@ Flickable {
     contentHeight: column.implicitHeight + column.anchors.topMargin + column.anchors.bottomMargin
     boundsBehavior: Flickable.StopAtBounds
     clip: true
+
+    readonly property var paneScreen: QsWindow.window?.screen ?? null
+    onPaneScreenChanged: if (paneScreen) console.log("[ControlCenter.display] screen " + paneScreen.name + " / " + paneScreen.model)
+    readonly property string screenLabel: {
+        if (Brightness.deviceAvailable) return "Built-in screen";
+        const name = root.paneScreen?.name ?? "";
+        const model = (root.paneScreen?.model ?? "").trim();
+        if (name.length === 0) return "Screen";
+        if (/^(eDP|LVDS|DSI)/i.test(name)) return "Built-in screen";
+        return model.length > 0 ? model + " · " + name : name;
+    }
 
     readonly property string brightnessIcon: {
         const frac = Brightness.brightness / 100;
@@ -35,37 +47,33 @@ Flickable {
         anchors.bottomMargin: 24
         spacing: 0
 
-        Text {
-            text: "Display"
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xxl
-            font.weight: Font.Medium
-        }
-
-        Text {
-            Layout.topMargin: 4
-            Layout.bottomMargin: 18
-            text: "BRIGHTNESS · COLOR · TEXT"
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 2.4
-        }
-
-        GroupLabel { text: "BUILT-IN SCREEN" }
+        GroupLabel { Layout.topMargin: 0; text: root.screenLabel }
 
         GroupBox {
             SliderRow {
+                visible: Brightness.available || Brightness.probing
                 iconSymbol: root.brightnessIcon
                 label: "Brightness"
                 value: Brightness.brightness / 100
                 available: Brightness.available
                 onMoved: v => Brightness.setBrightness(Math.round(v * 100))
             }
+
+            NoteRow {
+                visible: !Brightness.available && !Brightness.probing
+                iconSymbol: "brightness_alert"
+                label: "Monitor brightness isn't adjustable"
+                sub: Brightness.unavailableReason
+
+                function traceNote() {
+                    if (visible) console.log("[ControlCenter.display] brightness note: " + sub);
+                }
+                Component.onCompleted: Qt.callLater(traceNote)
+                onVisibleChanged: Qt.callLater(traceNote)
+            }
         }
 
-        GroupLabel { text: "COLOR" }
+        GroupLabel { text: "Color" }
 
         GroupBox {
             RowLayout {
@@ -94,7 +102,15 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "TEXT" }
+        GroupLabel { text: "Wallpaper" }
+
+        GroupBox {
+            WallpaperRow {
+                onActivated: GlobalStates.openWallpaperPicker("controlcenter")
+            }
+        }
+
+        GroupLabel { text: "Text" }
 
         GroupBox {
             SliderRow {

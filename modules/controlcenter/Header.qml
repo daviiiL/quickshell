@@ -9,7 +9,6 @@ import qs.modules.controlcenter.atoms
 Rectangle {
     id: root
 
-    required property string section
     required property string label
 
     signal closeRequested()
@@ -34,35 +33,13 @@ Rectangle {
         anchors.rightMargin: 14
         spacing: 10
 
-        Row {
+        Text {
             Layout.alignment: Qt.AlignVCenter
-            spacing: 6
-
-            Text {
-            text: root.section
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
-            font.weight: Font.Medium
-            font.letterSpacing: 3.0
-        }
-
-        Text {
-            text: "·"
-            color: Colors.inkFaint
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
-            font.letterSpacing: 3.0
-        }
-
-        Text {
-            text: root.label.toUpperCase()
+            text: root.label
             color: Colors.fgSurface
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
             font.weight: Font.Medium
-            font.letterSpacing: 3.0
-        }
         }
 
         Item { Layout.fillWidth: true }
@@ -91,12 +68,11 @@ Rectangle {
                 Text {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
-                text: "Search…"
-                color: Colors.inkFaint
-                font.family: Theme.font.family.inter
-                font.pixelSize: Theme.font.size.sm
-                font.letterSpacing: 0.6
-            }
+                    text: "Search…"
+                    color: Colors.inkFaint
+                    font.family: Theme.font.family.inter
+                    font.pixelSize: Theme.font.size.body
+                }
             }
         }
 

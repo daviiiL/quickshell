@@ -21,19 +21,19 @@ ColumnLayout {
         spacing: 8
 
         Text {
-            text: "NOTIFICATIONS"
+            text: "Notifications"
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
+            font.pixelSize: Theme.font.size.caption
             font.weight: Font.Medium
-            font.letterSpacing: 1.8
+            font.letterSpacing: Theme.font.tracking.none
         }
 
         Text {
             text: Notifications.list.length
             color: Colors.inkDim
             font.family: Theme.font.family.inter_regular
-            font.pixelSize: Theme.font.size.xs
+            font.pixelSize: Theme.font.size.caption
             font.letterSpacing: 0.4
         }
 
@@ -52,11 +52,11 @@ ColumnLayout {
             Text {
                 id: muteLabel
                 anchors.centerIn: parent
-                text: Notifications.silent ? "MUTED" : "MUTE"
+                text: Notifications.silent ? "Muted" : "Mute"
                 color: Notifications.silent ? Colors.fgSurface : Colors.inkDim
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.4
+                font.pixelSize: Theme.font.size.caption
+                font.letterSpacing: Theme.font.tracking.none
             }
 
             MouseArea {
@@ -81,11 +81,11 @@ ColumnLayout {
             Text {
                 id: clearLabel
                 anchors.centerIn: parent
-                text: "CLEAR"
+                text: "Clear"
                 color: clearMa.containsMouse ? Colors.fgSurface : Colors.inkDim
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.4
+                font.pixelSize: Theme.font.size.caption
+                font.letterSpacing: Theme.font.tracking.none
                 Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
             }
 
@@ -112,11 +112,11 @@ ColumnLayout {
 
         Text {
             anchors.centerIn: parent
-            text: "NO NOTIFICATIONS"
+            text: "No notifications"
             color: Colors.inkFaint
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
-            font.letterSpacing: 1.8
+            font.pixelSize: Theme.font.size.body
+            font.letterSpacing: Theme.font.tracking.none
         }
     }
 

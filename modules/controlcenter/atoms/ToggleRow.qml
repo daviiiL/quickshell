@@ -31,7 +31,7 @@ Item {
             text: root.label
             color: Colors.fgSurface
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
             elide: Text.ElideRight
         }
 

@@ -7,6 +7,7 @@ import Quickshell.Wayland
 import Quickshell.Io
 import qs.common
 import qs.services
+import qs.widgets
 import qs.modules.mainbar
 
 Scope {
@@ -177,10 +178,19 @@ Scope {
                     Rectangle { Layout.preferredWidth: Theme.ui.mainBarHairWidth; Layout.fillHeight: true; color: Colors.hair }
 
                     RowLayout {
-                        spacing: 0
+                        spacing: 6
                         Layout.fillHeight: true
                         Layout.leftMargin: Theme.ui.mainBarSubGroupPadX
                         Layout.rightMargin: Theme.ui.mainBarSubGroupPadX
+
+                        MaterialSymbol {
+                            visible: GlobalStates.caffeinated
+                            Layout.alignment: Qt.AlignVCenter
+                            icon: "coffee"
+                            iconSize: 12
+                            fontColor: Colors.inkDim
+                        }
+
                         BatteryButton { screen: root.screen }
                     }
 

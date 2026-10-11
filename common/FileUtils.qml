@@ -9,6 +9,10 @@ Singleton {
         return s.startsWith("file://") ? s.slice(7) : s;
     }
 
+    function toFileUrl(path) {
+        return "file://" + trimFileProtocol(path).split("/").map(encodeURIComponent).join("/");
+    }
+
     function parentDirectory(str) {
         if (typeof str !== "string")
             return "";

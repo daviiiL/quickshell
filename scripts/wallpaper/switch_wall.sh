@@ -4,7 +4,7 @@ set -e
 
 usage() {
     echo "Usage: $0 [--scheme <matugen-scheme>] [--mode <dark|light>] <image-path>"
-    echo "Switches wallpaper using swww"
+    echo "Switches wallpaper using awww"
     echo "Optionally generates color scheme with matugen"
     echo ""
     echo "Options:"
@@ -48,13 +48,13 @@ fi
 
 WALLPAPER_PATH="$(realpath "$WALLPAPER_PATH")"
 
-if command -v swww &>/dev/null; then
-    if ! pgrep -x swww-daemon > /dev/null; then
-        swww-daemon &
+if command -v awww &>/dev/null; then
+    if ! pgrep -x awww-daemon > /dev/null; then
+        awww-daemon &
         sleep 1
     fi
 
-    swww img "$WALLPAPER_PATH" \
+    awww img "$WALLPAPER_PATH" \
         --transition-type fade \
         --transition-duration 1
 
@@ -68,5 +68,5 @@ if command -v swww &>/dev/null; then
     exit 0
 fi
 
-notify-send -a "Wallpaper Service" "Error: swww is not available" "Please install swww: https://github.com/LGFae/swww"
+notify-send -a "Wallpaper Service" "Error: awww is not available" "Please install awww: https://codeberg.org/LGFae/awww"
 exit 1

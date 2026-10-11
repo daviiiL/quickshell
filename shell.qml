@@ -52,6 +52,11 @@ ShellRoot {
 
         sourceComponent: Component {
             Item {
+                Component.onCompleted: {
+                    IdleManager.start();
+                    Gemini.bootstrap();
+                }
+
                 MainBar {}
                 LeftPanel {}
                 RightPanel {}
@@ -60,12 +65,14 @@ ShellRoot {
                 Osd {}
                 AppLauncherPanel {}
                 ControlCenter {}
+                WallpaperPicker {}
                 CliphistOverlay {}
                 KeybindHintsOverlay {}
                 PopupSurface {}
-                LockScreen {}
             }
         }
     }
+
+    LockScreen {}
 }
 

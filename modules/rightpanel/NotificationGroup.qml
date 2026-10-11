@@ -140,7 +140,7 @@ Item {
                     text: (root.group.appName || "?").substring(0, 1).toUpperCase()
                     color: Colors.barAccent
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.sm
+                    font.pixelSize: Theme.font.size.body
                     font.weight: Font.Medium
                 }
             }
@@ -154,11 +154,11 @@ Item {
                     Layout.fillWidth: true
 
                     Text {
-                        text: (root.group.appName || "").toUpperCase()
+                        text: root.group.appName || ""
                         color: Colors.fgSurface
                         font.family: Theme.font.family.inter_medium
-                        font.pixelSize: Theme.font.size.sm
-                        font.letterSpacing: 1.4
+                        font.pixelSize: Theme.font.size.caption
+                        font.letterSpacing: Theme.font.tracking.none
                         font.weight: Font.Medium
                     }
 
@@ -177,7 +177,7 @@ Item {
                             text: root.count + (root.hasUnread ? " new" : "")
                             color: Colors.inkDim
                             font.family: Theme.font.family.inter_regular
-                            font.pixelSize: Theme.font.size.xs
+                            font.pixelSize: Theme.font.size.caption
                             font.letterSpacing: 0.4
                         }
                     }
@@ -192,7 +192,7 @@ Item {
                           (root.latest?.body ? (root.latest?.summary ? " — " : "") + root.latest.body : "")
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: Theme.font.size.md
+                    font.pixelSize: Theme.font.size.bodyLarge
                     elide: Text.ElideRight
                     maximumLineCount: 1
                 }
@@ -203,7 +203,7 @@ Item {
                     text: StringUtils.relativeTime(root.group.time)
                     color: Colors.inkDimmer
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: Theme.font.size.sm
+                    font.pixelSize: Theme.font.size.caption
                     font.letterSpacing: 0.4
                 }
 

@@ -70,8 +70,8 @@ Item {
 
     component FooterLabel: Text {
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: Theme.font.size.xs
-        font.letterSpacing: 1.8
+        font.pixelSize: Theme.font.size.caption
+        font.letterSpacing: Theme.font.tracking.none
         color: Qt.alpha(Colors.fgSurface, 0.42)
     }
 
@@ -91,8 +91,7 @@ Item {
             anchors.centerIn: parent
             text: parent.label
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 1.0
+            font.pixelSize: Theme.font.size.caption
             color: Qt.alpha(Colors.fgSurface, 0.56)
         }
     }
@@ -187,7 +186,7 @@ Item {
                     visible: Cliphist.query.length === 0
 
                     FooterKbd { label: "ESC" }
-                    FooterLabel { text: "CLOSE" }
+                    FooterLabel { text: "Close" }
                 }
             }
 
@@ -318,13 +317,13 @@ Item {
                 anchors.centerIn: parent
                 visible: Cliphist.count === 0
                 text: {
-                    if (!Cliphist.available) return "CLIPHIST NOT INSTALLED";
-                    if (Cliphist.query.length > 0) return `NO MATCH FOR "${Cliphist.query.toUpperCase()}"`;
-                    return "NO CLIPBOARD HISTORY YET";
+                    if (!Cliphist.available) return "Cliphist not installed";
+                    if (Cliphist.query.length > 0) return `No match for "${Cliphist.query}"`;
+                    return "No clipboard history yet";
                 }
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.sm
-                font.letterSpacing: 2.2
+                font.pixelSize: Theme.font.size.body
+                font.letterSpacing: Theme.font.tracking.none
                 color: Colors.inkDimmer
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -358,7 +357,7 @@ Item {
 
                 FooterLabel {
                     Layout.alignment: Qt.AlignVCenter
-                    text: `${Cliphist.count} ${Cliphist.count === 1 ? "ENTRY" : "ENTRIES"}`
+                    text: `${Cliphist.count} ${Cliphist.count === 1 ? "entry" : "entries"}`
                 }
 
                 Item { Layout.fillWidth: true; Layout.preferredHeight: 1 }
@@ -371,25 +370,25 @@ Item {
                         spacing: 6
                         FooterKbd { label: "↑" }
                         FooterKbd { label: "↓" }
-                        FooterLabel { text: "NAV" }
+                        FooterLabel { text: "Navigate" }
                     }
 
                     RowLayout {
                         spacing: 6
                         FooterKbd { label: "↵" }
-                        FooterLabel { text: "COPY" }
+                        FooterLabel { text: "Copy" }
                     }
 
                     RowLayout {
                         spacing: 6
                         FooterKbd { label: "DEL" }
-                        FooterLabel { text: "DELETE" }
+                        FooterLabel { text: "Delete" }
                     }
 
                     RowLayout {
                         spacing: 6
                         FooterKbd { label: "ESC" }
-                        FooterLabel { text: "CLOSE" }
+                        FooterLabel { text: "Close" }
                     }
                 }
             }

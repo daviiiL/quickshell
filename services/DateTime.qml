@@ -43,8 +43,8 @@ Singleton {
         const d = root.currentTimezone
             ? new Date(Date.now() + root.tzOffsetSeconds * 1000)
             : new Date(Date.UTC(raw.getFullYear(), raw.getMonth(), raw.getDate()));
-        const dow = Qt.locale().dayName(d.getUTCDay(), Locale.ShortFormat).toUpperCase();
-        const mon = Qt.locale().monthName(d.getUTCMonth(), Locale.ShortFormat).toUpperCase();
+        const dow = Qt.locale().dayName(d.getUTCDay(), Locale.ShortFormat);
+        const mon = Qt.locale().monthName(d.getUTCMonth(), Locale.ShortFormat);
         return `${dow} ${d.getUTCDate()} ${mon}`;
     }
 

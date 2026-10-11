@@ -68,18 +68,20 @@ Rectangle {
             text: root.label
             color: (root.active || root.hot) ? Colors.fgSurface : Colors.inkDim
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
+            font.weight: root.active ? Font.Medium : Font.Normal
             elide: Text.ElideRight
             Behavior on color { ColorAnimation { duration: root.animMs } }
         }
 
         Text {
             visible: root.meta.length > 0
-            text: root.meta.toUpperCase()
+            Layout.maximumWidth: 64
+            text: root.meta
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 0.6
+            font.pixelSize: Theme.font.size.caption
+            elide: Text.ElideRight
         }
     }
 

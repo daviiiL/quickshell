@@ -50,12 +50,13 @@ Rectangle {
         }
 
         Text {
-            text: root.label.toUpperCase()
+            Layout.fillWidth: true
+            text: root.label
             color: root.on ? Colors.fgSurface : Colors.inkDim
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
+            font.pixelSize: Theme.font.size.body
             font.weight: Font.Medium
-            font.letterSpacing: 1.8
+            elide: Text.ElideRight
             Behavior on color { ColorAnimation { duration: root.animMs } }
         }
 
@@ -66,8 +67,7 @@ Rectangle {
             text: root.sub
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 0.3
+            font.pixelSize: Theme.font.size.caption
             elide: Text.ElideRight
             Layout.fillWidth: true
         }

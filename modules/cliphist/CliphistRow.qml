@@ -90,8 +90,7 @@ Item {
             elide: Text.ElideRight
             wrapMode: Text.NoWrap
             font.family: root.isMono ? "JetBrains Mono" : Theme.font.family.inter
-            font.pixelSize: root.isMono ? Theme.font.size.sm : Theme.font.size.md
-            font.letterSpacing: 0.13
+            font.pixelSize: Theme.font.size.body
         }
 
         Text {
@@ -99,8 +98,7 @@ Item {
             text: root.entry ? "#" + root.entry.id : ""
             color: root.selected ? Colors.inkDim : Colors.inkFaint
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
-            font.letterSpacing: 0.44
+            font.pixelSize: Theme.font.size.body
         }
     }
 

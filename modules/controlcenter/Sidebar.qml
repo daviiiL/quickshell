@@ -15,7 +15,6 @@ Rectangle {
     signal paneSelected(string name)
 
     readonly property string userName: Quickshell.env("USER") || "user"
-    readonly property string hostLabel: "niri · arch"
     readonly property string initial: root.userName.substring(0, 1).toUpperCase()
 
     Component.onCompleted: console.log("[ControlCenter.sidebar] loaded")
@@ -57,30 +56,18 @@ Rectangle {
                     text: root.initial
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.sm
+                    font.pixelSize: Theme.font.size.body
                     font.weight: Font.Medium
                 }
             }
 
-            ColumnLayout {
+            Text {
                 Layout.alignment: Qt.AlignVCenter
-                spacing: 1
-
-                Text {
-                    text: root.userName
-                    color: Colors.fgSurface
-                    font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.sm
-                    font.weight: Font.Medium
-                }
-
-                Text {
-                    text: root.hostLabel.toUpperCase()
-                    color: Colors.inkDimmer
-                    font.family: Theme.font.family.inter
-                    font.pixelSize: Theme.font.size.xs
-                    font.letterSpacing: 1.6
-                }
+                text: root.userName
+                color: Colors.fgSurface
+                font.family: Theme.font.family.inter_medium
+                font.pixelSize: Theme.font.size.body
+                font.weight: Font.Medium
             }
 
             Item { Layout.fillWidth: true }
@@ -91,6 +78,8 @@ Rectangle {
             Layout.preferredHeight: Theme.ui.mainBarHairWidth
             color: Colors.hair
         }
+
+        Item { Layout.preferredHeight: 6 }
 
         Repeater {
             model: root.panes
@@ -107,19 +96,15 @@ Rectangle {
                 Layout.fillWidth: true
                 spacing: 0
 
-                Text {
-                    visible: itemColumn.isFirstInSection
+                Rectangle {
+                    visible: itemColumn.isFirstInSection && itemColumn.index > 0
                     Layout.fillWidth: true
-                    Layout.leftMargin: 16
+                    Layout.leftMargin: 14
                     Layout.rightMargin: 14
-                    Layout.topMargin: 14
-                    Layout.bottomMargin: 6
-                    text: itemColumn.modelData.section
-                    color: Colors.inkFaint
-                    font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.xs
-                    font.weight: Font.Medium
-                    font.letterSpacing: 2.5
+                    Layout.topMargin: 8
+                    Layout.bottomMargin: 8
+                    Layout.preferredHeight: Theme.ui.mainBarHairWidth
+                    color: Colors.hair
                 }
 
                 SidebarItem {

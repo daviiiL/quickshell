@@ -1,20 +1,14 @@
 #!/usr/bin/env bash
-# Based on https://unix.stackexchange.com/a/602935
-
+set -u
+umask 077
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if "${SCRIPT_DIR}/is_unlocked.sh"; then
-  exit 1
+  exit 0
 fi
 
-if [[ -z "${UNLOCK_PASSWORD}" ]]; then
-  echo -n 'Login password: ' >&2
-  read -s UNLOCK_PASSWORD || return
-fi
-
-killall -q -u "$(whoami)" gnome-keyring-daemon
-eval $(echo -n "${UNLOCK_PASSWORD}" |
-  gnome-keyring-daemon --daemonize --login |
-  sed -e 's/^/export /')
-unset UNLOCK_PASSWORD
-echo '' >&2
+IFS= read -r PW || exit 1
+printf '%s' "$PW" | gnome-keyring-daemon --unlock >/dev/null 2>&1
+rc=$?
+unset PW
+exit $rc

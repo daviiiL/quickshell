@@ -101,23 +101,24 @@ Rectangle {
                 text: root.ssid
                 color: root.isWeak ? Colors.inkDim : Colors.fgSurface
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.md
+                font.pixelSize: Theme.font.size.bodyLarge
                 font.weight: root.isActive ? Font.Medium : Font.Normal
                 elide: Text.ElideRight
             }
 
             Text {
+                readonly property bool showsSecurity: !root.isConnecting && !root.isActive && root.security.length > 0
                 text: root.isConnecting
-                        ? "CONNECTING…"
+                        ? "Connecting…"
                         : (root.isActive
-                            ? "CONNECTED"
-                            : (root.security.length > 0 ? root.security.toUpperCase() : "OPEN"))
+                            ? "Connected"
+                            : (root.security.length > 0 ? root.security.toUpperCase() : "Open"))
                 color: root.isConnecting
                         ? Colors.fgSurface
                         : (root.isActive ? Colors.live : Colors.inkDimmer)
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.4
+                font.pixelSize: Theme.font.size.caption
+                font.letterSpacing: showsSecurity ? Theme.font.tracking.caps : Theme.font.tracking.none
             }
         }
 
@@ -136,7 +137,7 @@ Rectangle {
             text: root.strength + "%"
             color: Colors.inkDim
             font.family: Theme.font.family.inter_regular
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
             font.letterSpacing: 0.2
         }
     }

@@ -48,14 +48,14 @@ MainBarButton {
             visible: root.unread > 0
             readonly property string label: root.unread > 9 ? "9+" : String(root.unread)
 
-            height: 10
-            width: Math.max(height, badgeText.implicitWidth + 6)
+            height: 16
+            width: Math.max(height, badgeText.implicitWidth + 8)
             radius: height / 2
 
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.rightMargin: -width / 3
-            anchors.topMargin: -2
+            anchors.rightMargin: -width / 2
+            anchors.topMargin: -height / 2
 
             color: Colors.barAccent
             border.width: 1
@@ -68,7 +68,7 @@ MainBarButton {
                 color: "#0a0a0a"
                 font.family: Theme.font.family.inter_bold
                 font.weight: Font.Bold
-                font.pixelSize: Theme.font.size.xxs
+                font.pixelSize: Theme.font.size.caption
             }
         }
     }

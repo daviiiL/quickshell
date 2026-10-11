@@ -20,6 +20,18 @@ Singleton {
         Preferences.setWallpaperPath(path);
     }
 
+    // Re-applying the stored path must not re-run awww/matugen.
+    function applyCurrent(path: string): void {
+        if (!path || path.length === 0)
+            return;
+        if (path === Preferences.wallpaperPath)
+            return;
+        const scheme = Preferences.matugenScheme && Preferences.matugenScheme.length > 0
+            ? Preferences.matugenScheme
+            : "scheme-tonal-spot";
+        applyWithCurPreferences(path, GlobalStates.darkMode, scheme);
+    }
+
     Process {
         id: applyProc
     }

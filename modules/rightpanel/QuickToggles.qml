@@ -12,10 +12,10 @@ RowLayout {
     spacing: 0
 
     property var toggles: [
-        { label: "wifi",   icon: "wifi",               on: true,  kind: "local" },
-        { label: "bt",     icon: "bluetooth",          on: false, kind: "local" },
-        { label: "dnd",    icon: "do_not_disturb_on",  on: true,  kind: "local" },
-        { label: "night",  icon: "dark_mode",          on: false, kind: "theme" }
+        { label: "Wi-Fi",          icon: "wifi",               on: true,  kind: "local" },
+        { label: "Bluetooth",      icon: "bluetooth",          on: false, kind: "local" },
+        { label: "Do not disturb", icon: "do_not_disturb_on",  on: true,  kind: "local" },
+        { label: "Dark mode",      icon: "dark_mode",          on: false, kind: "theme" }
     ]
 
     Repeater {
@@ -91,11 +91,12 @@ RowLayout {
 
                 Text {
                     Layout.alignment: Qt.AlignHCenter
-                    text: cell.modelData.label.toUpperCase()
+                    Layout.maximumWidth: cell.width - 8
+                    elide: Text.ElideRight
+                    text: cell.modelData.label
                     color: cell.hovered || cell.on ? Colors.fgSurface : Colors.inkDim
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.xs
-                    font.letterSpacing: 1.4
+                    font.pixelSize: Theme.font.size.body
                     Behavior on color { ColorAnimation { duration: 150 } }
                 }
             }

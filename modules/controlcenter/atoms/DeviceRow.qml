@@ -63,7 +63,7 @@ Rectangle {
             text: root.name
             color: Colors.fgSurface
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
             font.weight: Font.Medium
             elide: Text.ElideRight
         }
@@ -74,8 +74,7 @@ Rectangle {
             text: root.meta
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 0.2
+            font.pixelSize: Theme.font.size.caption
             elide: Text.ElideRight
         }
         }
@@ -94,8 +93,7 @@ Rectangle {
             text: root.trailingText
             color: Colors.inkDim
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
-            font.letterSpacing: 0.2
+            font.pixelSize: Theme.font.size.body
         }
 
         Chip {

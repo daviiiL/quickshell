@@ -28,24 +28,6 @@ Flickable {
         anchors.bottomMargin: 24
         spacing: 0
 
-        Text {
-            text: "Quick Settings"
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xxl
-            font.weight: Font.Medium
-        }
-
-        Text {
-            Layout.topMargin: 4
-            Layout.bottomMargin: 18
-            text: "TOGGLES · BRIGHTNESS · VOLUME"
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 2.4
-        }
-
         GridLayout {
             Layout.fillWidth: true
             columns: 4
@@ -90,7 +72,7 @@ Flickable {
             QuickTile {
                 Layout.fillWidth: true
                 icon: "do_not_disturb_on"
-                label: "Do Not Disturb"
+                label: "Do not disturb"
                 sub: Notifications.silent ? "Silent" : "Off"
                 on: Notifications.silent
                 onActivated: Notifications.silent = !Notifications.silent
@@ -99,7 +81,7 @@ Flickable {
             QuickTile {
                 Layout.fillWidth: true
                 icon: "dark_mode"
-                label: "Dark Mode"
+                label: "Dark mode"
                 sub: GlobalStates.darkMode ? "On" : "Off"
                 on: GlobalStates.darkMode
                 onActivated: GlobalStates.toggleDarkMode()
@@ -108,7 +90,7 @@ Flickable {
             QuickTile {
                 Layout.fillWidth: true
                 icon: "wb_twilight"
-                label: "Night Light"
+                label: "Night light"
                 sub: "Unavailable"
                 available: false
             }
@@ -124,17 +106,15 @@ Flickable {
 
             QuickTile {
                 Layout.fillWidth: true
-                icon: "lock"
-                label: "Lock"
-                sub: "Now"
-                onActivated: {
-                    GlobalStates.closeControlCenter();
-                    SessionActions.lock();
-                }
+                icon: "coffee"
+                label: "Caffeine"
+                sub: GlobalStates.caffeinated ? "Idle paused" : "Off"
+                on: GlobalStates.caffeinated
+                onActivated: GlobalStates.toggleCaffeine()
             }
         }
 
-        GroupLabel { text: "BRIGHTNESS" }
+        GroupLabel { text: "Brightness" }
 
         GroupBox {
             SliderRow {
@@ -146,7 +126,7 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "VOLUME" }
+        GroupLabel { text: "Volume" }
 
         GroupBox {
             SliderRow {
@@ -156,6 +136,26 @@ Flickable {
                 available: SystemAudio.ready
                 onMoved: v => SystemAudio.setVolume(v)
             }
+        }
+
+        GroupLabel { text: "Session" }
+
+        RowLayout {
+            id: sessionStrip
+            Layout.fillWidth: true
+            spacing: 8
+
+            function closeAnd(action): void {
+                GlobalStates.closeControlCenter();
+                action();
+            }
+
+            SessionStripButton { label: "Lock";      icon: "lock";               onActivated: sessionStrip.closeAnd(SessionActions.lock) }
+            SessionStripButton { label: "Suspend";   icon: "dark_mode";          onActivated: sessionStrip.closeAnd(SessionActions.suspend) }
+            SessionStripButton { label: "Hibernate"; icon: "schedule";           onActivated: sessionStrip.closeAnd(SessionActions.hibernate) }
+            SessionStripButton { label: "Log out";   icon: "logout";             confirm: true; onActivated: sessionStrip.closeAnd(SessionActions.logout) }
+            SessionStripButton { label: "Restart";   icon: "restart_alt";        confirm: true; danger: true; onActivated: sessionStrip.closeAnd(SessionActions.reboot) }
+            SessionStripButton { label: "Shut down"; icon: "power_settings_new"; confirm: true; danger: true; onActivated: sessionStrip.closeAnd(SessionActions.poweroff) }
         }
     }
 }

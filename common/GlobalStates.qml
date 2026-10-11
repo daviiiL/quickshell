@@ -4,7 +4,14 @@ pragma ComponentBehavior: Bound
 import Quickshell
 
 Singleton {
-    property bool screenLocked: false
+    // Restored after the root tree reloads, which hands the compositor lock to the new WlSessionLock first.
+    PersistentProperties {
+        id: persist
+        reloadableId: "lockState"
+        property bool screenLocked: false
+    }
+
+    property alias screenLocked: persist.screenLocked
     property bool screenDismissing: false
     property bool screenUnlockFailed: false
     property bool screenLockContainsCharacters: false
@@ -39,6 +46,26 @@ Singleton {
         controlCenterOpen = false;
     }
 
+    property bool wallpaperPickerOpen: false
+    property bool wallpaperPickerReturnToControlCenter: false
+
+    function openWallpaperPicker(source: string): void {
+        wallpaperPickerReturnToControlCenter = controlCenterOpen;
+        if (controlCenterOpen)
+            closeControlCenter();
+        wallpaperPickerOpen = true;
+    }
+
+    function closeWallpaperPicker(): void {
+        if (!wallpaperPickerOpen)
+            return;
+        wallpaperPickerOpen = false;
+        if (wallpaperPickerReturnToControlCenter) {
+            wallpaperPickerReturnToControlCenter = false;
+            openControlCenter("wallpaperpicker");
+        }
+    }
+
     property bool powerProfileOverlayOpen: false
     property string powerProfileOverlayScreen: ""
     property var powerProfileButtonCenters: ({})
@@ -62,4 +89,17 @@ Singleton {
     }
 
     property int fontOffset: 0
+
+    property bool caffeinated: false
+
+    function setCaffeinated(on: bool): void {
+        if (caffeinated === on)
+            return;
+        caffeinated = on;
+        console.log("[IdleManager] caffeine " + (on ? "on" : "off"));
+    }
+
+    function toggleCaffeine(): void {
+        setCaffeinated(!caffeinated);
+    }
 }

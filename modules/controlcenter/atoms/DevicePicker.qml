@@ -45,7 +45,7 @@ Item {
             text: root.title
             color: Colors.fgSurface
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
             Layout.alignment: Qt.AlignVCenter
         }
 
@@ -58,7 +58,7 @@ Item {
                 text: root.currentLabel
                 color: Colors.inkDim
                 font.family: Theme.font.family.inter
-                font.pixelSize: Theme.font.size.sm
+                font.pixelSize: Theme.font.size.body
                 elide: Text.ElideRight
             }
 
@@ -118,7 +118,7 @@ Item {
                         text: opt.modelData?.label ?? ""
                         color: Colors.fgSurface
                         font.family: Theme.font.family.inter
-                        font.pixelSize: Theme.font.size.sm
+                        font.pixelSize: Theme.font.size.body
                         elide: Text.ElideRight
                     }
 

@@ -76,7 +76,7 @@ Item {
             text: root.label
             color: Colors.fgSurface
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.body
             elide: Text.ElideRight
         }
 
@@ -86,8 +86,7 @@ Item {
             text: root.sub
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 0.2
+            font.pixelSize: Theme.font.size.caption
             elide: Text.ElideRight
         }
         }
@@ -144,8 +143,7 @@ Item {
             text: root.valueText
             color: Colors.inkDim
             font.family: Theme.font.family.inter
-            font.pixelSize: Theme.font.size.sm
-            font.letterSpacing: 0.2
+            font.pixelSize: Theme.font.size.body
         }
     }
 

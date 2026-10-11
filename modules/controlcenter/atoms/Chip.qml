@@ -8,6 +8,7 @@ Rectangle {
 
     required property string text
     property string variant: "default"
+    property bool acronym: false
 
     readonly property color textColor: {
         switch (root.variant) {
@@ -50,12 +51,12 @@ Rectangle {
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
-            text: root.text.toUpperCase()
+            text: root.text
             color: root.textColor
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
+            font.pixelSize: Theme.font.size.caption
             font.weight: Font.Medium
-            font.letterSpacing: 1.6
+            font.letterSpacing: root.acronym ? Theme.font.tracking.caps : Theme.font.tracking.none
         }
     }
 }

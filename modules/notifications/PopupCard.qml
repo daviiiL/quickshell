@@ -190,7 +190,7 @@ Rectangle {
                      anchors.centerIn: parent
                      text: (root.appName.length > 0 ? root.appName[0] : "?").toUpperCase()
                      color: root.urgency === "critical" ? Colors.error : Colors.primary
-                     font.pixelSize: Theme.font.size.sm
+                     font.pixelSize: Theme.font.size.body
                      font.family: Theme.font.family.inter_medium
                      font.weight: Font.Medium
                  }
@@ -198,13 +198,13 @@ Rectangle {
 
              Text {
                  Layout.fillWidth: true
-                 text: root.appName.toUpperCase()
+                 text: root.appName
                  elide: Text.ElideRight
                  color: Colors.inkDimmer
-                 font.pixelSize: Theme.font.size.sm
+                 font.pixelSize: Theme.font.size.caption
                  font.family: Theme.font.family.inter_medium
                  font.weight: Font.Medium
-                 font.letterSpacing: 1.8
+                 font.letterSpacing: Theme.font.tracking.none
              }
 
             Rectangle {
@@ -220,7 +220,7 @@ Rectangle {
                      anchors.centerIn: parent
                      text: "+" + (root.card.mergeCount + 1)
                      color: Colors.inkDim
-                     font.pixelSize: Theme.font.size.xs
+                     font.pixelSize: Theme.font.size.caption
                      font.family: Theme.font.family.inter_medium
                      font.weight: Font.Medium
                  }
@@ -229,14 +229,14 @@ Rectangle {
              Text {
                  text: StringUtils.relativeTime(root._notif?.time ?? Date.now())
                  color: Colors.inkDimmer
-                 font.pixelSize: Theme.font.size.sm
+                 font.pixelSize: Theme.font.size.caption
                  font.family: Theme.font.family.inter_regular
              }
 
              Text {
                  text: "×"
                  color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
-                 font.pixelSize: Theme.font.size.lg
+                 font.pixelSize: Theme.font.size.bodyLarge
                  MouseArea {
                      id: dismissMa
                      anchors.fill: parent
@@ -263,7 +263,7 @@ Rectangle {
                      Layout.fillWidth: true
                      text: root.summary
                      color: Colors.fgSurface
-                     font.pixelSize: Theme.font.size.md
+                     font.pixelSize: Theme.font.size.bodyLarge
                      font.family: root.urgency === "low" ? Theme.font.family.inter_regular : Theme.font.family.inter_medium
                      font.weight: root.urgency === "low" ? Font.Normal : Font.Medium
                      elide: Text.ElideRight
@@ -274,7 +274,7 @@ Rectangle {
                      visible: root.body.length > 0
                      text: root.body
                      color: root.role === "active" ? Colors.inkDim : Colors.inkDimmer
-                     font.pixelSize: Theme.font.size.sm
+                     font.pixelSize: Theme.font.size.body
                      font.family: Theme.font.family.inter_regular
                      wrapMode: Text.Wrap
                      lineHeight: 1.4

@@ -55,8 +55,8 @@ Rectangle {
         id: trackIn
         target: nameText
         property: "font.letterSpacing"
-        from: 0.4
-        to: root.cjkFace ? 1.7 : 1.68
+        from: Theme.font.tracking.none
+        to: root.cjkFace ? Theme.font.tracking.none : Theme.font.tracking.caps
         duration: 420
         easing.type: Easing.BezierSpline
         easing.bezierCurve: Theme.anim.curves.standardDecel
@@ -91,7 +91,7 @@ Rectangle {
             text: Fcitx.currentCode
             color: Colors.fgSurface
             font.family: root.cjkFace ? "LXGW WenKai" : Theme.font.family.inter_medium
-            font.pixelSize: root.cjkFace ? Theme.font.size.xl : Theme.font.size.sm
+            font.pixelSize: Theme.font.size.title
             font.weight: root.cjkFace ? Font.Normal : Font.Medium
             font.letterSpacing: root.cjkFace ? 0 : 0.7
         }
@@ -105,9 +105,9 @@ Rectangle {
         text: Fcitx.currentDisplay
         color: Colors.fgSurface
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: root.cjkFace ? Theme.font.size.md : Theme.font.size.sm
+        font.pixelSize: Theme.font.size.body
         font.weight: Font.Medium
-        font.letterSpacing: root.cjkFace ? 1.7 : 1.68
+        font.letterSpacing: root.cjkFace ? Theme.font.tracking.none : Theme.font.tracking.caps
     }
 
     // -- group index (fixed right column) -------------------------------------
@@ -118,7 +118,7 @@ Rectangle {
         text: Fcitx.groupIndex + "/" + Fcitx.groupTotal
         color: Colors.inkDimmer
         font.family: Theme.font.family.inter_medium
-        font.pixelSize: Theme.font.size.sm
+        font.pixelSize: Theme.font.size.body
         font.letterSpacing: 0.7
     }
 }

@@ -43,11 +43,12 @@ Rectangle {
             spacing: 12
 
             Text {
-                text: "PASSWORD"
+                text: "Password"
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.8
+                font.pixelSize: Theme.font.size.caption
+                font.weight: Font.Medium
+                font.letterSpacing: Theme.font.tracking.none
                 Layout.alignment: Qt.AlignVCenter
             }
 
@@ -69,7 +70,7 @@ Rectangle {
                     selectionColor: Colors.hairHot
                     selectedTextColor: Colors.fgSurface
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: Theme.font.size.md
+                    font.pixelSize: Theme.font.size.bodyLarge
                     font.letterSpacing: 0.6
                     clip: true
                     verticalAlignment: TextInput.AlignVCenter
@@ -102,11 +103,11 @@ Rectangle {
         Text {
             visible: root.showError
             Layout.fillWidth: true
-            text: "COULDN'T CONNECT — CHECK PASSWORD"
+            text: "Couldn't connect. Check the password."
             color: Colors.warning
             font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 1.4
+            font.pixelSize: Theme.font.size.caption
+            font.letterSpacing: Theme.font.tracking.none
         }
 
         RowLayout {
@@ -129,11 +130,11 @@ Rectangle {
                 Text {
                     id: cancelLabel
                     anchors.centerIn: parent
-                    text: "CANCEL"
+                    text: "Cancel"
                     color: cancelMa.containsMouse ? Colors.fgSurface : Colors.inkDim
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.xs
-                    font.letterSpacing: 1.4
+                    font.pixelSize: Theme.font.size.body
+                    font.letterSpacing: Theme.font.tracking.none
                     Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
                 }
 
@@ -173,13 +174,13 @@ Rectangle {
                 Text {
                     id: connectLabel
                     anchors.centerIn: parent
-                    text: root.busy ? "CONNECTING…" : "CONNECT"
+                    text: root.busy ? "Connecting…" : "Connect"
                     color: bma.containsMouse && !connectBtn.disabledCombined
                             ? Colors.fgSurface
                             : Colors.inkDim
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.xs
-                    font.letterSpacing: 1.4
+                    font.pixelSize: Theme.font.size.body
+                    font.letterSpacing: Theme.font.tracking.none
                     Behavior on color { ColorAnimation { duration: Theme.anim.durations.xs } }
                 }
 

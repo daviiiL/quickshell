@@ -16,7 +16,7 @@ ColumnLayout {
     readonly property string sinkDesc: Pipewire.defaultAudioSink?.description ?? "output"
 
     SectionHead {
-        title: "sound"
+        title: "Sound"
         meta: root.sinkDesc
     }
 

@@ -65,24 +65,6 @@ Flickable {
         anchors.bottomMargin: 24
         spacing: 0
 
-        Text {
-            text: "Bluetooth"
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xxl
-            font.weight: Font.Medium
-        }
-
-        Text {
-            Layout.topMargin: 4
-            Layout.bottomMargin: 18
-            text: "PAIRED DEVICES · DISCOVERY"
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 2.4
-        }
-
         GroupBox {
             ToggleRow {
                 label: "Bluetooth"
@@ -108,7 +90,7 @@ Flickable {
                 ColumnLayout {
                     spacing: 0
 
-                    GroupLabel { text: "MY DEVICES" }
+                    GroupLabel { text: "My devices" }
 
                     GroupBox {
                         Repeater {
@@ -139,7 +121,7 @@ Flickable {
                     }
 
                     GroupLabel {
-                        text: SystemBluetooth.discovering ? "NEARBY · SCANNING…" : "NEARBY"
+                        text: SystemBluetooth.discovering ? "Nearby (scanning…)" : "Nearby"
                     }
 
                     GroupBox {

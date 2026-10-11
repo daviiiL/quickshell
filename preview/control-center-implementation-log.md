@@ -60,6 +60,151 @@ Code review surfaced 4 issues. Resolutions:
 3. **Multi-monitor: focusedOutput change *while CC is open*** causes both old and new panel surfaces to briefly request exclusive keyboard during the transition (conf 80). **Deferred.** Needs a design call — latch the opening screen vs. follow focus. Not a blocker; revisit in Phase 2 once the panes are in.
 4. **`controlCenterPane` not reset on close** — flagged as a bug. **Not a bug — intentional.** Sticky pane state across opens is the design (macOS Settings behavior); also planned to persist via `Preferences.controlCenterPane` in Spec 0.
 
+## Phase 10 — Secrets in the keyring
+
+### What landed
+- `services/Secrets.qml` — Secret Service wrapper over `secret-tool` (`service=quickshell key=<name>`), serialized job queue, secret over stdin only. Probes the default collection's `Locked` flag once at startup via `busctl` so a locked keyring never raises a prompt; `refresh()` re-probes after the lock screen unlocks and when the AI pane opens.
+- `services/Gemini.qml` owns `apiKey` in memory, loads it from `Secrets`, migrates a legacy key found in the preferences JSON (store first, blank second), and sends it as `x-goog-api-key`. New states `keyring-locked`, `no-keyring`.
+- `services/Preferences.qml` no longer persists the key; the adapter field stays for migration only. The file is chmod 600 after every write.
+- Lock screen: `scripts/keyring/unlock.sh` now `gnome-keyring-daemon --unlock` fed on stdin, no kill/respawn; password leaves QML only via `Process.write`. `auth.log` 0600.
+- Wi-Fi: `scripts/network/wifi_connect.sh` reads the PSK on stdin, writes it to a 0600 `passwd-file` under `$XDG_RUNTIME_DIR` (removed on exit), resolves the profile by UUID (byte-exact SSID, BSSID-aware), creates one with keyword-form `nmcli connection add` when none exists, forces `psk-flags 0`, and activates with `nmcli connection up uuid … passwd-file …`. The PSK is in no process's argv or environment; SSIDs never ride as bare positionals.
+
+### Non-obvious bits
+- `Secrets` completes a job only when `exited` and both stdio collectors have finished; the three flags exist because Qt does not order those signals.
+- `Secrets.probing/available/locked/ready` are plain properties assigned in the probe's `onExited` (ready before probing) rather than bindings over private flags: a `probingChanged` handler otherwise reads a stale `ready`.
+- A binary that cannot be spawned (`busctl` or `secret-tool` missing) only flips `Process.running`; `exited` and the collectors' `streamFinished` never fire. Both processes handle `onRunningChanged` so the probe lands on `available=false` and a queued job fails with `secret-tool did not run` instead of wedging the queue. `refresh()` keeps `probing=false` during a re-probe so the pane does not blank while it runs.
+- GDM's PAM already unlocks the Login keyring; the lock-screen hand-off only matters if the keyring was re-locked while the screen was locked.
+- NetworkManager persists agent-supplied secrets with flags `none` (system-owned) into the profile (`nm-settings-connection.c`, `get_secrets_done_cb`), which is why the script forces `psk-flags 0` before `up`; a live Wi-Fi confirmation is still owed (no hardware here). The caller's BSSID goes to `up … ap`, not into the profile, so roaming keeps working.
+- Audit of remaining `Process.environment` uses: `services/Cliphist.qml` passes a cliphist entry id and its preview text (clipboard metadata, not a credential). Nothing else sets an environment beyond `cLocaleEnv`.
+- Out of scope, recorded in the research doc: systemd user unit + `LoadCredentialEncrypted=`, SQLCipher.
+
+## Phase 9 — Design language pass
+
+### What landed
+- `common/Theme.qml`: type roles `caption 11 / body 13 / bodyLarge 15 / title 20 / display 28` (+ `fontOffset`), aliases `xxs…xxl` mapped onto them for one release, `Theme.font.tracking { none, caps }`.
+- Control center: header shows the pane name only; panes have no H1/subtitle; `GroupLabel` sentence case, `inkDimmer`, caption, no tracking; sidebar without section headers or host line (a hairline separates Quick Settings from the rest); `Chip`/`QuickTile`/strip/segmented labels sentence case; sidebar meta capped at 64 px and elided so a long SSID never squeezes the pane label; Display screen label keeps the model as given ("LG ULTRAGEAR+ · DP-1", "Built-in screen").
+- Shell-wide: right panel, notifications, launcher, cliphist, keybind hints, network and power-profile overlays, wallpaper picker, bar date, bar battery percent, lock chips moved onto the roles; decorative uppercase and tracking removed.
+- Lock screen: the user-name badge (`LockUserBadge.qml`) removed by user decision.
+- Mockup updated to match (`preview/control-center.html`, decision 6 in `preview/control-center.md`).
+
+### Deliberately untouched (user decisions, 2026-10-10)
+Bar motto "PER ASPERA AD ASTRA" (stays); the whole Gemini panel under `modules/leftpanel/` including "◆ GEMINI" (stays for now); lock week number and date-line tracking (undecided); lock cooldown tracking; lock clock negative tracking; 0.7 tracking on two-letter language codes.
+
+### Follow-ups
+- Delete the `xxs…xxl` aliases once `grep -rn "Theme.font.size.\(xxs\|xs\|sm\|md\|lg\|xl\|xxl\)\b"` returns 0 (was 48 at the end of this phase; `widgets/ControlCenterPanelSection.qml` still on `lg`/`xxl`).
+- `fontOffset` −2 puts captions at 9 px; consider clamping the minimum to −1.
+- At `fontOffset` +5 the "Do not disturb" tile label elides in the 4-column grid and the tile sub-line touches the on-state accent (`QuickTile` is a fixed 100 px); fine at 0 through +3.
+
+## Phase 8 — Power / Battery pane
+
+### What landed
+
+- `services/Preferences.qml` — two idle-timer sets (`idleAc`, `idleBattery`, each `{ lock, screenOff, suspend }` in seconds, `0` = never) and `showBatteryPercentInBar`, persisted as `idleAcJson` / `idleBatteryJson` / `showBatteryPercentInBar`. Only `setIdleTimer(which, key, seconds)` and `setShowBatteryPercentInBar(on)` write them; a preferences file that predates the keys falls back per key to `defaultIdleSet` (300 / 360 / 420).
+- `services/Power.qml` — `QS_FAKE_BATTERY=1` forces the laptop path with mock readings (85 %, 3 h 42 m, −12.4 W, 94 % health; `QS_FAKE_HEALTH=0` drops `healthSupported`), plus `changeRate`, `healthSupported` and a one-shot power-profile probe (`profilesProbing` / `profilesAvailable` / `profilesUnavailableReason`).
+- `services/IdleArgs.js` — pure `build(set)` → swayidle argv, `isEmpty(set)`.
+- `services/IdleManager.qml` — singleton that owns swayidle; `caffeine` IPC target (`toggle / on / off / status`).
+- `common/GlobalStates.qml` — `caffeinated`, `setCaffeinated(on)`, `toggleCaffeine()`.
+- `services/SessionActions.qml` — `suspend()` / `hibernate()` lock first.
+- `modules/controlcenter/atoms/` — `SegmentedControl`, `DurationPicker` (thin `DevicePicker` wrapper), `BatteryCard`, `SessionStripButton`; `SessionButton` removed.
+- `modules/controlcenter/panes/PowerPane.qml` — the pane; `SessionPane.qml` and `PlaceholderPane.qml` removed.
+- `modules/ControlCenter.qml` — one `power` entry whose label / icon / meta follow `Power.isLaptopBattery` (`Battery` + `battery_full` + `85%`, or `Power` + `bolt`); the SESSION section is gone.
+- `modules/controlcenter/panes/QuickPane.qml` — the Lock tile became a `Caffeine` tile and a six-button SESSION strip sits under VOLUME.
+- `modules/MainBar.qml` — a coffee glyph left of the battery capsule while caffeinated. `modules/mainbar/BatteryButton.qml` — the percent text follows `Preferences.showBatteryPercentInBar`.
+- `preview/control-center.html` — Battery/Power device switch, session strip, Caffeine tile and switch row.
+
+### Probe once
+
+Power-profile availability is probed exactly once when the `Power` singleton is created (`powerprofilesctl get`), the same rule `Brightness` follows: no timers, no re-probe. While probing the Mode row is dimmed; when the daemon is absent the row is a `NoteRow` reading `power-profiles-daemon is not running`. Restarting the shell is the only re-detect path.
+
+### swayidle ownership
+
+The shell is the only thing that spawns swayidle. `IdleManager.start()` runs once from `shell.qml` after `Preferences` has loaded, counts foreign instances (`pgrep -x swayidle`) and warns if any exist, then applies the current set. The command is `setpriv --pdeathsig SIGTERM -- swayidle -w <args>`, so a Quickshell crash (tested with `kill -9`) takes swayidle down instead of leaving stale timers running against the next shell. Every argv token is its own array entry; nothing is ever built as a shell string. Set changes go through one debounced path (`onEffectiveSetChanged` → 1 s `restartTimer` → `apply()`): a running child is stopped and re-spawned from `onExited`, three picks within a second end in exactly one process carrying the last value. `IdleArgs.build` always ends with `before-sleep "qs ipc call lock lock"`, so an all-zero set (or Caffeine) runs a lock-only swayidle rather than none: there is always exactly one swayidle, and the machine still locks before any sleep, whoever starts it.
+
+### Two timer sets, stacked
+
+`activeSet` is `idleBattery` only when `Power.isLaptopBattery && Power.onBattery`; desktops only ever see and use the plugged-in set. On laptops the pane shows `Plugged in` and `On battery` as two stacked groups rather than two columns because `DurationPicker` expands inline and full-width like `DevicePicker`; two columns of expanding pickers would collide. The `Show percentage in bar` switch rides at the bottom of the `On battery` group, and `Battery health` (maximum capacity only; the UPower binding has no cycle count) is hidden entirely when `healthSupported` is false rather than showing `100%`.
+
+### Fake hardware
+
+`QS_FAKE_BATTERY=1` in the shell's environment is the only way to exercise the laptop variant on this desktop; `QS_FAKE_HEALTH=0` on top of it exercises the hidden-health case. Nothing else fakes hardware, and the fake keeps `onBattery` false so the desktop's swayidle behaviour is unchanged while it is set.
+
+### Session strip and two-step confirm
+
+The SESSION sidebar section and pane are gone; Lock, Suspend, Hibernate, Log out, Restart and Shut down live in a strip at the bottom of Quick Settings. Log out, Restart and Shut down use a two-step confirm inside the button: the first click relabels it `Confirm` (warning glyph, error-coloured border) and a 3 s timer disarms it; the second click fires. No popup, no preference. Each action closes the control center first.
+
+### Caffeine
+
+`GlobalStates.caffeinated` is session state and never persisted: a shell restart always comes back with idle timers active. `IdleManager` derives one `effectiveSet` (`caffeinated ? allNever : activeSet`) and every spawn/stop decision reads it, so caffeine reuses the all-Never path and the same debounce; rapid on/off bursts converge to exactly one swayidle either way, lock-only (`before-sleep` alone) while on and the full timer set when off. It is reachable from the Quick Settings tile (`Idle paused` / `Off`), the `Caffeine` switch at the top of the plugged-in group in the Power pane (all pickers dim while on), the coffee glyph beside the bar's battery/PSU label, and `qs ipc call caffeine toggle|on|off|status` for a keybind. `SessionActions.suspend()` and `hibernate()` also set `GlobalStates.screenLocked = true` themselves before calling systemctl, so shell-initiated sleeps lock without waiting for the hook.
+
+### Manual step outside the repo
+
+The line `spawn-at-startup "swayidle" "-w" "timeout" "300" "qs ipc call lock lock" "timeout" "420" "systemctl suspend" "before-sleep" "qs ipc call lock lock"` was deleted from `~/.config/niri/configs/autostart.kdl` (backup at `/tmp/autostart.kdl.bak` for the session) and the running foreign instance killed, so exactly one swayidle, parented by Quickshell, remains. If the foreign-instance warning ever reappears in `qs log`, that line came back.
+
+### Non-obvious bits
+
+- **`qs -p` harnesses cannot drive the live shell's preferences.** `Preferences` does not watch its file, so an external process writing `quickshell_preferences.json` never reaches the running `IdleManager`; the idle-manager behaviour was verified with a harness that starts `IdleManager` in its own process and owns its own swayidle child.
+- **`openPane session` still works** — unknown pane names fall back to the first registry entry, so old keybinds land on Quick Settings, where the strip now is.
+- **This machine runs the `performance` profile**, so that segment is the filled one; the segmented control follows `Power.currentProfile` and `Power.setPowerProfile` writes straight to power-profiles-daemon.
+- **Design-language rules applied ahead of the shell-wide pass:** the Power pane has no in-pane title or subtitle, its content starts at the 22 px top padding, group labels are sentence case (`Power profile`, `Automatic`, `Plugged in`, `On battery`, `Battery health`) and the new atoms use no uppercase transforms or wide tracking.
+
+### Non-goals
+
+Per-app power holds, `degradationReason`, lid-close behaviour, DDC monitor power, per-app timers, a confirm-before-destructive-actions preference (the two-step confirm is always on) and Night Light (still needs a wlsunset wrapper).
+
+## Phase 7c — Display pane: wallpaper picker
+
+### What landed
+
+- `common/GlobalStates.qml` — `wallpaperPickerOpen`, `wallpaperPickerReturnToControlCenter`, `openWallpaperPicker(source)` (closes the CC first), `closeWallpaperPicker()` (reopens the CC if it was open).
+- `services/Wallpapers.qml` — `applyCurrent(path)`: live `GlobalStates.darkMode` + `Preferences.matugenScheme`, no-op when the path is already applied. Persists via the existing `Preferences.setWallpaperPath()` → `~/.cache/quickshell_preferences.json`.
+- `modules/WallpaperPicker.qml` — centered 960×640 modal, one `PanelWindow` per screen on the focused output, IPC target `wallpaperpicker` (`toggle/open/close/openAt(dir)`). Same window rules as the Control Center (Overlay layer, exclusive keyboard only while shown, no keep-alive on close).
+- `modules/wallpaperpicker/` — `PickerNav` (browser-style history: back/forward/up, `display()` shortens `~`), `PickerHeader` (nav buttons + path + close), `PickerContent` (`FolderListModel` grid, start-dir probe, keys), `PickerTile` (folder / thumbnail / selected ring), `NavButton`.
+- `modules/controlcenter/atoms/WallpaperRow.qml` + a WALLPAPER group in `DisplayPane.qml` between COLOR and TEXT. Subtitle now `BRIGHTNESS · COLOR · WALLPAPER · TEXT`.
+- `DisplayPane.qml` first group label now names the screen: `BUILT-IN SCREEN` only for `eDP*/LVDS*/DSI*` connectors, otherwise `MODEL · CONNECTOR` (here `LG ULTRAGEAR+ · DP-1`) via the `QsWindow.window` attached property.
+- `scripts/install-deps.sh` — `qt6-imageformats` for WebP thumbnails.
+
+### Non-obvious bits
+
+- **Start directory is probed with `sh -c '[ -d "$1" ]'`**, not inferred from `FolderListModel`: a missing `folder` makes the model silently list the process cwd instead of reporting an error.
+- **The shell's own `default_paper.jpg` does not count as a picked wallpaper.** While the stored path is still the default, the picker opens at `~` (the spec's default); only a user-chosen wallpaper redirects it to that file's folder.
+- **The picker closes the Control Center rather than stacking on it.** Two Overlay surfaces both asking for exclusive keyboard focus have no defined winner; closing first keeps focus deterministic. The return trip is `wallpaperPickerReturnToControlCenter`.
+- **Thumbnails are plain `Image` with `sourceSize 320×200`**, decoded in Qt's thread pool. `widgets/ThumbnailImage.qml` was rejected for the grid because it spawns `test`/`magick` per tile.
+- **Repeat click on the applied wallpaper is a no-op** so awww/matugen are not re-run.
+- **`QsWindow.window` resolves one tick after the pane's `Component.onCompleted`**; the label is a binding, so it still renders correctly.
+
+### Non-goals / follow-ups
+
+- No search / sort options / recursive listing; one folder at a time by design.
+- `.webp` without `qt6-imageformats` shows the broken-image glyph.
+- Folders whose path contains `#` or `?` cannot be listed: `FolderListModel` resolves `folder` through `QUrl::path()` (PrettyDecoded), which keeps `%23`/`%3F` encoded, so the directory never resolves. The picker shows "No images here" for them. Names with spaces, `%` and non-ASCII work (file URLs are built with `FileUtils.toFileUrl`, which percent-encodes each segment).
+- If very large folders stutter, swap `PickerTile`'s `Image` for `ThumbnailImage` (cached 256px PNGs via magick).
+- No keybind wired in niri yet; `qs ipc call wallpaperpicker toggle` is ready for one.
+- Keyboard shortcuts (Esc, Alt+Left/Right, Backspace) and in-window clicks were not hand-tested during implementation (no input injector on the machine); IPC + harness coverage only.
+
+## Phase 7b — Display pane: brightness-unavailable note
+
+### What landed
+
+- `services/Brightness.qml` — no longer gates on `Power.isLaptopBattery`. Probes at singleton creation: `command -v brightnessctl` → `toolAvailable`; `/sys/class/backlight` + readable `brightness`/`max_brightness` → `deviceAvailable` (`_pathsReady`). New: `toolName`, `probing`, `unavailableReason`. `available` is now `toolAvailable && deviceAvailable`. `_pathsReady` / `_backlightDevice` keep their names (OsdPill, OsdController, rightpanel BrightnessSection read them). Logs `[Brightness] probe finished: …` once when both probes have reported.
+- `modules/controlcenter/atoms/NoteRow.qml` — **new atom.** Icon cell + headline + optional sub-line, same 14px/26px/12-spacing anatomy as `SliderRow`/`ToggleRow`. 44px tall, 52px with a sub-line. Non-interactive.
+- `modules/controlcenter/panes/DisplayPane.qml` — BUILT-IN SCREEN group now holds both a `SliderRow` (`visible: available || probing`) and a `NoteRow` (`visible: !available && !probing`, headline "Monitor brightness isn't adjustable", sub = `Brightness.unavailableReason`). The note logs `[ControlCenter.display] brightness note: <reason>` once per visible transition (same debug family as the pane's loaded/unloaded lines).
+
+### Why
+
+User request: on a desktop with no backlight the dimmed slider is a dead control. Rather than hide the group, say that brightness isn't adjustable and *why*, naming the package to check (`brightnessctl`).
+
+### Non-obvious bits
+
+- **Probed once at startup; restart the shell to re-detect.** Both probes start from the singleton's `Component.onCompleted` and never re-run: no timer, no re-probe on property change, no re-check when the pane opens. Installing `brightnessctl` or gaining a backlight takes effect on the next shell start. (The `watchChanges` `FileView` tracks only the brightness *value*.)
+- **Nothing reads a half-initialised state.** `probing` stays true until both the tool probe and the backlight probe have reported, including every failure branch (empty `ls`, `test` printing `missing`, `command -v` failing). `unavailableReason` is `""` until then, so the pane keeps the dimmed slider and never flashes "not installed" before the real answer.
+- **Reason precedence: device first.** With no backlight device, installing `brightnessctl` could never help, so "No backlight device found" wins; "brightnessctl is not installed" is shown only when a backlight exists and the tool is missing.
+- **Package name lives in one place** (`Brightness.toolName`); the pane never hardcodes it.
+
+### Non-goals / follow-ups
+
+- `QuickPane.qml` still shows the dimmed brightness slider on desktops. Same `NoteRow` swap applies if wanted.
+- External-monitor brightness over DDC (`ddcutil`) is out of scope; the note is honest that there is no backlight device.
+
 ## Phase 7 — Display pane
 
 ### What landed

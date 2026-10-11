@@ -17,7 +17,9 @@ Item {
             "idle": [126, 178, 142],
             "offline": [214, 156, 150],
             "dormant": [126, 178, 142],
-            "needs-key": [150, 150, 164]
+            "needs-key": [150, 150, 164],
+            "keyring-locked": [150, 150, 164],
+            "no-keyring": [150, 150, 164]
         }) : ({
             "boot": [70, 96, 134],
             "connecting": [150, 116, 58],
@@ -26,9 +28,11 @@ Item {
             "idle": [74, 128, 92],
             "offline": [168, 86, 80],
             "dormant": [74, 128, 92],
-            "needs-key": [120, 116, 130]
+            "needs-key": [120, 116, 130],
+            "keyring-locked": [120, 116, 130],
+            "no-keyring": [120, 116, 130]
         })
-    readonly property bool restful: root.state === "idle" || root.state === "dormant" || root.state === "needs-key"
+    readonly property bool restful: root.state === "idle" || root.state === "dormant" || root.state === "needs-key" || root.state === "keyring-locked" || root.state === "no-keyring"
 
     property real t: 0
     property real startMs: 0

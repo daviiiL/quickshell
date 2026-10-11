@@ -100,23 +100,24 @@ Singleton {
         accessPoint.askingPassword = false;
         root.wifiConnectTarget = accessPoint;
         // We use this instead of `nmcli connection up SSID` because this also creates a connection profile
+        connectProc.stdinEnabled = false;
         connectProc.exec(["nmcli", "dev", "wifi", "connect", accessPoint.ssid]);
+    }
+
+    function wifiConnectCommand(mode: string, ap: WifiAccessPoint): list<string> {
+        const sec = ap.security || "";
+        const keyMgmt = sec.includes("WPA3") && !sec.includes("WPA2") && !sec.includes("WPA1") ? "sae" : "wpa-psk";
+        return [Quickshell.shellPath("scripts/network/wifi_connect.sh"), mode, ap.ssid, ap.bssid || "", keyMgmt];
     }
 
     function connectToWifiNetworkWithPassword(accessPoint: WifiAccessPoint, password: string): void {
         accessPoint.askingPassword = false;
         root.wifiConnectTarget = accessPoint;
-        // Password goes through env to keep it out of argv; SSID is passed as a
-        // bash positional arg so it isn't subject to shell expansion.
-        connectProc.exec({
-            "environment": Object.assign({}, root.cLocaleEnv, { "PASSWORD": password }),
-            "command": [
-                "bash", "-c",
-                'nmcli dev wifi connect "$1" password "$PASSWORD"',
-                "--",
-                accessPoint.ssid
-            ]
-        });
+        connectProc.running = false;
+        connectProc.pending = password;
+        connectProc.stdinEnabled = true;
+        connectProc.command = wifiConnectCommand("connect", accessPoint);
+        connectProc.running = true;
     }
 
     function disconnectWifiNetwork(): void {
@@ -131,12 +132,11 @@ Singleton {
     function changePassword(network: WifiAccessPoint, password: string, username = ""): void {
         // TODO: enterprise wifi with username
         network.askingPassword = false;
-        changePasswordProc.exec({
-            "environment": {
-                "PASSWORD": password
-            },
-            "command": ["bash", "-c", `nmcli connection modify ${network.ssid} wifi-sec.psk "$PASSWORD"`]
-        });
+        changePasswordProc.running = false;
+        changePasswordProc.pending = password;
+        changePasswordProc.stdinEnabled = true;
+        changePasswordProc.command = wifiConnectCommand("rekey", network);
+        changePasswordProc.running = true;
     }
 
     Process {
@@ -145,6 +145,7 @@ Singleton {
 
     Process {
         id: connectProc
+        property string pending: ""
         environment: root.cLocaleEnv
         stdout: SplitParser {
             onRead: line => {
@@ -153,13 +154,20 @@ Singleton {
         }
         stderr: SplitParser {
             onRead: line => {
-                if (line.includes("Secrets were required")) {
+                if (line.includes("Secrets were required") && root.wifiConnectTarget)
                     root.wifiConnectTarget.askingPassword = true;
-                }
             }
         }
+        onStarted: {
+            if (pending.length > 0) {
+                write(pending + "\n");
+                pending = "";
+            }
+            stdinEnabled = false;
+        }
         onExited: (exitCode, exitStatus) => {
-            root.wifiConnectTarget.askingPassword = (exitCode !== 0);
+            if (root.wifiConnectTarget)
+                root.wifiConnectTarget.askingPassword = (exitCode !== 0);
             root.wifiConnectTarget = null;
         }
     }
@@ -173,10 +181,16 @@ Singleton {
 
     Process {
         id: changePasswordProc
-        onExited: {
-            connectProc.running = false;
-            connectProc.running = true;
+        property string pending: ""
+        environment: root.cLocaleEnv
+        onStarted: {
+            if (pending.length > 0) {
+                write(pending + "\n");
+                pending = "";
+            }
+            stdinEnabled = false;
         }
+        onExited: getNetworks.running = true
     }
 
     Process {

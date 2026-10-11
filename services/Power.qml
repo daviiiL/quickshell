@@ -2,20 +2,27 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.UPower
 
 Singleton {
     id: root
 
-    readonly property bool onBattery: UPower.onBattery
-    readonly property bool isLaptopBattery: UPower.displayDevice.isLaptopBattery || false
+    readonly property bool fakeBattery: Quickshell.env("QS_FAKE_BATTERY") === "1"
 
-    readonly property real percentage: UPower.displayDevice.percentage
-    readonly property int state: UPower.displayDevice.state
+    readonly property bool onBattery: fakeBattery ? false : UPower.onBattery
+    readonly property bool isLaptopBattery: fakeBattery || (UPower.displayDevice.isLaptopBattery || false)
+
+    readonly property real percentage: fakeBattery ? 0.85 : UPower.displayDevice.percentage
+    readonly property int state: fakeBattery ? UPowerDeviceState.Discharging : UPower.displayDevice.state
     readonly property bool isCharging: state === UPowerDeviceState.Charging
-    readonly property real timeToGoal: UPower.displayDevice.timeToEmpty !== 0 ? UPower.displayDevice.timeToEmpty : UPower.displayDevice.timeToFull
+    readonly property real timeToGoal: fakeBattery ? 13320
+        : (UPower.displayDevice.timeToEmpty !== 0 ? UPower.displayDevice.timeToEmpty : UPower.displayDevice.timeToFull)
+    readonly property real changeRate: fakeBattery ? -12.4 : UPower.displayDevice.changeRate
 
-    readonly property real healthPercentage: UPower.displayDevice.healthPercentage || 1.0
+    readonly property real healthPercentage: fakeBattery ? 0.94 : (UPower.displayDevice.healthPercentage || 1.0)
+    readonly property bool healthSupported: fakeBattery ? Quickshell.env("QS_FAKE_HEALTH") !== "0"
+        : (UPower.displayDevice.healthSupported || false)
 
     readonly property string currentProfile: PowerProfile.toString(PowerProfiles.profile)
     readonly property bool isPerformanceMode: currentProfile === "Performance"
@@ -42,6 +49,27 @@ Singleton {
         }
     }
 
+    readonly property bool profilesProbing: !_profilesProbed
+    readonly property bool profilesAvailable: _profilesAvailable
+    readonly property string profilesUnavailableReason: (profilesProbing || profilesAvailable) ? "" : "power-profiles-daemon is not running"
+
+    property bool _profilesProbed: false
+    property bool _profilesAvailable: false
+
+    Component.onCompleted: profileProbe.running = true
+
+    Process {
+        id: profileProbe
+        command: ["sh", "-c", "powerprofilesctl get >/dev/null 2>&1 && echo ok || echo missing"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root._profilesAvailable = this.text.trim() === "ok";
+                root._profilesProbed = true;
+                console.log("[Power] profile probe finished: available=" + root._profilesAvailable);
+            }
+        }
+    }
+
     function formatTime(seconds) {
         if (!Number.isFinite(seconds) || seconds <= 0)
             return "00:00";
@@ -53,7 +81,7 @@ Singleton {
 
     readonly property string batteryStatusText: percentage > 0.99 ? "Fully charged" : `EST ${formatTime(timeToGoal)} ${isCharging ? "till full" : "left"}`
 
-    readonly property string batteryChangeRateText: UPower.displayDevice.changeRate === 0 ? "Battery not in use" : `${isCharging ? "Charging at " : "Discharging at "}${Math.abs(UPower.displayDevice.changeRate).toFixed(2)} W`
+    readonly property string batteryChangeRateText: root.changeRate === 0 ? "Battery not in use" : `${isCharging ? "Charging at " : "Discharging at "}${Math.abs(root.changeRate).toFixed(2)} W`
 
     function setPowerProfile(profileName: string) {
         switch (profileName) {

@@ -65,7 +65,7 @@ Rectangle {
                     text: root.title
                     color: Colors.fgSurface
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.md
+                    font.pixelSize: Theme.font.size.bodyLarge
                     font.weight: Font.Medium
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -73,11 +73,11 @@ Rectangle {
 
                 Text {
                     visible: root.subLabel.length > 0
-                    text: root.subLabel.toUpperCase()
+                    text: root.subLabel
                     color: Colors.inkDimmer
                     font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.sm
-                    font.letterSpacing: 1.4
+                    font.pixelSize: Theme.font.size.caption
+                    font.letterSpacing: Theme.font.tracking.none
                 }
             }
 
@@ -87,7 +87,7 @@ Rectangle {
                 text: root.message
                 color: Colors.inkDim
                 font.family: Theme.font.family.inter_regular
-                font.pixelSize: Theme.font.size.sm
+                font.pixelSize: Theme.font.size.body
                 lineHeight: 1.35
                 wrapMode: Text.Wrap
                 elide: Text.ElideRight
@@ -103,7 +103,7 @@ Rectangle {
                     text: StringUtils.relativeTime(root.notif.time)
                     color: Colors.inkDimmer
                     font.family: Theme.font.family.inter_regular
-                    font.pixelSize: Theme.font.size.sm
+                    font.pixelSize: Theme.font.size.caption
                     font.letterSpacing: 0.4
                 }
 
@@ -111,7 +111,7 @@ Rectangle {
                     text: "×"
                     color: dismissMa.containsMouse ? Colors.fgSurface : Colors.inkFaint
                     opacity: ma.containsMouse ? 1 : 0
-                    font.pixelSize: Theme.font.size.lg
+                    font.pixelSize: Theme.font.size.bodyLarge
                     horizontalAlignment: Text.AlignRight
                     Layout.alignment: Qt.AlignRight
                     Behavior on opacity { NumberAnimation { duration: 150 } }

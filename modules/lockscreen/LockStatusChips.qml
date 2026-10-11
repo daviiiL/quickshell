@@ -40,8 +40,8 @@ RowLayout {
 
             Text {
                 text: chip.label
-                font.pixelSize: Theme.font.size.md
-                font.letterSpacing: 2.0
+                font.pixelSize: Theme.font.size.caption
+                font.letterSpacing: Theme.font.tracking.caps
                 font.family: Theme.font.family.inter_regular
                 color: chip.textColor
             }

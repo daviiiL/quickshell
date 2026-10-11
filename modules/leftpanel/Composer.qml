@@ -55,7 +55,11 @@ Rectangle {
             Layout.alignment: Qt.AlignBottom
             enabled: root.canSend
             maxHeight: 120
-            placeholderText: root.canSend ? "Message Gemini…" : (Gemini.state === "needs-key" ? "Set your API key in AI settings" : "Connection unavailable")
+            placeholderText: root.canSend ? "Message Gemini…"
+                : Gemini.state === "needs-key" ? "Set your API key in AI settings"
+                : Gemini.state === "keyring-locked" ? "Keyring is locked"
+                : Gemini.state === "no-keyring" ? "No keyring available"
+                : "Connection unavailable"
             onSubmitted: root.submit()
         }
 

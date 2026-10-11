@@ -21,14 +21,17 @@ Singleton {
     property int fontOffset: 0
     readonly property int minFontOffset: -2
     readonly property int maxFontOffset: 5
+    readonly property var defaultIdleSet: ({ lock: 300, screenOff: 360, suspend: 420 })
+    property var idleAc: ({ lock: 300, screenOff: 360, suspend: 420 })
+    property var idleBattery: ({ lock: 300, screenOff: 360, suspend: 420 })
+    property bool showBatteryPercentInBar: true
 
-    property string geminiApiKey: ""
     property string geminiModel: "gemini-2.5-flash"
     property real geminiTemperature: 1.0
     property int geminiMaxTokens: 0
     property string geminiSystemPrompt: ""
     property bool geminiWebSearch: true
-    readonly property bool geminiConfigured: geminiApiKey.length > 0
+    property string legacyGeminiApiKey: ""
     readonly property string homeDir: Quickshell.env("HOME")
     readonly property string preferenceCacheFile: root.homeDir + "/.cache/quickshell_preferences.json"
     readonly property string defaultWallpaperPath: `${homeDir}/.config/quickshell/assets/default_paper.jpg`
@@ -55,10 +58,47 @@ Singleton {
         defaultAdapter.fontOffset = clamped;
     }
 
-    function setGeminiApiKey(key: string): void {
-        const k = (key || "").trim();
-        root.geminiApiKey = k;
-        defaultAdapter.geminiApiKey = k;
+    function normalizeIdleSet(raw: var): var {
+        const out = Object.assign({}, root.defaultIdleSet);
+        if (!raw || typeof raw !== "object")
+            return out;
+        for (const key of ["lock", "screenOff", "suspend"]) {
+            const v = Number(raw[key]);
+            if (Number.isInteger(v) && v >= 0)
+                out[key] = v;
+        }
+        return out;
+    }
+
+    function parseJsonObject(json: string): var {
+        try { return JSON.parse(json || "{}"); } catch (e) { return ({}); }
+    }
+
+    function setIdleTimer(which: string, key: string, seconds: int): void {
+        if (which !== "ac" && which !== "battery")
+            return;
+        if (key !== "lock" && key !== "screenOff" && key !== "suspend")
+            return;
+        const base = which === "ac" ? root.idleAc : root.idleBattery;
+        const next = Object.assign({}, base);
+        next[key] = Math.max(0, Math.round(seconds));
+        if (which === "ac") {
+            root.idleAc = next;
+            defaultAdapter.idleAcJson = JSON.stringify(next);
+        } else {
+            root.idleBattery = next;
+            defaultAdapter.idleBatteryJson = JSON.stringify(next);
+        }
+    }
+
+    function setShowBatteryPercentInBar(on: bool): void {
+        root.showBatteryPercentInBar = on;
+        defaultAdapter.showBatteryPercentInBar = on;
+    }
+
+    function clearLegacyGeminiApiKey(): void {
+        root.legacyGeminiApiKey = "";
+        defaultAdapter.geminiApiKey = "";
     }
 
     function setGeminiModel(model: string): void {
@@ -130,6 +170,9 @@ Singleton {
         property int fontOffset: 0
         property string appUsageJson: "{}"
         property string pinnedAppsJson: "[]"
+        property string idleAcJson: "{}"
+        property string idleBatteryJson: "{}"
+        property bool showBatteryPercentInBar: true
 
         property string geminiApiKey: ""
         property string geminiModel: "gemini-2.5-flash"
@@ -137,6 +180,11 @@ Singleton {
         property int geminiMaxTokens: 0
         property string geminiSystemPrompt: ""
         property bool geminiWebSearch: true
+    }
+
+    Io.Process {
+        id: tightenPrefs
+        command: ["chmod", "600", root.preferenceCacheFile]
     }
 
     Io.FileView {
@@ -148,6 +196,7 @@ Singleton {
         onAdapterUpdated: {
             if (root.isLoaded) {
                 this.writeAdapter();
+                tightenPrefs.running = true;
             }
         }
 
@@ -173,7 +222,11 @@ Singleton {
                 root.pinnedApps = [];
             }
 
-            root.geminiApiKey = defaultAdapter.geminiApiKey;
+            root.idleAc = root.normalizeIdleSet(root.parseJsonObject(defaultAdapter.idleAcJson));
+            root.idleBattery = root.normalizeIdleSet(root.parseJsonObject(defaultAdapter.idleBatteryJson));
+            root.showBatteryPercentInBar = defaultAdapter.showBatteryPercentInBar;
+
+            root.legacyGeminiApiKey = defaultAdapter.geminiApiKey || "";
             root.geminiModel = defaultAdapter.geminiModel || "gemini-2.5-flash";
             root.geminiTemperature = defaultAdapter.geminiTemperature;
             root.geminiMaxTokens = defaultAdapter.geminiMaxTokens;
@@ -181,6 +234,7 @@ Singleton {
             root.geminiWebSearch = defaultAdapter.geminiWebSearch;
 
             root.isLoaded = true;
+            tightenPrefs.running = true;
         }
 
         onLoadFailed: {
@@ -212,15 +266,23 @@ Singleton {
             defaultAdapter.geminiMaxTokens = 0;
             defaultAdapter.geminiSystemPrompt = "";
             defaultAdapter.geminiWebSearch = true;
-            root.geminiApiKey = "";
+            root.legacyGeminiApiKey = "";
             root.geminiModel = "gemini-2.5-flash";
             root.geminiTemperature = 1.0;
             root.geminiMaxTokens = 0;
             root.geminiSystemPrompt = "";
             root.geminiWebSearch = true;
 
+            defaultAdapter.idleAcJson = JSON.stringify(root.defaultIdleSet);
+            defaultAdapter.idleBatteryJson = JSON.stringify(root.defaultIdleSet);
+            defaultAdapter.showBatteryPercentInBar = true;
+            root.idleAc = Object.assign({}, root.defaultIdleSet);
+            root.idleBattery = Object.assign({}, root.defaultIdleSet);
+            root.showBatteryPercentInBar = true;
+
             root.isLoaded = true;
             prefFileView.writeAdapter();
+            tightenPrefs.running = true;
             Wallpapers.applyWithCurPreferences(root.defaultWallpaperPath, true, "scheme-tonal-spot");
         }
     }

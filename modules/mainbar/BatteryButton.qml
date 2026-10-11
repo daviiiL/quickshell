@@ -124,11 +124,12 @@ MainBarButton {
         }
 
         Text {
+            visible: !root.hasBattery || Preferences.showBatteryPercentInBar
             text: root.hasBattery ? (Math.round(root.level * 100) + "%") : "PSU"
             color: root.hovered ? Colors.fgSurface : Colors.inkDim
             font.family: Theme.font.family.inter_medium
             font.weight: Font.Medium
-            font.pixelSize: Theme.font.size.sm
+            font.pixelSize: Theme.font.size.caption
             font.letterSpacing: 0
             horizontalAlignment: Text.AlignRight
             Behavior on color { ColorAnimation { duration: 150 } }

@@ -10,9 +10,9 @@ Text {
     Layout.bottomMargin: 8
     Layout.leftMargin: 4
 
-    color: Colors.inkFaint
+    color: Colors.inkDimmer
     font.family: Theme.font.family.inter_medium
-    font.pixelSize: Theme.font.size.xs
+    font.pixelSize: Theme.font.size.caption
     font.weight: Font.Medium
-    font.letterSpacing: 2.5
+    font.letterSpacing: Theme.font.tracking.none
 }

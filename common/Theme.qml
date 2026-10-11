@@ -46,6 +46,7 @@ Singleton {
     component ThemeFont: QtObject {
         readonly property FontFamily family: FontFamily {}
         readonly property FontSize size: FontSize {}
+        readonly property FontTracking tracking: FontTracking {}
     }
 
     component ThemeStyle: QtObject {
@@ -110,12 +111,25 @@ Singleton {
 
     component FontSize: QtObject {
         readonly property int offset: GlobalStates.fontOffset
-        readonly property int xxs: 7 + offset
-        readonly property int xs: 10 + offset
-        readonly property int sm: 12 + offset
-        readonly property int md: 14 + offset
-        readonly property int lg: 16 + offset
-        readonly property int xl: 18 + offset
-        readonly property int xxl: 20 + offset
+
+        readonly property int caption:   11 + offset
+        readonly property int body:      13 + offset
+        readonly property int bodyLarge: 15 + offset
+        readonly property int title:     20 + offset
+        readonly property int display:   28 + offset
+
+        // Aliases for one release; delete once no call site uses them.
+        readonly property int xxs: caption
+        readonly property int xs:  caption
+        readonly property int sm:  body
+        readonly property int md:  bodyLarge
+        readonly property int lg:  bodyLarge
+        readonly property int xl:  title
+        readonly property int xxl: title
+    }
+
+    component FontTracking: QtObject {
+        readonly property real none: 0
+        readonly property real caps: 1.2
     }
 }

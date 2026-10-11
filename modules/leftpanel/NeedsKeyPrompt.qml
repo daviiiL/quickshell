@@ -8,6 +8,8 @@ import qs.widgets
 Item {
     id: root
 
+    required property string state
+
     ColumnLayout {
         anchors.centerIn: parent
         width: parent.width - 64
@@ -15,14 +17,16 @@ Item {
 
         MaterialSymbol {
             Layout.alignment: Qt.AlignHCenter
-            icon: "key"
+            icon: root.state === "keyring-locked" ? "lock" : (root.state === "no-keyring" ? "key_off" : "key")
             iconSize: 30
             fontColor: Colors.inkDim
         }
 
         Text {
             Layout.alignment: Qt.AlignHCenter
-            text: "No API key set"
+            text: root.state === "keyring-locked" ? "Keyring locked"
+                : root.state === "no-keyring" ? "No keyring available"
+                : "No API key set"
             color: Colors.fgSurface
             font.family: Theme.font.family.inter_medium
             font.pixelSize: Theme.font.size.lg
@@ -33,7 +37,9 @@ Item {
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
-            text: "Add your Gemini API key in AI settings to start chatting."
+            text: root.state === "keyring-locked" ? "Unlock the login keyring, then reopen this panel."
+                : root.state === "no-keyring" ? "Install and start gnome-keyring so the API key can be stored safely."
+                : "Add your Gemini API key in AI settings to start chatting."
             color: Colors.inkDimmer
             font.family: Theme.font.family.inter
             font.pixelSize: Theme.font.size.sm

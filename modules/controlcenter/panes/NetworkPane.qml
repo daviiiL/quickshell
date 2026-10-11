@@ -49,25 +49,7 @@ Flickable {
         anchors.bottomMargin: 24
         spacing: 0
 
-        Text {
-            text: "Network"
-            color: Colors.fgSurface
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xxl
-            font.weight: Font.Medium
-        }
-
-        Text {
-            Layout.topMargin: 4
-            Layout.bottomMargin: 18
-            text: "WI-FI · ETHERNET · CONNECTIONS"
-            color: Colors.inkDimmer
-            font.family: Theme.font.family.inter_medium
-            font.pixelSize: Theme.font.size.xs
-            font.letterSpacing: 2.4
-        }
-
-        GroupLabel { text: "WI-FI" }
+        GroupLabel { Layout.topMargin: 0; text: "Wi-Fi" }
 
         GroupBox {
             DeviceRow {
@@ -111,7 +93,7 @@ Flickable {
                     spacing: 0
 
                     GroupLabel {
-                        text: Network.wifiScanning ? "NETWORKS · SCANNING…" : "NETWORKS"
+                        text: Network.wifiScanning ? "Networks (scanning…)" : "Networks"
                     }
 
                     GroupBox {
@@ -155,7 +137,7 @@ Flickable {
             }
         }
 
-        GroupLabel { text: "ETHERNET" }
+        GroupLabel { text: "Ethernet" }
 
         GroupBox {
             DeviceRow {

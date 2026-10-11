@@ -21,9 +21,9 @@ Singleton {
         GlobalStates.screenLocked = true;
     }
 
-    function suspend():   void { root.run(["systemctl", "suspend"]); }
+    function suspend():   void { GlobalStates.screenLocked = true; root.run(["systemctl", "suspend"]); }
     function reboot():    void { root.run(["systemctl", "reboot"]); }
     function poweroff():  void { root.run(["systemctl", "poweroff"]); }
-    function hibernate(): void { root.run(["systemctl", "hibernate"]); }
+    function hibernate(): void { GlobalStates.screenLocked = true; root.run(["systemctl", "hibernate"]); }
     function logout():    void { root.run(["niri", "msg", "action", "quit", "--skip-confirmation"]); }
 }

@@ -40,12 +40,12 @@ Item {
                     const len = root.decodedText
                         ? root.decodedText.length
                         : (root.entry?.preview?.length ?? 0);
-                    return `${t} · ${len} CHARS`;
+                    return `${t} · ${len} chars`;
                 }
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.71
+                font.pixelSize: Theme.font.size.caption
+                font.letterSpacing: Theme.font.tracking.caps
             }
 
             Item { Layout.fillWidth: true; Layout.preferredHeight: 1 }
@@ -55,8 +55,8 @@ Item {
                 text: root.entry ? "#" + root.entry.id : ""
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.71
+                font.pixelSize: Theme.font.size.caption
+                font.letterSpacing: Theme.font.tracking.none
             }
         }
 
@@ -92,13 +92,13 @@ Item {
 
             ActionChip {
                 icon: "content_copy"
-                label: "COPY"
+                label: "Copy"
                 onClicked: root.picked()
             }
 
             ActionChip {
                 icon: "delete"
-                label: "DELETE"
+                label: "Delete"
                 danger: true
                 onClicked: root.deleted()
             }
@@ -146,8 +146,8 @@ Item {
                     ? Colors.error
                     : (chipMouse.containsMouse ? Colors.fgSurface : Colors.inkDim)
                 font.family: Theme.font.family.inter_medium
-                font.pixelSize: Theme.font.size.xs
-                font.letterSpacing: 1.6
+                font.pixelSize: Theme.font.size.caption
+                font.letterSpacing: Theme.font.tracking.none
             }
         }
 

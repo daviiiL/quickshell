@@ -81,7 +81,7 @@
   }
   .fake-bar .time { color: var(--ink); font-weight: 500; letter-spacing: 0.03em; }
   .fake-bar .sep { color: var(--accent); margin: 0 2px; animation: blink 2s infinite; }
-  .fake-bar .date { color: var(--ink-dim); margin-left: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px; }
+  .fake-bar .date { color: var(--ink-dim); margin-left: 10px; letter-spacing: 0; font-size: 13px; }
   .fake-bar .mid {
     position: absolute; left: 50%; transform: translateX(-50%);
     color: var(--ink-dimmer); font-size: 10px; letter-spacing: 0.22em;
@@ -95,8 +95,8 @@
     border: var(--hair-w) solid var(--hair);
     border-radius: 3px;
     padding: 3px 8px;
-    font-size: 10px;
-    letter-spacing: 0.16em;
+    font-size: 11px;
+    letter-spacing: 0;
     color: var(--ink-dim);
   }
   @keyframes blink { 0%,100% { opacity: 1 } 50% { opacity: 0.35 } }
@@ -134,9 +134,9 @@
     flex: none;
   }
   .win-head .title {
-    font-size: 11px; letter-spacing: 0.28em;
-    color: var(--ink-dimmer);
-    text-transform: uppercase;
+    font-size: 13px; letter-spacing: 0;
+    color: var(--ink);
+    text-transform: none;
     font-weight: 500;
   }
   .win-head .title .crumb { color: var(--ink); }
@@ -150,8 +150,8 @@
     padding: 0 10px;
     display: flex; align-items: center; gap: 8px;
     color: var(--ink-faint);
-    font-size: 11px;
-    letter-spacing: 0.08em;
+    font-size: 13px;
+    letter-spacing: 0;
   }
   .win-head .search .glass { color: var(--ink-dim); }
   .win-head .close {
@@ -193,22 +193,12 @@
     font-weight: 500;
   }
   .side .signed-in .who { display: flex; flex-direction: column; min-width: 0; }
-  .side .signed-in .name { font-size: 12px; color: var(--ink); font-weight: 500; }
-  .side .signed-in .host {
-    font-size: 9px; letter-spacing: 0.18em; color: var(--ink-dimmer);
-    text-transform: uppercase;
-  }
-
-  .side .sec-label {
-    font-size: 9px; letter-spacing: 0.28em; color: var(--ink-faint);
-    padding: 14px 16px 6px;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
+  .side .signed-in .name { font-size: 13px; color: var(--ink); font-weight: 500; }
+  .side .item + .sec-gap { height: 1px; background: var(--hair); margin: 8px 14px; }
   .side .item {
     display: flex; align-items: center; gap: 11px;
     padding: 8px 14px 8px 16px;
-    font-size: 12px; color: var(--ink-dim);
+    font-size: 13px; color: var(--ink-dim);
     cursor: pointer;
     border-left: 2px solid transparent;
     user-select: none;
@@ -218,6 +208,7 @@
     color: var(--ink);
     background: var(--sc-low);
     border-left-color: var(--accent);
+    font-weight: 500;
   }
   .side .item .icon {
     width: 18px; height: 18px; flex: none;
@@ -231,10 +222,9 @@
   }
   .side .item .meta {
     margin-left: auto;
-    font-size: 10px;
-    letter-spacing: 0.06em;
+    font-size: 11px;
+    letter-spacing: 0;
     color: var(--ink-dimmer);
-    text-transform: uppercase;
   }
 
   /* === Pane === */
@@ -247,26 +237,11 @@
   .pane-view { display: none; }
   .pane-view.active { display: block; }
 
-  .pane .h1 {
-    font-size: 19px;
-    color: var(--ink);
-    font-weight: 500;
-    margin: 0;
-    letter-spacing: 0.005em;
-  }
-  .pane .sub {
-    font-size: 10px;
-    color: var(--ink-dimmer);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    margin: 4px 0 18px;
-    font-weight: 500;
-  }
   .pane .group-label {
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    color: var(--ink-faint);
-    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0;
+    color: var(--ink-dimmer);
+    text-transform: none;
     margin: 18px 4px 8px;
     font-weight: 500;
   }
@@ -367,9 +342,8 @@
     border: var(--hair-w) solid var(--hair);
     border-radius: 3px;
     overflow: hidden;
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0;
   }
   .seg span {
     padding: 5px 11px;
@@ -400,10 +374,9 @@
     border: var(--hair-w) solid var(--hair);
     border-radius: 2px;
     padding: 3px 8px;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-dim);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     font-weight: 500;
   }
   .chip.live { color: var(--ink); border-color: var(--hair-hot); }
@@ -445,14 +418,15 @@
   }
   .qt-tile.on .qt-ic { color: var(--ink); }
   .qt-tile .qt-lbl {
-    font-size: 10px; letter-spacing: 0.18em;
-    color: var(--ink-dim); text-transform: uppercase;
+    font-size: 13px; letter-spacing: 0;
+    color: var(--ink-dim);
     font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .qt-tile.on .qt-lbl { color: var(--ink); }
   .qt-tile .qt-sub {
-    font-size: 9px; color: var(--ink-dimmer);
-    letter-spacing: 0.04em;
+    font-size: 11px; color: var(--ink-dimmer);
+    letter-spacing: 0;
     margin-top: auto;
   }
 
@@ -469,32 +443,48 @@
     border-radius: 2px;
   }
 
-  /* Session button grid */
-  .session-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  /* Session strip (Quick Settings): six compact equal-width buttons in one row */
+  .session-strip {
+    display: flex;
     gap: 10px;
   }
-  .session-btn {
+  .session-strip .btn {
+    flex: 1 1 0; min-width: 0;
     background: var(--sc-low);
     border: var(--hair-w) solid var(--hair);
     border-radius: 4px;
-    padding: 18px 14px;
-    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    padding: 11px 6px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
     cursor: pointer;
     color: var(--ink-dim);
   }
-  .session-btn:hover { background: rgba(255,255,255,0.04); color: var(--ink); border-color: var(--hair-hot); }
-  .session-btn.danger:hover { color: var(--err); border-color: rgba(242,184,181,0.3); }
-  .session-btn .s-ic { font-size: 18px; color: var(--ink); }
-  .session-btn .s-lbl {
-    font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; font-weight: 500;
+  .session-strip .btn:hover { background: rgba(255,255,255,0.03); color: var(--ink); border-color: var(--hair-hot); }
+  .session-strip .btn .s-ic { font-size: 15px; color: var(--ink); line-height: 1; }
+  .session-strip .btn .s-lbl {
+    font-size: 11px; letter-spacing: 0;
+    font-weight: 500;
+    white-space: nowrap;
   }
-  .session-btn .s-sub {
-    font-size: 9px; color: var(--ink-dimmer);
-    letter-spacing: 0.04em;
+  .session-strip .btn.warn .s-lbl { color: var(--warn); opacity: 0.75; }
+  .session-strip .btn.warn:hover .s-lbl { opacity: 1; }
+
+  /* Device mode (developer switch in the header). Battery pane is dual-mode: laptop | desktop */
+  .win-head .devsw { flex: none; }
+  .win-head .devsw span { padding: 4px 9px; font-size: 9px; }
+  body[data-device="desktop"] [data-only="laptop"] { display: none !important; }
+  body[data-device="laptop"]  [data-only="desktop"] { display: none !important; }
+  /* a hidden laptop-only last row must not leave a stray hairline on the row above it */
+  body[data-device="desktop"] .group .row:has(+ .row[data-only="laptop"]:last-child) { border-bottom: 0; }
+
+  /* Dual .select columns (AUTOMATIC group): fixed-width pickers + inline column captions */
+  .group .row .val .select.col { width: 112px; justify-content: space-between; }
+  .group-label.cols-head { display: flex; align-items: baseline; }
+  .group-label.cols-head .col-caps {
+    margin-left: auto;
+    display: flex; gap: 10px;
+    padding-right: 11px;           /* row padding (14) + group border (1) − label margin (4) */
   }
+  .group-label.cols-head .col-caps span { width: 112px; text-align: left; }
 
   /* Battery donut */
   .batt-display {
@@ -524,20 +514,24 @@
   }
   .batt-display .batt-stats { display: flex; flex-direction: column; gap: 2px; }
   .batt-display .batt-stats .big { font-size: 15px; color: var(--ink); font-weight: 500; }
-  .batt-display .batt-stats .sm { font-size: 10px; color: var(--ink-dimmer); letter-spacing: 0.18em; text-transform: uppercase; }
+  .batt-display .batt-stats .sm { font-size: 11px; color: var(--ink-dimmer); letter-spacing: 0; }
 </style>
 </head>
-<body>
+<body data-device="laptop">
 
 <div class="backdrop"></div>
 
 <div class="win">
   <!-- ========== Header ========== -->
   <div class="win-head">
-    <span class="title"><span class="crumb" id="crumb">QUICK · SETTINGS</span></span>
+    <span class="title"><span class="crumb" id="crumb">Quick Settings</span></span>
     <div class="search">
       <span class="glass">⌕</span>
       <span>Search…</span>
+    </div>
+    <div class="seg devsw" id="devsw" title="Preview: device mode">
+      <span class="on" data-pick="laptop">Laptop</span>
+      <span data-pick="desktop">Desktop</span>
     </div>
     <div class="close">×</div>
   </div>
@@ -549,16 +543,13 @@
         <div class="avatar">D</div>
         <div class="who">
           <span class="name">davidas</span>
-          <span class="host">niri · arch</span>
         </div>
       </div>
 
-      <div class="sec-label">QUICK</div>
       <div class="item active" data-tab="quick">
         <span class="icon">◉</span>Quick Settings
       </div>
-
-      <div class="sec-label">SYSTEM</div>
+      <div class="sec-gap"></div>
       <div class="item" data-tab="network">
         <span class="icon">≋</span>Network
         <span class="meta">my-net</span>
@@ -576,13 +567,9 @@
         <span class="meta">80%</span>
       </div>
       <div class="item" data-tab="battery">
-        <span class="icon">⏻</span>Battery
-        <span class="meta">85%</span>
-      </div>
-
-      <div class="sec-label">SESSION</div>
-      <div class="item" data-tab="session">
-        <span class="icon">⏼</span>Power…
+        <span class="icon" data-only="laptop">▮</span><span data-only="laptop">Battery</span>
+        <span class="icon" data-only="desktop">⏻</span><span data-only="desktop">Power</span>
+        <span class="meta" data-only="laptop">85%</span>
       </div>
     </div>
 
@@ -591,9 +578,6 @@
 
       <!-- ========== Quick Settings ========== -->
       <div class="pane-view active" data-view="quick">
-        <div class="h1">Quick Settings</div>
-        <div class="sub">Toggles · Brightness · Volume</div>
-
         <div class="qt-grid">
           <div class="qt-tile on">
             <div class="qt-ic">≋</div>
@@ -612,17 +596,17 @@
           </div>
           <div class="qt-tile">
             <div class="qt-ic">☾</div>
-            <div class="qt-lbl">Do Not Disturb</div>
+            <div class="qt-lbl">Do not disturb</div>
             <div class="qt-sub">Off</div>
           </div>
           <div class="qt-tile on">
             <div class="qt-ic">◐</div>
-            <div class="qt-lbl">Dark Mode</div>
+            <div class="qt-lbl">Dark mode</div>
             <div class="qt-sub">Auto · night</div>
           </div>
           <div class="qt-tile">
             <div class="qt-ic">◉</div>
-            <div class="qt-lbl">Night Light</div>
+            <div class="qt-lbl">Night light</div>
             <div class="qt-sub">Sunset</div>
           </div>
           <div class="qt-tile">
@@ -631,13 +615,13 @@
             <div class="qt-sub">Hide bar</div>
           </div>
           <div class="qt-tile">
-            <div class="qt-ic">⌧</div>
-            <div class="qt-lbl">Lock</div>
-            <div class="qt-sub">Now</div>
+            <div class="qt-ic">☕</div>
+            <div class="qt-lbl">Caffeine</div>
+            <div class="qt-sub">Off</div>
           </div>
         </div>
 
-        <div class="group-label">BRIGHTNESS</div>
+        <div class="group-label">Brightness</div>
         <div class="group">
           <div class="row">
             <span class="icon-cell">☀</span>
@@ -652,7 +636,7 @@
           </div>
         </div>
 
-        <div class="group-label">VOLUME</div>
+        <div class="group-label">Volume</div>
         <div class="group">
           <div class="row">
             <span class="icon-cell">♪</span>
@@ -683,14 +667,21 @@
             </div>
           </div>
         </div>
+
+        <div class="group-label">Session</div>
+        <div class="session-strip">
+          <div class="btn"><span class="s-ic">⌧</span><span class="s-lbl">Lock</span></div>
+          <div class="btn"><span class="s-ic">☾</span><span class="s-lbl">Suspend</span></div>
+          <div class="btn"><span class="s-ic">⏾</span><span class="s-lbl">Hibernate</span></div>
+          <div class="btn"><span class="s-ic">⤴</span><span class="s-lbl">Log out</span></div>
+          <div class="btn warn"><span class="s-ic">⟲</span><span class="s-lbl">Restart</span></div>
+          <div class="btn warn"><span class="s-ic">⏻</span><span class="s-lbl">Shut down</span></div>
+        </div>
       </div>
 
       <!-- ========== Network ========== -->
       <div class="pane-view" data-view="network">
-        <div class="h1">Network</div>
-        <div class="sub">Wi-Fi · Ethernet · Connections</div>
-
-        <div class="group-label">CURRENT</div>
+        <div class="group-label">Current</div>
         <div class="group">
           <div class="row">
             <span class="icon-cell">⩘</span>
@@ -709,7 +700,7 @@
           </div>
         </div>
 
-        <div class="group-label">OTHER NETWORKS</div>
+        <div class="group-label">Other networks</div>
         <div class="group">
           <div class="row button">
             <span class="icon-cell">⩘</span>
@@ -733,7 +724,7 @@
           </div>
         </div>
 
-        <div class="group-label">ETHERNET</div>
+        <div class="group-label">Ethernet</div>
         <div class="group">
           <div class="row">
             <span class="icon-cell">⇄</span>
@@ -745,9 +736,6 @@
 
       <!-- ========== Bluetooth ========== -->
       <div class="pane-view" data-view="bluetooth">
-        <div class="h1">Bluetooth</div>
-        <div class="sub">Paired Devices · Discovery</div>
-
         <div class="group">
           <div class="row">
             <span class="lbl">Bluetooth</span>
@@ -759,7 +747,7 @@
           </div>
         </div>
 
-        <div class="group-label">MY DEVICES</div>
+        <div class="group-label">My devices</div>
         <div class="group">
           <div class="row">
             <span class="icon-cell">♪</span>
@@ -796,7 +784,7 @@
           </div>
         </div>
 
-        <div class="group-label">NEARBY</div>
+        <div class="group-label">Nearby</div>
         <div class="group">
           <div class="row button">
             <span class="icon-cell">…</span>
@@ -813,10 +801,7 @@
 
       <!-- ========== Sound ========== -->
       <div class="pane-view" data-view="sound">
-        <div class="h1">Sound</div>
-        <div class="sub">Output · Input · App Mix</div>
-
-        <div class="group-label">OUTPUT</div>
+        <div class="group-label">Output</div>
         <div class="group">
           <div class="row">
             <span class="lbl">Device</span>
@@ -841,7 +826,7 @@
           </div>
         </div>
 
-        <div class="group-label">INPUT</div>
+        <div class="group-label">Input</div>
         <div class="group">
           <div class="row">
             <span class="lbl">Device</span>
@@ -862,7 +847,7 @@
           </div>
         </div>
 
-        <div class="group-label">PER-APP VOLUME</div>
+        <div class="group-label">Per-app volume</div>
         <div class="group">
           <div class="row">
             <span class="icon-cell">♫</span>
@@ -885,10 +870,7 @@
 
       <!-- ========== Display ========== -->
       <div class="pane-view" data-view="display">
-        <div class="h1">Display</div>
-        <div class="sub">Brightness · Scale · Color</div>
-
-        <div class="group-label">BUILT-IN SCREEN</div>
+        <div class="group-label">Built-in screen</div>
         <div class="group">
           <div class="row">
             <span class="icon-cell">☀</span>
@@ -922,7 +904,7 @@
           </div>
         </div>
 
-        <div class="group-label">COLOR</div>
+        <div class="group-label">Color</div>
         <div class="group">
           <div class="row">
             <span class="lbl">Appearance</span>
@@ -935,7 +917,7 @@
             </span>
           </div>
           <div class="row">
-            <span class="lbl">Night Light</span>
+            <span class="lbl">Night light</span>
             <span class="val"><span class="switch"></span></span>
           </div>
           <div class="row">
@@ -945,12 +927,9 @@
         </div>
       </div>
 
-      <!-- ========== Battery ========== -->
+      <!-- ========== Battery / Power (dual-mode: body[data-device]) ========== -->
       <div class="pane-view" data-view="battery">
-        <div class="h1">Battery</div>
-        <div class="sub">Power Profile · Usage · Auto-Suspend</div>
-
-        <div class="batt-display">
+        <div class="batt-display" data-only="laptop">
           <div class="donut"><span class="pct">85%</span></div>
           <div class="batt-stats">
             <div class="big">3 h 42 m remaining</div>
@@ -958,7 +937,7 @@
           </div>
         </div>
 
-        <div class="group-label">POWER PROFILE</div>
+        <div class="group-label">Power profile</div>
         <div class="group">
           <div class="row">
             <span class="lbl">Mode</span>
@@ -972,82 +951,48 @@
           </div>
         </div>
 
-        <div class="group-label">AUTOMATIC</div>
+        <div class="group-label cols-head">
+          <span>Automatic</span>
+          <span class="col-caps" data-only="laptop"><span>Plugged in</span><span>On battery</span></span>
+        </div>
         <div class="group">
           <div class="row">
+            <span class="lbl">Caffeine</span>
+            <span class="val"><span class="switch"></span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Lock after</span>
+            <span class="val">
+              <span class="select col">5 minutes <span class="chev">▾</span></span>
+              <span class="select col" data-only="laptop">2 minutes <span class="chev">▾</span></span>
+            </span>
+          </div>
+          <div class="row">
             <span class="lbl">Screen off after</span>
-            <span class="val"><span class="select">5 minutes <span class="chev">▾</span></span></span>
+            <span class="val">
+              <span class="select col">6 minutes <span class="chev">▾</span></span>
+              <span class="select col" data-only="laptop">3 minutes <span class="chev">▾</span></span>
+            </span>
           </div>
           <div class="row">
             <span class="lbl">Suspend after</span>
-            <span class="val"><span class="select">15 minutes <span class="chev">▾</span></span></span>
+            <span class="val">
+              <span class="select col" data-only="laptop">7 minutes <span class="chev">▾</span></span>
+              <span class="select col" data-only="desktop">Never <span class="chev">▾</span></span>
+              <span class="select col" data-only="laptop">5 minutes <span class="chev">▾</span></span>
+            </span>
           </div>
-          <div class="row">
+          <div class="row" data-only="laptop">
             <span class="lbl">Show percentage in bar</span>
             <span class="val"><span class="switch on"></span></span>
           </div>
         </div>
 
-        <div class="group-label">BATTERY HEALTH</div>
-        <div class="group">
+        <div class="group-label" data-only="laptop">Battery health</div>
+        <div class="group" data-only="laptop">
           <div class="row">
             <span class="lbl">Maximum capacity</span>
             <span class="val">94%</span>
-          </div>
-          <div class="row">
-            <span class="lbl">Cycle count</span>
-            <span class="val">312</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ========== Session ========== -->
-      <div class="pane-view" data-view="session">
-        <div class="h1">Power</div>
-        <div class="sub">End or Suspend Session</div>
-
-        <div class="session-grid">
-          <div class="session-btn">
-            <span class="s-ic">⌧</span>
-            <span class="s-lbl">Lock</span>
-            <span class="s-sub">Lock the screen now</span>
-          </div>
-          <div class="session-btn">
-            <span class="s-ic">☾</span>
-            <span class="s-lbl">Suspend</span>
-            <span class="s-sub">Save state to RAM</span>
-          </div>
-          <div class="session-btn">
-            <span class="s-ic">⤴</span>
-            <span class="s-lbl">Log Out</span>
-            <span class="s-sub">End the current session</span>
-          </div>
-          <div class="session-btn danger">
-            <span class="s-ic">⟲</span>
-            <span class="s-lbl">Restart</span>
-            <span class="s-sub">Reboot the system</span>
-          </div>
-          <div class="session-btn danger">
-            <span class="s-ic">⏻</span>
-            <span class="s-lbl">Shut Down</span>
-            <span class="s-sub">Power off</span>
-          </div>
-          <div class="session-btn">
-            <span class="s-ic">⌚</span>
-            <span class="s-lbl">Hibernate</span>
-            <span class="s-sub">Save state to disk</span>
-          </div>
-        </div>
-
-        <div class="group-label">CONFIRMATION</div>
-        <div class="group">
-          <div class="row">
-            <span class="lbl">Confirm before destructive actions</span>
-            <span class="val"><span class="switch on"></span></span>
-          </div>
-          <div class="row">
-            <span class="lbl">Auto-suspend delay after lock</span>
-            <span class="val"><span class="select">10 minutes <span class="chev">▾</span></span></span>
           </div>
         </div>
       </div>
@@ -1060,23 +1005,34 @@
 <div class="fake-bar">
   <div class="dot"></div>
   <span class="time">14<span class="sep">:</span>22</span>
-  <span class="date">Tue 13 May</span>
+  <span class="date">Sat 10 Oct</span>
   <span class="mid">PER ASPERA AD ASTRA</span>
   <div class="right">
-    <span class="chip">WIFI · 60% · 85%</span>
+    <span class="chip">Wi-Fi · 60%<span data-only="laptop"> · 85%</span></span>
   </div>
 </div>
 
 <script>
   const labels = {
-    quick:     "QUICK · SETTINGS",
-    network:   "SYSTEM · NETWORK",
-    bluetooth: "SYSTEM · BLUETOOTH",
-    sound:     "SYSTEM · SOUND",
-    display:   "SYSTEM · DISPLAY",
-    battery:   "SYSTEM · BATTERY",
-    session:   "SESSION · POWER",
+    quick:     "Quick Settings",
+    network:   "Network",
+    bluetooth: "Bluetooth",
+    sound:     "Sound",
+    display:   "Display",
+    battery:   { laptop: "Battery", desktop: "Power" },
   };
+  const device = () => document.body.getAttribute("data-device") || "laptop";
+  const crumbFor = tab => {
+    const l = labels[tab];
+    if (!l) return "Settings";
+    return typeof l === "string" ? l : l[device()];
+  };
+  const updateCrumb = () => {
+    const active = document.querySelector(".side .item.active");
+    const crumb = document.getElementById("crumb");
+    if (active && crumb) crumb.textContent = crumbFor(active.getAttribute("data-tab"));
+  };
+
   document.querySelectorAll(".side .item").forEach(el => {
     el.addEventListener("click", () => {
       const tab = el.getAttribute("data-tab");
@@ -1085,9 +1041,17 @@
       el.classList.add("active");
       const view = document.querySelector(`.pane-view[data-view="${tab}"]`);
       if (view) view.classList.add("active");
-      const crumb = document.getElementById("crumb");
-      if (crumb) crumb.textContent = labels[tab] || "SETTINGS";
+      updateCrumb();
       document.querySelector(".pane").scrollTop = 0;
+    });
+  });
+
+  // Developer switch: laptop | desktop. CSS hides [data-only] elements per mode; no reload needed.
+  document.querySelectorAll("#devsw span").forEach(el => {
+    el.addEventListener("click", () => {
+      document.body.setAttribute("data-device", el.getAttribute("data-pick"));
+      document.querySelectorAll("#devsw span").forEach(i => i.classList.toggle("on", i === el));
+      updateCrumb();
     });
   });
 </script>

@@ -10,16 +10,18 @@ A settings-style window for the shell — sidebar-driven navigation, grouped row
 
 1. **Window type:** centered modal with a dim backdrop. Not anchored to the bar, not full-screen. Sized ~880×600.
 2. **Visual style:** macOS-flavored — rounded grouped lists with quiet group labels above each. (Considered: GNOME-style boxed groups with header strips; rejected as denser/heavier than this shell's existing surfaces.)
-3. **Sidebar:** ~224px, hairline-separated from pane, holds a `signed-in` chip at top + 3 category sections (`QUICK`, `SYSTEM`, `SESSION`). Active item gets `surface-container-low` background + 2px accent border-left.
+3. **Sidebar:** ~224px, hairline-separated from pane, holds a `signed-in` chip at top + 2 category sections (`QUICK`, `SYSTEM`). (The former `SESSION` section is gone — session actions live in Quick Settings now, see 5.) Active item gets `surface-container-low` background + 2px accent border-left.
 4. **Header bar:** 44px strip with breadcrumb-style title (`SYSTEM · NETWORK`), search input, close button. The 1px-tall gradient hair across the top edge matches the bar / right panel.
 5. **Categories included** (in order):
-   - Quick Settings — 4×2 toggle grid + brightness + volume sliders (the "control center" feel)
+   - Quick Settings — toggle grid (7 tiles in a 4-column grid; the old LOCK tile is gone) + brightness + volume sliders + a **`SESSION` strip**: one row of six compact buttons — Lock / Suspend / Hibernate / Log Out / Restart / Shut Down. Restart and Shut Down carry a subtle `warn` tint on the label. This replaces the old dedicated Power pane.
    - Network — Wi-Fi list, current connection details, Ethernet status
    - Bluetooth — on/off, paired devices with battery, nearby
    - Sound — output/input device pickers, volumes, per-app mix, **system-events toggle** (one checkbox controlling whether unlock + startup sounds play)
    - Display — brightness, scale (segmented), resolution, color appearance, night light, accent-from-wallpaper
-   - Battery — donut + time remaining, power profile (segmented), auto-suspend timers, battery health
-   - Power (session) — Lock / Suspend / Log Out / Restart / Shut Down / Hibernate as 3×2 button grid
+   - Battery / Power — **one dual-mode pane**, keyed on whether the machine has a battery. The mockup has a developer switch in the header (`Laptop` / `Desktop` `.seg`) that sets `data-device` on `<body>`; anything marked `data-only="laptop"` disappears in desktop mode.
+     - *Laptop:* sidebar `Battery · 85%` with a battery glyph, crumb `SYSTEM · BATTERY`, H1 `Battery` / `Power Profile · Usage · Auto-Suspend`. Shows the donut + remaining + discharge watts, `POWER PROFILE` (Saver / Balanced / Performance), `AUTOMATIC` with **two `.select` columns per row** (`PLUGGED IN` / `ON BATTERY` captions inline on the group label) for Lock after / Screen off after / Suspend after, a `Show percentage in bar` switch, and `BATTERY HEALTH` (maximum capacity only — cycle count dropped).
+     - *Desktop:* sidebar `Power` with a ⏻ glyph and no meta, crumb `SYSTEM · POWER`, H1 `Power` / `Power Profile · Automatic`. Same `POWER PROFILE` group; `AUTOMATIC` has a single picker per row; donut, bar-percentage switch and health group are hidden. Every timer picker offers `Never` (the desktop Suspend row shows it).
+6. **Typography:** one name per pane (header only; the breadcrumb in 4 and the sidebar section headers in 3 are gone), sentence-case group labels, no decorative uppercase or tracking, five type roles (11/13/15/20/28 px). See docs/superpowers/specs/2026-10-10-design-language-design.md.
 
 ## Reusable atoms
 
@@ -29,12 +31,13 @@ All defined in the preview's `<style>` block — port these to QML widgets, idea
 | --------------- | ------------------------------------------------------- | ---------------------------- |
 | `.switch`       | 32×18 pill toggle, on/off                               | none — new                   |
 | `.slider`       | 4px-thick bar with fill + circular thumb                | `widgets/StyledSlider.qml`   |
-| `.seg`          | segmented control (e.g. `SAVER / BALANCED / PERF`)      | none — new                   |
+| `.seg`          | segmented control (e.g. `Saver / Balanced / Performance`) | none — new                 |
 | `.select`       | combo-box-looking trigger (`Built-in Speakers ▾`)       | none — new                   |
-| `.chip`         | small-caps status chip (`CONNECTED`, `IDLE`, `+2 NEW`)  | used inline in RightPanel    |
+| `.chip`         | sentence case status chip (`Connected`, `Idle`, `+2 new`) | used inline in RightPanel    |
 | `.group`        | rounded grouped list, hairline-separated rows           | none — new                   |
 | `.qt-tile`      | 4×2 grid quick-toggle tile, with on-state accent bar    | similar to `QuickToggles.qml`|
-| `.session-btn`  | tall square button (icon + label + sub)                 | none — new                   |
+| `.session-strip`| one-row strip of six equal-width icon-over-label buttons (`.btn`, `.btn.warn`) | none — new    |
+| dual `.select`  | two fixed-width `.select.col` pickers side by side in a row, with inline column captions on the group label (`.group-label.cols-head .col-caps`) | none — new |
 | donut           | conic-gradient ring with center cutout, for battery %   | none — new                   |
 
 `.group .row .icon-cell` is a 26×26 sunken square — reuse for any leading-icon pattern.
@@ -46,9 +49,10 @@ All defined in the preview's `<style>` block — port these to QML widgets, idea
 | Network      | `modules/networkoverlay/OverlayContent.qml` (wifi list, scanning, password entry) + `services/Network.qml` |
 | Sound        | `modules/rightpanel/SoundSection.qml` + `services/SystemAudio.qml`. Per-app volume is new. **System-events toggle** needs: `Preferences.playSystemSounds` (bool, persisted) + `assets/sounds/unlock.ogg` + `assets/sounds/startup.ogg` (or distro-supplied equivalents) + a Process spawn wrapper (`paplay`/`pw-play`) wired into `LockScreen.qml`'s unlock handler and the shell's startup path. The pane row is just a `ToggleRow` binding to the Preference. |
 | Display      | `modules/rightpanel/BrightnessSection.qml` + `services/Brightness.qml`                          |
-| Battery      | `modules/mainbar/BatteryButton.qml` battery state. Power-profile picker can reuse `preview/power-profile-overlay.html`'s flow |
+| Battery / Power | `services/Power.qml` — UPower (presence, %, time remaining, discharge rate, health) + power-profiles-daemon. `hasBattery` picks the pane's mode. Power-profile picker can reuse `preview/power-profile-overlay.html`'s flow |
+| Automatic timers | New `services/IdleManager.qml` owning the `swayidle` process; exposes lock / screen-off / suspend timeouts, each with a plugged-in and an on-battery value (desktop uses the plugged-in set), `0` = Never |
 | Bluetooth    | **No service exists.** Mocked in preview. Needs `services/Bluetooth.qml` (bluetoothctl / bluez) |
-| Session      | New. Wraps `loginctl lock-session`, `systemctl suspend|reboot|poweroff`, niri quit              |
+| Session strip | New `services/SessionActions.qml`. Wraps `loginctl lock-session`, `systemctl suspend|hibernate|reboot|poweroff`, niri quit. Rendered in Quick Settings, no pane of its own |
 | Quick Settings | Existing `modules/rightpanel/QuickToggles.qml` patterns                                       |
 
 ## Implementation sketch (for a future session)
@@ -69,8 +73,7 @@ When picking this up:
        BluetoothPane.qml
        SoundPane.qml
        DisplayPane.qml
-       BatteryPane.qml
-       SessionPane.qml
+       BatteryPane.qml       (dual-mode: Battery on laptops, Power on desktops)
      atoms/                  (until promoted to widgets/)
        SettingsSwitch.qml
        SegmentedControl.qml
@@ -78,7 +81,7 @@ When picking this up:
        GroupBox.qml          (the rounded grouped list)
        GroupRow.qml
        BatteryDonut.qml
-       SessionButton.qml
+       SessionStrip.qml
    ```
 6. **Pane switching:** the sidebar writes to a `currentPane` string property on the ControlCenter root. Each pane is a `Loader` gated by `active: currentPane === "network"` etc. Or use a `StackLayout`/`SwipeView` if you want transitions.
 7. **Open/close animation:** match the right panel's pattern — `opacity` on the panel surface + a `scale` transform from 0.97 to 1.0. Use `Theme.anim.durations.xs * 1.6` + `Easing.OutCubic` (consistent with the recently-tuned right panel).
@@ -95,7 +98,7 @@ When picking this up:
 
 ## Files
 
-- `preview/control-center.html` — interactive mockup (sidebar click swaps pane)
+- `preview/control-center.html` — interactive mockup (sidebar click swaps pane; header `Laptop` / `Desktop` switch re-renders the Battery/Power pane without reload)
 - `preview/control-center.md` — this doc
 
 ## Status

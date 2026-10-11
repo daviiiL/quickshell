@@ -30,12 +30,12 @@ Item {
 
             Text {
                 Layout.alignment: Qt.AlignVCenter
-                text: root.name.toUpperCase()
+                text: root.name
                 color: Colors.inkDimmer
                 font.family: Theme.font.family.inter
-                font.pixelSize: Theme.font.size.xs
+                font.pixelSize: Theme.font.size.caption
                 font.weight: Font.Medium
-                font.letterSpacing: 1.8
+                font.letterSpacing: Theme.font.tracking.none
             }
 
             Item { Layout.fillWidth: true }
@@ -45,7 +45,7 @@ Item {
                 text: root.rows.length
                 color: Colors.inkDim
                 font.family: Theme.font.family.inter
-                font.pixelSize: Theme.font.size.xs
+                font.pixelSize: Theme.font.size.caption
                 font.letterSpacing: 0.1
             }
         }

@@ -23,7 +23,10 @@ Rectangle {
         case "offline":
             return Colors.error;
         case "needs-key":
+        case "keyring-locked":
             return Colors.warning;
+        case "no-keyring":
+            return Colors.error;
         default:
             return Colors.inkFaint;
         }
@@ -42,6 +45,10 @@ Rectangle {
             return "offline";
         case "needs-key":
             return "no api key";
+        case "keyring-locked":
+            return "keyring locked";
+        case "no-keyring":
+            return "no keyring";
         default:
             return Gemini.state;
         }

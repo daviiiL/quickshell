@@ -136,11 +136,4 @@ Rectangle {
         anchors.bottomMargin: parent.height * 0.09
         width: Math.min(640, parent.width * 0.48)
     }
-
-    LockUserBadge {
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: parent.width * 0.04
-        anchors.bottomMargin: parent.height * 0.09
-    }
 }
