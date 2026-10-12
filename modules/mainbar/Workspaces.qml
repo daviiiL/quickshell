@@ -52,7 +52,7 @@ Item {
     readonly property var occupiedSlots: {
         const live = NiriColumns.revision >= 0 ? NiriColumns.byWorkspace : ({});
         const out = [];
-        for (let i = 1; i <= 5; ++i) {
+        for (let i = 1; i <= Theme.ui.mainBarTickSlots; ++i) {
             const ws = wsRow.wsByIdx[i] ?? null;
             out.push(ws !== null && String(ws.id) in live);
         }
@@ -60,7 +60,7 @@ Item {
     }
 
     readonly property int currentSlot: {
-        for (let i = 1; i <= 5; ++i) {
+        for (let i = 1; i <= Theme.ui.mainBarTickSlots; ++i) {
             const ws = wsRow.wsByIdx[i] ?? null;
             if (ws !== null && wsRow.activeWs !== null && ws.id === wsRow.activeWs.id) return i;
         }

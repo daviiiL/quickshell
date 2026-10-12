@@ -14,7 +14,7 @@ Column {
     spacing: Theme.ui.mainBarTickGap
 
     Repeater {
-        model: 5
+        model: Theme.ui.mainBarTickSlots
 
         Item {
             id: slot

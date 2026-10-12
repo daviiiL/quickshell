@@ -53,7 +53,7 @@ Singleton {
         readonly property ThemeRadius radius: ThemeRadius {}
         readonly property ThemeElevation elevation: ThemeElevation {}
         readonly property ThemePadding padding: ThemePadding {}
-        readonly property int mainBarHeight: 48
+        readonly property int mainBarHeight: 40
         readonly property int sidePanelWidth: 400
         readonly property int borderWidth: 1
         readonly property int iconSize: 24
@@ -65,24 +65,25 @@ Singleton {
         readonly property int mainBarButtonRadius:   3
         readonly property int mainBarIconSize:       18
         readonly property int mainBarDockIconSize:   18
-        readonly property int mainBarDockItemSize:   34
+        readonly property int mainBarDockItemSize:   30
         readonly property int mainBarDockItemGap:    3
         readonly property int mainBarDockItemRadius: 4
         readonly property int mainBarRibbonWidth:           160
-        readonly property int mainBarRibbonHeight:          30
+        readonly property int mainBarRibbonHeight:          26
         readonly property int mainBarRibbonSliverMin:       26
         readonly property int mainBarRibbonGap:             2
         readonly property int mainBarRibbonRadius:          5
-        readonly property int mainBarRibbonIcon:            20
-        readonly property int mainBarRibbonIconWide:        22
+        readonly property int mainBarRibbonIcon:            18
+        readonly property int mainBarRibbonIconWide:        20
         readonly property int mainBarRibbonWideAt:          32
         readonly property int mainBarRibbonCap:             5
         readonly property int mainBarRibbonEdgeDot:         4
-        readonly property int mainBarRibbonEdgeDotGap:      10
+        readonly property int mainBarRibbonEdgeDotGap:      6
         readonly property int mainBarTickWidth:             10
-        readonly property int mainBarTickHeight:            3
-        readonly property int mainBarTickGap:               4
-        readonly property int mainBarTickRibbonGap:         12
+        readonly property int mainBarTickHeight:            2
+        readonly property int mainBarTickGap:               3
+        readonly property int mainBarTickSlots:             5
+        readonly property int mainBarTickRibbonGap:         6
         readonly property int niriColumnGap:                8
         readonly property int mainBarRibbonFallbackDot:     6
         readonly property int mainBarRibbonUrgentDot:       5
@@ -90,7 +91,7 @@ Singleton {
         readonly property int mainBarTickRadius:            1
         readonly property int mainBarTickHitPad:            6
         readonly property int mainBarRibbonFloatDot:        3
-        readonly property int mainBarRibbonFloatLift:       6
+        readonly property int mainBarRibbonFloatLift:       3
         readonly property int mainBarRibbonFloatInset:      6
         readonly property int mainBarRibbonFloatPitch:      10
         readonly property int mainBarRibbonDash:            3
