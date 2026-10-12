@@ -48,16 +48,17 @@ MainBarButton {
             visible: root.unread > 0
             readonly property string label: root.unread > 9 ? "9+" : String(root.unread)
 
-            height: 16
-            width: Math.max(height, badgeText.implicitWidth + 8)
+            height: 14
+            width: Math.max(height, badgeText.implicitWidth + 7)
             radius: height / 2
 
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.rightMargin: -width / 2
-            anchors.topMargin: -height / 2
+            anchors.rightMargin: -width / 3
+            anchors.topMargin: -height / 3
 
-            color: Colors.barAccent
+            color: root.hovered ? Colors.barAccent : Colors.inkDim
+            Behavior on color { ColorAnimation { duration: 150 } }
             border.width: 1
             border.color: Colors.barBg
 
@@ -65,7 +66,7 @@ MainBarButton {
                 id: badgeText
                 anchors.centerIn: parent
                 text: badge.label
-                color: "#0a0a0a"
+                color: Colors.barBg
                 font.family: Theme.font.family.inter_bold
                 font.weight: Font.Bold
                 font.pixelSize: Theme.font.size.caption

@@ -185,8 +185,8 @@ Scope {
                     height: 1
                     gradient: Gradient {
                         orientation: Gradient.Horizontal
-                        GradientStop { position: 0.0; color: "#8ce3e3e3" }
-                        GradientStop { position: 1.0; color: "#00e3e3e3" }
+                        GradientStop { position: 0.0; color: Qt.alpha(Colors.barAccent, 0.55) }
+                        GradientStop { position: 1.0; color: Qt.alpha(Colors.barAccent, 0.0) }
                     }
                 }
 

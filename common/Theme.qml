@@ -68,9 +68,38 @@ Singleton {
         readonly property int mainBarDockItemSize:   34
         readonly property int mainBarDockItemGap:    3
         readonly property int mainBarDockItemRadius: 4
-        readonly property int mainBarWsSize:         21
-        readonly property int mainBarWsGap:          5
-        readonly property int mainBarWsRadius:       3
+        readonly property int mainBarRibbonWidth:           160
+        readonly property int mainBarRibbonHeight:          30
+        readonly property int mainBarRibbonSliverMin:       26
+        readonly property int mainBarRibbonGap:             2
+        readonly property int mainBarRibbonRadius:          5
+        readonly property int mainBarRibbonIcon:            20
+        readonly property int mainBarRibbonIconWide:        22
+        readonly property int mainBarRibbonWideAt:          32
+        readonly property int mainBarRibbonCap:             5
+        readonly property int mainBarRibbonEdgeDot:         4
+        readonly property int mainBarRibbonEdgeDotGap:      10
+        readonly property int mainBarTickWidth:             10
+        readonly property int mainBarTickHeight:            3
+        readonly property int mainBarTickGap:               4
+        readonly property int mainBarTickRibbonGap:         12
+        readonly property int niriColumnGap:                8
+        readonly property int mainBarRibbonFallbackDot:     6
+        readonly property int mainBarRibbonUrgentDot:       5
+        readonly property int mainBarRibbonUrgentDotOffset: 2
+        readonly property int mainBarTickRadius:            1
+        readonly property int mainBarTickHitPad:            6
+        readonly property int mainBarRibbonFloatDot:        3
+        readonly property int mainBarRibbonFloatLift:       6
+        readonly property int mainBarRibbonFloatInset:      6
+        readonly property int mainBarRibbonFloatPitch:      10
+        readonly property int mainBarRibbonDash:            3
+        readonly property int mainBarRibbonTipLift:         12
+        readonly property int mainBarRibbonTipPadX:         9
+        readonly property int mainBarRibbonTipPadY:         5
+        readonly property int mainBarRibbonTipRadius:       3
+        readonly property int mainBarRibbonTipSpacing:      1
+        readonly property int mainBarRibbonWheelMs:         80
         readonly property int mainBarHairWidth:      1
         readonly property int mainBarBatteryWidth:   44
         readonly property int mainBarBatteryHeight:  12

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import qs.common
+import qs.services
 import qs.widgets
 
 RowLayout {
@@ -12,10 +13,10 @@ RowLayout {
     spacing: 0
 
     property var toggles: [
-        { label: "Wi-Fi",          icon: "wifi",               on: true,  kind: "local" },
-        { label: "Bluetooth",      icon: "bluetooth",          on: false, kind: "local" },
-        { label: "Do not disturb", icon: "do_not_disturb_on",  on: true,  kind: "local" },
-        { label: "Dark mode",      icon: "dark_mode",          on: false, kind: "theme" }
+        { label: "Wi-Fi",          icon: "wifi",               kind: "wifi" },
+        { label: "Bluetooth",      icon: "bluetooth",          kind: "bluetooth" },
+        { label: "Do not disturb", icon: "do_not_disturb_on",  kind: "dnd" },
+        { label: "Dark mode",      icon: "dark_mode",          kind: "theme" }
     ]
 
     Repeater {
@@ -26,9 +27,15 @@ RowLayout {
             required property var modelData
             required property int index
 
-            readonly property bool isTheme: cell.modelData.kind === "theme"
-            property bool localOn: cell.modelData.on
-            readonly property bool on: cell.isTheme ? GlobalStates.darkMode : cell.localOn
+            readonly property bool on: {
+                switch (cell.modelData.kind) {
+                case "wifi":      return Network.wifiEnabled && !!Network.active;
+                case "bluetooth": return SystemBluetooth.available && SystemBluetooth.enabled;
+                case "dnd":       return Notifications.silent;
+                case "theme":     return GlobalStates.darkMode;
+                }
+                return false;
+            }
             property bool hovered: ma.containsMouse
 
             Layout.fillWidth: true
@@ -107,10 +114,11 @@ RowLayout {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
-                    if (cell.isTheme) {
-                        GlobalStates.toggleDarkMode();
-                    } else {
-                        cell.localOn = !cell.localOn;
+                    switch (cell.modelData.kind) {
+                    case "wifi":      Network.toggleWifi(); break;
+                    case "bluetooth": SystemBluetooth.toggleBluetooth(); break;
+                    case "dnd":       Notifications.silent = !Notifications.silent; break;
+                    case "theme":     GlobalStates.toggleDarkMode(); break;
                     }
                 }
             }

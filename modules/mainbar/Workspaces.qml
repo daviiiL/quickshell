@@ -3,55 +3,32 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import qs.common
 import qs.services
+import qs.modules.mainbar.ribbon
 
 Item {
     id: wsRow
 
     property var screen: null
 
-    readonly property int slots: 5
-    readonly property int tileSize: Theme.ui.mainBarWsSize
-    readonly property int tileGap:  Theme.ui.mainBarWsGap
+    readonly property string screenName: wsRow.screen?.name ?? ""
 
-    implicitWidth:  slots * tileSize + (slots - 1) * tileGap
-    implicitHeight: tileSize
-
-    property var occupiedIds: []
-
-    function rebuildOccupied() {
-        const seen = ({});
-        const out = [];
-        for (let i = 0; i < winProbe.count; ++i) {
-            const obj = winProbe.objectAt(i);
-            if (!obj) continue;
-            const id = obj.wsId;
-            if (id === undefined || id === null) continue;
-            if (!seen[id]) { seen[id] = true; out.push(id); }
-        }
-        occupiedIds = out;
-    }
-
-    Instantiator {
-        id: winProbe
-        model: SystemNiri.windows
-        delegate: QtObject {
-            required property var model
-            readonly property var wsId: model.workspaceId
-        }
-        onObjectAdded: wsRow.rebuildOccupied()
-        onObjectRemoved: wsRow.rebuildOccupied()
-    }
+    implicitWidth:  row.implicitWidth
+    implicitHeight: Math.max(Theme.ui.mainBarRibbonHeight, ticks.implicitHeight)
 
     property var wsByIdx: ({})
+    property var activeWs: null
 
     function rebuildIndex() {
         const m = ({});
+        let active = null;
         for (let i = 0; i < wsProbe.count; ++i) {
             const obj = wsProbe.objectAt(i);
             if (!obj || !obj.onThisScreen) continue;
             m[obj.idx] = obj.source;
+            if (obj.active) active = obj.source;
         }
         wsByIdx = m;
+        activeWs = active;
     }
 
     Instantiator {
@@ -62,85 +39,58 @@ Item {
             readonly property var    source: model
             readonly property int    idx:    model.index
             readonly property string output: model.output ?? ""
-            readonly property bool   onThisScreen: output === (wsRow.screen?.name ?? "")
+            readonly property bool   active: model.isActive ?? false
+            readonly property bool   onThisScreen: output === wsRow.screenName
+            onIdxChanged:    wsRow.rebuildIndex()
             onOutputChanged: wsRow.rebuildIndex()
+            onActiveChanged: wsRow.rebuildIndex()
         }
         onObjectAdded:   wsRow.rebuildIndex()
         onObjectRemoved: wsRow.rebuildIndex()
     }
 
+    readonly property var occupiedSlots: {
+        const live = NiriColumns.revision >= 0 ? NiriColumns.byWorkspace : ({});
+        const out = [];
+        for (let i = 1; i <= 5; ++i) {
+            const ws = wsRow.wsByIdx[i] ?? null;
+            out.push(ws !== null && String(ws.id) in live);
+        }
+        return out;
+    }
+
+    readonly property int currentSlot: {
+        for (let i = 1; i <= 5; ++i) {
+            const ws = wsRow.wsByIdx[i] ?? null;
+            if (ws !== null && wsRow.activeWs !== null && ws.id === wsRow.activeWs.id) return i;
+        }
+        return 0;
+    }
+
     Row {
+        id: row
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        spacing: wsRow.tileGap
+        spacing: Theme.ui.mainBarTickRibbonGap + Theme.ui.mainBarRibbonEdgeDotGap + Theme.ui.mainBarRibbonEdgeDot
+        rightPadding: Theme.ui.mainBarRibbonEdgeDotGap + Theme.ui.mainBarRibbonEdgeDot
 
-        Repeater {
-            model: wsRow.slots
-
-            Rectangle {
-                id: slot
-                required property int index
-                readonly property int slotIdx: index + 1
-                readonly property var ws: wsRow.wsByIdx[slotIdx] ?? null
-                readonly property bool live:     ws !== null
-                readonly property bool focused:  live && ws.isFocused
-                readonly property bool occupied: live && wsRow.occupiedIds.indexOf(ws.id) !== -1
-
-                width:  wsRow.tileSize
-                height: wsRow.tileSize
-                radius: Theme.ui.mainBarWsRadius
-                border.width: Theme.ui.mainBarHairWidth
-
-                color: focused ? Qt.alpha(Colors.barAccent, 0.05) : "transparent"
-                border.color: {
-                    if (focused) return Colors.barAccent;
-                    if (!live)   return Qt.alpha(Colors.hair, 0.55);
-                    return hoverArea.containsMouse ? Colors.hairHot : Colors.hair;
-                }
-
-                Behavior on color        { ColorAnimation { duration: 150 } }
-                Behavior on border.color { ColorAnimation { duration: 150 } }
-
-                Text {
-                    anchors.centerIn: parent
-                    text: slot.slotIdx
-                    font.family: Theme.font.family.inter_medium
-                    font.pixelSize: Theme.font.size.xs
-                    font.weight: Font.Medium
-                    color: {
-                        if (slot.focused) return Colors.barAccent;
-                        if (!slot.live)   return Colors.inkFaint;
-                        return hoverArea.containsMouse ? Colors.fgSurface : Colors.inkDim;
-                    }
-                    opacity: slot.live ? 1.0 : 0.45
-                    Behavior on color   { ColorAnimation  { duration: 150 } }
-                    Behavior on opacity { NumberAnimation { duration: 150 } }
-                }
-
-                Rectangle {
-                    visible: slot.occupied
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.topMargin: 4
-                    anchors.rightMargin: 4
-                    width: 3
-                    height: 3
-                    radius: 1.5
-                    color: slot.focused ? Colors.barAccent : Colors.inkFaint
-                    Behavior on color { ColorAnimation { duration: 150 } }
-                }
-
-                MouseArea {
-                    id: hoverArea
-                    anchors.fill: parent
-                    enabled: slot.live
-                    hoverEnabled: slot.live
-                    cursorShape: slot.live ? Qt.PointingHandCursor : Qt.ArrowCursor
-                    onClicked: {
-                        if (slot.live) SystemNiri.niri.focusWorkspaceById(slot.ws.id);
-                    }
-                }
+        WorkspaceTicks {
+            id: ticks
+            anchors.verticalCenter: parent.verticalCenter
+            currentIdx: wsRow.currentSlot
+            occupied: wsRow.occupiedSlots
+            onActivated: function (idx) {
+                const ws = wsRow.wsByIdx[idx] ?? null;
+                if (ws !== null) SystemNiri.niri.focusWorkspaceById(ws.id);
             }
+        }
+
+        ColumnRibbon {
+            anchors.verticalCenter: parent.verticalCenter
+            entry: NiriColumns.revision >= 0 && wsRow.activeWs !== null ? NiriColumns.workspace(wsRow.activeWs.id) : NiriColumns.emptyEntry
+            wsId: wsRow.activeWs !== null ? String(wsRow.activeWs.id) : "none"
+            viewWidth: wsRow.screen ? wsRow.screen.width : 0
+            interactive: wsRow.activeWs !== null && (wsRow.activeWs.isFocused ?? false)
         }
     }
 }
